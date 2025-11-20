@@ -6,6 +6,9 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "generate:api": "openapi-generator-cli generate -i api-spec.yml -g typescript-nestjs -o ./src/generated --additional-properties=useSingleRequestParameter=true,modelPropertyNaming=original && npm run format:generated",
+    "format:generated": "prettier --write src/generated/**/*.ts",
+    "prebuild": "npm run generate:api",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
@@ -33,6 +36,7 @@
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
+    "@openapitools/openapi-generator-cli": "^2.25.2",
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.10.7",

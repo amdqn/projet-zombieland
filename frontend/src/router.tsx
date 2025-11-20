@@ -1,5 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { DesignSystem } from './DesignSystem/DesignSystem';
+import { Activities } from './Activities/Activities';
+import { ActivityDetail } from './Activities/ActivityDetail';
 
 export const router = createBrowserRouter([
   {
@@ -12,11 +14,11 @@ export const router = createBrowserRouter([
       },
       {
         path: 'activities',
-        // element: <Activities />,
+        element: <Activities />,
       },
       {
         path: 'activities/:id',
-        // element: <ActivityDetail />,
+        element: <ActivityDetail />,
       },
       {
         path: 'design-system',

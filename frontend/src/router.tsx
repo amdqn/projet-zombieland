@@ -1,6 +1,4 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { Activities } from './Activities/Activities';
-import { ActivityDetail } from './Activities/ActivityDetail';
 import { DesignSystem } from './DesignSystem/DesignSystem';
 
 export const router = createBrowserRouter([

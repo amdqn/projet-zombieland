@@ -1,0 +1,2377 @@
+openapi: 3.0.3
+info:
+  title: ZombieLand API
+  description: |-
+    API REST pour le parc d'attractions post-apocalyptique ZombieLand.
+    
+    Cette API permet de gérer :
+    - L'authentification et les utilisateurs (JWT)
+    - Les activités et attractions du parc
+    - Les catégories d'activités
+    - Les réservations avec règle métier J-10
+    - Les tarifs et dates d'ouverture
+    - Les images des attractions
+    
+    **Règle métier critique** : Annulation de réservation possible uniquement si la visite est dans plus de 10 jours (sauf administrateurs).
+    
+    **Équipe Backend** : Jonathan Bous- Houd Alami  
+  version: 1.0.0
+  contact:
+    name: Équipe ZombieLand
+
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Serveur de développement local
+  - url: https://api.zombieland.com/api/v1
+    description: Serveur de production
+
+tags:
+  - name: Auth
+    description: Authentification et gestion du profil utilisateur
+  - name: Users
+    description: Gestion des utilisateurs (ADMIN uniquement)
+  - name: Categories
+    description: Gestion des catégories d'activités
+  - name: Attractions
+    description: Gestion des attractions du parc
+  - name: Activities
+    description: Gestion des activités proposées
+  - name: ParkDates
+    description: Gestion du calendrier d'ouverture du parc
+  - name: Prices
+    description: Gestion des tarifs
+  - name: Reservations
+    description: Gestion des réservations (règle J-10)
+
+paths:
+  # ===== AUTH =====
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Inscription d'un nouvel utilisateur
+      description: Crée un compte utilisateur avec role CLIENT par défaut
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterDto'
+      responses:
+        '201':
+          description: Utilisateur créé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        '400':
+          description: Données invalides ou email déjà utilisé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Connexion utilisateur
+      description: Authentification avec email et mot de passe, retourne un JWT
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginDto'
+      responses:
+        '200':
+          description: Connexion réussie
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  user:
+                    $ref: '#/components/schemas/UserDto'
+        '401':
+          description: Email ou mot de passe incorrect
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+  /auth/me:
+    get:
+      tags:
+        - Auth
+      summary: Récupérer le profil de l'utilisateur connecté
+      description: Retourne les informations de l'utilisateur authentifié
+      operationId: getProfile
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Profil utilisateur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+    
+    patch:
+      tags:
+        - Auth
+      summary: Mettre à jour le profil de l'utilisateur connecté
+      description: Modification email et/ou mot de passe
+      operationId: updateProfile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileDto'
+      responses:
+        '200':
+          description: Profil mis à jour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+  # ===== USERS =====
+  /users:
+    get:
+      tags:
+        - Users
+      summary: Liste de tous les utilisateurs (ADMIN)
+      description: Récupère tous les utilisateurs avec pagination et filtres
+      operationId: getAllUsers
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: email
+          in: query
+          schema:
+            type: string
+        - name: role
+          in: query
+          schema:
+            $ref: '#/components/schemas/Role'
+      responses:
+        '200':
+          description: Liste des utilisateurs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserDto'
+                  total:
+                    type: integer
+                  page:
+                    type: integer
+                  limit:
+                    type: integer
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès interdit (non ADMIN)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+  /users/{id}:
+    get:
+      tags:
+        - Users
+      summary: Détail d'un utilisateur (ADMIN)
+      operationId: getUserById
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Détail utilisateur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès interdit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '404':
+          description: Utilisateur non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+    
+    delete:
+      tags:
+        - Users
+      summary: Supprimer un utilisateur (ADMIN)
+      operationId: deleteUser
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Utilisateur supprimé
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès interdit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '404':
+          description: Utilisateur non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+  /users/{id}/reservations:
+    get:
+      tags:
+        - Users
+      summary: Réservations d'un utilisateur (ADMIN)
+      operationId: getUserReservations
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Liste des réservations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReservationDto'
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès interdit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '404':
+          description: Utilisateur non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+  # ===== CATEGORIES =====
+  /categories:
+    get:
+      tags:
+        - Categories
+      summary: Liste de toutes les catégories
+      description: Endpoint public, accessible sans authentification
+      operationId: getAllCategories
+      responses:
+        '200':
+          description: Liste des catégories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CategoryDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+    
+    post:
+      tags:
+        - Categories
+      summary: Créer une catégorie (ADMIN)
+      operationId: createCategory
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCategoryDto'
+      responses:
+        '201':
+          description: Catégorie créée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryDto'
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès interdit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+  /categories/{id}:
+    get:
+      tags:
+        - Categories
+      summary: Détail d'une catégorie
+      operationId: getCategoryById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Détail catégorie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryDto'
+        '404':
+          description: Catégorie non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+    
+    patch:
+      tags:
+        - Categories
+      summary: Modifier une catégorie (ADMIN)
+      operationId: updateCategory
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCategoryDto'
+      responses:
+        '200':
+          description: Catégorie modifiée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryDto'
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès interdit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '404':
+          description: Catégorie non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+    
+    delete:
+      tags:
+        - Categories
+      summary: Supprimer une catégorie (ADMIN)
+      operationId: deleteCategory
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Catégorie supprimée
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès interdit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '404':
+          description: Catégorie non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+  # ===== ATTRACTIONS =====
+  /attractions:
+    get:
+      tags:
+        - Attractions
+      summary: Liste de toutes les attractions
+      description: Endpoint public avec filtrage par catégorie
+      operationId: getAllAttractions
+      parameters:
+        - name: categoryId
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Liste des attractions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AttractionDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+    
+    post:
+      tags:
+        - Attractions
+      summary: Créer une attraction (ADMIN)
+      operationId: createAttraction
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAttractionDto'
+      responses:
+        '201':
+          description: Attraction créée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttractionDto'
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès interdit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+  /attractions/{id}:
+    get:
+      tags:
+        - Attractions
+      summary: Détail d'une attraction
+      operationId: getAttractionById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Détail attraction avec images
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttractionDto'
+        '404':
+          description: Attraction non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+    
+    patch:
+      tags:
+        - Attractions
+      summary: Modifier une attraction (ADMIN)
+      operationId: updateAttraction
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAttractionDto'
+      responses:
+        '200':
+          description: Attraction modifiée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttractionDto'
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès interdit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '404':
+          description: Attraction non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+    
+    delete:
+      tags:
+        - Attractions
+      summary: Supprimer une attraction (ADMIN)
+      operationId: deleteAttraction
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Attraction supprimée (cascade images)
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès interdit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '404':
+          description: Attraction non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+  /attractions/{id}/images:
+    get:
+      tags:
+        - Attractions
+      summary: Liste des images d'une attraction
+      operationId: getAttractionImages
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Liste des images
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AttractionImageDto'
+        '404':
+          description: Attraction non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+    
+    post:
+      tags:
+        - Attractions
+      summary: Ajouter une image à une attraction (ADMIN)
+      operationId: addAttractionImage
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                alt_text:
+                  type: string
+      responses:
+        '201':
+          description: Image ajoutée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttractionImageDto'
+        '400':
+          description: Fichier invalide
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès interdit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '404':
+          description: Attraction non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+  /attraction-images/{imageId}:
+    delete:
+      tags:
+        - Attractions
+      summary: Supprimer une image (ADMIN)
+      operationId: deleteAttractionImage
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: imageId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Image supprimée
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès interdit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '404':
+          description: Image non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+  # ===== ACTIVITIES =====
+  /activities:
+    get:
+      tags:
+        - Activities
+      summary: Liste de toutes les activités
+      description: Endpoint public avec filtres multiples
+      operationId: getAllActivities
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: categoryId
+          in: query
+          schema:
+            type: integer
+        - name: attractionId
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Liste des activités
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ActivityDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+    
+    post:
+      tags:
+        - Activities
+      summary: Créer une activité (ADMIN)
+      operationId: createActivity
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateActivityDto'
+      responses:
+        '201':
+          description: Activité créée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivityDto'
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès interdit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+  /activities/{id}:
+    get:
+      tags:
+        - Activities
+      summary: Détail d'une activité
+      operationId: getActivityById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Détail activité
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivityDto'
+        '404':
+          description: Activité non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+    
+    patch:
+      tags:
+        - Activities
+      summary: Modifier une activité (ADMIN)
+      operationId: updateActivity
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateActivityDto'
+      responses:
+        '200':
+          description: Activité modifiée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivityDto'
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès interdit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '404':
+          description: Activité non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+    
+    delete:
+      tags:
+        - Activities
+      summary: Supprimer une activité (ADMIN)
+      operationId: deleteActivity
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Activité supprimée
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès interdit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '404':
+          description: Activité non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+  # ===== PARK DATES =====
+  /park-dates:
+    get:
+      tags:
+        - ParkDates
+      summary: Calendrier d'ouverture du parc
+      description: Endpoint public avec filtres de dates
+      operationId: getAllParkDates
+      parameters:
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Liste des dates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ParkDateDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+    
+    post:
+      tags:
+        - ParkDates
+      summary: Créer/configurer une date (ADMIN)
+      operationId: createParkDate
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateParkDateDto'
+      responses:
+        '201':
+          description: Date créée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParkDateDto'
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès interdit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+  /park-dates/{id}:
+    get:
+      tags:
+        - ParkDates
+      summary: Détail d'une date (ADMIN)
+      operationId: getParkDateById
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Détail date
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParkDateDto'
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès interdit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '404':
+          description: Date non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+    
+    patch:
+      tags:
+        - ParkDates
+      summary: Modifier une date (ADMIN)
+      operationId: updateParkDate
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateParkDateDto'
+      responses:
+        '200':
+          description: Date modifiée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParkDateDto'
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès interdit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '404':
+          description: Date non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+    
+    delete:
+      tags:
+        - ParkDates
+      summary: Supprimer une date (ADMIN)
+      operationId: deleteParkDate
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Date supprimée
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès interdit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '404':
+          description: Date non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+  # ===== PRICES =====
+  /prices:
+    get:
+      tags:
+        - Prices
+      summary: Liste de tous les tarifs
+      description: Endpoint public
+      operationId: getAllPrices
+      responses:
+        '200':
+          description: Liste des tarifs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PriceDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+    
+    post:
+      tags:
+        - Prices
+      summary: Créer un tarif (ADMIN)
+      operationId: createPrice
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePriceDto'
+      responses:
+        '201':
+          description: Tarif créé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PriceDto'
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès interdit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+  /prices/{id}:
+    get:
+      tags:
+        - Prices
+      summary: Détail d'un tarif (ADMIN)
+      operationId: getPriceById
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Détail tarif
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PriceDto'
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès interdit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '404':
+          description: Tarif non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+    
+    patch:
+      tags:
+        - Prices
+      summary: Modifier un tarif (ADMIN)
+      operationId: updatePrice
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePriceDto'
+      responses:
+        '200':
+          description: Tarif modifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PriceDto'
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès interdit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '404':
+          description: Tarif non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+    
+    delete:
+      tags:
+        - Prices
+      summary: Supprimer un tarif (ADMIN)
+      operationId: deletePrice
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Tarif supprimé
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès interdit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '404':
+          description: Tarif non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+  # ===== RESERVATIONS =====
+  /reservations:
+    get:
+      tags:
+        - Reservations
+      summary: Liste de toutes les réservations (ADMIN)
+      description: Avec filtres et pagination
+      operationId: getAllReservations
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: userId
+          in: query
+          schema:
+            type: integer
+        - name: dateId
+          in: query
+          schema:
+            type: integer
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/ReservationStatus'
+      responses:
+        '200':
+          description: Liste des réservations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ReservationDto'
+                  total:
+                    type: integer
+                  page:
+                    type: integer
+                  limit:
+                    type: integer
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès interdit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+    
+    post:
+      tags:
+        - Reservations
+      summary: Créer une réservation (USER)
+      description: Calcule automatiquement le montant total
+      operationId: createReservation
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReservationDto'
+      responses:
+        '201':
+          description: Réservation créée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationDto'
+        '400':
+          description: Données invalides ou parc fermé ce jour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '404':
+          description: Date ou tarif non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+  /reservations/my:
+    get:
+      tags:
+        - Reservations
+      summary: Mes réservations (USER)
+      description: Liste des réservations de l'utilisateur connecté
+      operationId: getMyReservations
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Liste de mes réservations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReservationDto'
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+  /reservations/{id}:
+    get:
+      tags:
+        - Reservations
+      summary: Détail d'une réservation
+      description: Accessible au propriétaire ou ADMIN
+      operationId: getReservationById
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Détail réservation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationDto'
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès interdit (pas propriétaire ni admin)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '404':
+          description: Réservation non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+    
+    delete:
+      tags:
+        - Reservations
+      summary: Annuler une réservation (RÈGLE J-10)
+      description: |-
+        **RÈGLE MÉTIER CRITIQUE**
+        - CLIENT : peut annuler si visite > 10 jours
+        - ADMIN : peut annuler sans contrainte
+      operationId: cancelReservation
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Réservation annulée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationDto'
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: |-
+            Annulation impossible :
+            - Délai de 10 jours dépassé (CLIENT)
+            - Pas propriétaire ni admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+              example:
+                statusCode: 403
+                message: "Annulation impossible, délai de 10 jours dépassé"
+                error: "Forbidden"
+        '404':
+          description: Réservation non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+  /reservations/{id}/status:
+    patch:
+      tags:
+        - Reservations
+      summary: Modifier le statut d'une réservation (ADMIN)
+      description: Force un changement de statut manuellement
+      operationId: updateReservationStatus
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateReservationStatusDto'
+      responses:
+        '200':
+          description: Statut modifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationDto'
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès interdit (non ADMIN)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '404':
+          description: Réservation non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+# ===== COMPONENTS =====
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Token JWT obtenu via /auth/login
+
+  schemas:
+    # ===== ENUMS =====
+    Role:
+      type: string
+      enum:
+        - ADMIN
+        - CLIENT
+      description: Rôle utilisateur
+
+    ReservationStatus:
+      type: string
+      enum:
+        - PENDING
+        - CONFIRMED
+        - CANCELLED
+      description: Statut d'une réservation
+
+    PriceType:
+      type: string
+      enum:
+        - ETUDIANT
+        - ADULTE
+        - GROUPE
+        - PASS_2J
+      description: Type de tarif
+
+    # ===== RESPONSE DTOs (OUTPUT) =====
+    UserDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        email:
+          type: string
+          format: email
+          example: user@zombieland.com
+        pseudo:
+          type: string
+          example: JeanZ
+        role:
+          $ref: '#/components/schemas/Role'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CategoryDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Attractions extrêmes
+        description:
+          type: string
+          example: Sensations fortes garanties pour les amateurs d'adrénaline
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    AttractionDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: The Walking Dead Experience
+        description:
+          type: string
+          example: Parcours immersif au coeur de l'apocalypse zombie
+        category_id:
+          type: integer
+          example: 1
+        category:
+          $ref: '#/components/schemas/CategoryDto'
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/AttractionImageDto'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ActivityDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Escape Game Zombie
+        description:
+          type: string
+          example: 60 minutes pour trouver le remède et sauver l'humanité
+        category_id:
+          type: integer
+          example: 2
+        attraction_id:
+          type: integer
+          nullable: true
+          example: 5
+        category:
+          $ref: '#/components/schemas/CategoryDto'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    AttractionImageDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        attraction_id:
+          type: integer
+          example: 1
+        url:
+          type: string
+          example: https://cdn.zombieland.com/images/attraction-1.jpg
+        alt_text:
+          type: string
+          example: Vue extérieure de l'attraction The Walking Dead
+        created_at:
+          type: string
+          format: date-time
+
+    ParkDateDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        jour:
+          type: string
+          format: date
+          example: "2025-12-25"
+        is_open:
+          type: boolean
+          example: true
+        notes:
+          type: string
+          nullable: true
+          example: Horaires étendus pour les fêtes
+        created_at:
+          type: string
+          format: date-time
+
+    PriceDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        label:
+          type: string
+          example: Tarif Étudiant
+        type:
+          $ref: '#/components/schemas/PriceType'
+        amount:
+          type: number
+          format: decimal
+          example: 29.99
+        duration_days:
+          type: integer
+          example: 1
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ReservationDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        reservation_number:
+          type: string
+          example: ZL-1732108800-A7F3B
+        user_id:
+          type: integer
+          example: 5
+        date_id:
+          type: integer
+          example: 12
+        price_id:
+          type: integer
+          example: 2
+        tickets_count:
+          type: integer
+          example: 3
+        total_amount:
+          type: number
+          format: decimal
+          example: 89.97
+        status:
+          $ref: '#/components/schemas/ReservationStatus'
+        user:
+          $ref: '#/components/schemas/UserDto'
+        date:
+          $ref: '#/components/schemas/ParkDateDto'
+        price:
+          $ref: '#/components/schemas/PriceDto'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    # ===== REQUEST DTOs (INPUT) =====
+    RegisterDto:
+      type: object
+      required:
+        - email
+        - pseudo
+        - password
+        - confirmPassword
+      properties:
+        email:
+          type: string
+          format: email
+          example: newuser@zombieland.com
+        pseudo:
+          type: string
+          minLength: 3
+          maxLength: 20
+          example: JeanZ
+        password:
+          type: string
+          format: password
+          minLength: 8
+          example: Password123!
+        confirmPassword:
+          type: string
+          format: password
+          example: Password123!
+
+    LoginDto:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: user@zombieland.com
+        password:
+          type: string
+          format: password
+          example: Password123!
+
+    UpdateProfileDto:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+          minLength: 8
+
+    CreateCategoryDto:
+      type: object
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+          example: Spectacles
+        description:
+          type: string
+          example: Shows et animations en live
+
+    UpdateCategoryDto:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+
+    CreateAttractionDto:
+      type: object
+      required:
+        - name
+        - description
+        - category_id
+      properties:
+        name:
+          type: string
+          example: Zombie Apocalypse Ride
+        description:
+          type: string
+          example: Montagnes russes extrêmes dans un décor post-apocalyptique
+        category_id:
+          type: integer
+          example: 1
+
+    UpdateAttractionDto:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        category_id:
+          type: integer
+
+    CreateActivityDto:
+      type: object
+      required:
+        - name
+        - description
+        - category_id
+      properties:
+        name:
+          type: string
+          example: Laser Game Zombie
+        description:
+          type: string
+          example: Affrontez les zombies en équipe avec des lasers
+        category_id:
+          type: integer
+          example: 3
+        attraction_id:
+          type: integer
+          nullable: true
+          example: null
+
+    UpdateActivityDto:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        category_id:
+          type: integer
+        attraction_id:
+          type: integer
+          nullable: true
+
+    CreateParkDateDto:
+      type: object
+      required:
+        - jour
+        - is_open
+      properties:
+        jour:
+          type: string
+          format: date
+          example: "2025-12-31"
+        is_open:
+          type: boolean
+          example: true
+        notes:
+          type: string
+          nullable: true
+          example: Soirée spéciale Nouvel An
+
+    UpdateParkDateDto:
+      type: object
+      properties:
+        jour:
+          type: string
+          format: date
+        is_open:
+          type: boolean
+        notes:
+          type: string
+          nullable: true
+
+    CreatePriceDto:
+      type: object
+      required:
+        - label
+        - type
+        - amount
+        - duration_days
+      properties:
+        label:
+          type: string
+          example: Pass 2 jours
+        type:
+          $ref: '#/components/schemas/PriceType'
+        amount:
+          type: number
+          format: decimal
+          minimum: 0
+          example: 49.99
+        duration_days:
+          type: integer
+          minimum: 1
+          example: 2
+
+    UpdatePriceDto:
+      type: object
+      properties:
+        label:
+          type: string
+        type:
+          $ref: '#/components/schemas/PriceType'
+        amount:
+          type: number
+          format: decimal
+          minimum: 0
+        duration_days:
+          type: integer
+          minimum: 1
+
+    CreateReservationDto:
+      type: object
+      required:
+        - date_id
+        - price_id
+        - tickets_count
+      properties:
+        date_id:
+          type: integer
+          example: 15
+        price_id:
+          type: integer
+          example: 2
+        tickets_count:
+          type: integer
+          minimum: 1
+          example: 4
+
+    UpdateReservationStatusDto:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          $ref: '#/components/schemas/ReservationStatus'
+
+    # ===== ERROR =====
+    ErrorDto:
+      type: object
+      required:
+        - statusCode
+        - message
+        - error
+      properties:
+        statusCode:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: Validation failed
+        error:
+          type: string
+          example: Bad Request
+        timestamp:
+          type: string
+          format: date-time

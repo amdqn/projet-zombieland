@@ -3,6 +3,7 @@ import {useNavigate} from "react-router";
 import MenuIcon from '@mui/icons-material/Menu';
 import {useState} from "react";
 import ModalBurgerMenu from "./modals/modalBurgerMenu.tsx";
+import {colors} from "../theme";
 
 export default function Header() {
 
@@ -22,8 +23,16 @@ export default function Header() {
 
     return (
         <>
-            <AppBar position="static" sx={{ backgroundColor: 'transparent' }}>
-                <Toolbar disableGutters sx={{ justifyContent: 'space-between', alignItems:'center', width: '100%' }}>
+            <AppBar position="static" elevation={0} sx={{ backgroundColor: 'transparent !important'}}>
+                <Toolbar disableGutters sx={{
+                    justifyContent: 'space-between',
+                    alignItems:'center',
+                    width: '100%',
+                    px: 5,
+                    py: 2,
+                    pb: 10,
+                    pt: 5
+                }}>
                     {/* VUE DESKTOP */}
                     {/* Pages à gauche */}
                     <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1, pl: 15 }}>
@@ -45,11 +54,11 @@ export default function Header() {
                         transform: 'translateX(-50%)',
                         display: { xs: 'none', md: 'block' }
                     }}>
-                        <Typography variant="h6">
-                            <Box component="span" sx={{ color: '#6B9F2A', fontWeight: 'bold' }}>
+                        <Typography variant="h1">
+                            <Box component="span" sx={{ color: colors.secondaryGreen, fontWeight: 'bold' }}>
                                 ZOMBIE
                             </Box>
-                            <Box component="span" sx={{ color: '#C62828', fontWeight: 'bold' }}>
+                            <Box component="span" sx={{ color: 'secondary', fontWeight: 'bold' }}>
                                 LAND
                             </Box>
                         </Typography>

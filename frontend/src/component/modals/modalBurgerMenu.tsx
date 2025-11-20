@@ -32,22 +32,38 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    px: { xs: 2, md: 4 },
-                    py: 2,
+                    px: 5,
+                    py: 2
                 }}>
                     <Box
                         component="img"
                         src={logo}
                         alt="Logo"
                         sx={{
-                            height: { xs: 50, md: 50 },
+                            height: { xs: 60, md: 90 },
                             width: 'auto',
                             zIndex: 2,
                         }}
                     />
+                    <Box sx={{ mt: 4 }}>
+                        <Button sx={{
+                            color: "black",
+                            backgroundColor: "#3AEF30",
+                            variant: "contained",
+                            size: 'large',
+                            zIndex: 2,
+                        }}>
+                            CONNEXION
+                        </Button>
+                    </Box>
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                         <IconButton
-                            sx={{ color: 'white', zIndex: 2, pr: 4 }}
+                            sx={{
+                                color: 'white',
+                                zIndex: 2,
+                                mr: 5,
+                                p:1
+                            }}
                             onClick={onClose}
                         >
                             <CloseIcon />
@@ -61,9 +77,25 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                         justifyContent: 'space-between',
                         alignItems: 'center'
                     }}>
-                        <Box sx={{ width: 40 }} />
+                        <Box sx={{ mt: 4 }}>
+                            <Button sx={{
+                                color: "black",
+                                backgroundColor: "#3AEF30",
+                                variant: "contained",
+                                size: 'large',
+                                zIndex: 2,
+                            }}>
+                                CONNEXION
+                            </Button>
+                        </Box>
+                        <Box />
                         <IconButton
-                            sx={{ color: 'white' }}
+                            sx={{
+                                color: 'white',
+                                zIndex: 2,
+                                pr: 4,
+                                p: 1
+                            }}
                             onClick={onClose}
                         >
                             <CloseIcon />
@@ -120,7 +152,7 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                         alignItems: 'center',
                         zIndex: 2
                     }}>
-                        <Typography variant="h6" component="h2" color="white" sx={{ mb: 2, fontWeight: 'bold' }}>
+                        <Typography variant="h3" color="white" sx={{ mb: 2, fontWeight: 'bold' }}>
                             ACTIVITÉS
                         </Typography>
                         <Button sx={{ color: "white" }}>
@@ -139,7 +171,7 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                         flexDirection: 'column',
                         alignItems: 'center'
                     }}>
-                        <Typography variant="h6" component="h2" color="white" sx={{ mb: 2, fontWeight: 'bold' }}>
+                        <Typography variant="h3" color="white" sx={{ mb: 2, fontWeight: 'bold' }}>
                             BILLETTERIE
                         </Typography>
                         <Button sx={{ color: "white" }}>
@@ -155,7 +187,7 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                         flexDirection: 'column',
                         alignItems: 'center'
                     }}>
-                        <Typography variant="h6" component="h2" color="white" sx={{ mb: 2, fontWeight: 'bold' }}>
+                        <Typography variant="h3" color="white" sx={{ mb: 2, fontWeight: 'bold' }}>
                             INFORMATIONS
                         </Typography>
                         <Button sx={{ color: "white" }}>
@@ -166,21 +198,6 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                         </Button>
                         <Button sx={{ color: "white" }}>
                             Contact
-                        </Button>
-                    </Box>
-
-                    <Box sx={{ mt: 2 }}>
-                        <Button sx={{
-                            color: "black",
-                            backgroundColor: "#3AEF30",
-                            px: 4,
-                            py: 1.5,
-                            fontWeight: 'bold',
-                            '&:hover': {
-                                backgroundColor: "#32D028"
-                            }
-                        }}>
-                            CONNEXION
                         </Button>
                     </Box>
                 </Box>
@@ -221,18 +238,6 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                     }}>
                         INFORMATIONS
                     </Button>
-
-                    <Box sx={{ mt: 4 }}>
-                        <Button sx={{
-                            color: "black",
-                            backgroundColor: "#3AEF30",
-                            variant: "contained",
-                            size: 'large',
-                            zIndex: 2,
-                        }}>
-                            CONNEXION
-                        </Button>
-                    </Box>
                 </Box>
             </Box>
         </Modal>

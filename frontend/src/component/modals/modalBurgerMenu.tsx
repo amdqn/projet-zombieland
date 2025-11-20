@@ -2,6 +2,7 @@ import {Box, Button, IconButton, Modal, Typography} from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import logo from "../../assets/logo.png"
 import sang from "../../assets/tache-sang.png";
+import {colors} from "../../theme";
 
 interface ModalBurgerMenuProps {
     open: boolean;
@@ -27,7 +28,7 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
             aria-describedby="modal-modal-description"
         >
             <Box sx={fullScreenStyle}>
-                {/* Vue Desktop */}
+
                 <Box sx={{
                     display: 'flex',
                     justifyContent: 'space-between',
@@ -45,10 +46,10 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                             zIndex: 2,
                         }}
                     />
-                    <Box sx={{ mt: 4 }}>
+                    <Box sx={{ mt: 4, display: {xs: 'none', md: 'flex'}}}>
                         <Button sx={{
                             color: "black",
-                            backgroundColor: "#3AEF30",
+                            backgroundColor: colors.primaryGreen,
                             variant: "contained",
                             size: 'large',
                             zIndex: 2,
@@ -56,6 +57,7 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                             CONNEXION
                         </Button>
                     </Box>
+                    {/* Vue Desktop */}
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                         <IconButton
                             sx={{
@@ -77,17 +79,6 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                         justifyContent: 'space-between',
                         alignItems: 'center'
                     }}>
-                        <Box sx={{ mt: 4 }}>
-                            <Button sx={{
-                                color: "black",
-                                backgroundColor: "#3AEF30",
-                                variant: "contained",
-                                size: 'large',
-                                zIndex: 2,
-                            }}>
-                                CONNEXION
-                            </Button>
-                        </Box>
                         <Box />
                         <IconButton
                             sx={{
@@ -238,6 +229,17 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                     }}>
                         INFORMATIONS
                     </Button>
+                    <Box sx={{ mt: 4, display: {xs: 'flex', md: 'none'}}}>
+                        <Button sx={{
+                            color: "black",
+                            backgroundColor: colors.primaryGreen,
+                            variant: "contained",
+                            size: 'large',
+                            zIndex: 2,
+                        }}>
+                            CONNEXION
+                        </Button>
+                    </Box>
                 </Box>
             </Box>
         </Modal>

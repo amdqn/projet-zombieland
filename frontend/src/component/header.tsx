@@ -35,7 +35,7 @@ export default function Header() {
                 }}>
                     {/* VUE DESKTOP */}
                     {/* Pages à gauche */}
-                    <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1, pl: 15 }}>
+                    <Box sx={{ display: { xs: 'none', md: 'flex' }}}>
                         {pages.map((page) => (
                             <Button
                                 key={page.path}
@@ -54,7 +54,7 @@ export default function Header() {
                         transform: 'translateX(-50%)',
                         display: { xs: 'none', md: 'block' }
                     }}>
-                        <Typography variant="h1">
+                        <Typography variant="h2">
                             <Box component="span" sx={{ color: colors.secondaryGreen, fontWeight: 'bold' }}>
                                 ZOMBIE
                             </Box>
@@ -86,11 +86,11 @@ export default function Header() {
                         alignItems: 'center'
                     }}>
                         <Box sx={{ width: 40 }} />
-                        <Typography variant="h6">
-                            <Box component="span" sx={{ color: '#6B9F2A', fontWeight: 'bold' }}>
+                        <Typography variant="h2">
+                            <Box component="span" sx={{ color: colors.secondaryGreen, fontWeight: 'bold' }}>
                                 ZOMBIE
                             </Box>
-                            <Box component="span" sx={{ color: '#C62828', fontWeight: 'bold' }}>
+                            <Box component="span" sx={{ color: 'secondary', fontWeight: 'bold' }}>
                                 LAND
                             </Box>
                         </Typography>

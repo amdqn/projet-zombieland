@@ -167,6 +167,14 @@ export const theme = createTheme({
         },
       },
     },
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: 'transparent',
+          border: 'none',
+        },
+      },
+    },
     MuiChip: {
       styleOverrides: {
         root: {

@@ -3,6 +3,7 @@ import { DesignSystem } from './DesignSystem/DesignSystem';
 import { Activities } from './pages/Activities';
 import { ActivityDetail } from './pages/ActivityDetail';
 import RootPage from './pages/RootPage/RootPage';
+import HomePage from "./pages/HomePage/HomePage.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -11,7 +12,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        // element: <Home />, // Page principale
+        element: <HomePage />, // Page principale
       },
       {
         path: 'activities',

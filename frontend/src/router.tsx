@@ -1,8 +1,8 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { DesignSystem } from './DesignSystem';
-import { Activities } from './Activities/Activities';
-import { ActivityDetail } from './Activities/ActivityDetail';
-import RootPage from "./page/rootPage.tsx";
+import { DesignSystem } from './DesignSystem/DesignSystem';
+import { Activities } from './pages/Activities';
+import { ActivityDetail } from './pages/ActivityDetail';
+import RootPage from './pages/RootPage/RootPage';
 
 export const router = createBrowserRouter([
   {

@@ -2,8 +2,8 @@ import {AppBar, Box, Button, IconButton, Toolbar, Typography} from "@mui/materia
 import {useNavigate} from "react-router";
 import MenuIcon from '@mui/icons-material/Menu';
 import {useEffect, useState} from "react";
-import ModalBurgerMenu from "./modals/modalBurgerMenu.tsx";
-import {colors} from "../theme";
+import ModalBurgerMenu from "../modals/BurgerMenu";
+import {colors} from "../../theme";
 
 export default function Header() {
 

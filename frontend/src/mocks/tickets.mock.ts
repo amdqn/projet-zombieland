@@ -81,6 +81,6 @@ export const ticketsMock: Ticket[] = [
     price: 89.00,
     minAge: 18,
     conditions: 'Accès prioritaire à toutes les attractions, boissons offertes',
-    available: false, // Exemple de billet non disponible
+    available: false, 
   },
 ];

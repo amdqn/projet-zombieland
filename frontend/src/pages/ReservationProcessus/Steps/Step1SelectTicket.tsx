@@ -334,7 +334,6 @@ export const Step1SelectTicket = ({ onDataChange, onViewChange }: Step1SelectTic
           </Typography>
         </Box>
 
-        {/* Contenu centré */}
         <Box
           sx={{
             display: 'flex',
@@ -345,7 +344,7 @@ export const Step1SelectTicket = ({ onDataChange, onViewChange }: Step1SelectTic
             mx: 'auto',
           }}
         >
-          {/* Sélecteur de quantité custom */}
+          {/* Sélecteur de quantité */}
           <Box
             sx={{
               display: 'flex',
@@ -416,7 +415,7 @@ export const Step1SelectTicket = ({ onDataChange, onViewChange }: Step1SelectTic
             </IconButton>
           </Box>
 
-          {/* Card récapitulative avec bordure rouge */}
+          {/* Card récapitulative  */}
           {tempQuantity > 0 && (
             <Box
               sx={{
@@ -476,7 +475,7 @@ export const Step1SelectTicket = ({ onDataChange, onViewChange }: Step1SelectTic
                     sx={{
                       fontFamily: "'Lexend Deca', sans-serif",
                       fontSize: { xs: '0.85rem', md: '0.95rem' },
-                      color: colors.secondaryGrey,
+                      color: colors.white,
                     }}
                   >
                     Quantité × {tempQuantity}
@@ -485,7 +484,7 @@ export const Step1SelectTicket = ({ onDataChange, onViewChange }: Step1SelectTic
                     sx={{
                       fontFamily: "'Lexend Deca', sans-serif",
                       fontSize: { xs: '0.85rem', md: '0.95rem' },
-                      color: colors.secondaryGrey,
+                      color: colors.white,
                     }}
                   >
                     {totalPrice.toFixed(2)} €
@@ -505,7 +504,7 @@ export const Step1SelectTicket = ({ onDataChange, onViewChange }: Step1SelectTic
                       fontFamily: "'Lexend Deca', sans-serif",
                       fontSize: { xs: '1.1rem', md: '1.3rem' },
                       fontWeight: 700,
-                      color: colors.white,
+                      color: colors.primaryGreen,
                       textTransform: 'uppercase',
                     }}
                   >

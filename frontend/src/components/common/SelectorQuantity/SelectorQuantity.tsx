@@ -105,7 +105,7 @@ export const SelectorQuantity = ({
     );
   }
 
-  // Style compact par défaut (ancien style)
+  // Style compact par défaut 
   return (
     <Box
       sx={{

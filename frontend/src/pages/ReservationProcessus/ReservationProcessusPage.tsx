@@ -3,6 +3,7 @@ import { Box, Container, Typography } from '@mui/material';
 import { CustomBreadcrumbs, BackButton, PrimaryButton } from '../../components/common';
 import { Step1SelectTicket } from './Steps';
 import { colors } from '../../theme/theme';
+import { Step2SelectDate } from './Steps/Step2SelectDate';
 
 interface ReservationData {
   tickets: Array<{ ticketId: number; quantity: number }>;
@@ -55,10 +56,19 @@ export const ReservationProcessusPage = () => {
     }));
   };
 
+  const handleStep2Change = (data: { date: Date | null }) => {
+    setReservationData((prev) => ({
+      ...prev,
+      date: data.date ? data.date.toISOString() : undefined,
+    }));
+  };
+
   const canProceed = () => {
     switch (activeStep) {
       case 0:
         return reservationData.tickets.length > 0;
+      case 1:
+        return !!reservationData.date;
       default:
         return true;
     }
@@ -69,7 +79,7 @@ export const ReservationProcessusPage = () => {
       case 0:
         return <Step1SelectTicket onDataChange={handleStep1Change} onViewChange={setStep1View} />;
       case 1:
-        return <Box sx={{ padding: 4, textAlign: 'center' }}>Étape 2 - Quelle date ? (à venir)</Box>;
+        return <Step2SelectDate onDataChange={handleStep2Change} />;
       case 2:
         return <Box sx={{ padding: 4, textAlign: 'center' }}>Étape 3 - Récapitulatif (à venir)</Box>;
       case 3:
@@ -136,27 +146,35 @@ export const ReservationProcessusPage = () => {
         </Box>
 
         {/* Contenu de l'étape */}
-        <Box sx={{ mb: 4 }}>{renderStepContent(activeStep)}</Box>
+        <Box sx={{ mb: { xs: 20, md: 16 } }}>{renderStepContent(activeStep)}</Box>
 
         {/* Boutons de navigation - masqués pendant la sélection de quantité */}
         {!(activeStep === 0 && step1View === 'quantity') && (
           <Box
             sx={{
+              position: 'sticky',
+              bottom: 0,
+              left: 0,
+              right: 0,
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              mt: 4,
               gap: 2,
               flexDirection: { xs: 'column', md: 'row' },
+              padding: { xs: 2, md: 3 },
+              backgroundColor: colors.secondaryDark,
+              borderTop: `1px solid ${colors.secondaryGrey}`,
+              zIndex: 1000,
+              mt: 4,
             }}
           >
-            <Box sx={{ width: { xs: '100%', md: 'auto' } }}>
+            <Box sx={{ width: { xs: '100%', md: activeStep === 0 ? '0%' : '50%' } }}>
               {activeStep > 0 && (
                 <BackButton text="Retour" onClick={handleBack} />
               )}
             </Box>
 
-            <Box sx={{ width: '100%' }}>
+            <Box sx={{ width: { xs: '100%', md: activeStep === 0 ? '100%' : '50%' } }}>
               <PrimaryButton
                 text={activeStep === steps.length - 1 ? 'Confirmer' : 'CONTINUER →'}
                 onClick={handleNext}

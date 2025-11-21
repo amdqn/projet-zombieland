@@ -41,8 +41,10 @@ export const PrimaryButton = ({
       disabled={disabled}
       sx={{
         width: fullWidth ? '100%' : 'auto',
-        fontSize: isMobile ? '1.3rem' : '1.2rem',
-        padding: isMobile ? '18px 35px' : '1rem 3rem',
+        fontSize: isMobile ? '1.3rem' : { xs: '1.2rem', md: '1.2rem' },
+        padding: isMobile 
+          ? '18px 35px' 
+          : { xs: '0.6rem 2rem', md: '1rem 3rem' },
       }}
     >
       {displayText}

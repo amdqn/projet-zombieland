@@ -5,6 +5,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { ticketsMock, type Ticket } from '../../../mocks';
+import { InformationCard } from '../../../components/cards';
 import { colors } from '../../../theme/theme';
 
 interface TicketSelection {
@@ -24,7 +25,6 @@ export const Step1SelectTicket = ({ onDataChange, onViewChange }: Step1SelectTic
   const [currentView, setCurrentView] = useState<'list' | 'quantity'>('list');
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [tempQuantity, setTempQuantity] = useState<number>(0);
-  const [selectedTicketId, setSelectedTicketId] = useState<number | null>(null);
 
   const handleQuantityChange = (ticketId: number, quantity: number) => {
     const newSelections = new Map(selectedTickets);
@@ -53,20 +53,7 @@ export const Step1SelectTicket = ({ onDataChange, onViewChange }: Step1SelectTic
     }
   };
 
-  const calculateTotal = () => {
-    return Array.from(selectedTickets.entries()).reduce((sum, [id, qty]) => {
-      const ticket = ticketsMock.find(t => t.id === id);
-      return sum + (ticket ? ticket.price * qty : 0);
-    }, 0);
-  };
-
-  const getTotalTickets = () => {
-    return Array.from(selectedTickets.values()).reduce((sum, qty) => sum + qty, 0);
-  };
-
   const handleTicketSelect = (ticketId: number) => {
-    setSelectedTicketId(ticketId);
-
     // Navigation automatique vers le sélecteur de quantité
     const ticket = ticketsMock.find((t) => t.id === ticketId);
     if (ticket) {
@@ -81,7 +68,6 @@ export const Step1SelectTicket = ({ onDataChange, onViewChange }: Step1SelectTic
     // Retour sans sauvegarder
     setCurrentView('list');
     setSelectedTicket(null);
-    setSelectedTicketId(null);
     setTempQuantity(0);
     if (onViewChange) onViewChange('list');
   };
@@ -102,7 +88,6 @@ export const Step1SelectTicket = ({ onDataChange, onViewChange }: Step1SelectTic
     const ticket = ticketsMock.find((t) => t.id === ticketId);
     if (ticket) {
       setSelectedTicket(ticket);
-      setSelectedTicketId(ticketId);
       setTempQuantity(selectedTickets.get(ticketId) || 0);
       setCurrentView('quantity');
       if (onViewChange) onViewChange('quantity');
@@ -342,6 +327,7 @@ export const Step1SelectTicket = ({ onDataChange, onViewChange }: Step1SelectTic
             gap: 4,
             maxWidth: '600px',
             mx: 'auto',
+            mb: { xs: 20, md: 16 },
           }}
         >
           {/* Sélecteur de quantité */}
@@ -417,111 +403,107 @@ export const Step1SelectTicket = ({ onDataChange, onViewChange }: Step1SelectTic
 
           {/* Card récapitulative  */}
           {tempQuantity > 0 && (
-            <Box
-              sx={{
-                width: '100%',
-                backgroundColor: colors.secondaryDarkAlt,
-                border: `2px solid ${colors.primaryRed}`,
-                borderRadius: '8px',
-                padding: 3,
-              }}
-            >
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 2,
-                }}
+            <Box sx={{ width: '100%' }}>
+              <InformationCard
+                borderColor="red"
               >
-                {/* Ligne titre du billet */}
                 <Box
                   sx={{
                     display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
+                    flexDirection: 'column',
+                    gap: 2,
                   }}
                 >
-                  <Typography
+                  {/* Ligne titre du billet */}
+                  <Box
                     sx={{
-                      fontFamily: "'Lexend Deca', sans-serif",
-                      fontSize: { xs: '0.9rem', md: '1rem' },
-                      color: colors.white,
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
                     }}
                   >
-                    {selectedTicket.type}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      fontFamily: "'Lexend Deca', sans-serif",
-                      fontSize: { xs: '0.9rem', md: '1rem' },
-                      color: colors.white,
-                    }}
-                  >
-                    {selectedTicket.price.toFixed(2)} €
-                  </Typography>
-                </Box>
+                    <Typography
+                      sx={{
+                        fontFamily: "'Lexend Deca', sans-serif",
+                        fontSize: { xs: '0.9rem', md: '1rem' },
+                        color: colors.white,
+                      }}
+                    >
+                      {selectedTicket.type}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontFamily: "'Lexend Deca', sans-serif",
+                        fontSize: { xs: '0.9rem', md: '1rem' },
+                        color: colors.white,
+                      }}
+                    >
+                      {selectedTicket.price.toFixed(2)} €
+                    </Typography>
+                  </Box>
 
-                {/* Ligne quantité */}
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    pb: 2,
-                    borderBottom: `1px solid ${colors.primaryGreen}`,
-                  }}
-                >
-                  <Typography
+                  {/* Ligne quantité */}
+                  <Box
                     sx={{
-                      fontFamily: "'Lexend Deca', sans-serif",
-                      fontSize: { xs: '0.85rem', md: '0.95rem' },
-                      color: colors.white,
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      pb: 2,
+                      borderBottom: `1px solid ${colors.primaryGreen}`,
                     }}
                   >
-                    Quantité × {tempQuantity}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      fontFamily: "'Lexend Deca', sans-serif",
-                      fontSize: { xs: '0.85rem', md: '0.95rem' },
-                      color: colors.white,
-                    }}
-                  >
-                    {totalPrice.toFixed(2)} €
-                  </Typography>
-                </Box>
+                    <Typography
+                      sx={{
+                        fontFamily: "'Lexend Deca', sans-serif",
+                        fontSize: { xs: '0.85rem', md: '0.95rem' },
+                        color: colors.white,
+                      }}
+                    >
+                      Quantité × {tempQuantity}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontFamily: "'Lexend Deca', sans-serif",
+                        fontSize: { xs: '0.85rem', md: '0.95rem' },
+                        color: colors.white,
+                      }}
+                    >
+                      {totalPrice.toFixed(2)} €
+                    </Typography>
+                  </Box>
 
-                {/* Ligne total */}
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Typography
+                  {/* Ligne total */}
+                  <Box
                     sx={{
-                      fontFamily: "'Lexend Deca', sans-serif",
-                      fontSize: { xs: '1.1rem', md: '1.3rem' },
-                      fontWeight: 700,
-                      color: colors.primaryGreen,
-                      textTransform: 'uppercase',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
                     }}
                   >
-                    TOTAL
-                  </Typography>
-                  <Typography
-                    sx={{
-                      fontFamily: "'Lexend Deca', sans-serif",
-                      fontSize: { xs: '1.3rem', md: '1.5rem' },
-                      fontWeight: 700,
-                      color: colors.primaryGreen,
-                    }}
-                  >
-                    {totalPrice.toFixed(2)} €
-                  </Typography>
+                    <Typography
+                      sx={{
+                        fontFamily: "'Lexend Deca', sans-serif",
+                        fontSize: { xs: '1.1rem', md: '1.3rem' },
+                        fontWeight: 700,
+                        color: colors.primaryGreen,
+                        textTransform: 'uppercase',
+                      }}
+                    >
+                      TOTAL
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontFamily: "'Lexend Deca', sans-serif",
+                        fontSize: { xs: '1.3rem', md: '1.5rem' },
+                        fontWeight: 700,
+                        color: colors.primaryGreen,
+                      }}
+                    >
+                      {totalPrice.toFixed(2)} €
+                    </Typography>
+                  </Box>
                 </Box>
-              </Box>
+              </InformationCard>
             </Box>
           )}
 
@@ -544,6 +526,10 @@ export const Step1SelectTicket = ({ onDataChange, onViewChange }: Step1SelectTic
           {/* Boutons */}
           <Box
             sx={{
+              position: 'sticky',
+              bottom: 0,
+              left: 0,
+              right: 0,
               display: 'flex',
               flexDirection: { xs: 'column', md: 'row' },
               justifyContent: 'space-between',
@@ -551,6 +537,10 @@ export const Step1SelectTicket = ({ onDataChange, onViewChange }: Step1SelectTic
               width: '100%',
               gap: 2,
               mt: 4,
+              padding: { xs: 2, md: 3 },
+              backgroundColor: colors.secondaryDark,
+              borderTop: `1px solid ${colors.secondaryGrey}`,
+              zIndex: 1000,
             }}
           >
             <Button

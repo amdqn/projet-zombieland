@@ -1,5 +1,4 @@
 import { Button } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from 'react-router-dom';
 import { colors } from '../../../theme/theme';
 
@@ -29,16 +28,17 @@ export const BackButton = ({
   return (
     <Button
       variant="outlined"
+      size="large"
       onClick={handleClick}
-      startIcon={<ArrowBackIcon />}
       className="back-button"
+      fullWidth
       sx={{
         backgroundColor: colors.backButtonBg,
         color: colors.white,
         border: `0.5px solid #CCCCCC`,
         borderRadius: '8px',
-        padding: { xs: '0.5rem 1rem', md: '0.75rem 1.5rem' },
-        fontSize: { xs: '0.8rem', md: '0.9rem' },
+        padding: { xs: '0.6rem 2rem', md: '1rem 3rem' },
+        fontSize: { xs: '1.2rem', md: '1.2rem' },
         fontWeight: 600,
         textTransform: 'uppercase',
         fontFamily: "'Lexend Deca', sans-serif",
@@ -49,7 +49,7 @@ export const BackButton = ({
         },
       }}
     >
-      {text}
+      ← {text}
     </Button>
   );
 };

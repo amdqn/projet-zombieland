@@ -1,4 +1,4 @@
-import { Button } from '@mui/material';
+import { PrimaryButton } from './PrimaryButton';
 
 interface ReservationButtonProps {
   variant?: 'desktop' | 'mobile';
@@ -9,21 +9,12 @@ export const ReservationButton = ({
   variant = 'desktop',
   onClick
 }: ReservationButtonProps) => {
-  const isMobile = variant === 'mobile';
-
   return (
-    <Button
-      variant="contained"
-      color="primary"
-      size="large"
+    <PrimaryButton
+      text="RÉSERVER MAINTENANT"
+      textMobile="RÉSERVER"
+      variant={variant}
       onClick={onClick}
-      sx={{
-        width: '100%',
-        fontSize: isMobile ? '1.3rem' : '1.2rem',
-        padding: isMobile ? '18px 35px' : '1rem 3rem',
-      }}
-    >
-      {isMobile ? 'RÉSERVER' : 'RÉSERVER MAINTENANT'}
-    </Button>
+    />
   );
 };

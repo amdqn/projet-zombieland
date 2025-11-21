@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { Box, Container, Typography } from '@mui/material';
 import { CustomBreadcrumbs, BackButton, PrimaryButton } from '../../components/common';
-import { Step1SelectTicket } from './Steps';
+import { Step1SelectTicket, Step2SelectDate, Step3Summary } from './Steps';
 import { colors } from '../../theme/theme';
-import { Step2SelectDate } from './Steps/Step2SelectDate';
 
 interface ReservationData {
   tickets: Array<{ ticketId: number; quantity: number }>;
@@ -16,6 +15,7 @@ interface ReservationData {
     email: string;
     phone: string;
   };
+  acceptedTerms: boolean;
 }
 
 const steps = [
@@ -33,6 +33,7 @@ export const ReservationProcessusPage = () => {
   const [reservationData, setReservationData] = useState<ReservationData>({
     tickets: [],
     total: 0,
+    acceptedTerms: false,
   });
   const [step1View, setStep1View] = useState<'list' | 'quantity'>('list');
 
@@ -63,12 +64,21 @@ export const ReservationProcessusPage = () => {
     }));
   };
 
+  const handleStep3Change = (data: { acceptedTerms: boolean }) => {
+    setReservationData((prev) => ({
+      ...prev,
+      acceptedTerms: data.acceptedTerms,
+    }));
+  };
+
   const canProceed = () => {
     switch (activeStep) {
       case 0:
         return reservationData.tickets.length > 0;
       case 1:
         return !!reservationData.date;
+      case 2:
+        return !!reservationData.acceptedTerms;
       default:
         return true;
     }
@@ -81,7 +91,14 @@ export const ReservationProcessusPage = () => {
       case 1:
         return <Step2SelectDate onDataChange={handleStep2Change} />;
       case 2:
-        return <Box sx={{ padding: 4, textAlign: 'center' }}>Étape 3 - Récapitulatif (à venir)</Box>;
+        return (
+          <Step3Summary
+            tickets={reservationData.tickets}
+            total={reservationData.total}
+            date={reservationData.date}
+            onDataChange={handleStep3Change}
+          />
+        );
       case 3:
         return <Box sx={{ padding: 4, textAlign: 'center' }}>Étape 4 - Vos informations (à venir)</Box>;
       case 4:

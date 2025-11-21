@@ -1,19 +1,20 @@
 import {AppBar, Box, Button, IconButton, Toolbar, Typography} from "@mui/material";
 import {useNavigate} from "react-router";
 import MenuIcon from '@mui/icons-material/Menu';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import ModalBurgerMenu from "./modals/modalBurgerMenu.tsx";
 import {colors} from "../theme";
 
 export default function Header() {
 
     const [open, setOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
 
     // TODO ajouter ici les autres routes
     const pages = [
-        { name : "Réservations", path : "/" },
+        { name : "Réservations", path : "/reservations" },
         { name : "Activités", path : "/activities" },
-        { name : "Infos", path : "/" },
+        { name : "Infos", path : "/info" },
     ]
 
     const navigate = useNavigate()
@@ -21,17 +22,39 @@ export default function Header() {
     const handleOpen = () => { setOpen(true) }
     const handleClose = () => { setOpen(false) }
 
+    useEffect(()=> {
+        const handleScroll = () => {
+            // Calcule 50% de la hauteur de la fenêtre
+            const scrollThreshold = window.innerHeight * 0.5;
+
+            // Vérifie si on a dépassé ce seuil
+            if (window.scrollY > scrollThreshold){
+                setScrolled(true)
+            } else {
+                setScrolled(false)
+            }
+        };
+
+        // Ajouter l'évenement
+        window.addEventListener("scroll", handleScroll);
+
+        // Nettoie l'écouteur lors du démontage du composant
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [])
+
     return (
         <>
-            <AppBar position="static" elevation={0} sx={{ backgroundColor: 'transparent !important'}}>
+            <AppBar position="fixed" elevation={0} sx={{
+                backgroundColor: scrolled ? colors.secondaryDark : 'transparent',
+            }}>
                 <Toolbar disableGutters sx={{
                     justifyContent: 'space-between',
                     alignItems:'center',
                     width: '100%',
                     px: 5,
                     py: 2,
-                    pb: 10,
-                    pt: 5
+                    pb: 1,
+                    pt: 1
                 }}>
                     {/* VUE DESKTOP */}
                     {/* Pages à gauche */}
@@ -54,7 +77,7 @@ export default function Header() {
                         transform: 'translateX(-50%)',
                         display: { xs: 'none', md: 'block' }
                     }}>
-                        <Typography variant="h2">
+                        <Typography variant="h2" onClick={() => navigate("/")} sx={{ cursor: "pointer" }}>
                             <Box component="span" sx={{ color: colors.secondaryGreen, fontWeight: 'bold' }}>
                                 ZOMBIE
                             </Box>
@@ -65,18 +88,17 @@ export default function Header() {
                     </Box>
 
                     {/* Menu burger à droite */}
-                    <Box sx={{ display: { xs: 'none', md: 'flex' }, pr: 5 }}>
-                        <IconButton
-                            sx={{ color: 'white' }}
-                            onClick={handleOpen}
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <ModalBurgerMenu
-                            open={open}
-                            onClose={handleClose}
-                        />
-                    </Box>
+                    <IconButton
+                        sx={{
+                            color: 'white',
+                            position: 'absolute',
+                            right: 40,
+                            display: { xs: 'none', md: 'flex' }
+                        }}
+                        onClick={handleOpen}
+                    >
+                        <MenuIcon />
+                    </IconButton>
 
                     {/* VUE MOBILE */}
                     <Box sx={{
@@ -86,7 +108,7 @@ export default function Header() {
                         alignItems: 'center'
                     }}>
                         <Box sx={{ width: 40 }} />
-                        <Typography variant="h2">
+                        <Typography variant="h2" onClick={() => navigate("/")}>
                             <Box component="span" sx={{ color: colors.secondaryGreen, fontWeight: 'bold' }}>
                                 ZOMBIE
                             </Box>

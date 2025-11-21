@@ -46,31 +46,34 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                             zIndex: 2,
                         }}
                     />
-                    <Box sx={{ mt: 4, display: {xs: 'none', md: 'flex'}}}>
-                        <Button sx={{
-                            color: "black",
-                            backgroundColor: colors.primaryGreen,
-                            variant: "contained",
-                            size: 'large',
+                    <Button sx={{
+                        color: "black",
+                        backgroundColor: colors.primaryGreen,
+                        variant: "contained",
+                        size: 'large',
+                        zIndex: 2,
+                        position: 'absolute',
+                        top: 32,
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        display: { xs: 'none', md: 'flex' }
+                    }}>
+                        CONNEXION
+                    </Button>
+                    {/* Croix de fermeture en position absolute (Desktop) */}
+                    <IconButton
+                        sx={{
+                            color: 'white',
                             zIndex: 2,
-                        }}>
-                            CONNEXION
-                        </Button>
-                    </Box>
-                    {/* Vue Desktop */}
-                    <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                        <IconButton
-                            sx={{
-                                color: 'white',
-                                zIndex: 2,
-                                mr: 5,
-                                p:1
-                            }}
-                            onClick={onClose}
-                        >
-                            <CloseIcon />
-                        </IconButton>
-                    </Box>
+                            position: 'absolute',
+                            right: 40,
+                            top: 16,
+                            display: { xs: 'none', md: 'flex' }
+                        }}
+                        onClick={onClose}
+                    >
+                        <CloseIcon />
+                    </IconButton>
 
                     {/* Vue Mobile */}
                     <Box sx={{

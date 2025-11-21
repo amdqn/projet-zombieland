@@ -546,6 +546,7 @@ export const Step1SelectTicket = ({ onDataChange, onViewChange }: Step1SelectTic
           <Box
             sx={{
               display: 'flex',
+              flexDirection: { xs: 'column', md: 'row' },
               justifyContent: 'space-between',
               alignItems: 'center',
               width: '100%',
@@ -567,7 +568,8 @@ export const Step1SelectTicket = ({ onDataChange, onViewChange }: Step1SelectTic
                 textTransform: 'uppercase',
                 fontFamily: "'Lexend Deca', sans-serif",
                 borderRadius: '8px',
-                flex: 1,
+                flex: { xs: 'none', md: 1 },
+                width: { xs: '100%', md: 'auto' },
                 '&:hover': {
                   backgroundColor: colors.secondaryGrey,
                   borderColor: colors.secondaryGrey,
@@ -590,7 +592,8 @@ export const Step1SelectTicket = ({ onDataChange, onViewChange }: Step1SelectTic
                 textTransform: 'uppercase',
                 fontFamily: "'Lexend Deca', sans-serif",
                 borderRadius: '8px',
-                flex: 1,
+                flex: { xs: 'none', md: 1 },
+                width: { xs: '100%', md: 'auto' },
               }}
             >
               CONTINUER →

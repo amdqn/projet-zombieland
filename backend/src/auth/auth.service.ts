@@ -164,4 +164,62 @@ export class AuthService {
       expires_in: expiresIn,
     };
   }
+
+  async updateProfile(userId: number, updateData: { email?: string; password?: string }) {
+    const { email, password } = updateData;
+
+    // Validation des données
+    if (email) {
+      // Validation format email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        throw new BadRequestException('Email invalide');
+      }
+
+      // Vérifier si l'email est déjà utilisé par un autre user
+      const existingUser = await this.prisma.user.findUnique({
+        where: { email },
+      });
+
+      if (existingUser && existingUser.id !== userId) {
+        throw new ConflictException('Cet email est déjà utilisé');
+      }
+    }
+
+    if (password) {
+      // Validation mot de passe
+      if (password.length < 8) {
+        throw new BadRequestException(
+          'Le mot de passe doit contenir au moins 8 caractères',
+        );
+      }
+
+      if (!/[A-Z]/.test(password)) {
+        throw new BadRequestException(
+          'Le mot de passe doit contenir au moins une majuscule',
+        );
+      }
+
+      if (!/[0-9]/.test(password)) {
+        throw new BadRequestException(
+          'Le mot de passe doit contenir au moins un chiffre',
+        );
+      }
+    }
+
+    // Préparer les données à mettre à jour
+    const dataToUpdate: any = {};
+    if (email) dataToUpdate.email = email;
+    if (password) dataToUpdate.password = await bcrypt.hash(password, 10);
+
+    // Mettre à jour l'utilisateur
+    const updatedUser = await this.prisma.user.update({
+      where: { id: userId },
+      data: dataToUpdate,
+    });
+
+    // Retourner sans le password
+    const { password: _, ...userWithoutPassword } = updatedUser;
+    return userWithoutPassword;
+  }
 }

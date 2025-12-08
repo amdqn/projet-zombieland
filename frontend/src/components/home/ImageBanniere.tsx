@@ -1,12 +1,12 @@
 import {Box, Typography} from "@mui/material";
 import CircleIcon from '@mui/icons-material/Circle';
-import {useState} from "react";
 import {colors} from "../../theme";
+import getHoraireDuJour from "../../functions/getHoraireJour.ts";
 
 export default function ImageBanniere() {
 
-    // Permet de gérer l'ouverture/fermeture du parc
-    const [ isOpen, setIsOpen ] = useState<boolean>(true)
+    const horaireDuJour = getHoraireDuJour()
+    const isOpen = horaireDuJour.is_open
 
     return (
         <Box

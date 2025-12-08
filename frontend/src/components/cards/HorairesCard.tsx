@@ -74,10 +74,11 @@ export function HorairesCard({horaire}: HorairesCardProps) {
                     ) : (
                         <Box sx={{
                             display: "flex",
+                            justifyContent: 'center',
                             alignItems: 'center',
-                            paddingBottom: 5
+                            minHeight: '200px',
                         }}>
-                            <Typography variant="h5">
+                            <Typography variant="body1">
                                 Pas d'horaires disponibles.
                             </Typography>
                         </Box>

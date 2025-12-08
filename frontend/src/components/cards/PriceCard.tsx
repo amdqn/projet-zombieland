@@ -1,12 +1,14 @@
 
 import {Card, CardContent, Typography} from "@mui/material";
 import type {IPrice} from "../../@types/price";
+import {theme} from "../../theme";
+import {motion} from "framer-motion";
 
 interface PriceCardProps {
     price: IPrice;
 
 }
-
+// TODO Ajouter le lien vers la reservation au passage de la souris sur le card
 export default function PriceCard({price}: PriceCardProps) {
 
     const formatPriceTitle = (price: IPrice) => {
@@ -18,7 +20,24 @@ export default function PriceCard({price}: PriceCardProps) {
 
     return (
         <>
-            <Card sx={{ minWidth: 100,  borderRadius: 5}}>
+            <Card
+                component={motion.div}
+                initial={{ boxShadow: 'none' }}
+                whileHover={{
+                    scale: 1.05,
+                    boxShadow: `0 10px 40px ${theme.palette.primary.main}70, 0 0 20px ${theme.palette.primary.main}50`
+                }}
+                whileTap={{ scale: 0.98 }}
+                transition={{
+                    duration: 0.3,
+                    ease: "easeOut"
+                }}
+                sx={{
+                    minWidth: 100,
+                    borderRadius: 5,
+                    cursor: 'pointer'
+                }}
+            >
                 <CardContent sx={{paddingLeft: 5}}>
                     <Typography variant={"h4"}>
                         {formatPriceTitle(price)}

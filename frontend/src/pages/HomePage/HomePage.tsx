@@ -50,8 +50,6 @@ export default function HomePage() {
                         <PriceCard price={price} key={price.id} />
                     ))}
                 </Box>
-
-
             </Box>
         </>
     )

@@ -9,15 +9,15 @@ export default function InformationsMain() {
         <Box sx={{
             paddingBottom: { xs: 10, md: 20 },
             paddingTop: { xs: 5, md: 10 },
-            paddingX: { xs: 2, sm: 3 }
+            paddingX: { xs: 2, sm: 3, md: 4 },
+            width: '100%',
+            maxWidth: '100vw',
+            overflowX: 'hidden',
+            boxSizing: 'border-box'
         }}>
             <Typography
                 variant="h2"
-                sx={{
-                    paddingBottom: { xs: 3, md: 5 },
-                    fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
-                    textAlign: { xs: 'center', md: 'left' }
-                }}
+                paddingBottom={3}
             >
                 Informations générales
             </Typography>
@@ -26,12 +26,14 @@ export default function InformationsMain() {
                 width: { xs: '100%', sm: '90%', md: '80%', lg: '70%' },
                 maxWidth: '1200px',
                 margin: '0 auto',
-                padding: { xs: 1, sm: 2, md: 3 }
+                padding: { xs: 0, sm: 2, md: 3 },
+                boxSizing: 'border-box'
             }}>
                 <Box sx={{
                     display: 'grid',
                     gridTemplateColumns: { xs: '1fr', lg: '1fr 1fr' },
-                    gap: { xs: 2, sm: 3, md: 4 }
+                    gap: { xs: 2, sm: 3, md: 4 },
+                    width: '100%'
                 }}>
                     <HorairesCard horaire={getHoraireDuJour()} />
                     <AccessCard />

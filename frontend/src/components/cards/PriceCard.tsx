@@ -7,9 +7,8 @@ import {useNavigate} from "react-router";
 
 interface PriceCardProps {
     price: IPrice;
-
 }
-// TODO Ajouter le lien vers la reservation au passage de la souris sur le card
+
 export default function PriceCard({price}: PriceCardProps) {
 
     const navigate = useNavigate();

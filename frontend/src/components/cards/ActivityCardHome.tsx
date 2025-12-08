@@ -10,16 +10,18 @@ interface ActivityCardHomeProps {
     image?: string;
 }
 
-const StyledActivityCard = styled(Card)({
+const StyledActivityCard = styled(Card)(({ theme }) => ({
     backgroundColor: colors.secondaryDark,
     border: `1px solid ${colors.secondaryGrey}`,
-    width: '250px',
+    width: '100%',  // ← CHANGE: était 250px
+    maxWidth: '250px',  // ← AJOUTE: limite la largeur max
     height: '250px',
     position: 'relative',
     overflow: 'hidden',
     cursor: 'pointer',
     transition: 'all 0.3s ease',
-    flexShrink: 0, // Empêche le rétrécissement
+    flexShrink: 0,
+    margin: '0 auto',
     '&:hover': {
         borderColor: colors.primaryGreen,
         transform: 'translateY(-5px)',
@@ -28,7 +30,13 @@ const StyledActivityCard = styled(Card)({
     '&:hover .image-overlay': {
         filter: 'brightness(0.4)',
     },
-});
+    // Responsive
+    [theme.breakpoints.down('md')]: {
+        width: '90vw',
+        maxWidth: '350px',
+        height: '300px',
+    },
+}));
 
 export default function ActivityCardHome({id, name, category, image}: ActivityCardHomeProps) {
     return (
@@ -70,7 +78,7 @@ export default function ActivityCardHome({id, name, category, image}: ActivityCa
                         sx={{
                             mb: 1.5,
                             color: '#FFFFFF',
-                            fontSize: '1rem',
+                            fontSize: { xs: '1.1rem', md: '1rem' },  // ← AJOUTE responsive
                             fontWeight: 600,
                         }}
                     >

@@ -43,13 +43,15 @@ const socialNetworks = [
 export default function SocialNetwork() {
     return (
         <Box sx={{
-            p: 3,
+            p: { xs: 2, md: 3 },
             display: 'flex',
             flexDirection: { xs: 'column', md: 'row' },
-            alignItems: { xs: 'flex-start', md: 'center' },
-            gap: 4
+            alignItems: { xs: 'center', md: 'center' },
+            gap: { xs: 3, md: 4 }
         }}>
-            <Box sx={{ width: { xs: '100%', md: '50%' } }}>
+            <Box sx={{
+                width: { xs: '100%', md: '50%' },
+            }}>
                 <Typography variant="h2">
                     Suivez-nous
                 </Typography>
@@ -58,8 +60,12 @@ export default function SocialNetwork() {
             <Box sx={{
                 width: { xs: '100%', md: '50%' },
                 display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                gap: 2
+                gridTemplateColumns: {
+                    xs: 'repeat(2, 1fr)',
+                    sm: 'repeat(3, 1fr)',
+                    md: 'repeat(3, 1fr)'
+                },
+                gap: { xs: 2, md: 2 }
             }}>
                 {socialNetworks.map((social) => (
                     <SocialCard

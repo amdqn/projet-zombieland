@@ -10,3 +10,5 @@ export * from './SelectorQuantity';
 export * from './ThrillLevel';
 
 export * from './Input';
+
+export * from './Select';

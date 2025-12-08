@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Box, Container, Typography } from '@mui/material';
 import { CustomBreadcrumbs, BackButton, PrimaryButton } from '../../components/common';
-import { Step1SelectTicket, Step2SelectDate, Step3Summary, Step4CustomerInfo } from './Steps';
+import { Step1SelectTicket, Step2SelectDate, Step3Summary, Step4CustomerInfo, Step5CustomerAddress } from './Steps';
 import { colors } from '../../theme/theme';
 
 interface ReservationData {
@@ -14,6 +14,12 @@ interface ReservationData {
     lastName: string;
     email: string;
     phone: string;
+  };
+  customerAddress?: {
+    address: string;
+    city: string;
+    zipCode: string;
+    country: string;
   };
   acceptedTerms: boolean;
 }
@@ -78,6 +84,13 @@ export const ReservationProcessusPage = () => {
     }));
   };
 
+  const handleStep5Change = (data: { address: string; city: string; zipCode: string; country: string }) => {
+    setReservationData((prev) => ({
+      ...prev,
+      customerAddress: data,
+    }));
+  };
+
   const canProceed = () => {
     switch (activeStep) {
       case 0:
@@ -110,6 +123,18 @@ export const ReservationProcessusPage = () => {
         }
 
         return true;
+      case 4: {
+        // Vérifier que tous les champs sont remplis et valides
+        if (!reservationData.customerAddress) return false;
+        const { address, city, zipCode, country } = reservationData.customerAddress;
+
+        // Vérifier que tous les champs sont remplis
+        if (!address.trim() || !city.trim() || !zipCode.trim() || !country.trim()) {
+          return false;
+        }
+
+        return true;
+      }
       default:
         return true;
     }
@@ -135,7 +160,9 @@ export const ReservationProcessusPage = () => {
           <Step4CustomerInfo onDataChange={handleStep4Change} />
         )
       case 4:
-        return <Box sx={{ padding: 4, textAlign: 'center' }}>Étape 5 - Adresse de facturation (à venir)</Box>;
+        return (
+          <Step5CustomerAddress onDataChange={handleStep5Change} />
+        )
       case 5:
         return <Box sx={{ padding: 4, textAlign: 'center' }}>Étape 6 - Paiement (à venir)</Box>;
       case 6:

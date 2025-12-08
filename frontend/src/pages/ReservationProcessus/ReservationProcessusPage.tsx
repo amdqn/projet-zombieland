@@ -140,6 +140,47 @@ export const ReservationProcessusPage = () => {
           return false;
         }
 
+        // Validation code postal (5 chiffres)
+        if (!/^\d{5}$/.test(zipCode)) {
+          return false;
+        }
+
+        return true;
+      }
+      case 5: {
+        // Vérifier que tous les champs sont remplis et valides
+        if (!reservationData.paymentInfo) return false;
+        const { cardNumber, month, year, cvv } = reservationData.paymentInfo;
+
+        // Vérifier que tous les champs sont remplis
+        if (!cardNumber.trim() || !month.trim() || !year.trim() || !cvv.trim()) {
+          return false;
+        }
+
+        // Validation numéro de carte (16 chiffres)
+        const cleanCardNumber = cardNumber.replace(/\s/g, '');
+        if (!/^\d{16}$/.test(cleanCardNumber)) {
+          return false;
+        }
+
+        // Validation mois (01-12)
+        const monthNum = parseInt(month);
+        if (!/^\d{2}$/.test(month) || monthNum < 1 || monthNum > 12) {
+          return false;
+        }
+
+        // Validation année (4 chiffres, >= année actuelle)
+        const currentYear = new Date().getFullYear();
+        const yearNum = parseInt(year);
+        if (!/^\d{4}$/.test(year) || yearNum < currentYear) {
+          return false;
+        }
+
+        // Validation CVV (3 chiffres)
+        if (!/^\d{3}$/.test(cvv)) {
+          return false;
+        }
+
         return true;
       }
       default:
@@ -171,7 +212,7 @@ export const ReservationProcessusPage = () => {
           <Step5CustomerAddress onDataChange={handleStep5Change} />
         )
       case 5:
-        return <Step6PaymentInfo />;
+        return <Step6PaymentInfo onDataChange={handleStep6Change} total={reservationData.total} />;
       case 6:
         return <Box sx={{ padding: 4, textAlign: 'center' }}>Étape 7 - Réservation confirmée (à venir)</Box>;
       default:

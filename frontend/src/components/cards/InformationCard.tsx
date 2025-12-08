@@ -1,5 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import type { ReactNode } from 'react';
+import type { SxProps, Theme } from '@mui/material';
 import { colors } from '../../theme/theme';
 
 interface InformationCardProps {
@@ -9,6 +10,7 @@ interface InformationCardProps {
   date?: Date | null;
   borderColor?: 'green' | 'red';
   children?: ReactNode;
+  sx?: SxProps<Theme>;
 }
 
 export const InformationCard = ({
@@ -18,6 +20,7 @@ export const InformationCard = ({
   date,
   borderColor = 'green',
   children,
+  sx,
 }: InformationCardProps) => {
   const formatDate = (date: Date): string => {
     const days = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
@@ -46,6 +49,7 @@ export const InformationCard = ({
         display: 'flex',
         flexDirection: 'column',
         gap: 1.5,
+        ...sx,
       }}
     >
       {/* En-tête avec icône et titre */}

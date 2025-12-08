@@ -62,9 +62,9 @@ export const Step6PaymentInfo = ({ onDataChange, total }: Step6PaymentInfoProps)
     if (!value.trim()) {
       return "L'année est obligatoire";
     }
-    const currentYear = new Date().getFullYear() % 100;
+    const currentYear = new Date().getFullYear();
     const yearNum = parseInt(value);
-    if (!/^\d{2}$/.test(value) || yearNum < currentYear) {
+    if (!/^\d{4}$/.test(value) || yearNum < currentYear) {
       return "Année invalide";
     }
     return "";
@@ -162,7 +162,7 @@ export const Step6PaymentInfo = ({ onDataChange, total }: Step6PaymentInfoProps)
             <Input
               label="Année"
               type="text"
-              placeholder="AA"
+              placeholder="AAAA"
               value={year}
               onChange={(e) => {
                 setYear(e.target.value);
@@ -203,44 +203,45 @@ export const Step6PaymentInfo = ({ onDataChange, total }: Step6PaymentInfoProps)
         </Box>
       </Box>
 
-      {/* Card : Paiement 100% sécurisé */}
-      <InformationCard borderColor="green">
-        <Box sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}>
-          <LockIcon
-            sx={{
-              color: colors.white,
-              fontSize: "2rem",
-              flexShrink: 0,
-            }}
-          />
-          <Box>
-            <Typography
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        {/* Card : Paiement 100% sécurisé */}
+        <InformationCard borderColor="green">
+          <Box sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}>
+            <LockIcon
               sx={{
-                fontFamily: "'Lexend Deca', sans-serif",
-                fontSize: { xs: "1rem", md: "1.1rem" },
-                fontWeight: 700,
-                color: colors.primaryGreen,
-                textTransform: "uppercase",
-                mb: 1,
-              }}
-            >
-              PAIEMENT 100% SÉCURISÉ
-            </Typography>
-            <Typography
-              sx={{
-                fontFamily: "'Lexend Deca', sans-serif",
-                fontSize: { xs: "0.9rem", md: "1rem" },
                 color: colors.white,
+                fontSize: "2rem",
+                flexShrink: 0,
               }}
-            >
-              Vos données sont entièrement protégées et chiffrées
-            </Typography>
+            />
+            <Box>
+              <Typography
+                sx={{
+                  fontFamily: "'Lexend Deca', sans-serif",
+                  fontSize: { xs: "1rem", md: "1.1rem" },
+                  fontWeight: 700,
+                  color: colors.primaryGreen,
+                  textTransform: "uppercase",
+                  mb: 1,
+                }}
+              >
+                PAIEMENT 100% SÉCURISÉ
+              </Typography>
+              <Typography
+                sx={{
+                  fontFamily: "'Lexend Deca', sans-serif",
+                  fontSize: { xs: "0.9rem", md: "1rem" },
+                  color: colors.white,
+                }}
+              >
+                Vos données sont entièrement protégées et chiffrées
+              </Typography>
+            </Box>
           </Box>
-        </Box>
-      </InformationCard>
+        </InformationCard>
 
-      {/* Card : Montant à payer */}
-      <InformationCard borderColor="red">
+        {/* Card : Montant à payer */}
+        <InformationCard borderColor="red">
         <Box
           sx={{
             display: "flex",
@@ -248,6 +249,12 @@ export const Step6PaymentInfo = ({ onDataChange, total }: Step6PaymentInfoProps)
             gap: 2,
           }}
         >
+          <Box
+              sx={{
+                borderTop: `2px solid ${colors.primaryGreen}`,
+                my: 1,
+              }}
+            />
           {/* Ligne total */}
           <Box
             sx={{
@@ -280,6 +287,7 @@ export const Step6PaymentInfo = ({ onDataChange, total }: Step6PaymentInfoProps)
           </Box>
         </Box>
       </InformationCard>
+      </Box>
     </Box>
   );
 };

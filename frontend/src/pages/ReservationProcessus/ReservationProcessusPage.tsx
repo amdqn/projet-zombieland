@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Box, Container, Typography } from '@mui/material';
 import { CustomBreadcrumbs, BackButton, PrimaryButton } from '../../components/common';
-import { Step1SelectTicket, Step2SelectDate, Step3Summary, Step4CustomerInfo, Step5CustomerAddress } from './Steps';
+import { Step1SelectTicket, Step2SelectDate, Step3Summary, Step4CustomerInfo, Step5CustomerAddress, Step6PaymentInfo } from './Steps';
 import { colors } from '../../theme/theme';
 
 interface ReservationData {
@@ -91,6 +91,13 @@ export const ReservationProcessusPage = () => {
     }));
   };
 
+  const handleStep6Change = (data: { cardNumber: string; month: string; year: string; cvv: string }) => {
+    setReservationData((prev) => ({
+      ...prev,
+      paymentInfo: data,
+    }));
+  };
+
   const canProceed = () => {
     switch (activeStep) {
       case 0:
@@ -133,6 +140,47 @@ export const ReservationProcessusPage = () => {
           return false;
         }
 
+        // Validation code postal (5 chiffres)
+        if (!/^\d{5}$/.test(zipCode)) {
+          return false;
+        }
+
+        return true;
+      }
+      case 5: {
+        // Vérifier que tous les champs sont remplis et valides
+        if (!reservationData.paymentInfo) return false;
+        const { cardNumber, month, year, cvv } = reservationData.paymentInfo;
+
+        // Vérifier que tous les champs sont remplis
+        if (!cardNumber.trim() || !month.trim() || !year.trim() || !cvv.trim()) {
+          return false;
+        }
+
+        // Validation numéro de carte (16 chiffres)
+        const cleanCardNumber = cardNumber.replace(/\s/g, '');
+        if (!/^\d{16}$/.test(cleanCardNumber)) {
+          return false;
+        }
+
+        // Validation mois (01-12)
+        const monthNum = parseInt(month);
+        if (!/^\d{2}$/.test(month) || monthNum < 1 || monthNum > 12) {
+          return false;
+        }
+
+        // Validation année (4 chiffres, >= année actuelle)
+        const currentYear = new Date().getFullYear();
+        const yearNum = parseInt(year);
+        if (!/^\d{4}$/.test(year) || yearNum < currentYear) {
+          return false;
+        }
+
+        // Validation CVV (3 chiffres)
+        if (!/^\d{3}$/.test(cvv)) {
+          return false;
+        }
+
         return true;
       }
       default:
@@ -164,7 +212,7 @@ export const ReservationProcessusPage = () => {
           <Step5CustomerAddress onDataChange={handleStep5Change} />
         )
       case 5:
-        return <Box sx={{ padding: 4, textAlign: 'center' }}>Étape 6 - Paiement (à venir)</Box>;
+        return <Step6PaymentInfo onDataChange={handleStep6Change} total={reservationData.total} />;
       case 6:
         return <Box sx={{ padding: 4, textAlign: 'center' }}>Étape 7 - Réservation confirmée (à venir)</Box>;
       default:
@@ -253,7 +301,13 @@ export const ReservationProcessusPage = () => {
 
             <Box sx={{ width: { xs: '100%', md: activeStep === 0 ? '100%' : '50%' } }}>
               <PrimaryButton
-                text={activeStep === steps.length - 1 ? 'Confirmer' : 'CONTINUER →'}
+                text={
+                  activeStep === 5
+                    ? `PAYER ${reservationData.total.toFixed(2).replace('.', ',')} € →`
+                    : activeStep === steps.length - 1
+                    ? 'Confirmer'
+                    : 'CONTINUER →'
+                }
                 onClick={handleNext}
                 fullWidth={true}
                 disabled={!canProceed()}

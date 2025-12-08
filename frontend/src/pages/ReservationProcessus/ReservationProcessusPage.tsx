@@ -301,7 +301,13 @@ export const ReservationProcessusPage = () => {
 
             <Box sx={{ width: { xs: '100%', md: activeStep === 0 ? '100%' : '50%' } }}>
               <PrimaryButton
-                text={activeStep === steps.length - 1 ? 'Confirmer' : 'CONTINUER →'}
+                text={
+                  activeStep === 5
+                    ? `PAYER ${reservationData.total.toFixed(2).replace('.', ',')} € →`
+                    : activeStep === steps.length - 1
+                    ? 'Confirmer'
+                    : 'CONTINUER →'
+                }
                 onClick={handleNext}
                 fullWidth={true}
                 disabled={!canProceed()}

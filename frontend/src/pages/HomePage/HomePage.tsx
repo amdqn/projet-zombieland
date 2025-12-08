@@ -5,11 +5,14 @@ import {Box, Typography} from "@mui/material";
 import {activitiesData} from "../../mocks/activities.ts";
 import ActivityCardHome from "../../components/cards/ActivityCardHome.tsx";
 import {Carousel} from "../../components/carousel";
+import PriceCard from "../../components/cards/PriceCard.tsx";
+import {pricesData} from "../../mocks/prices.ts";
 
 
 export default function HomePage() {
 
     const activities = activitiesData.activities;
+    const prices = pricesData.prices;
 
     const activityCards = activities.map((activite) => (
         <ActivityCardHome
@@ -36,6 +39,19 @@ export default function HomePage() {
                     itemsPerPageTablet={3}
                     itemsPerPageMobile={2}
                 />
+                <Box sx={{
+                    paddingTop: 20,
+                    paddingBottom: 20,
+                    display: 'grid',
+                    gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
+                    gap: 5
+                }}>
+                    {prices.map((price) => (
+                        <PriceCard price={price} key={price.id} />
+                    ))}
+                </Box>
+
+
             </Box>
         </>
     )

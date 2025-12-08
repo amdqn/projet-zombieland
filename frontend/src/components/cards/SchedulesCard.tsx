@@ -3,18 +3,18 @@ import type {IDateParc} from "../../@types/datesParc";
 import {PrimaryButton} from "../common/Button";
 
 
-interface HorairesCardProps {
+interface SchedulesCardProps {
     horaire: IDateParc
 }
 
-export function SchedulesCard({horaire}: HorairesCardProps) {
+export function SchedulesCard({horaire}: SchedulesCardProps) {
 
-    const formatJour = (date: Date | string) => {
+    const formatDay = (date: Date | string) => {
         const dateObj = typeof date === "string" ? new Date(date) : date;
         return dateObj.toLocaleDateString("fr-FR", {weekday: "long", day: "numeric", month: "long", year: "numeric"});
     }
 
-    const formatHeure = (date: Date | string) => {
+    const formatTime = (date: Date | string) => {
         const dateObj = typeof date === "string" ? new Date(date) : date;
         return dateObj.toLocaleTimeString("fr-FR", {hour: "2-digit", minute: "2-digit"});
     }
@@ -28,7 +28,7 @@ export function SchedulesCard({horaire}: HorairesCardProps) {
                         textAlign: 'center'
                     }}>
                         <Typography variant="h5">
-                            Aujourd'hui, {formatJour(horaire.jour)}, le parc est{' '}
+                            Aujourd'hui, {formatDay(horaire.jour)}, le parc est{' '}
                             <Box
                                 component="span"
                                 sx={{
@@ -54,7 +54,7 @@ export function SchedulesCard({horaire}: HorairesCardProps) {
                                     Heure d'ouverture
                                 </Typography>
                                 <Chip
-                                    label={formatHeure(horaire.open_hour)}
+                                    label={formatTime(horaire.open_hour)}
                                     variant="outlined"
                                     sx={{fontWeight: 'bold', fontSize: '1.5rem', padding: 1, borderRadius: 3}}
                                 />
@@ -65,7 +65,7 @@ export function SchedulesCard({horaire}: HorairesCardProps) {
                                     Heure de fermeture
                                 </Typography>
                                 <Chip
-                                    label={formatHeure(horaire.close_hour)}
+                                    label={formatTime(horaire.close_hour)}
                                     variant="outlined"
                                     sx={{fontWeight: 'bold', fontSize: '1.5rem', padding: 1, borderRadius: 3}}
                                 />

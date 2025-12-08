@@ -1,4 +1,4 @@
-import {horaires} from "../mocks/horaires.ts";
+import {scheduleData} from "../mocks/horaires.ts";
 
 const getTodaySchedule = () => {
     const today = new Date();
@@ -11,7 +11,7 @@ const getTodaySchedule = () => {
     };
 
     // Chercher l'horaire correspondant au jour d'aujourd'hui
-    const foundSchedule = horaires.horaires.find((horaire) => {
+    const foundSchedule = scheduleData.horaires.find((horaire) => {
         return isSameDay(new Date(horaire.jour), today);
     });
 

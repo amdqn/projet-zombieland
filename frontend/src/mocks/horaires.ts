@@ -1,4 +1,4 @@
-export const horaires = {
+export const scheduleData = {
     "horaires": [
         {
             "id": 1,

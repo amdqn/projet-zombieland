@@ -4,12 +4,16 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import type { RegisterDto } from './dto/register.dto';
+import type { RegisterDto, LoginDto } from 'src/generated';
+import { UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
+
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService, private readonly jwtService: JwtService, private readonly configService: ConfigService) {}
 
   async register(registerDto: RegisterDto) {
     const { email, pseudo, password, confirmPassword } = registerDto;
@@ -94,6 +98,128 @@ export class AuthService {
 
     // Retourner l'utilisateur sans le mot de passe
     const { password: _, ...userWithoutPassword } = user;
+    return userWithoutPassword;
+  }
+
+
+  async validateUser(email: string, password: string) {
+    // Validation des inputs
+    if (!email || !password) {
+      throw new BadRequestException('Email et password requis');
+    }
+
+    // Validation format email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      throw new BadRequestException('Email invalide');
+    }
+
+    // Validation longueur password
+    if (password.length < 8) {
+      throw new BadRequestException(
+        'Le mot de passe doit contenir au moins 8 caractères',
+      );
+    }
+
+    // Chercher l'utilisateur en DB
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    // Si user n'existe pas
+    if (!user) {
+      throw new UnauthorizedException('Email ou mot de passe invalide');
+    }
+
+    // Comparer les mots de passe avec bcrypt
+    const passwordIsValid = await bcrypt.compare(password, user.password);
+
+    // Si password invalide
+    if (!passwordIsValid) {
+      throw new UnauthorizedException('Email ou mot de passe invalide');
+    }
+
+    // Retourner user SANS le password
+    const { password: _, ...userWithoutPassword } = user;
+    return userWithoutPassword;
+  }    
+
+    async generateJwt(user: any) {
+    // Créer le payload (données dans le token)
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+    };
+
+    // Récupérer la config depuis .env
+    const expiresIn = this.configService.get<number>('JWT_EXPIRATION') || 3600;
+
+    // Signer le token
+    const token = this.jwtService.sign(payload);
+
+    // Retourner token + expiration
+    return {
+      access_token: token,
+      expires_in: expiresIn,
+    };
+  }
+
+  async updateProfile(userId: number, updateData: { email?: string; password?: string }) {
+    const { email, password } = updateData;
+
+    // Validation des données
+    if (email) {
+      // Validation format email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        throw new BadRequestException('Email invalide');
+      }
+
+      // Vérifier si l'email est déjà utilisé par un autre user
+      const existingUser = await this.prisma.user.findUnique({
+        where: { email },
+      });
+
+      if (existingUser && existingUser.id !== userId) {
+        throw new ConflictException('Cet email est déjà utilisé');
+      }
+    }
+
+    if (password) {
+      // Validation mot de passe
+      if (password.length < 8) {
+        throw new BadRequestException(
+          'Le mot de passe doit contenir au moins 8 caractères',
+        );
+      }
+
+      if (!/[A-Z]/.test(password)) {
+        throw new BadRequestException(
+          'Le mot de passe doit contenir au moins une majuscule',
+        );
+      }
+
+      if (!/[0-9]/.test(password)) {
+        throw new BadRequestException(
+          'Le mot de passe doit contenir au moins un chiffre',
+        );
+      }
+    }
+
+    // Préparer les données à mettre à jour
+    const dataToUpdate: any = {};
+    if (email) dataToUpdate.email = email;
+    if (password) dataToUpdate.password = await bcrypt.hash(password, 10);
+
+    // Mettre à jour l'utilisateur
+    const updatedUser = await this.prisma.user.update({
+      where: { id: userId },
+      data: dataToUpdate,
+    });
+
+    // Retourner sans le password
+    const { password: _, ...userWithoutPassword } = updatedUser;
     return userWithoutPassword;
   }
 }

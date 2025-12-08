@@ -20,7 +20,7 @@ info:
     name: Équipe ZombieLand
 
 servers:
-  - url: http://localhost:3000/api/v1
+  - url: http://localhost:3001/api/v1
     description: Serveur de développement local
   - url: https://api.zombieland.com/api/v1
     description: Serveur de production
@@ -102,6 +102,10 @@ paths:
                   access_token:
                     type: string
                     example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  expires_in:
+                    type: integer
+                    example: 3600
+                    description: Durée de vie du token en secondes
                   user:
                     $ref: '#/components/schemas/UserDto'
         '401':

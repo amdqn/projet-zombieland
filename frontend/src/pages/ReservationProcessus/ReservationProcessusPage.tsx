@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Box, Container, Typography } from '@mui/material';
 import { CustomBreadcrumbs, BackButton, PrimaryButton } from '../../components/common';
-import { Step1SelectTicket, Step2SelectDate, Step3Summary, Step4CustomerInfo, Step5CustomerAddress, Step6PaymentInfo } from './Steps';
+import { Step1SelectTicket, Step2SelectDate, Step3Summary, Step4CustomerInfo, Step5CustomerAddress, Step6PaymentInfo, Step7OrderConfirmed } from './Steps';
 import { colors } from '../../theme/theme';
 
 interface ReservationData {
@@ -214,7 +214,13 @@ export const ReservationProcessusPage = () => {
       case 5:
         return <Step6PaymentInfo onDataChange={handleStep6Change} total={reservationData.total} />;
       case 6:
-        return <Box sx={{ padding: 4, textAlign: 'center' }}>Étape 7 - Réservation confirmée (à venir)</Box>;
+        return (
+          <Step7OrderConfirmed
+            tickets={reservationData.tickets}
+            total={reservationData.total}
+            date={reservationData.date}
+          />
+        );
       default:
         return null;
     }
@@ -295,22 +301,27 @@ export const ReservationProcessusPage = () => {
           >
             <Box sx={{ width: { xs: '100%', md: activeStep === 0 ? '0%' : '50%' } }}>
               {activeStep > 0 && (
-                <BackButton text="Retour" onClick={handleBack} />
+                <BackButton
+                  text={activeStep === 6 ? "TÉLÉCHARGER BILLETS (PDF)" : "Retour"}
+                  onClick={activeStep === 6 ? () => alert('Téléchargement du PDF à implémenter') : handleBack}
+                />
               )}
             </Box>
 
             <Box sx={{ width: { xs: '100%', md: activeStep === 0 ? '100%' : '50%' } }}>
               <PrimaryButton
                 text={
-                  activeStep === 5
+                  activeStep === 6
+                    ? "RETOUR À L'ACCUEIL →"
+                    : activeStep === 5
                     ? `PAYER ${reservationData.total.toFixed(2).replace('.', ',')} € →`
                     : activeStep === steps.length - 1
                     ? 'Confirmer'
                     : 'CONTINUER →'
                 }
-                onClick={handleNext}
+                onClick={activeStep === 6 ? () => window.location.href = '/' : handleNext}
                 fullWidth={true}
-                disabled={!canProceed()}
+                disabled={activeStep === 6 ? false : !canProceed()}
               />
             </Box>
           </Box>

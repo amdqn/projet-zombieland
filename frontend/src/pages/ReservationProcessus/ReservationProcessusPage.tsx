@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Box, Container, Typography } from '@mui/material';
 import { CustomBreadcrumbs, BackButton, PrimaryButton } from '../../components/common';
-import { Step1SelectTicket, Step2SelectDate, Step3Summary } from './Steps';
+import { Step1SelectTicket, Step2SelectDate, Step3Summary, Step4CustomerInfo } from './Steps';
 import { colors } from '../../theme/theme';
 
 interface ReservationData {
@@ -71,6 +71,13 @@ export const ReservationProcessusPage = () => {
     }));
   };
 
+  const handleStep4Change = (data: { firstName: string; lastName: string; email: string; phone: string }) => {
+    setReservationData((prev) => ({
+      ...prev,
+      customerInfo: data,
+    }));
+  };
+
   const canProceed = () => {
     switch (activeStep) {
       case 0:
@@ -79,6 +86,30 @@ export const ReservationProcessusPage = () => {
         return !!reservationData.date;
       case 2:
         return !!reservationData.acceptedTerms;
+      case 3:
+        // Vérifier que tous les champs sont remplis et valides
+        if (!reservationData.customerInfo) return false;
+        const { firstName, lastName, email, phone } = reservationData.customerInfo;
+
+        // Vérifier que tous les champs sont remplis
+        if (!firstName.trim() || !lastName.trim() || !email.trim() || !phone.trim()) {
+          return false;
+        }
+
+        // Validation email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          return false;
+        }
+
+        // Validation téléphone
+        const phoneRegex = /^(\+33|0)[1-9](\d{2}){4}$/;
+        const cleanPhone = phone.replace(/\s/g, '');
+        if (!phoneRegex.test(cleanPhone)) {
+          return false;
+        }
+
+        return true;
       default:
         return true;
     }
@@ -100,7 +131,9 @@ export const ReservationProcessusPage = () => {
           />
         );
       case 3:
-        return <Box sx={{ padding: 4, textAlign: 'center' }}>Étape 4 - Vos informations (à venir)</Box>;
+        return (
+          <Step4CustomerInfo onDataChange={handleStep4Change} />
+        )
       case 4:
         return <Box sx={{ padding: 4, textAlign: 'center' }}>Étape 5 - Adresse de facturation (à venir)</Box>;
       case 5:

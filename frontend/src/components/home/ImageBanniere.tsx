@@ -39,7 +39,7 @@ export default function ImageBanniere() {
                     zIndex: 1
                 }}
             >
-                <Typography variant="h5" sx={{pb: 3}}>
+                <Typography variant="h5" sx={{pb: 3, pt: { xs: 13, md: 0 }}}>
                     Survivrez-vous au parc post-apocalyptique ? Réservez votre séjour
                     et venez affronter vos peurs au cœur de ZombieLand !
                 </Typography>

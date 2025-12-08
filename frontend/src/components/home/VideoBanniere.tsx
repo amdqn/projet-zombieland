@@ -1,6 +1,6 @@
-import {Box, Typography} from "@mui/material";
 import {PrimaryButton} from "../common/Button";
 import {useNavigate} from "react-router";
+import {Box, Typography} from "@mui/material";
 import {colors} from "../../theme";
 
 export default function VideoBanniere() {
@@ -10,7 +10,7 @@ export default function VideoBanniere() {
             sx={{
                 position: 'relative',
                 width: '100%',
-                height: '650px',
+                height: { xs: '500px', md: '650px' },  // ← Plus petit sur mobile
                 backgroundColor: 'black'
             }}
         >
@@ -31,15 +31,21 @@ export default function VideoBanniere() {
             <Box
                 sx={{
                     position: 'absolute',
-                    top: '85%',
+                    top: { xs: '75%', md: '85%' },
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
                     color: 'white',
                     textAlign: 'center',
-                    zIndex: 3
+                    zIndex: 3,
+                    width: { xs: '90%', md: 'auto' },
+                    px: { xs: 2, md: 0 }
                 }}
             >
-                <Typography variant="h3" sx={{pb: 3, color: colors.secondaryGreen}}>
+                <Typography variant="h3" sx={{
+                    pb: 3,
+                    color: colors.secondaryGreen,
+                    fontSize: { xs: '1.5rem', md: '2.5rem' }
+                }}>
                     Oserez-vous franchir les portes ?
                 </Typography>
                 <PrimaryButton
@@ -50,6 +56,7 @@ export default function VideoBanniere() {
                     fullWidth={false}
                 />
             </Box>
+
             {/* Vagues en bas avec background image */}
             <Box
                 component="svg"

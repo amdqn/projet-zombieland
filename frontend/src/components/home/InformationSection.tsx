@@ -4,7 +4,7 @@ import AccessCard from "../cards/AccessCard.tsx";
 import getTodaySchedule from "../../functions/getTodaySchedule.ts";
 
 
-export default function InformationsMain() {
+export default function InformationSection() {
 
     return (
         <Box sx={{

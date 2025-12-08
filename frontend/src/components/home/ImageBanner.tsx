@@ -3,7 +3,7 @@ import CircleIcon from '@mui/icons-material/Circle';
 import {colors} from "../../theme";
 import getTodaySchedule from "../../functions/getTodaySchedule.ts";
 
-export default function ImageBanniere() {
+export default function ImageBanner() {
 
     const todaySchedule = getTodaySchedule()
     const isOpen = todaySchedule.is_open

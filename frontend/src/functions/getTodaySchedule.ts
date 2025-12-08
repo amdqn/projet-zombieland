@@ -1,4 +1,5 @@
-import {scheduleData} from "../mocks/horaires.ts";
+import {scheduleData} from "../mocks/schedule.ts";
+
 
 const getTodaySchedule = () => {
     const today = new Date();

@@ -1,2 +1,2 @@
-export * from './VideoBanniere';
-export * from './ImageBanniere';
+export * from './VideoBanner.tsx';
+export * from './ImageBanner.tsx';

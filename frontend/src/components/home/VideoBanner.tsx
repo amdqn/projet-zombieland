@@ -3,7 +3,7 @@ import {useNavigate} from "react-router";
 import {Box, Typography} from "@mui/material";
 import {colors} from "../../theme";
 
-export default function VideoBanniere() {
+export default function VideoBanner() {
     const navigate = useNavigate();
     return (
         <Box

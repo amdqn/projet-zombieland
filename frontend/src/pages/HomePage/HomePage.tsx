@@ -1,15 +1,12 @@
-import VideoBanniere from "../../components/home/VideoBanniere.tsx";
-import ImageBanniere from "../../components/home/ImageBanniere.tsx";
+import VideoBanner from "../../components/home/VideoBanner.tsx";
+import ImageBanner from "../../components/home/ImageBanner.tsx";
 import {Box}  from "@mui/material";
 import SocialNetwork from "../../components/home/SocialNetwork.tsx";
-import InformationsMain from "../../components/home/InformationsMain.tsx";
 import PriceMain from "../../components/home/PriceMain.tsx";
 import CarouselActivityMain from "../../components/home/CarouselActivityMain.tsx";
+import InformationSection from "../../components/home/InformationSection.tsx";
 
 export default function HomePage() {
-
-
-
     return (
         <Box sx={{
             width: '100%',
@@ -18,8 +15,8 @@ export default function HomePage() {
             margin: 0,
             padding: 0
         }}>
-            <VideoBanniere/>
-            <ImageBanniere/>
+            <VideoBanner/>
+            <ImageBanner/>
 
             <Box sx={{
                 py: { xs: 3, md: 5 },
@@ -43,7 +40,7 @@ export default function HomePage() {
                 </Box>
 
                 <Box sx={{ paddingTop: { xs: 10, md: 20 } }}>
-                    <InformationsMain/>
+                    <InformationSection/>
                 </Box>
             </Box>
         </Box>

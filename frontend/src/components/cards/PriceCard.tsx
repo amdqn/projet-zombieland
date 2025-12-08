@@ -24,12 +24,12 @@ export default function PriceCard({price}: PriceCardProps) {
                 component={motion.div}
                 initial={{ boxShadow: 'none' }}
                 whileHover={{
-                    scale: 1.05,
+                    scale: 1.02,
                     boxShadow: `0 10px 40px ${theme.palette.primary.main}70, 0 0 20px ${theme.palette.primary.main}50`
                 }}
                 whileTap={{ scale: 0.98 }}
                 transition={{
-                    duration: 0.3,
+                    duration: 0.08,
                     ease: "easeOut"
                 }}
                 sx={{

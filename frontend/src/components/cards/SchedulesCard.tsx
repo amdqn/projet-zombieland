@@ -1,10 +1,11 @@
 import {Box, Card, CardActions, CardContent, Chip, Typography} from "@mui/material";
-import type {IDateParc} from "../../@types/datesParc";
 import {PrimaryButton} from "../common/Button";
+import type {DateParc} from "../../@types/dateParc";
+
 
 
 interface SchedulesCardProps {
-    horaire: IDateParc
+    horaire: DateParc
 }
 
 export function SchedulesCard({horaire}: SchedulesCardProps) {
@@ -32,16 +33,16 @@ export function SchedulesCard({horaire}: SchedulesCardProps) {
                             <Box
                                 component="span"
                                 sx={{
-                                    color: horaire.is_open ? "primary.main" : "error.main",
+                                    color: horaire.isOpen ? "primary.main" : "error.main",
                                     fontWeight: 'bold'
                                 }}
                             >
-                                {horaire.is_open ? "ouvert" : "fermé"}
+                                {horaire.isOpen ? "ouvert" : "fermé"}
                             </Box>
                         </Typography>
                     </Box>
 
-                    {horaire.is_open ? (
+                    {horaire.isOpen ? (
                         <Box sx={{
                             display: "flex",
                             flexDirection: 'column',
@@ -54,7 +55,7 @@ export function SchedulesCard({horaire}: SchedulesCardProps) {
                                     Heure d'ouverture
                                 </Typography>
                                 <Chip
-                                    label={formatTime(horaire.open_hour)}
+                                    label={formatTime(horaire.openHour)}
                                     variant="outlined"
                                     sx={{fontWeight: 'bold', fontSize: '1.5rem', padding: 1, borderRadius: 3}}
                                 />
@@ -65,7 +66,7 @@ export function SchedulesCard({horaire}: SchedulesCardProps) {
                                     Heure de fermeture
                                 </Typography>
                                 <Chip
-                                    label={formatTime(horaire.close_hour)}
+                                    label={formatTime(horaire.closeHour)}
                                     variant="outlined"
                                     sx={{fontWeight: 'bold', fontSize: '1.5rem', padding: 1, borderRadius: 3}}
                                 />

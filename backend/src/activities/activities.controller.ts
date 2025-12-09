@@ -15,6 +15,8 @@ import {
 import { ActivitiesService } from './activities.service';
 import type { CreateActivityDto, UpdateActivityDto } from 'src/generated';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @Controller('activities')
 export class ActivitiesController {
@@ -51,14 +53,16 @@ export class ActivitiesController {
   }
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createActivityDto: CreateActivityDto) {
     return this.activitiesService.create(createActivityDto);
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
   @HttpCode(HttpStatus.OK)
   async update(
     @Param('id', ParseIntPipe) id: number,
@@ -68,7 +72,8 @@ export class ActivitiesController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
   @HttpCode(HttpStatus.OK)
   async remove(@Param('id', ParseIntPipe) id: number) {
     return this.activitiesService.remove(id);

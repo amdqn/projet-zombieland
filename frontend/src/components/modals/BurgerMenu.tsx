@@ -2,7 +2,10 @@ import {Box, Button, IconButton, Modal, Typography} from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import logo from "../../assets/logo.png"
 import sang from "../../assets/tache-sang.png";
-import {colors} from "../../theme";
+import {useNavigate} from "react-router";
+import {useContext} from "react";
+import {LoginContext} from "../../context/UserLoginContext.tsx";
+import {PrimaryButton} from "../common";
 
 interface ModalBurgerMenuProps {
     open: boolean;
@@ -20,6 +23,21 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
         height: '100vh',
     }
 
+    const { isLogged, logout } = useContext(LoginContext);
+
+    const navigate = useNavigate();
+
+    const navigateLoginPage = () => {
+        navigate('/login');
+        onClose();
+    }
+
+    const navigateAfterLogout = () => {
+        logout();
+        navigate('/');
+        onClose();
+    }
+
     return (
         <Modal
             open={open}
@@ -28,38 +46,30 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
             aria-describedby="modal-modal-description"
         >
             <Box sx={fullScreenStyle}>
+                <Box
+                    component="img"
+                    src={logo}
+                    alt="Logo"
+                    sx={{
+                        height: { xs: 60, md: 90 },
+                        width: 'auto',
+                        zIndex: 2,
+                    }}
+                />
 
                 <Box sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
+                    display: {xs: 'none', md: 'flex'},
+                    justifyContent: 'center',
                     alignItems: 'center',
                     px: 5,
-                    py: 2
+                    py: 2,
                 }}>
-                    <Box
-                        component="img"
-                        src={logo}
-                        alt="Logo"
-                        sx={{
-                            height: { xs: 60, md: 90 },
-                            width: 'auto',
-                            zIndex: 2,
-                        }}
-                    />
-                    <Button sx={{
-                        color: "black",
-                        backgroundColor: colors.primaryGreen,
-                        variant: "contained",
-                        size: 'large',
-                        zIndex: 2,
-                        position: 'absolute',
-                        top: 32,
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        display: { xs: 'none', md: 'flex' }
-                    }}>
-                        CONNEXION
-                    </Button>
+                    <PrimaryButton
+                    text={isLogged ? "Se deconnecter" : "Connexion"}
+                    textMobile={isLogged ? "Se deconnecter" : "Connexion"}
+                    onClick={isLogged ? navigateAfterLogout : navigateLoginPage}
+                    href={"/login"}
+                    fullWidth={false}/>
                     {/* Croix de fermeture en position absolute (Desktop) */}
                     <IconButton
                         sx={{
@@ -233,15 +243,12 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                         INFORMATIONS
                     </Button>
                     <Box sx={{ mt: 4, display: {xs: 'flex', md: 'none'}}}>
-                        <Button sx={{
-                            color: "black",
-                            backgroundColor: colors.primaryGreen,
-                            variant: "contained",
-                            size: 'large',
-                            zIndex: 2,
-                        }}>
-                            CONNEXION
-                        </Button>
+                        <PrimaryButton
+                            text={isLogged ? "Se deconnecter" : "Connexion"}
+                            textMobile={isLogged ? "Se deconnecter" : "Connexion"}
+                            onClick={isLogged ? navigateAfterLogout : navigateLoginPage}
+                            href={"/login"}
+                            fullWidth={false}/>
                     </Box>
                 </Box>
             </Box>

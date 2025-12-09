@@ -1,10 +1,12 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { DesignSystem } from './DesignSystem/DesignSystem';
+import { DesignSystem } from './DesignSystem';
 import { Activities } from './pages/Activities';
 import { ActivityDetail } from './pages/ActivityDetail';
 import RootPage from './pages/RootPage/RootPage';
 import HomePage from "./pages/HomePage/HomePage.tsx";
-import { ReservationProcessusPage } from './pages/ReservationProcessus/ReservationProcessusPage';
+import { ReservationProcessusPage } from './pages/ReservationProcessus';
+import LoginPage from "./pages/AuthPage/LoginPage.tsx";
+import AccountPage from "./pages/AuthPage/AccountPage.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -29,7 +31,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'login',
-        // element: <Login />, // Connexion
+        element: <LoginPage />, // Connexion
       },
       {
         path: 'register',
@@ -37,7 +39,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'account',
-        // element: <Account />, // Compte utilisateur
+        element: <AccountPage />, // Compte utilisateur
       },
       {
         path: 'admin',

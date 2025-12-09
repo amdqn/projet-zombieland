@@ -72,6 +72,41 @@ const attractionData = [
     description: 'Grand spectacle avec effets pyrotechniques et cascades',
     categoryIndex: 3, // Spectacles
   },
+  {
+    name: 'Tour de la Chute Libre',
+    description: 'Chute libre de 80 mètres dans une tour abandonnée infestée de zombies',
+    categoryIndex: 0, // Attractions extrêmes
+  },
+  {
+    name: 'Bunker VR Experience',
+    description: 'Expérience en réalité virtuelle : survivez dans un bunker assiégé',
+    categoryIndex: 1, // Expériences immersives
+  },
+  {
+    name: 'Train Fantôme Apocalypse',
+    description: 'Parcours en petit train à travers une ville ravagée par les zombies',
+    categoryIndex: 2, // Activités familiales
+  },
+  {
+    name: 'Le Manège des Infectés',
+    description: 'Carrousel thématique avec créatures zombies animées',
+    categoryIndex: 2, // Activités familiales
+  },
+  {
+    name: 'Survivor Arena Show',
+    description: 'Spectacle interactif où le public vote pour les survivants',
+    categoryIndex: 3, // Spectacles
+  },
+  {
+    name: 'Pendule de l\'Apocalypse',
+    description: 'Balancier géant à sensations fortes dans un décor industriel abandonné',
+    categoryIndex: 0, // Attractions extrêmes
+  },
+  {
+    name: 'Hôpital Hanté',
+    description: 'Parcours terrifiant dans un hôpital contaminé avec acteurs zombies',
+    categoryIndex: 1, // Expériences immersives
+  },
 ];
 
 async function main() {
@@ -159,10 +194,45 @@ async function main() {
         url: 'https://cdn.zombieland.com/images/arena-1.jpg',
         alt_text: 'Arena des Morts-Vivants - vue du spectacle',
       },
+      {
+        attraction_id: attractions[4].id, // Tour de la Chute Libre
+        url: 'https://cdn.zombieland.com/images/free-fall-tower.jpg',
+        alt_text: 'Tour de la Chute Libre de 80 mètres',
+      },
+      {
+        attraction_id: attractions[5].id, // Bunker VR Experience
+        url: 'https://cdn.zombieland.com/images/vr-bunker.jpg',
+        alt_text: 'Salle VR du bunker avec équipements',
+      },
+      {
+        attraction_id: attractions[6].id, // Train Fantôme Apocalypse
+        url: 'https://cdn.zombieland.com/images/ghost-train.jpg',
+        alt_text: 'Train fantôme traversant la ville abandonnée',
+      },
+      {
+        attraction_id: attractions[7].id, // Le Manège des Infectés
+        url: 'https://cdn.zombieland.com/images/carousel.jpg',
+        alt_text: 'Carrousel thématique zombies',
+      },
+      {
+        attraction_id: attractions[8].id, // Survivor Arena Show
+        url: 'https://cdn.zombieland.com/images/survivor-show.jpg',
+        alt_text: 'Spectacle Survivor Arena avec public',
+      },
+      {
+        attraction_id: attractions[9].id, // Pendule de l'Apocalypse
+        url: 'https://cdn.zombieland.com/images/pendulum.jpg',
+        alt_text: 'Balancier géant en action',
+      },
+      {
+        attraction_id: attractions[10].id, // Hôpital Hanté
+        url: 'https://cdn.zombieland.com/images/hospital.jpg',
+        alt_text: 'Entrée sombre de l\'hôpital hanté',
+      },
     ],
   });
 
-  console.log('✅ Images d\'attractions créées (5)');
+  console.log('✅ Images d\'attractions créées (11)');
 
   // ===== ACTIVITIES =====
   await prisma.activity.createMany({
@@ -353,8 +423,8 @@ async function main() {
   console.log('📊 Résumé :');
   console.log('   - 4 utilisateurs (1 admin, 3 clients)');
   console.log('   - 5 catégories');
-  console.log('   - 4 attractions');
-  console.log('   - 5 images d\'attractions');
+  console.log('   - 11 attractions');
+  console.log('   - 11 images d\'attractions');
   console.log('   - 5 activités');
   console.log('   - 31 dates d\'ouverture (décembre 2025)');
   console.log('   - 5 tarifs (Étudiant, Adulte, Groupe x2, Pass 2J)');

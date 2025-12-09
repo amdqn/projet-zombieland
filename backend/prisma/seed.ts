@@ -240,31 +240,36 @@ async function main() {
       {
         name: 'Escape Game Zombie',
         description: '60 minutes pour trouver le remède et sauver l\'humanité',
+        image_url: '/activities-images/escape-game.jpg',
         category_id: categories[1].id, // Expériences immersives
         attraction_id: attractions[0].id, // The Walking Dead Experience
       },
       {
         name: 'Laser Game Zombie',
         description: 'Affrontez les zombies en équipe avec des lasers',
+        image_url: '/activities-images/laser-game.jpg',
         category_id: categories[0].id, // Attractions extrêmes
         attraction_id: null,
       },
       {
         name: 'Atelier Maquillage Zombie',
         description: 'Transformez-vous en zombie avec nos maquilleurs professionnels',
+        image_url: '/activities-images/maquillage.jpg',
         category_id: categories[2].id, // Activités familiales
         attraction_id: null,
       },
       {
         name: 'Spectacle Survie',
         description: 'Show avec cascades et combats contre les zombies',
+        image_url: '/activities-images/spectacle.jpg',
         category_id: categories[3].id, // Spectacles
         attraction_id: null,
       },
       {
-        name: 'Restaurant Le Bunker',
-        description: 'Restaurant thématique dans un bunker post-apocalyptique',
-        category_id: categories[4].id, // Restauration
+        name: 'Tir à l\'Arc Post-Apocalyptique',
+        description: 'Entraînez-vous au tir à l\'arc sur des cibles zombies dans un décor post-apocalyptique',
+        image_url: '/activities-images/tir-arc.jpg',
+        category_id: categories[2].id, // Activités familiales
         attraction_id: null,
       },
     ],

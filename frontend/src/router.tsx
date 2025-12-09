@@ -3,6 +3,7 @@ import { DesignSystem } from './DesignSystem/DesignSystem';
 import { Activities } from './pages/Activities';
 import { ActivityDetail } from './pages/ActivityDetail';
 import RootPage from './pages/RootPage/RootPage';
+import HomePage from "./pages/HomePage/HomePage.tsx";
 import { ReservationProcessusPage } from './pages/ReservationProcessus/ReservationProcessusPage';
 
 export const router = createBrowserRouter([
@@ -12,7 +13,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        // element: <Home />, // Page principale
+        element: <HomePage />, // Page principale
       },
       {
         path: 'activities',
@@ -52,7 +53,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'info',
-        // element: <GeneralInfo />, // Informations générales
+        // element: <GeneralInfo />, // InformationsMain générales
       },
       {
         path: 'static/:pageType',

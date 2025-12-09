@@ -3,9 +3,13 @@ import { AppModule } from './app.module';
 import { SwaggerModule, OpenAPIObject } from '@nestjs/swagger';
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
+import { corsConfig } from './config/cors.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Enable CORS
+  app.enableCors(corsConfig);
 
   app.setGlobalPrefix('api/v1');
 

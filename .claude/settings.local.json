@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker logs:*)",
+      "Bash(git checkout:*)",
+      "Bash(npm install:*)",
+      "Bash(docker compose:*)",
+      "Bash(curl:*)",
+      "Bash(docker ps:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(docker exec:*)",
+      "Bash(cat:*)",
+      "Bash(docker restart:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -23,6 +23,7 @@ export default function LateralBar() {
                 borderRadius: 5,
                 py: 2,
                 gap: 2,
+                background: 'black',
             }}
         >
             {/* Logo et selecteur de langue */}

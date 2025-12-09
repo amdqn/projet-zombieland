@@ -85,6 +85,7 @@ model Activity {
   id            Int         @id @default(autoincrement())
   name          String
   description   String
+  image_url     String?
   category_id   Int
   attraction_id Int?
   category      Category    @relation(fields: [category_id], references: [id], onDelete: Cascade)

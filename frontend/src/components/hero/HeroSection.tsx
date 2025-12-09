@@ -9,7 +9,9 @@ const HeroWrapper = styled(Box)({
   overflow: 'hidden',
   background: 'linear-gradient(180deg, #000 0%, #1a0000 100%)',
   '@media (max-width: 768px)': {
-    height: '300px',
+    height: 'auto',
+    minHeight: '500px',
+    overflow: 'visible',
   },
 });
 
@@ -47,7 +49,10 @@ const HeroContent = styled(Box)({
   background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%)',
   padding: '0 50px 40px 150px',
   '@media (max-width: 768px)': {
-    padding: '25px',
+    padding: '20px 25px 40px 25px',
+    minHeight: '500px',
+    justifyContent: 'flex-start',
+    paddingTop: '40px',
   },
 });
 

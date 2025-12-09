@@ -1,7 +1,11 @@
 import { createBrowserRouter } from 'react-router-dom';
+import { DesignSystem } from './DesignSystem/DesignSystem';
+import { ActivityDetail } from './pages/ActivityDetail';
+import RootPage from './pages/RootPage/RootPage';
+import HomePage from "./pages/HomePage/HomePage.tsx";
+import { ReservationProcessusPage } from './pages/ReservationProcessus/ReservationProcessusPage';
 import { DesignSystem } from './DesignSystem';
 import { Activities } from './pages/Activities';
-import { ActivityDetail } from './pages/ActivityDetail';
 import RootPage from './pages/RootPage/RootPage';
 import HomePage from "./pages/HomePage/HomePage.tsx";
 import { ReservationProcessusPage } from './pages/ReservationProcessus';

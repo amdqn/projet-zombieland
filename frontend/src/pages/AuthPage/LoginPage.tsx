@@ -1,5 +1,5 @@
 import {colors} from "../../theme";
-import {Alert, Box, Button, Container, Typography} from "@mui/material";
+import {Alert, Box, Container, Typography} from "@mui/material";
 import {CustomBreadcrumbs, Input, PrimaryButton} from "../../components/common";
 import {LoginContext} from "../../context/UserLoginContext.tsx";
 import {useContext, useState} from "react";
@@ -60,6 +60,9 @@ export default function LoginPage() {
 
         setIsLoading(true);
         setLoginError("");
+
+        console.log("email : ", email)
+        console.log("password : ", password)
 
         try {
             // Appel API

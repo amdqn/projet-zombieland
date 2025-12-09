@@ -20,9 +20,6 @@ export default function Header() {
 
     const { isLogged, pseudo } = useContext(LoginContext);
 
-    console.log(isLogged)
-    console.log(pseudo)
-
     const navigate = useNavigate()
 
     const handleOpen = () => { setOpen(true) }

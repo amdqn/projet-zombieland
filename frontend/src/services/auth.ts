@@ -9,8 +9,6 @@ interface LoginResponse {
 }
 
 export const login = async (email: string, password: string): Promise<LoginResponse> => {
-    console.log(email, password);
-    console.log('Base URL:', axiosInstance.defaults.baseURL); // ✅ Voir le baseURL
 
     const response = await axiosInstance.post<LoginResponse>('auth/login', {
         email,

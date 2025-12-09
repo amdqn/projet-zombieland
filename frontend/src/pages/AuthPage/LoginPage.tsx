@@ -61,9 +61,6 @@ export default function LoginPage() {
         setIsLoading(true);
         setLoginError("");
 
-        console.log("email : ", email)
-        console.log("password : ", password)
-
         try {
             // Appel API
             const data = await login(email, password)

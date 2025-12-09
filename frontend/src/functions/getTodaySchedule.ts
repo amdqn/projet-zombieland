@@ -25,11 +25,11 @@ const getTodaySchedule = () => {
     return {
         id: 0,
         jour: today,
-        open_hour: today,
-        close_hour: today,
-        is_open: false,
+        openHour: today,
+        closeHour: today,
+        isOpen: false,
         notes: "",
-        created_at: today
+        createdAt: today
     };
 };
 

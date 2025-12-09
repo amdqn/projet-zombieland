@@ -1,8 +1,8 @@
 
 import ActivityCardHome from "../cards/ActivityCardHome.tsx";
-import {activitiesData} from "../../mocks/activities.ts";
 import {Box, Typography} from "@mui/material";
 import {Carousel} from "../carousel";
+import {activitiesData} from "../../mocks";
 
 export default function CarouselActivityMain(){
     const activities = activitiesData.activities;

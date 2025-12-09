@@ -1,0 +1,10 @@
+import axios from 'axios';
+
+// Fonction générale qui gère la connexion à l'API
+const axiosInstance = axios.create({
+    baseURL: import.meta.env.VITE_API_BASE_URL,
+    timeout: 1000,
+    headers: {'Content-Type': 'application/json',}
+});
+
+export default axiosInstance;

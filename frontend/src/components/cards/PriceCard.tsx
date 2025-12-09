@@ -1,23 +1,23 @@
 
 import {Card, CardContent, Typography} from "@mui/material";
-import type {IPrice} from "../../@types/price";
 import {theme} from "../../theme";
 import {motion} from "framer-motion";
 import {useNavigate} from "react-router";
+import type {Price} from "../../@types/price";
 
 interface PriceCardProps {
-    price: IPrice;
+    price: Price;
 }
 
 export default function PriceCard({price}: PriceCardProps) {
 
     const navigate = useNavigate();
 
-    const formatPriceTitle = (price: IPrice) => {
+    const formatPriceTitle = (price: Price) => {
         if (price.type === "PASS_2J") {
             return "PASS 2 JOURS";
         }
-        return `${price.type} - ${price.duration_days} JOUR${price.duration_days > 1 ? 'S' : ''}`;
+        return `${price.type} - ${price.durationDays} JOUR${price.durationDays > 1 ? 'S' : ''}`;
     }
 
     return (

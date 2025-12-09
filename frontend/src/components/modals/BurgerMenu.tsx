@@ -3,6 +3,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import logo from "../../assets/logo.png"
 import sang from "../../assets/tache-sang.png";
 import {colors} from "../../theme";
+import {useNavigate} from "react-router";
 
 interface ModalBurgerMenuProps {
     open: boolean;
@@ -18,6 +19,13 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
         left: 0,
         width: '100vw',
         height: '100vh',
+    }
+
+    const navigate = useNavigate();
+
+    const navigateLoginPage = () => {
+        navigate('/login');
+        onClose();
     }
 
     return (
@@ -57,7 +65,9 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                         left: '50%',
                         transform: 'translateX(-50%)',
                         display: { xs: 'none', md: 'flex' }
-                    }}>
+                        }}
+                            onClick={navigateLoginPage}
+                    >
                         CONNEXION
                     </Button>
                     {/* Croix de fermeture en position absolute (Desktop) */}
@@ -239,7 +249,9 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                             variant: "contained",
                             size: 'large',
                             zIndex: 2,
-                        }}>
+                        }}
+                                onClick={navigateLoginPage}
+                        >
                             CONNEXION
                         </Button>
                     </Box>

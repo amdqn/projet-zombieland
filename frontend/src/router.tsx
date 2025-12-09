@@ -4,7 +4,15 @@ import { ActivityDetail } from './pages/ActivityDetail';
 import RootPage from './pages/RootPage/RootPage';
 import HomePage from "./pages/HomePage/HomePage.tsx";
 import { ReservationProcessusPage } from './pages/ReservationProcessus/ReservationProcessusPage';
-import { Activities } from './pages/Activities/Activities.tsx';
+import { DesignSystem } from './DesignSystem';
+import { Activities } from './pages/Activities';
+import RootPage from './pages/RootPage/RootPage';
+import HomePage from "./pages/HomePage/HomePage.tsx";
+import { ReservationProcessusPage } from './pages/ReservationProcessus';
+import LoginPage from "./pages/AuthPage/LoginPage.tsx";
+import AccountPage from "./pages/AuthPage/AccountPage.tsx";
+import RegisterPage from "./pages/AuthPage/RegisterPage.tsx";
+import SuccesAuthPage from "./pages/AuthPage/SuccesAuthPage.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -29,15 +37,19 @@ export const router = createBrowserRouter([
       },
       {
         path: 'login',
-        // element: <Login />, // Connexion
+        element: <LoginPage />, // Connexion
       },
       {
         path: 'register',
-        // element: <Register />, // Inscription
+        element: <RegisterPage />, // Inscription
+      },
+      {
+        path: 'register/success',
+        element: <SuccesAuthPage/>,
       },
       {
         path: 'account',
-        // element: <Account />, // Compte utilisateur
+        element: <AccountPage />, // Compte utilisateur
       },
       {
         path: 'admin',

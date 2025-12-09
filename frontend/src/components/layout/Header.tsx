@@ -1,9 +1,10 @@
-import {AppBar, Box, Button, IconButton, Toolbar, Typography} from "@mui/material";
+import {AppBar, Box, Button, IconButton, Toolbar, Typography, Link} from "@mui/material";
 import {useNavigate} from "react-router";
 import MenuIcon from '@mui/icons-material/Menu';
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import ModalBurgerMenu from "../modals/BurgerMenu";
 import {colors} from "../../theme";
+import {LoginContext} from "../../context/UserLoginContext.tsx";
 
 export default function Header() {
 
@@ -16,6 +17,8 @@ export default function Header() {
         { name : "Activités", path : "/activities" },
         { name : "Infos", path : "/info" },
     ]
+
+    const { isLogged, pseudo } = useContext(LoginContext);
 
     const navigate = useNavigate()
 
@@ -86,6 +89,25 @@ export default function Header() {
                             </Box>
                         </Typography>
                     </Box>
+                    { isLogged ? (
+                        <Box sx={{
+                            position: 'absolute',
+                            left: '80%',
+                            transform: 'translateX(-50%)',
+                            display: { xs: 'none', md: 'block' }
+                        }}>
+                            <Typography>
+                                Bienvenue{' '}
+                                <Link
+                                    component="button"
+                                    onClick={() => navigate('/account')}
+                                    sx={{ cursor: 'pointer' }}
+                                >
+                                    {pseudo}
+                                </Link>
+                            </Typography>
+                        </Box>
+                        ):""}
 
                     {/* Menu burger à droite */}
                     <IconButton
@@ -105,6 +127,7 @@ export default function Header() {
                         display: { xs: 'flex', md: 'none' },
                         width: '100%',
                         justifyContent: 'space-between',
+                        flexDirection: 'column',
                         alignItems: 'center'
                     }}>
                         <Box sx={{ width: 40 }} />
@@ -116,17 +139,33 @@ export default function Header() {
                                 LAND
                             </Box>
                         </Typography>
-                        <IconButton
-                            sx={{ color: 'white' }}
-                            onClick={handleOpen}
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <ModalBurgerMenu
-                            open={open}
-                            onClose={handleClose}
-                        />
+                        { isLogged ? (
+                            <Box sx={{
+                                display: { xs: 'block', md: 'none' }
+                            }}>
+                                <Typography>
+                                    Bienvenue{' '}
+                                    <Link
+                                        component="button"
+                                        onClick={() => navigate('/account')}
+                                        sx={{ cursor: 'pointer' }}
+                                    >
+                                        {pseudo}
+                                    </Link>
+                                </Typography>
+                            </Box>
+                        ):""}
                     </Box>
+                    <IconButton
+                        sx={{ color: 'white' }}
+                        onClick={handleOpen}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                    <ModalBurgerMenu
+                        open={open}
+                        onClose={handleClose}
+                    />
                 </Toolbar>
             </AppBar>
         </>

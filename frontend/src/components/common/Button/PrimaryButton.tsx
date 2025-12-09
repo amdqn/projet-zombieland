@@ -9,6 +9,7 @@ interface PrimaryButtonProps {
   href?: string;
   fullWidth?: boolean;
   disabled?: boolean;
+  type?: "button" | "submit" | "reset";
 }
 
 export const PrimaryButton = ({
@@ -19,6 +20,7 @@ export const PrimaryButton = ({
   href,
   fullWidth = true,
   disabled = false,
+  type = "button",
 }: PrimaryButtonProps) => {
   const navigate = useNavigate();
   const isMobile = variant === 'mobile';
@@ -37,7 +39,7 @@ export const PrimaryButton = ({
       variant="contained"
       color="primary"
       size="large"
-      onClick={handleClick}
+      onClick={type !== 'submit' ? handleClick : undefined}
       disabled={disabled}
       sx={{
         width: fullWidth ? '100%' : 'auto',
@@ -46,6 +48,7 @@ export const PrimaryButton = ({
           ? '18px 35px' 
           : { xs: '0.6rem 2rem', md: '1rem 3rem' },
       }}
+      type={type}
     >
       {displayText}
     </Button>

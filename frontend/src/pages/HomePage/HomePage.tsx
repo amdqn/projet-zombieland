@@ -7,6 +7,7 @@ import CarouselActivityMain from "../../components/home/CarouselActivityMain.tsx
 import InformationSection from "../../components/home/InformationSection.tsx";
 
 export default function HomePage() {
+
     return (
         <Box sx={{
             width: '100%',

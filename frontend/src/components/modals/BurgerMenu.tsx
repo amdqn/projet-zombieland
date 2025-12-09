@@ -2,7 +2,6 @@ import {Box, Button, IconButton, Modal, Typography} from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import logo from "../../assets/logo.png"
 import sang from "../../assets/tache-sang.png";
-import {colors} from "../../theme";
 import {useNavigate} from "react-router";
 import {useContext} from "react";
 import {LoginContext} from "../../context/UserLoginContext.tsx";
@@ -59,7 +58,7 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                 />
 
                 <Box sx={{
-                    display: 'flex',
+                    display: {xs: 'none', md: 'flex'},
                     justifyContent: 'center',
                     alignItems: 'center',
                     px: 5,
@@ -244,17 +243,12 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                         INFORMATIONS
                     </Button>
                     <Box sx={{ mt: 4, display: {xs: 'flex', md: 'none'}}}>
-                        <Button sx={{
-                            color: "black",
-                            backgroundColor: colors.primaryGreen,
-                            variant: "contained",
-                            size: 'large',
-                            zIndex: 2,
-                        }}
-                                onClick={navigateLoginPage}
-                        >
-                            CONNEXION
-                        </Button>
+                        <PrimaryButton
+                            text={isLogged ? "Se deconnecter" : "Connexion"}
+                            textMobile={isLogged ? "Se deconnecter" : "Connexion"}
+                            onClick={isLogged ? navigateAfterLogout : navigateLoginPage}
+                            href={"/login"}
+                            fullWidth={false}/>
                     </Box>
                 </Box>
             </Box>

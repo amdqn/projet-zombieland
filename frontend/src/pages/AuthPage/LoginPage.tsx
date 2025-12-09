@@ -1,15 +1,15 @@
 import {colors} from "../../theme";
-import {Alert, Box, Container, Typography} from "@mui/material";
+import {Alert, Box, Container, Typography, Link} from "@mui/material";
 import {CustomBreadcrumbs, Input, PrimaryButton} from "../../components/common";
 import {LoginContext} from "../../context/UserLoginContext.tsx";
 import {useContext, useState} from "react";
 import {login} from "../../services/auth.ts";
-import {useNavigate} from "react-router";
+import {useNavigate} from "react-router-dom";
 
 export default function LoginPage() {
 
     // On récupère le context
-    const { setIsLogged, setRole, setPseudo, setToken} = useContext(LoginContext)
+    const { setIsLogged, isLogged, setRole, setPseudo, setToken, logout} = useContext(LoginContext)
     const [isLoading, setIsLoading] = useState(false);
     const [loginError, setLoginError] = useState("");
 
@@ -76,13 +76,26 @@ export default function LoginPage() {
             localStorage.setItem("role", data.user.role)
             localStorage.setItem("pseudo", data.user.pseudo)
 
-            navigate('/account');
+            // Redirection selon le rôle
+            navigate(data.user.role === "ADMIN" ? "/admin" : "/");
 
-        } catch (error) {
-            setLoginError("Email ou mot de passe incorrect");
+        } catch (error: any) {
+            console.error("Erreur de connexion:", error);
+
+            // Message d'erreur plus précis
+            const errorMessage = error.response?.data?.message ||
+                "Email ou mot de passe incorrect";
+
+            setLoginError(errorMessage);
         } finally {
             setIsLoading(false);
         }
+    }
+
+    // Fonction de déconnexion corrigée
+    const logoutAndNavigate = () => {
+        logout();
+        navigate("/");
     }
 
     return(
@@ -96,119 +109,184 @@ export default function LoginPage() {
                     ]}
                 />
 
-                {/* Formulaire de connexion */}
-                <Box
-                    component="form"
-                    onSubmit={handleSubmit}
-                    sx={{
-                        mt: 20,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 3,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        width: '100%',
-                        maxWidth: '800px',
-                        mx: 'auto',
-                        px: 3,
-                    }}
-                >
-                    <Typography
+                {/* Si déjà connecté */}
+                {isLogged ? (
+                    <Box
                         sx={{
-                            textAlign: 'center',
-                            fontFamily: "'Lexend Deca', sans-serif",
-                            fontSize: { xs: '0.85rem', md: '1rem' },
-                            fontWeight: 700,
-                            textTransform: 'uppercase',
-                            color: colors.primaryGreen,
-                            letterSpacing: '0.1em',
-                            mb: 2,
+                            mt: 20,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 3,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            width: '100%',
+                            maxWidth: '600px',
+                            mx: 'auto',
+                            px: 3,
+                            padding: 4,
+                            borderRadius: 2,
+                            boxShadow: 3,
                         }}
                     >
-                        CONNEXION
-                    </Typography>
-
-                    {/* Message d'erreur global */}
-                    {loginError && (
-                        <Alert severity="error" sx={{ mb: 2 }}>
-                            {loginError}
-                        </Alert>
-                    )}
-
-                    {/* Champ Email */}
-                    <Box sx={{ width: '100%'}}>
-                        <Input
-                            label="Email"
-                            type="email"
-                            placeholder="votre@email.com"
-                            value={email}
-                            onChange={(e) => {
-                                setEmail(e.target.value);
-                                if (touched.email) {
-                                    setEmailError(validateEmail(e.target.value));
-                                }
+                        <Typography
+                            variant="h5"
+                            sx={{
+                                fontFamily: "'Lexend Deca', sans-serif",
+                                fontWeight: 700,
+                                textAlign: 'center',
+                                mb: 2,
                             }}
-                            onBlur={() => {
-                                setTouched({ ...touched, email: true });
-                                setEmailError(validateEmail(email));
-                            }}
-                            error={touched.email && !!emailError}
-                            helperText={touched.email ? emailError : ''}
-                            required
-                        />
+                        >
+                            Vous êtes déjà connecté
+                        </Typography>
 
-                        {/* Champ Mot de passe */}
-                        <Input
-                            label="Mot de passe"
-                            type="password"
-                            placeholder="Votre mot de passe"
-                            value={password}
-                            onChange={(e) => {
-                                setPassword(e.target.value);
-                                if (touched.password) {
-                                    setPasswordError(validatePassword(e.target.value));
-                                }
-                            }}
-                            onBlur={() => {
-                                setTouched({ ...touched, password: true });
-                                setPasswordError(validatePassword(password))
-                            }}
-                            error={touched.password && !!passwordError}
-                            helperText={touched.password ? passwordError : ''}
-                            required
-                        />
-
-                        {/* Bouton de soumission */}
+                        {/* Boutons vu quand connecté */}
                         <PrimaryButton
-                            type="submit"
-                            disabled={!isFormValid() || isLoading}
-                            text={isLoading ? "Connexion en cours..." : "Se connecter"}
+                            text="Se déconnecter"
+                            onClick={logoutAndNavigate}
+                            fullWidth
                         />
-                    </Box>
 
-                    {/* Lien mot de passe oublié
-                    <Box sx={{ textAlign: 'center', mt: 2 }}>
-                        <Typography variant="body2">
-                            <a href="/forgot-password" style={{ textDecoration: 'none' }}>
-                                Mot de passe oublié ?
-                            </a>
-                        </Typography>
-                    </Box>*/}
+                        <Link
+                            onClick={() => navigate('/')}
+                            underline="none"
+                            sx={{
+                                fontWeight: 'bold',
+                                color: colors.primaryGreen,
+                                '&:hover': {
+                                    textDecoration: 'underline'
+                                }
+                            }}
+                        >
+                            Aller à l'accueil
+                        </Link>
 
-                    {/* Lien vers inscription */}
-                    <Box sx={{ textAlign: 'center', mt: 2 }}>
-                        <Typography variant="body1">
-                            Pas encore de compte ?{' '}
-                            <a href="/register"
-                               style={{
-                                   fontWeight: 'bold',
-                                   color: colors.primaryGreen,
-                               }}>
-                                S'inscrire
-                            </a>
-                        </Typography>
+                        <Link
+                            onClick={() => navigate('/account')}
+                            underline="none"
+                            sx={{
+                                fontWeight: 'bold',
+                                color: colors.primaryGreen,
+                                '&:hover': {
+                                    textDecoration: 'underline'
+                                }
+                            }}
+                        >
+                            Accéder à votre compte
+                        </Link>
                     </Box>
-                </Box>
+                ) : (
+                    /* Formulaire de connexion */
+                    <Box
+                        component="form"
+                        onSubmit={handleSubmit}
+                        sx={{
+                            mt: 20,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 3,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            width: '100%',
+                            maxWidth: '800px',
+                            mx: 'auto',
+                            px: 3,
+                        }}
+                    >
+                        <Typography
+                            sx={{
+                                textAlign: 'center',
+                                fontFamily: "'Lexend Deca', sans-serif",
+                                fontSize: { xs: '0.85rem', md: '1rem' },
+                                fontWeight: 700,
+                                textTransform: 'uppercase',
+                                color: colors.primaryGreen,
+                                letterSpacing: '0.1em',
+                                mb: 2,
+                            }}
+                        >
+                            CONNEXION
+                        </Typography>
+
+                        {/* Message d'erreur global */}
+                        {loginError && (
+                            <Alert severity="error" sx={{ mb: 2, width: '100%' }}>
+                                {loginError}
+                            </Alert>
+                        )}
+
+                        <Box sx={{ width: '100%'}}>
+                            {/* Champ Email */}
+                            <Input
+                                label="Email"
+                                type="email"
+                                placeholder="votre@email.com"
+                                value={email}
+                                onChange={(e) => {
+                                    setEmail(e.target.value);
+                                    if (touched.email) {
+                                        setEmailError(validateEmail(e.target.value));
+                                    }
+                                }}
+                                onBlur={() => {
+                                    setTouched({ ...touched, email: true });
+                                    setEmailError(validateEmail(email));
+                                }}
+                                error={touched.email && !!emailError}
+                                helperText={touched.email ? emailError : ''}
+                                required
+                            />
+
+                            {/* Champ Mot de passe */}
+                            <Input
+                                label="Mot de passe"
+                                type="password"
+                                placeholder="Votre mot de passe"
+                                value={password}
+                                onChange={(e) => {
+                                    setPassword(e.target.value);
+                                    if (touched.password) {
+                                        setPasswordError(validatePassword(e.target.value));
+                                    }
+                                }}
+                                onBlur={() => {
+                                    setTouched({ ...touched, password: true });
+                                    setPasswordError(validatePassword(password))
+                                }}
+                                error={touched.password && !!passwordError}
+                                helperText={touched.password ? passwordError : ''}
+                                required
+                            />
+
+                            {/* Bouton de soumission */}
+                            <PrimaryButton
+                                type="submit"
+                                disabled={!isFormValid() || isLoading}
+                                text={isLoading ? "Connexion en cours..." : "Se connecter"}
+                            />
+                        </Box>
+
+                        {/* Lien vers inscription */}
+                        <Box sx={{ textAlign: 'center', mt: 2 }}>
+                            <Typography variant="body1">
+                                Pas encore de compte ?{' '}
+                                <Link
+                                    onClick={() => navigate('/register')}
+                                    underline="none"
+                                    sx={{
+                                        fontWeight: 'bold',
+                                        color: colors.primaryGreen,
+                                        '&:hover': {
+                                            textDecoration: 'underline'
+                                        }
+                                    }}
+                                >
+                                    S'inscrire
+                                </Link>
+                            </Typography>
+                        </Box>
+                    </Box>
+                )}
             </Container>
         </Box>
     )

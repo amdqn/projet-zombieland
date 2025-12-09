@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { activitiesData } from '../../mocks';
 import {
@@ -23,6 +24,11 @@ export const ActivityDetail = () => {
   const activity = activitiesData.activities.find(
     (act) => act.id === parseInt(id || '0')
   );
+
+  // Remonter en haut de page à chaque navigation vers une activité
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [id]);
 
   if (!activity) {
     return (

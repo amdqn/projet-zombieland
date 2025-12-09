@@ -7,6 +7,9 @@ const StyledActivityCard = styled(Card)({
   backgroundColor: colors.secondaryDark,
   border: `1px solid ${colors.secondaryGrey}`,
   height: '100%',
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'column',
   cursor: 'pointer',
   transition: 'all 0.3s ease',
   '&:hover': {
@@ -28,7 +31,7 @@ interface ActivityCardProps {
 
 export const ActivityCard = ({ id, name, category, image }: ActivityCardProps) => {
   return (
-    <Link to={`/activities/${id}`} style={{ textDecoration: 'none' }}>
+    <Link to={`/activities/${id}`} style={{ textDecoration: 'none', width: '100%' }}>
       <StyledActivityCard>
         {image && (
           <CardMedia

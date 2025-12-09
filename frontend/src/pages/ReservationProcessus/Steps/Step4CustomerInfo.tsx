@@ -4,16 +4,14 @@ import { InformationCard } from "../../../components/cards";
 import EmailIcon from '@mui/icons-material/Email';
 import { useState, useEffect } from "react";
 import { Input } from "../../../components/common";
+import { useReservationStore } from "../../../stores/reservationStore";
 
-interface Step4CustomerInfoProps {
-  onDataChange: (data: { firstName: string; lastName: string; email: string; phone: string }) => void;
-}
-
-export const Step4CustomerInfo = ({ onDataChange }: Step4CustomerInfoProps) => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
+export const Step4CustomerInfo = () => {
+  const { customerInfo, setCustomerInfo } = useReservationStore();
+  const [firstName, setFirstName] = useState(customerInfo?.firstName || '');
+  const [lastName, setLastName] = useState(customerInfo?.lastName || '');
+  const [email, setEmail] = useState(customerInfo?.email || '');
+  const [phone, setPhone] = useState(customerInfo?.phone || '');
 
   // États pour les erreurs
   const [firstNameError, setFirstNameError] = useState('');
@@ -67,10 +65,12 @@ export const Step4CustomerInfo = ({ onDataChange }: Step4CustomerInfoProps) => {
     return '';
   };
 
-  // Remonter les données au parent à chaque changement
+  // Synchroniser avec le store à chaque changement
   useEffect(() => {
-    onDataChange({ firstName, lastName, email, phone });
-  }, [firstName, lastName, email, phone, onDataChange]);
+    if (firstName || lastName || email || phone) {
+      setCustomerInfo({ firstName, lastName, email, phone });
+    }
+  }, [firstName, lastName, email, phone, setCustomerInfo]);
 
   return (
     <Box>

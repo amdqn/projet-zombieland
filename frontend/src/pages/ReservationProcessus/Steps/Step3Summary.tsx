@@ -4,17 +4,21 @@ import WarningIcon from '@mui/icons-material/Warning';
 import { colors } from "../../../theme";
 import { InformationCard } from "../../../components/cards";
 import { ticketsMock } from "../../../mocks";
+import { useReservationStore } from "../../../stores/reservationStore";
 
-interface Step3SummaryProps {
-  tickets?: Array<{ ticketId: number; quantity: number }>;
-  total?: number;
-  date?: string;
-  onDataChange?: (data: { acceptedTerms: boolean }) => void;
-}
+export const Step3Summary = () => {
+  const { tickets, total, date, acceptedTerms, setAcceptedTerms } = useReservationStore();
+  const [localAcceptedTerms, setLocalAcceptedTerms] = useState(acceptedTerms);
 
+  // Synchroniser avec le store
+  useEffect(() => {
+    setLocalAcceptedTerms(acceptedTerms);
+  }, [acceptedTerms]);
 
-export const Step3Summary = ({ tickets = [], total = 0, date, onDataChange }: Step3SummaryProps) => {
-  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const handleAcceptedTermsChange = (value: boolean) => {
+    setLocalAcceptedTerms(value);
+    setAcceptedTerms(value);
+  };
 
   const formatDateShort = (dateString: string): string => {
     if (!dateString) return '';
@@ -40,14 +44,6 @@ export const Step3Summary = ({ tickets = [], total = 0, date, onDataChange }: St
       };
     })
     .filter((item): item is { ticketId: number; quantity: number; ticket: typeof ticketsMock[0] } => item !== null);
-
-  // Appeler onDataChange seulement quand acceptedTerms change
-  useEffect(() => {
-    if (onDataChange) {
-      onDataChange({ acceptedTerms });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [acceptedTerms]);
 
   return (
     <Box>
@@ -238,8 +234,8 @@ export const Step3Summary = ({ tickets = [], total = 0, date, onDataChange }: St
         <InformationCard borderColor="green">
           <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
             <Checkbox
-              checked={acceptedTerms}
-              onChange={(e) => setAcceptedTerms(e.target.checked)}
+              checked={localAcceptedTerms}
+              onChange={(e) => handleAcceptedTermsChange(e.target.checked)}
               sx={{
                 color: colors.primaryGreen,
                 '&.Mui-checked': {

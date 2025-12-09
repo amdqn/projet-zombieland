@@ -1,22 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { Calendar } from "../../../components/common";
 import { InformationCard } from "../../../components/cards";
 import { colors } from "../../../theme/theme";
+import { useReservationStore } from "../../../stores/reservationStore";
 
-interface Step2SelectDateProps {
-  onDataChange?: (data: { date: Date | null }) => void;
-}
+export const Step2SelectDate = () => {
+  const { date, setDate } = useReservationStore();
+  const [selectedDate, setSelectedDate] = useState<Date | null>(
+    date ? new Date(date) : null
+  );
 
-export const Step2SelectDate = ({ onDataChange }: Step2SelectDateProps) => {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  // Synchroniser selectedDate avec le store
+  useEffect(() => {
+    if (date) {
+      setSelectedDate(new Date(date));
+    }
+  }, [date]);
 
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
-    if (onDataChange) {
-      onDataChange({ date });
-    }
+    setDate(date.toISOString());
   };
 
   return (

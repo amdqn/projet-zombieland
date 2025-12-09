@@ -3,14 +3,10 @@ import { colors } from "../../../theme";
 import { InformationCard } from "../../../components/cards";
 import EmailIcon from '@mui/icons-material/Email';
 import { ticketsMock } from "../../../mocks";
+import { useReservationStore } from "../../../stores/reservationStore";
 
-interface Step7OrderConfirmedProps {
-  tickets: Array<{ ticketId: number; quantity: number }>;
-  total: number;
-  date?: string;
-}
-
-export const Step7OrderConfirmed = ({ tickets, total, date }: Step7OrderConfirmedProps) => {
+export const Step7OrderConfirmed = () => {
+  const { tickets, total, date } = useReservationStore();
   // Générer un numéro de réservation aléatoire
   const reservationNumber = `ZL${Date.now().toString().slice(-8)}`;
 

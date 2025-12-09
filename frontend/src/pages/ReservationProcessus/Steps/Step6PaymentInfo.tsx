@@ -4,22 +4,14 @@ import { Input } from "../../../components/common";
 import { useState, useEffect } from "react";
 import { InformationCard } from "../../../components/cards";
 import LockIcon from "@mui/icons-material/Lock";
+import { useReservationStore } from "../../../stores/reservationStore";
 
-interface Step6PaymentInfoProps {
-  onDataChange: (data: {
-    cardNumber: string;
-    month: string;
-    year: string;
-    cvv: string;
-  }) => void;
-  total: number;
-}
-
-export const Step6PaymentInfo = ({ onDataChange, total }: Step6PaymentInfoProps) => {
-  const [cardNumber, setCardNumber] = useState("");
-  const [month, setMonth] = useState("");
-  const [year, setYear] = useState("");
-  const [cvv, setCvv] = useState("");
+export const Step6PaymentInfo = () => {
+  const { paymentInfo, setPaymentInfo, total } = useReservationStore();
+  const [cardNumber, setCardNumber] = useState(paymentInfo?.cardNumber || "");
+  const [month, setMonth] = useState(paymentInfo?.month || "");
+  const [year, setYear] = useState(paymentInfo?.year || "");
+  const [cvv, setCvv] = useState(paymentInfo?.cvv || "");
 
   // États pour les erreurs
   const [cardNumberError, setCardNumberError] = useState("");
@@ -80,10 +72,12 @@ export const Step6PaymentInfo = ({ onDataChange, total }: Step6PaymentInfoProps)
     return "";
   };
 
-  // Remonter les données au parent à chaque changement
+  // Synchroniser avec le store à chaque changement
   useEffect(() => {
-    onDataChange({ cardNumber, month, year, cvv });
-  }, [cardNumber, month, year, cvv, onDataChange]);
+    if (cardNumber || month || year || cvv) {
+      setPaymentInfo({ cardNumber, month, year, cvv });
+    }
+  }, [cardNumber, month, year, cvv, setPaymentInfo]);
 
   return (
     <Box>

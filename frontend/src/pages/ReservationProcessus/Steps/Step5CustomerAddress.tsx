@@ -3,16 +3,14 @@ import { colors } from "../../../theme";
 import { Input, Select } from "../../../components/common";
 import { useState, useEffect } from "react";
 import { countries } from "../../../utils/countries";
+import { useReservationStore } from "../../../stores/reservationStore";
 
-interface Step5CustomerAddressProps {
-  onDataChange: (data: { address: string; city: string; zipCode: string; country: string }) => void;
-}
-
-export const Step5CustomerAddress = ({ onDataChange }: Step5CustomerAddressProps) => {
-  const [address, setAddress] = useState('');
-  const [city, setCity] = useState('');
-  const [zipCode, setZipCode] = useState('');
-  const [country, setCountry] = useState('');
+export const Step5CustomerAddress = () => {
+  const { customerAddress, setCustomerAddress } = useReservationStore();
+  const [address, setAddress] = useState(customerAddress?.address || '');
+  const [city, setCity] = useState(customerAddress?.city || '');
+  const [zipCode, setZipCode] = useState(customerAddress?.zipCode || '');
+  const [country, setCountry] = useState(customerAddress?.country || '');
 
   // États pour les erreurs
   const [addressError, setAddressError] = useState('');
@@ -62,10 +60,12 @@ export const Step5CustomerAddress = ({ onDataChange }: Step5CustomerAddressProps
   };
 
 
-  // Remonter les données au parent à chaque changement
+  // Synchroniser avec le store à chaque changement
   useEffect(() => {
-    onDataChange({ address, city, zipCode, country });
-  }, [address, city, zipCode, country, onDataChange]);
+    if (address || city || zipCode || country) {
+      setCustomerAddress({ address, city, zipCode, country });
+    }
+  }, [address, city, zipCode, country, setCustomerAddress]);
 
   return (
     <Box>

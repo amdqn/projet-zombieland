@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Typography, Stack, IconButton, Button, Radio } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -7,24 +7,27 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { ticketsMock, type Ticket } from '../../../mocks';
 import { InformationCard } from '../../../components/cards';
 import { colors } from '../../../theme/theme';
-
-interface TicketSelection {
-  ticketId: number;
-  quantity: number;
-}
+import { useReservationStore } from '../../../stores/reservationStore';
 
 interface Step1SelectTicketProps {
-  onDataChange?: (data: { tickets: TicketSelection[]; total: number }) => void;
   onViewChange?: (view: 'list' | 'quantity') => void;
 }
 
-export const Step1SelectTicket = ({ onDataChange, onViewChange }: Step1SelectTicketProps) => {
+export const Step1SelectTicket = ({ onViewChange }: Step1SelectTicketProps) => {
+  const { tickets, setTickets } = useReservationStore();
+  
+  // Initialiser selectedTickets depuis le store
   const [selectedTickets, setSelectedTickets] = useState<Map<number, number>>(
-    new Map()
+    new Map(tickets.map(t => [t.ticketId, t.quantity]))
   );
   const [currentView, setCurrentView] = useState<'list' | 'quantity'>('list');
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [tempQuantity, setTempQuantity] = useState<number>(0);
+
+  // Synchroniser selectedTickets avec le store quand tickets change
+  useEffect(() => {
+    setSelectedTickets(new Map(tickets.map(t => [t.ticketId, t.quantity])));
+  }, [tickets]);
 
   const handleQuantityChange = (ticketId: number, quantity: number) => {
     const newSelections = new Map(selectedTickets);
@@ -43,14 +46,12 @@ export const Step1SelectTicket = ({ onDataChange, onViewChange }: Step1SelectTic
       return sum + (ticket ? ticket.price * qty : 0);
     }, 0);
 
-    // Envoyer les données au parent
-    if (onDataChange) {
-      const tickets = Array.from(newSelections.entries()).map(([ticketId, quantity]) => ({
-        ticketId,
-        quantity,
-      }));
-      onDataChange({ tickets, total });
-    }
+    // Sauvegarder dans le store
+    const ticketsArray = Array.from(newSelections.entries()).map(([ticketId, quantity]) => ({
+      ticketId,
+      quantity,
+    }));
+    setTickets(ticketsArray, total);
   };
 
   const handleTicketSelect = (ticketId: number) => {

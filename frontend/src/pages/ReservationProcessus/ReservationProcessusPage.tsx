@@ -1,28 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Box, Container, Typography } from '@mui/material';
 import { CustomBreadcrumbs, BackButton, PrimaryButton } from '../../components/common';
 import { Step1SelectTicket, Step2SelectDate, Step3Summary, Step4CustomerInfo, Step5CustomerAddress, Step6PaymentInfo, Step7OrderConfirmed } from './Steps';
 import { colors } from '../../theme/theme';
-
-interface ReservationData {
-  tickets: Array<{ ticketId: number; quantity: number }>;
-  total: number;
-  date?: string;
-  time?: string;
-  customerInfo?: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone: string;
-  };
-  customerAddress?: {
-    address: string;
-    city: string;
-    zipCode: string;
-    country: string;
-  };
-  acceptedTerms: boolean;
-}
+import { useReservationStore } from '../../stores/reservationStore';
 
 const steps = [
   'Choix des billets',
@@ -35,81 +17,65 @@ const steps = [
 ];
 
 export const ReservationProcessusPage = () => {
-  const [activeStep, setActiveStep] = useState(0);
-  const [reservationData, setReservationData] = useState<ReservationData>({
-    tickets: [],
-    total: 0,
-    acceptedTerms: false,
-  });
+  const [searchParams, setSearchParams] = useSearchParams();
+  const stepFromUrl = parseInt(searchParams.get('step') || '0', 10);
+  const [activeStep, setActiveStep] = useState(
+    stepFromUrl >= 0 && stepFromUrl < steps.length ? stepFromUrl : 0
+  );
   const [step1View, setStep1View] = useState<'list' | 'quantity'>('list');
+  
+  // Utilisation du store Zustand
+  const {
+    tickets,
+    total,
+    date,
+    acceptedTerms,
+    customerInfo,
+    customerAddress,
+    paymentInfo,
+    reset,
+  } = useReservationStore();
+
+  // Lire l'étape depuis l'URL au montage et quand l'URL change
+  useEffect(() => {
+    const stepFromUrl = parseInt(searchParams.get('step') || '0', 10);
+    if (stepFromUrl >= 0 && stepFromUrl < steps.length && stepFromUrl !== activeStep) {
+      setActiveStep(stepFromUrl);
+    }
+  }, [searchParams, activeStep]);
 
   const handleNext = () => {
     if (activeStep < steps.length - 1) {
-      setActiveStep((prev) => prev + 1);
+      const newStep = activeStep + 1;
+      setActiveStep(newStep);
+      setSearchParams({ step: newStep.toString() }, { replace: true });
+      // Scroll vers le haut de la page
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
   const handleBack = () => {
     if (activeStep > 0) {
-      setActiveStep((prev) => prev - 1);
+      const newStep = activeStep - 1;
+      setActiveStep(newStep);
+      setSearchParams({ step: newStep.toString() }, { replace: true });
+      // Scroll vers le haut de la page
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  };
-
-  const handleStep1Change = (data: { tickets: Array<{ ticketId: number; quantity: number }>; total: number }) => {
-    setReservationData((prev) => ({
-      ...prev,
-      tickets: data.tickets,
-      total: data.total,
-    }));
-  };
-
-  const handleStep2Change = (data: { date: Date | null }) => {
-    setReservationData((prev) => ({
-      ...prev,
-      date: data.date ? data.date.toISOString() : undefined,
-    }));
-  };
-
-  const handleStep3Change = (data: { acceptedTerms: boolean }) => {
-    setReservationData((prev) => ({
-      ...prev,
-      acceptedTerms: data.acceptedTerms,
-    }));
-  };
-
-  const handleStep4Change = (data: { firstName: string; lastName: string; email: string; phone: string }) => {
-    setReservationData((prev) => ({
-      ...prev,
-      customerInfo: data,
-    }));
-  };
-
-  const handleStep5Change = (data: { address: string; city: string; zipCode: string; country: string }) => {
-    setReservationData((prev) => ({
-      ...prev,
-      customerAddress: data,
-    }));
-  };
-
-  const handleStep6Change = (data: { cardNumber: string; month: string; year: string; cvv: string }) => {
-    setReservationData((prev) => ({
-      ...prev,
-      paymentInfo: data,
-    }));
   };
 
   const canProceed = () => {
     switch (activeStep) {
       case 0:
-        return reservationData.tickets.length > 0;
+        return tickets.length > 0;
       case 1:
-        return !!reservationData.date;
+        return !!date;
       case 2:
-        return !!reservationData.acceptedTerms;
+        return acceptedTerms;
       case 3:
         // Vérifier que tous les champs sont remplis et valides
-        if (!reservationData.customerInfo) return false;
-        const { firstName, lastName, email, phone } = reservationData.customerInfo;
+        if (!customerInfo) return false;
+        const { firstName, lastName, email, phone } = customerInfo;
 
         // Vérifier que tous les champs sont remplis
         if (!firstName.trim() || !lastName.trim() || !email.trim() || !phone.trim()) {
@@ -132,8 +98,8 @@ export const ReservationProcessusPage = () => {
         return true;
       case 4: {
         // Vérifier que tous les champs sont remplis et valides
-        if (!reservationData.customerAddress) return false;
-        const { address, city, zipCode, country } = reservationData.customerAddress;
+        if (!customerAddress) return false;
+        const { address, city, zipCode, country } = customerAddress;
 
         // Vérifier que tous les champs sont remplis
         if (!address.trim() || !city.trim() || !zipCode.trim() || !country.trim()) {
@@ -149,8 +115,8 @@ export const ReservationProcessusPage = () => {
       }
       case 5: {
         // Vérifier que tous les champs sont remplis et valides
-        if (!reservationData.paymentInfo) return false;
-        const { cardNumber, month, year, cvv } = reservationData.paymentInfo;
+        if (!paymentInfo) return false;
+        const { cardNumber, month, year, cvv } = paymentInfo;
 
         // Vérifier que tous les champs sont remplis
         if (!cardNumber.trim() || !month.trim() || !year.trim() || !cvv.trim()) {
@@ -191,36 +157,19 @@ export const ReservationProcessusPage = () => {
   const renderStepContent = (step: number) => {
     switch (step) {
       case 0:
-        return <Step1SelectTicket onDataChange={handleStep1Change} onViewChange={setStep1View} />;
+        return <Step1SelectTicket onViewChange={setStep1View} />;
       case 1:
-        return <Step2SelectDate onDataChange={handleStep2Change} />;
+        return <Step2SelectDate />;
       case 2:
-        return (
-          <Step3Summary
-            tickets={reservationData.tickets}
-            total={reservationData.total}
-            date={reservationData.date}
-            onDataChange={handleStep3Change}
-          />
-        );
+        return <Step3Summary />;
       case 3:
-        return (
-          <Step4CustomerInfo onDataChange={handleStep4Change} />
-        )
+        return <Step4CustomerInfo />;
       case 4:
-        return (
-          <Step5CustomerAddress onDataChange={handleStep5Change} />
-        )
+        return <Step5CustomerAddress />;
       case 5:
-        return <Step6PaymentInfo onDataChange={handleStep6Change} total={reservationData.total} />;
+        return <Step6PaymentInfo />;
       case 6:
-        return (
-          <Step7OrderConfirmed
-            tickets={reservationData.tickets}
-            total={reservationData.total}
-            date={reservationData.date}
-          />
-        );
+        return <Step7OrderConfirmed />;
       default:
         return null;
     }
@@ -314,12 +263,15 @@ export const ReservationProcessusPage = () => {
                   activeStep === 6
                     ? "RETOUR À L'ACCUEIL →"
                     : activeStep === 5
-                    ? `PAYER ${reservationData.total.toFixed(2).replace('.', ',')} € →`
+                    ? `PAYER ${total.toFixed(2).replace('.', ',')} € →`
                     : activeStep === steps.length - 1
                     ? 'Confirmer'
                     : 'CONTINUER →'
                 }
-                onClick={activeStep === 6 ? () => window.location.href = '/' : handleNext}
+                onClick={activeStep === 6 ? () => {
+                  reset();
+                  window.location.href = '/';
+                } : handleNext}
                 fullWidth={true}
                 disabled={activeStep === 6 ? false : !canProceed()}
               />

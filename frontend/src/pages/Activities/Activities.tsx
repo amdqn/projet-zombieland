@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import {activitiesData} from '../../mocks/activities'
+import { activitiesData } from '../../mocks'
 
 export const Activities = () => {
   const activities = activitiesData.activities; 

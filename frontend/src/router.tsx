@@ -4,6 +4,7 @@ import { Activities } from './pages/Activities';
 import { ActivityDetail } from './pages/ActivityDetail';
 import RootPage from './pages/RootPage/RootPage';
 import HomePage from "./pages/HomePage/HomePage.tsx";
+import { ReservationProcessusPage } from './pages/ReservationProcessus/ReservationProcessusPage';
 
 export const router = createBrowserRouter([
   {
@@ -44,7 +45,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'reservations',
-        // element: <Reservations />, // Réservations
+        element: <ReservationProcessusPage />, // Réservations
       },
       {
         path: 'contact',

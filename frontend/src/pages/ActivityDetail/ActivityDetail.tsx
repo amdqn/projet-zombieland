@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { activitiesData } from '../../mocks/activities';
+import { activitiesData } from '../../mocks';
 import {
   Box,
   Container,

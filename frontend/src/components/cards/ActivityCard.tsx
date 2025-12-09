@@ -1,4 +1,4 @@
-import { Card, CardContent, CardMedia, Chip, Typography } from '@mui/material';
+import { Card, CardContent, CardMedia, Chip, Stack, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { colors } from '../../theme/theme';
 import { Link } from 'react-router-dom';
@@ -27,11 +27,26 @@ interface ActivityCardProps {
   name: string;
   category: string;
   image?: string;
+  thrill?: number;
+  duration?: string;
+  description?: string;
+  isAttraction?: boolean;
 }
 
-export const ActivityCard = ({ id, name, category, image }: ActivityCardProps) => {
+export const ActivityCard = ({
+  id,
+  name,
+  category,
+  image,
+  thrill,
+  duration,
+  description,
+  isAttraction = false,
+}: ActivityCardProps) => {
+  const detailPath = isAttraction ? `/attractions/${id}` : `/activities/${id}`;
+
   return (
-    <Link to={`/activities/${id}`} style={{ textDecoration: 'none', width: '100%' }}>
+    <Link to={detailPath} style={{ textDecoration: 'none', width: '100%' }}>
       <StyledActivityCard>
         {image && (
           <CardMedia
@@ -45,27 +60,76 @@ export const ActivityCard = ({ id, name, category, image }: ActivityCardProps) =
             }}
           />
         )}
-        <CardContent>
+        <CardContent sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 1 }}>
+          {(thrill !== undefined || duration) && (
+            <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" useFlexGap>
+              <Chip
+                label={category.toUpperCase()}
+                size="small"
+                sx={{
+                  backgroundColor: colors.secondaryGrey,
+                  color: colors.white,
+                  fontWeight: 700,
+                  letterSpacing: '0.03em',
+                }}
+              />
+              {thrill !== undefined && (
+                <Chip
+                  label={`Frisson ${thrill}/5`}
+                  size="small"
+                  sx={{
+                    backgroundColor: colors.primaryRed,
+                    color: colors.white,
+                    fontWeight: 700,
+                  }}
+                />
+              )}
+              {duration && (
+                <Chip
+                  label={duration}
+                  size="small"
+                  sx={{
+                    backgroundColor: colors.secondaryGrey,
+                    color: colors.white,
+                    fontWeight: 700,
+                  }}
+                />
+              )}
+            </Stack>
+          )}
+          {!thrill && !duration && (
+            <Chip
+              label={category.toUpperCase()}
+              size="small"
+              sx={{
+                backgroundColor: colors.secondaryGrey,
+                color: '#FFFFFF',
+                fontFamily: "'Lexend Deca', sans-serif",
+                fontSize: { xs: '0.65rem', md: '0.75rem' },
+                fontWeight: 600,
+              }}
+            />
+          )}
           <Typography
             variant="h5"
-            sx={{
-              mb: 1,
-              fontSize: { xs: '1.1rem', md: '1.5rem' },
-            }}
+            sx={{ fontSize: { xs: '1.15rem', md: '1.35rem' }, lineHeight: 1.2 }}
           >
             {name}
           </Typography>
-          <Chip
-            label={category.toUpperCase()}
-            size="small"
-            sx={{
-              backgroundColor: colors.secondaryGrey,
-              color: '#FFFFFF',
-              fontFamily: "'Lexend Deca', sans-serif",
-              fontSize: { xs: '0.65rem', md: '0.75rem' },
-              fontWeight: 600,
-            }}
-          />
+          {description && (
+            <Typography
+              variant="body2"
+              sx={{
+                color: colors.secondaryGrey,
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+              }}
+            >
+              {description}
+            </Typography>
+          )}
         </CardContent>
       </StyledActivityCard>
     </Link>

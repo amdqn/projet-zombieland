@@ -1,9 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
   Box,
-  Card,
-  CardContent,
-  CardMedia,
   Chip,
   Container,
   Divider,
@@ -15,12 +12,12 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { Link } from 'react-router-dom';
 import { getActivities } from '../../services/activities';
 import { getAttractions } from '../../services/attractions';
 import { colors } from '../../theme';
 import { CustomBreadcrumbs } from '../../components/common';
 import { HeroSection } from '../../components/hero/HeroSection';
+import { ActivityCard } from '../../components/cards/ActivityCard';
 import type { Activity } from '../../@types/activity';
 import type { Attraction } from '../../@types/attraction';
 
@@ -439,84 +436,16 @@ export const Activities = () => {
           >
             {currentItems.map((item) => (
               <Box key={item.id} sx={{ display: 'flex' }}>
-                <Card
-                  component={Link}
-                  to={tabValue === 0 ? `/activities/${item.id}` : `/attractions/${item.id}`}
-                  sx={{
-                    backgroundColor: colors.secondaryDark,
-                    border: `1px solid ${colors.secondaryGrey}`,
-                    width: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    textDecoration: 'none',
-                    color: 'inherit',
-                    transition: 'all 0.3s ease',
-                    height: '100%',
-                    opacity: tabValue === 0 ? 1 : 0.95,
-                    '&:hover': {
-                      borderColor: colors.primaryGreen,
-                      transform: 'translateY(-5px)',
-                      boxShadow: `0 5px 20px ${colors.primaryGreen}40`,
-                    },
-                  }}
-                >
-                  {item.image && (
-                    <CardMedia
-                      component="img"
-                      height="200"
-                      image={item.image}
-                      alt={item.name}
-                      sx={{ objectFit: 'cover', filter: 'brightness(0.7)' }}
-                    />
-                  )}
-                  <CardContent sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 1 }}>
-                    <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" useFlexGap>
-                      <Chip
-                        label={item.categoryLabel.toUpperCase()}
-                        size="small"
-                        sx={{
-                          backgroundColor: colors.secondaryGrey,
-                          color: colors.white,
-                          fontWeight: 700,
-                          letterSpacing: '0.03em',
-                        }}
-                      />
-                      <Chip
-                        label={`Frisson ${item.thrill}/5`}
-                        size="small"
-                        sx={{
-                          backgroundColor: colors.primaryRed,
-                          color: colors.white,
-                          fontWeight: 700,
-                        }}
-                      />
-                      <Chip
-                        label={item.duration}
-                        size="small"
-                        sx={{
-                          backgroundColor: colors.secondaryGrey,
-                          color: colors.white,
-                          fontWeight: 700,
-                        }}
-                      />
-                    </Stack>
-
-                    <Typography
-                      variant="h5"
-                      sx={{ fontSize: { xs: '1.15rem', md: '1.35rem' }, lineHeight: 1.2 }}
-                    >
-                      {item.name}
-                    </Typography>
-                    {item.description && (
-                      <Typography
-                        variant="body2"
-                        sx={{ color: colors.secondaryGrey, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
-                      >
-                        {item.description}
-                      </Typography>
-                    )}
-                  </CardContent>
-                </Card>
+                <ActivityCard
+                  id={item.id}
+                  name={item.name}
+                  category={item.categoryLabel}
+                  image={item.image}
+                  thrill={item.thrill}
+                  duration={item.duration}
+                  description={item.description}
+                  isAttraction={tabValue === 1}
+                />
               </Box>
             ))}
           </Box>

@@ -55,56 +55,78 @@ const attractionData = [
   {
     name: 'The Walking Dead Experience',
     description: 'Parcours immersif au cœur de l\'apocalypse zombie avec effets spéciaux et acteurs',
+    thrill_level: 4,
+    duration: 30,
     categoryIndex: 1, // Expériences immersives
   },
   {
     name: 'Zombie Apocalypse Ride',
     description: 'Montagnes russes extrêmes dans un décor post-apocalyptique',
+    thrill_level: 5,
+    duration: 5,
     categoryIndex: 0, // Attractions extrêmes
   },
   {
     name: 'Labyrinthe des Infectés',
     description: 'Trouvez la sortie avant que les zombies ne vous rattrapent',
+    thrill_level: 2,
+    duration: 20,
     categoryIndex: 2, // Activités familiales
   },
   {
     name: 'Arena des Morts-Vivants',
     description: 'Grand spectacle avec effets pyrotechniques et cascades',
+    thrill_level: 3,
+    duration: 45,
     categoryIndex: 3, // Spectacles
   },
   {
     name: 'Tour de la Chute Libre',
     description: 'Chute libre de 80 mètres dans une tour abandonnée infestée de zombies',
+    thrill_level: 5,
+    duration: 3,
     categoryIndex: 0, // Attractions extrêmes
   },
   {
     name: 'Bunker VR Experience',
     description: 'Expérience en réalité virtuelle : survivez dans un bunker assiégé',
+    thrill_level: 4,
+    duration: 15,
     categoryIndex: 1, // Expériences immersives
   },
   {
     name: 'Train Fantôme Apocalypse',
     description: 'Parcours en petit train à travers une ville ravagée par les zombies',
+    thrill_level: 2,
+    duration: 10,
     categoryIndex: 2, // Activités familiales
   },
   {
     name: 'Le Manège des Infectés',
     description: 'Carrousel thématique avec créatures zombies animées',
+    thrill_level: 1,
+    duration: 5,
     categoryIndex: 2, // Activités familiales
   },
   {
     name: 'Survivor Arena Show',
     description: 'Spectacle interactif où le public vote pour les survivants',
+    thrill_level: 2,
+    duration: 50,
     categoryIndex: 3, // Spectacles
   },
   {
     name: 'Pendule de l\'Apocalypse',
     description: 'Balancier géant à sensations fortes dans un décor industriel abandonné',
+    thrill_level: 5,
+    duration: 4,
     categoryIndex: 0, // Attractions extrêmes
   },
   {
     name: 'Hôpital Hanté',
     description: 'Parcours terrifiant dans un hôpital contaminé avec acteurs zombies',
+    thrill_level: 4,
+    duration: 25,
     categoryIndex: 1, // Expériences immersives
   },
 ];
@@ -158,6 +180,8 @@ async function main() {
         data: {
           name: attraction.name,
           description: attraction.description,
+          thrill_level: attraction.thrill_level,
+          duration: attraction.duration,
           category_id: categories[attraction.categoryIndex].id,
         },
       }),
@@ -241,6 +265,8 @@ async function main() {
         name: 'Escape Game Zombie',
         description: '60 minutes pour trouver le remède et sauver l\'humanité',
         image_url: '/activities-images/escape-game.jpg',
+        thrill_level: 3,
+        duration: 60,
         category_id: categories[1].id, // Expériences immersives
         attraction_id: attractions[0].id, // The Walking Dead Experience
       },
@@ -248,6 +274,8 @@ async function main() {
         name: 'Laser Game Zombie',
         description: 'Affrontez les zombies en équipe avec des lasers',
         image_url: '/activities-images/laser-game.jpg',
+        thrill_level: 3,
+        duration: 30,
         category_id: categories[0].id, // Attractions extrêmes
         attraction_id: null,
       },
@@ -255,6 +283,8 @@ async function main() {
         name: 'Atelier Maquillage Zombie',
         description: 'Transformez-vous en zombie avec nos maquilleurs professionnels',
         image_url: '/activities-images/maquillage.jpg',
+        thrill_level: 1,
+        duration: 20,
         category_id: categories[2].id, // Activités familiales
         attraction_id: null,
       },
@@ -262,6 +292,8 @@ async function main() {
         name: 'Spectacle Survie',
         description: 'Show avec cascades et combats contre les zombies',
         image_url: '/activities-images/spectacle.jpg',
+        thrill_level: 3,
+        duration: 40,
         category_id: categories[3].id, // Spectacles
         attraction_id: null,
       },
@@ -269,6 +301,8 @@ async function main() {
         name: 'Tir à l\'Arc Post-Apocalyptique',
         description: 'Entraînez-vous au tir à l\'arc sur des cibles zombies dans un décor post-apocalyptique',
         image_url: '/activities-images/tir-arc.jpg',
+        thrill_level: 2,
+        duration: 15,
         category_id: categories[2].id, // Activités familiales
         attraction_id: null,
       },

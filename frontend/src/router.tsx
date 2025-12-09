@@ -28,6 +28,10 @@ export const router = createBrowserRouter([
         element: <ActivityDetail />,
       },
       {
+        path: 'attractions/:id',
+        element: <ActivityDetail />,
+      },
+      {
         path: 'design-system',
         element: <DesignSystem />,
       },

@@ -5,7 +5,7 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import ChatIcon from '@mui/icons-material/Chat';
-import SocialCard from "../cards/socialCard.tsx";
+import SocialCard from "../cards/SocialCard.tsx";
 
 const socialNetworks = [
     {

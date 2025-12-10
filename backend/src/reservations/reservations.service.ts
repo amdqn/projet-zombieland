@@ -24,7 +24,6 @@ export class ReservationsService {
       },
     },
     date: true,
-    price: true,
   };
 
   // === HELPERS ===
@@ -40,11 +39,6 @@ export class ReservationsService {
         ...reservation.date,
         jour: reservation.date.jour.toISOString(),
         created_at: reservation.date.created_at.toISOString(),
-      },
-      price: {
-        ...reservation.price,
-        created_at: reservation.price.created_at.toISOString(),
-        updated_at: reservation.price.updated_at.toISOString(),
       },
     };
 
@@ -64,10 +58,17 @@ export class ReservationsService {
 
   // === 1. CREATE - Créer une réservation ===
   async create(dto: CreateReservationDto, userId: number, userRole: string) {
-    const { date_id, price_id, tickets_count } = dto;
+    const { date_id, tickets } = dto;
 
-    if (!date_id || !price_id || !tickets_count || tickets_count <= 0) {
-      throw new BadRequestException('Données de réservation invalides');
+    if (!date_id || !tickets || tickets.length === 0) {
+      throw new BadRequestException('La date et au moins un type de ticket sont requis');
+    }
+
+    // Vérifier que toutes les quantités sont positives
+    for (const ticket of tickets) {
+      if (!ticket.price_id || !ticket.quantity || ticket.quantity <= 0) {
+        throw new BadRequestException('Chaque ticket doit avoir un price_id et une quantité positive');
+      }
     }
 
     const parkDate = await this.prisma.parkDate.findUnique({
@@ -82,28 +83,43 @@ export class ReservationsService {
       throw new BadRequestException('Le parc est fermé ce jour-là');
     }
 
-      // Vérifier que la date n'est pas dans le passé
+    // Vérifier que la date n'est pas dans le passé
     const visitDate = new Date(parkDate.jour);
-    visitDate.setHours(0, 0, 0, 0); // Minuit jour de visite
+    visitDate.setHours(0, 0, 0, 0);
     
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // Minuit aujourd'hui
+    today.setHours(0, 0, 0, 0);
 
     if (visitDate < today) {
-      throw new BadRequestException(
-        'Impossible de réserver pour une date passée'
-      );
+      throw new BadRequestException('Impossible de réserver pour une date passée');
     }
 
-    const price = await this.prisma.price.findUnique({
-      where: { id: price_id },
-    });
+    // Récupérer tous les tarifs et calculer le total
+    const ticketsData: any[] = [];
+    let totalAmount = 0;
 
-    if (!price) {
-      throw new NotFoundException(`Tarif avec l'ID ${price_id} non trouvé`);
+    for (const ticket of tickets) {
+      const price = await this.prisma.price.findUnique({
+        where: { id: ticket.price_id },
+      });
+
+      if (!price) {
+        throw new NotFoundException(`Tarif avec l'ID ${ticket.price_id} non trouvé`);
+      }
+
+      const subtotal = Number(price.amount) * ticket.quantity;
+      totalAmount += subtotal;
+
+      ticketsData.push({
+        price_id: ticket.price_id,
+        label: price.label,
+        type: price.type,
+        quantity: ticket.quantity,
+        unit_price: Number(price.amount),
+        subtotal: subtotal,
+      });
     }
 
-    const totalAmount = Number(price.amount) * tickets_count;
     const reservationNumber = `ZL-${Date.now()}-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
 
     const reservation = await this.prisma.reservation.create({
@@ -111,12 +127,23 @@ export class ReservationsService {
         reservation_number: reservationNumber,
         user_id: userId,
         date_id,
-        price_id,
-        tickets_count,
+        tickets: ticketsData as any,
         total_amount: totalAmount,
         status: 'PENDING',
       },
-      include: this.RESERVATION_INCLUDE,
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            pseudo: true,
+            role: true,
+            created_at: true,
+            updated_at: true,
+          },
+        },
+        date: true,
+      },
     });
 
     return this.formatReservationResponse(reservation, userRole);
@@ -126,7 +153,7 @@ export class ReservationsService {
   async findByUserId(userId: number, userRole: string) {
     const reservations = await this.prisma.reservation.findMany({
       where: { user_id: userId },
-      include: { date: true, price: true },
+      include: { date: true },
       orderBy: { created_at: 'desc' },
     });
 

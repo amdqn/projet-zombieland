@@ -112,14 +112,13 @@ model ParkDate {
 }
 
 model Price {
-  id            Int           @id @default(autoincrement())
+  id            Int      @id @default(autoincrement())
   label         String
   type          PriceType
-  amount        Decimal       @db.Decimal(10, 2)
-  duration_days Int           @default(1)
-  reservations  Reservation[]
-  created_at    DateTime      @default(now())
-  updated_at    DateTime      @updatedAt
+  amount        Decimal  @db.Decimal(10, 2)
+  duration_days Int      @default(1)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
 
   @@map("prices")
 }
@@ -129,13 +128,11 @@ model Reservation {
   reservation_number String            @unique
   user_id            Int
   date_id            Int
-  price_id           Int
-  tickets_count      Int
+  tickets            Json              // Array of { price_id, label, type, quantity, unit_price, subtotal }
   total_amount       Decimal           @db.Decimal(10, 2)
   status             ReservationStatus @default(PENDING)
   user               User              @relation(fields: [user_id], references: [id], onDelete: Cascade)
   date               ParkDate          @relation(fields: [date_id], references: [id], onDelete: Restrict)
-  price              Price             @relation(fields: [price_id], references: [id], onDelete: Restrict)
   created_at         DateTime          @default(now())
   updated_at         DateTime          @updatedAt
 

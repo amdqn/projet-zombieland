@@ -2373,19 +2373,31 @@ components:
       type: object
       required:
         - date_id
-        - price_id
-        - tickets_count
+        - tickets
       properties:
         date_id:
           type: integer
           example: 15
-        price_id:
-          type: integer
-          example: 2
-        tickets_count:
-          type: integer
-          minimum: 1
-          example: 4
+        tickets:
+          type: array
+          items:
+            type: object
+            required:
+              - price_id
+              - quantity
+            properties:
+              price_id:
+                type: integer
+                example: 2
+              quantity:
+                type: integer
+                minimum: 1
+                example: 2
+          example:
+            - price_id: 2
+              quantity: 2
+            - price_id: 1
+              quantity: 1
 
     UpdateReservationStatusDto:
       type: object

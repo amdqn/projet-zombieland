@@ -57,15 +57,17 @@ model Category {
 }
 
 model Attraction {
-  id          Int               @id @default(autoincrement())
-  name        String
-  description String
-  category_id Int
-  category    Category          @relation(fields: [category_id], references: [id], onDelete: Cascade)
-  images      AttractionImage[]
-  activities  Activity[]
-  created_at  DateTime          @default(now())
-  updated_at  DateTime          @updatedAt
+  id           Int               @id @default(autoincrement())
+  name         String
+  description  String
+  thrill_level Int?
+  duration     Int?
+  category_id  Int
+  category     Category          @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  images       AttractionImage[]
+  activities   Activity[]
+  created_at   DateTime          @default(now())
+  updated_at   DateTime          @updatedAt
 
   @@map("attractions")
 }
@@ -86,6 +88,8 @@ model Activity {
   name          String
   description   String
   image_url     String?
+  thrill_level  Int?
+  duration      Int?
   category_id   Int
   attraction_id Int?
   category      Category    @relation(fields: [category_id], references: [id], onDelete: Cascade)

@@ -6,6 +6,7 @@ interface CalendarProps {
   selectedDate?: Date | null;
   onDateSelect?: (date: Date) => void;
   disabledDates?: Date[];
+  availableDates?: Date[]; // Dates disponibles (seules celles-ci peuvent être sélectionnées)
   minDate?: Date;
   maxDate?: Date;
 }
@@ -14,6 +15,7 @@ export const Calendar = ({
   selectedDate,
   onDateSelect,
   disabledDates = [],
+  availableDates,
   minDate,
   maxDate,
 }: CalendarProps) => {
@@ -30,6 +32,15 @@ export const Calendar = ({
     // Vérifier les dates désactivées
     if (disabledDates.some(d => d.toDateString() === dateStr)) {
       return true;
+    }
+
+    // Si availableDates est défini, désactiver toutes les dates qui ne sont pas dans cette liste
+    if (availableDates && availableDates.length > 0) {
+      const isAvailable = availableDates.some(d => {
+        const dStr = d.toDateString();
+        return dStr === dateStr;
+      });
+      if (!isAvailable) return true;
     }
 
     // Vérifier minDate
@@ -259,6 +270,8 @@ export const Calendar = ({
                   ? colors.primaryGreen
                   : isToday && !isSelected
                   ? colors.secondaryGrey
+                  : isDisabled
+                  ? 'rgba(128, 128, 128, 0.2)'
                   : 'transparent',
                 color: isDisabled
                   ? colors.secondaryGrey
@@ -267,6 +280,7 @@ export const Calendar = ({
                   : isCurrentMonth
                   ? colors.white
                   : colors.secondaryGrey,
+                opacity: isDisabled ? 0.4 : 1,
                 fontFamily: "'Lexend Deca', sans-serif",
                 fontWeight: isSelected || isToday ? 700 : 400,
                 fontSize: '0.75rem',

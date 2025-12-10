@@ -5,7 +5,7 @@ import type {User} from "../@types/users";
 
 interface LoginResponse {
     user: User;
-    token: string;
+    access_token: string;
 }
 
 
@@ -41,3 +41,11 @@ export const getProfile = async (): Promise<User> => {
     return response.data.user;
 }
 
+// Mettre à jour le profil
+export const updateProfile = async (email: string, password: string): Promise<LoginResponse> => {
+    const response = await axiosInstance.put<LoginResponse>('auth/me', {
+        email,
+        password
+    });
+    return response.data;
+}

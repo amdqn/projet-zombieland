@@ -2,9 +2,29 @@ import {SchedulesCard} from "../cards/SchedulesCard.tsx";
 import {Box, Typography} from "@mui/material";
 import AccessCard from "../cards/AccessCard.tsx";
 import getTodaySchedule from "../../functions/getTodaySchedule.ts";
+import {useEffect, useState} from "react";
+import type {DateParc} from "../../@types/dateParc";
 
 
 export default function InformationSection() {
+
+    const [todaySchedule, setTodaySchedule] = useState<DateParc | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchSchedule = async () => {
+            try {
+                const schedule = await getTodaySchedule(); // Await la Promise
+                setTodaySchedule(schedule);
+            } catch (error) {
+                console.error('Erreur lors de la récupération des horaires:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchSchedule();
+    }, []);
 
     return (
         <Box sx={{
@@ -36,7 +56,17 @@ export default function InformationSection() {
                     gap: { xs: 2, sm: 3, md: 4 },
                     width: '100%'
                 }}>
-                    <SchedulesCard horaire={getTodaySchedule()} />
+                    {isLoading ? (
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 200 }}>
+                            <Typography>Chargement des horaires...</Typography>
+                        </Box>
+                    ) : todaySchedule ? (
+                        <SchedulesCard horaire={todaySchedule} />
+                    ) : (
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 200 }}>
+                            <Typography>Aucun horaire disponible pour aujourd'hui</Typography>
+                        </Box>
+                    )}
                     <AccessCard />
                 </Box>
             </Box>

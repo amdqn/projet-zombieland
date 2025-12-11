@@ -4,8 +4,8 @@ export interface User {
     email: string;
     passwordHash: string;
     role: Role;
-    createdAt: Date;
-    updatedAt: Date;
+    created_at: Date;
+    updated_at: Date;
 }
 
 export type Role = 'ADMIN' | 'CLIENT';

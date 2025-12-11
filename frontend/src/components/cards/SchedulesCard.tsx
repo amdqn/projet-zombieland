@@ -1,6 +1,8 @@
 import {Box, Card, CardActions, CardContent, Chip, Typography} from "@mui/material";
 import {PrimaryButton} from "../common/Button";
 import type {DateParc} from "../../@types/dateParc";
+import {formatDay} from "../../functions/formatDay.ts";
+import {formatTime} from "../../functions/formatTime.ts";
 
 
 
@@ -9,16 +11,6 @@ interface SchedulesCardProps {
 }
 
 export function SchedulesCard({horaire}: SchedulesCardProps) {
-
-    const formatDay = (date: Date | string) => {
-        const dateObj = typeof date === "string" ? new Date(date) : date;
-        return dateObj.toLocaleDateString("fr-FR", {weekday: "long", day: "numeric", month: "long", year: "numeric"});
-    }
-
-    const formatTime = (date: Date | string) => {
-        const dateObj = typeof date === "string" ? new Date(date) : date;
-        return dateObj.toLocaleTimeString("fr-FR", {hour: "2-digit", minute: "2-digit"});
-    }
 
     return (
         <>

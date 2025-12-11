@@ -3,9 +3,10 @@ import { LoginContext } from "../../context/UserLoginContext";
 import {useNavigate } from "react-router";
 import { getProfile } from "../../services/auth";
 import {Alert, Box, Container, Typography, Link } from "@mui/material";
-import { CustomBreadcrumbs, Input, PrimaryButton } from "../../components/common";
+import { CustomBreadcrumbs, PrimaryButton } from "../../components/common";
 import type {User} from "../../@types/users";
 import {colors} from "../../theme";
+import UserCard from "../../components/cards/UserCard.tsx";
 
 export default function AccountPage() {
 
@@ -112,41 +113,9 @@ export default function AccountPage() {
                             </Alert>
                         )}
 
-                        {/* Champ Pseudo */}
-                        <Input
-                            label="Pseudo"
-                            type="text"
-                            placeholder={user?.pseudo}
-                            value={user?.pseudo}
-
-                        />
-
-                        <Box
-                            component="form"
-                            onSubmit={handleSubmit}
-                            sx={{ width: '100%'}}
-                        >
-                            {/* Champ Email */}
-                            <Input
-                                label="Email"
-                                type="email"
-                                placeholder={user?.email}
-                                value={user?.email}
-                            />
-
-                            {/* Bouton de soumission */}
-                            <PrimaryButton
-                                type="submit"
-                                disabled={isLoading}
-                                text={isLoading ? "Modification en cours..." : "Sauvegarder les modifications"}
-                            />
-                        </Box>
-
-                        {/* Bouton retour accueil */}
-                        <PrimaryButton
-                            onClick={() => navigate('/')}
-                            text="Retour à l'accueil"
-                        />
+                        {/* Carte */}
+                        <UserCard user={user}/>
+                        <PrimaryButton text={"Mes réservations"}/>
                     </Box>
                 ) : (
                     <Box sx={{ textAlign: 'center', mt: 10 }}>

@@ -1,4 +1,4 @@
-import { getParkDates, type ParkDate } from "../services/parkDates";
+import { getParkDates} from "../services/parkDates";
 
 const getTodaySchedule = async () => {
     // Utiliser la date locale pour éviter les problèmes de timezone

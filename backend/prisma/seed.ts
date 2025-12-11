@@ -413,45 +413,85 @@ async function main() {
     throw new Error('Pas assez de dates de parc ouvertes trouvées');
   }
 
-  await prisma.reservation.createMany({
-    data: [
-      {
-        reservation_number: `ZL-${Date.now()}-A7F3B`,
-        user_id: users[1].id, // jean
-        date_id: parkDate1.id,
-        price_id: prices[1].id, // Tarif Adulte
-        tickets_count: 2,
-        total_amount: 90.00, // 2 x 45.00
-        status: 'CONFIRMED',
-      },
-      {
-        reservation_number: `ZL-${Date.now() + 1}-B8G4C`,
-        user_id: users[2].id, // marie
-        date_id: parkDate2.id,
-        price_id: prices[0].id, // Tarif Étudiant
-        tickets_count: 1,
-        total_amount: 29.99,
-        status: 'PENDING',
-      },
-      {
-        reservation_number: `ZL-${Date.now() + 2}-C9H5D`,
-        user_id: users[1].id, // jean
-        date_id: parkDate2.id,
-        price_id: prices[3].id, // Pass 2 jours
-        tickets_count: 1,
-        total_amount: 79.99,
-        status: 'CONFIRMED',
-      },
-      {
-        reservation_number: `ZL-${Date.now() + 3}-D1J6E`,
-        user_id: users[3].id, // paul
-        date_id: parkDate1.id,
-        price_id: prices[2].id, // Tarif Groupe (10+ personnes)
-        tickets_count: 12,
-        total_amount: 420.00, // 12 x 35.00
-        status: 'CONFIRMED',
-      },
-    ],
+  // Créer des réservations avec le nouveau format tickets (JSON)
+  await prisma.reservation.create({
+    data: {
+      reservation_number: `ZL-${Date.now()}-A7F3B`,
+      user_id: users[1].id, // jean
+      date_id: parkDate1.id,
+      tickets: [
+        {
+          price_id: prices[1].id,
+          label: 'Adulte',
+          type: 'ADULT',
+          quantity: 2,
+          unit_price: 45.00,
+          subtotal: 90.00,
+        },
+      ],
+      total_amount: 90.00,
+      status: 'CONFIRMED',
+    },
+  });
+
+  await prisma.reservation.create({
+    data: {
+      reservation_number: `ZL-${Date.now() + 1}-B8G4C`,
+      user_id: users[2].id, // marie
+      date_id: parkDate2.id,
+      tickets: [
+        {
+          price_id: prices[0].id,
+          label: 'Étudiant',
+          type: 'STUDENT',
+          quantity: 1,
+          unit_price: 29.99,
+          subtotal: 29.99,
+        },
+      ],
+      total_amount: 29.99,
+      status: 'PENDING',
+    },
+  });
+
+  await prisma.reservation.create({
+    data: {
+      reservation_number: `ZL-${Date.now() + 2}-C9H5D`,
+      user_id: users[1].id, // jean
+      date_id: parkDate2.id,
+      tickets: [
+        {
+          price_id: prices[3].id,
+          label: 'Pass 2 jours',
+          type: 'PASS_2_DAYS',
+          quantity: 1,
+          unit_price: 79.99,
+          subtotal: 79.99,
+        },
+      ],
+      total_amount: 79.99,
+      status: 'CONFIRMED',
+    },
+  });
+
+  await prisma.reservation.create({
+    data: {
+      reservation_number: `ZL-${Date.now() + 3}-D1J6E`,
+      user_id: users[3].id, // paul
+      date_id: parkDate1.id,
+      tickets: [
+        {
+          price_id: prices[2].id,
+          label: 'Groupe (10+ personnes)',
+          type: 'GROUP',
+          quantity: 12,
+          unit_price: 35.00,
+          subtotal: 420.00,
+        },
+      ],
+      total_amount: 420.00,
+      status: 'CONFIRMED',
+    },
   });
 
   console.log('✅ Réservations créées (4)');

@@ -22,13 +22,6 @@ export class PricesService {
   async findAll() {
     const prices = await this.prisma.price.findMany({
       orderBy: { amount: 'asc' },
-      include: {
-        _count: {
-          select: {
-            reservations: true,
-          },
-        },
-      },
     });
 
     return prices.map((price) => this.formatPriceResponse(price));
@@ -36,13 +29,6 @@ export class PricesService {
   async findOne(id: number) {
     const price = await this.prisma.price.findUnique({
       where: { id },
-      include: {
-        _count: {
-          select: {
-            reservations: true,
-          },
-        },
-      },
     });
 
     if (!price) {
@@ -74,13 +60,6 @@ export class PricesService {
         amount,
         duration_days,
       },
-      include: {
-        _count: {
-          select: {
-            reservations: true,
-          },
-        },
-      },
     });
 
     return this.formatPriceResponse(price);
@@ -106,13 +85,6 @@ export class PricesService {
     const updatedPrice = await this.prisma.price.update({
       where: { id },
       data: updatePriceDto,
-      include: {
-        _count: {
-          select: {
-            reservations: true,
-          },
-        },
-      },
     });
 
     return this.formatPriceResponse(updatedPrice);
@@ -121,24 +93,15 @@ export class PricesService {
   async remove(id: number) {
     const price = await this.prisma.price.findUnique({
       where: { id },
-      include: {
-        _count: {
-          select: {
-            reservations: true,
-          },
-        },
-      },
     });
 
     if (!price) {
       throw new NotFoundException(`Tarif avec l'ID ${id} non trouvé`);
     }
 
-    if (price._count.reservations > 0) {
-      throw new BadRequestException(
-        `Impossible de supprimer le tarif "${price.label}" car il est utilisé par ${price._count.reservations} réservation(s)`,
-      );
-    }
+    // Note: Avec le nouveau système tickets JSON, on ne peut plus vérifier facilement
+    // si un tarif est utilisé. Cette vérification pourrait être ajoutée avec une requête
+    // raw SQL si nécessaire.
 
     await this.prisma.price.delete({
       where: { id },

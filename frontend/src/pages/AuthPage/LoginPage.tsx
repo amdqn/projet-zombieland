@@ -233,7 +233,7 @@ export default function LoginPage() {
                                 }}
                                 onBlur={() => {
                                     setTouched({ ...touched, email: true });
-                                    setEmailError(getValidateEmail(email));
+                                    setEmailError(getValidateEmail(emailInput));
                                 }}
                                 error={touched.email && !!emailError}
                                 helperText={touched.email ? emailError : ''}

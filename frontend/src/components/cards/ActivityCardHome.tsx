@@ -8,6 +8,7 @@ interface ActivityCardHomeProps {
     name: string;
     category: string;
     image?: string;
+    type?: 'activity' | 'attraction'; // Type pour déterminer le chemin
 }
 
 const StyledActivityCard = styled(Card)(({ theme }) => ({
@@ -38,9 +39,11 @@ const StyledActivityCard = styled(Card)(({ theme }) => ({
     },
 }));
 
-export default function ActivityCardHome({id, name, category, image}: ActivityCardHomeProps) {
+export default function ActivityCardHome({id, name, category, image, type = 'activity'}: ActivityCardHomeProps) {
+    const path = type === 'attraction' ? `/attractions/${id}` : `/activities/${id}`;
+    
     return (
-        <Link to={`/activities/${id}`} style={{ textDecoration: 'none' }}>
+        <Link to={path} style={{ textDecoration: 'none' }}>
             <StyledActivityCard>
                 {/* Image en arrière-plan */}
                 {image && (

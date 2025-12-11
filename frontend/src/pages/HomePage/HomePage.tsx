@@ -20,7 +20,7 @@ export default function HomePage() {
             <ImageBanner/>
 
             <Box sx={{
-                py: { xs: 3, md: 5 },
+                py: { xs: 2, md: 3 },
                 px: { xs: 2, sm: 5, md: 15, lg: 20 },
                 display: 'flex',
                 flexDirection: 'column',
@@ -28,19 +28,19 @@ export default function HomePage() {
                 maxWidth: '100%',
                 boxSizing: 'border-box'
             }}>
-                <Box sx={{ paddingTop: { xs: 10, md: 20 } }}>
+                <Box sx={{ paddingTop: { xs: 4, md: 6 } }}>
                     <CarouselActivityMain/>
                 </Box>
 
-                <Box sx={{ paddingTop: { xs: 10, md: 20 } }}>
+                <Box sx={{ paddingTop: { xs: 4, md: 6 } }}>
                     <PriceMain/>
                 </Box>
 
-                <Box sx={{ paddingTop: { xs: 10, md: 20 } }}>
+                <Box sx={{ paddingTop: { xs: 4, md: 16 } }}>
                     <SocialNetwork/>
                 </Box>
 
-                <Box sx={{ paddingTop: { xs: 10, md: 20 } }}>
+                <Box sx={{ paddingTop: { xs: 4, md: 6 } }}>
                     <InformationSection/>
                 </Box>
             </Box>

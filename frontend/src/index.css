@@ -48,3 +48,54 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+@keyframes rainFall {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(420px);
+    opacity: 0.3;
+  }
+}
+
+@keyframes snowFall {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(420px);
+    opacity: 0.2;
+  }
+}
+
+@keyframes snowSway {
+  0%, 100% {
+    transform: translateX(-15px);
+  }
+  50% {
+    transform: translateX(15px);
+  }
+}
+
+@keyframes rotateSunRays {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

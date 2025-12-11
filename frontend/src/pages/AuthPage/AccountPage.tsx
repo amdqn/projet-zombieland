@@ -10,20 +10,10 @@ import UserCard from "../../components/cards/UserCard.tsx";
 
 export default function AccountPage() {
 
-    const { isLogged } = useContext(LoginContext);
+    const { isLogged, logout } = useContext(LoginContext);
     const [user, setUser] = useState<User | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
-
-    // TODO Comment gérer la modification d'email et MDP ?
-    // Est ce que je fais un formulaire et je trie si email a changé ?
-    // Le mot de passe doit être modifié que si il est modifié
-    // J'ouve une modale email et une autre password ??
-
-    // États pour les champs modifiables
-    //const [email, setEmail] = useState('');
-    //const [password, setPassword] = useState('');
-    //const [pseudo, setPseudo] = useState('');
 
     const navigate = useNavigate();
 
@@ -49,6 +39,11 @@ export default function AccountPage() {
         console.log('Rafraîchissement du profil après modification...');
         await getUserAuth();
     };
+
+    const logoutAndNavigate = () => {
+        logout();
+        navigate("/");
+    }
 
     useEffect(() => {
         if (isLogged) {
@@ -109,9 +104,13 @@ export default function AccountPage() {
                         ) : user ? (
                             <>
                                 {/* Carte - Afficher seulement si user n'est pas null */}
-                                <UserCard user={user}  onUpdate={handleUserUpdate}/>
-                                {user.role == "CLIENT" ? <PrimaryButton text={"Mes réservations"} /> : ""}
-                                {user.role == "ADMIN" ? <PrimaryButton text={"Back-Office"} /> : ""}
+                                <Box paddingBottom={5}>
+                                    <UserCard user={user}  onUpdate={handleUserUpdate} />
+                                </Box>
+
+                                {user.role == "CLIENT" ? <PrimaryButton onClick={() => navigate('/')} text={"Mes réservations"} /> : ""}
+                                {user.role == "ADMIN" ? <PrimaryButton onClick={() => navigate('/')}  text={"Back-Office"} /> : ""}
+                                <PrimaryButton onClick={logoutAndNavigate}  text={"Se déconnecter"} />
                             </>
                         ) : (
                             <Typography>Impossible de charger les données du profil</Typography>

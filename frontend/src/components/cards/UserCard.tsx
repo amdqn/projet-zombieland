@@ -28,24 +28,86 @@ export default function UserCard({user, onUpdate} : UserCardProps) {
     const handleClose = () => setOpen(false);
 
     return (
-        <Card sx={{ minWidth: 450 }}>
-            <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center' }}>
-                <Typography gutterBottom variant="h4">
+        <Card
+            sx={{
+                minWidth: { xs: '100%', sm: 400, md: 450 },
+                maxWidth: '100%',
+                width: '100%',
+            }}
+        >
+            <CardContent
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: { xs: 1.5, sm: 2 },
+                    alignItems: 'center',
+                    padding: { xs: 2, sm: 3 },
+                    '&:last-child': { paddingBottom: { xs: 2, sm: 3 } }
+                }}
+            >
+                <Typography
+                    gutterBottom
+                    variant="h4"
+                    sx={{
+                        fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' },
+                        fontWeight: 600,
+                        textAlign: 'center',
+                        wordBreak: 'break-word',
+                        width: '100%',
+                    }}
+                >
                     {user.pseudo}
                 </Typography>
-                <Box sx={{display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'flex-start', pb: 4}}>
-                    <Typography variant={"body1"}>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: { xs: 1.5, sm: 2 },
+                        alignItems: { xs: 'center', sm: 'flex-start' },
+                        pb: { xs: 2, sm: 3, md: 4 },
+                        width: '100%',
+                    }}
+                >
+                    <Typography
+                        variant="body1"
+                        sx={{
+                            fontSize: { xs: '0.875rem', sm: '1rem' },
+                            wordBreak: 'break-word',
+                            textAlign: { xs: 'center', sm: 'left' },
+                            width: '100%',
+                        }}
+                    >
                         Email : {user.email}
                     </Typography>
-                    <Typography variant="body2">
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            fontSize: { xs: '0.8rem', sm: '0.875rem' },
+                            textAlign: { xs: 'center', sm: 'left' },
+                        }}
+                    >
                         Crée le : {formatDay(user.created_at)}
-                    </Typography><Typography variant="body2">
-                    Dernière modification : {formatDay(user.updated_at)}
-                </Typography>
+                    </Typography>
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            fontSize: { xs: '0.8rem', sm: '0.875rem' },
+                            textAlign: { xs: 'center', sm: 'left' },
+                        }}
+                    >
+                        Dernière modification : {formatDay(user.updated_at)}
+                    </Typography>
                 </Box>
-
             </CardContent>
-            <CardActions sx={{display: 'flex', flexDirection: 'column', gap: 5}}>
+            <CardActions
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: { xs: 2, sm: 3, md: 5 },
+                    padding: { xs: 2, sm: 3 },
+                    paddingTop: 0,
+                }}
+            >
                 <PrimaryButton text={"Modifier l'email"} onClick={handleOpenEmail} fullWidth/>
                 <PrimaryButton text={"Modifier le mot de passe"} onClick={handleOpenPassword} fullWidth/>
             </CardActions>
@@ -57,6 +119,5 @@ export default function UserCard({user, onUpdate} : UserCardProps) {
                 onUpdateSuccess={onUpdate}
             />
         </Card>
-
     );
 }

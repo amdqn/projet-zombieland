@@ -1,9 +1,23 @@
+import { useEffect, useState } from "react";
 import {Box, Typography} from "@mui/material";
 import PriceCard from "../cards/PriceCard.tsx";
-import {pricesData} from "../../mocks/prices.ts";
+import { getPrices } from "../../services/prices";
+import type { Price } from "../../@types/price";
 
 export default function PriceMain(){
-    const prices = pricesData.prices;
+    const [prices, setPrices] = useState<Price[]>([]);
+
+    useEffect(() => {
+        const fetchPrices = async () => {
+            try {
+                const data = await getPrices();
+                setPrices(data);
+            } catch (error) {
+                console.error("Impossible de récupérer les tarifs:", error);
+            }
+        };
+        fetchPrices();
+    }, []);
 
     return(
         <Box>

@@ -9,7 +9,7 @@ import { getPrices } from "../../../services/prices";
 import type { Price } from "../../../@types/price";
 
 export const Step7OrderConfirmed = () => {
-  const { tickets, total, date, createdReservations } = useReservationStore();
+  const { tickets, total, date, createdReservations, customerInfo } = useReservationStore();
   const [reservationNumbers, setReservationNumbers] = useState<string[]>([]);
   const [prices, setPrices] = useState<Price[]>([]);
 
@@ -314,7 +314,7 @@ export const Step7OrderConfirmed = () => {
                 color: colors.white,
               }}
             >
-              Un email avec vos billets a été envoyé à votre adresse
+              Un email avec vos billets a été envoyé {customerInfo?.email ? `à ${customerInfo.email}` : 'à votre adresse'}
             </Typography>
           </Box>
         </Box>

@@ -121,7 +121,9 @@ export const ActivityDetail = () => {
   }
 
   // Valeurs par défaut
-  const thrillLevel = 'thrill_level' in entity ? entity.thrill_level : 3;
+  const thrillLevel = ('thrill_level' in entity && entity.thrill_level !== null && entity.thrill_level !== undefined) 
+    ? entity.thrill_level 
+    : 3;
   const durationMinutes = 'duration' in entity ? entity.duration : 45;
   const minAge = 12;
   const accessibility = "Accessible PMR";
@@ -134,28 +136,81 @@ export const ActivityDetail = () => {
   const entityName = 'name' in entity ? entity.name : '';
   const entityCategory = 'category' in entity ? entity.category?.name : undefined;
 
+  // Image par défaut pour les attractions
+  const defaultAttractionImage = '/activities-images/zombie.jpg';
+  const defaultAttractionImages = [
+    '/activities-images/zombie.jpg',
+    '/activities-images/abandoned-lab.jpg',
+    '/activities-images/post-apocalyptic-street.jpg',
+  ];
+  const defaultActivityImages = [
+    '/activities-images/abandoned-lab.jpg',
+    '/activities-images/post-apocalyptic-street.jpg',
+    '/activities-images/zombie.jpg',
+  ];
+
+  const getValidImage = (url?: string | null, fallback?: string) => {
+    if (!url) return fallback;
+    const trimmed = url.trim();
+    const isValidHttp = trimmed.startsWith('http://') || trimmed.startsWith('https://');
+    const isValidPath = trimmed.startsWith('/');
+    if (isValidHttp || isValidPath) return trimmed;
+    return fallback;
+  };
+
   // Hero images : priorité aux images attraction, sinon image_url activité, sinon défaut
-  const heroImages =
-    isAttraction && 'images' in entity && entity.images?.[0]?.url
-      ? [entity.images[0].url]
-      : 'image_url' in entity && entity.image_url
-        ? [entity.image_url]
-        : defaultHeroImages;
+  const heroImages = (() => {
+    if (isAttraction) {
+      // Si l'attraction a plusieurs images dans entity.images, les utiliser toutes
+      if ('images' in entity && entity.images && entity.images.length > 0) {
+        const attractionImages = entity.images
+          .map((img) => getValidImage(img.url))
+          .filter((img): img is string => Boolean(img));
+        if (attractionImages.length > 0) {
+          return attractionImages;
+        }
+      }
+
+      // Si l'attraction a une image_url valide, l'utiliser avec des images par défaut pour créer un slider
+      const apiImage = 'image_url' in entity ? getValidImage(entity.image_url) : undefined;
+      if (apiImage) {
+        return [apiImage, ...defaultAttractionImages.slice(0, 2)];
+      }
+
+      // Sinon, utiliser les images par défaut
+      return defaultAttractionImages;
+    }
+
+    // Pour les activités : image_url validée sinon images par défaut
+    const activityImage = 'image_url' in entity ? getValidImage(entity.image_url) : undefined;
+    if (activityImage) {
+      return [activityImage, ...defaultActivityImages.slice(0, 2)];
+    }
+
+    // Par défaut
+    return defaultHeroImages;
+  })();
 
   // Transformer les éléments pour le carousel selon le type
   const carouselItems = isAttraction
-    ? relatedAttractions.map((att) => ({
-        id: att.id,
-        name: att.name,
-        category: att.category?.name || 'Attraction',
-        images: att.image_url ? [att.image_url] : [],
-      }))
-    : relatedActivities.map((act) => ({
-        id: act.id,
-        name: act.name,
-        category: act.category?.name || 'Activité',
-        images: act.image_url ? [act.image_url] : [],
-      }));
+    ? relatedAttractions.map((att) => {
+        const image = getValidImage(att.image_url, defaultAttractionImage) || defaultAttractionImage;
+        return {
+          id: att.id,
+          name: att.name,
+          category: att.category?.name || 'Attraction',
+          images: [image],
+        };
+      })
+    : relatedActivities.map((act) => {
+        const image = getValidImage(act.image_url, defaultActivityImages[0]) || defaultActivityImages[0];
+        return {
+          id: act.id,
+          name: act.name,
+          category: act.category?.name || 'Activité',
+          images: [image],
+        };
+      });
 
   const breadcrumbItems = [
     { label: 'Accueil', path: '/', showOnMobile: true },

@@ -60,6 +60,7 @@ model Attraction {
   id           Int               @id @default(autoincrement())
   name         String
   description  String
+  image_url    String?
   thrill_level Int?
   duration     Int?
   category_id  Int

@@ -55,13 +55,15 @@ const attractionData = [
   {
     name: 'The Walking Dead Experience',
     description: 'Parcours immersif au cœur de l\'apocalypse zombie avec effets spéciaux et acteurs',
+    image_url: '/attractions-images/walking-dead-experience.jpg',
     thrill_level: 4,
     duration: 30,
     categoryIndex: 1, // Expériences immersives
   },
   {
-    name: 'Zombie Apocalypse Ride',
+    name: 'Zombie Ride',
     description: 'Montagnes russes extrêmes dans un décor post-apocalyptique',
+    image_url: '/attractions-images/zombie-ride.jpg',
     thrill_level: 5,
     duration: 5,
     categoryIndex: 0, // Attractions extrêmes
@@ -69,6 +71,7 @@ const attractionData = [
   {
     name: 'Labyrinthe des Infectés',
     description: 'Trouvez la sortie avant que les zombies ne vous rattrapent',
+    image_url: '/attractions-images/labyrinthe-infectes.jpg',
     thrill_level: 2,
     duration: 20,
     categoryIndex: 2, // Activités familiales
@@ -76,6 +79,7 @@ const attractionData = [
   {
     name: 'Arena des Morts-Vivants',
     description: 'Grand spectacle avec effets pyrotechniques et cascades',
+    image_url: '/attractions-images/arena-morts-vivants.jpg',
     thrill_level: 3,
     duration: 45,
     categoryIndex: 3, // Spectacles
@@ -83,6 +87,7 @@ const attractionData = [
   {
     name: 'Tour de la Chute Libre',
     description: 'Chute libre de 80 mètres dans une tour abandonnée infestée de zombies',
+    image_url: '/attractions-images/tour-chute-libre.jpg',
     thrill_level: 5,
     duration: 3,
     categoryIndex: 0, // Attractions extrêmes
@@ -90,13 +95,15 @@ const attractionData = [
   {
     name: 'Bunker VR Experience',
     description: 'Expérience en réalité virtuelle : survivez dans un bunker assiégé',
+    image_url: '/attractions-images/bunker-vr.jpg',
     thrill_level: 4,
     duration: 15,
     categoryIndex: 1, // Expériences immersives
   },
   {
-    name: 'Train Fantôme Apocalypse',
+    name: 'Train Fantôme',
     description: 'Parcours en petit train à travers une ville ravagée par les zombies',
+    image_url: '/attractions-images/train-fantome.jpg',
     thrill_level: 2,
     duration: 10,
     categoryIndex: 2, // Activités familiales
@@ -104,6 +111,7 @@ const attractionData = [
   {
     name: 'Le Manège des Infectés',
     description: 'Carrousel thématique avec créatures zombies animées',
+    image_url: '/attractions-images/manege-infectes.jpg',
     thrill_level: 1,
     duration: 5,
     categoryIndex: 2, // Activités familiales
@@ -111,13 +119,15 @@ const attractionData = [
   {
     name: 'Survivor Arena Show',
     description: 'Spectacle interactif où le public vote pour les survivants',
+    image_url: '/attractions-images/survivor-arena-show.jpg',
     thrill_level: 2,
     duration: 50,
     categoryIndex: 3, // Spectacles
   },
   {
-    name: 'Pendule de l\'Apocalypse',
+    name: 'Pendule de la peur',
     description: 'Balancier géant à sensations fortes dans un décor industriel abandonné',
+    image_url: '/attractions-images/pendule-peur.jpg',
     thrill_level: 5,
     duration: 4,
     categoryIndex: 0, // Attractions extrêmes
@@ -125,6 +135,7 @@ const attractionData = [
   {
     name: 'Hôpital Hanté',
     description: 'Parcours terrifiant dans un hôpital contaminé avec acteurs zombies',
+    image_url: '/attractions-images/hopital-hante.jpg',
     thrill_level: 4,
     duration: 25,
     categoryIndex: 1, // Expériences immersives
@@ -180,6 +191,7 @@ async function main() {
         data: {
           name: attraction.name,
           description: attraction.description,
+          image_url: attraction.image_url,
           thrill_level: attraction.thrill_level,
           duration: attraction.duration,
           category_id: categories[attraction.categoryIndex].id,
@@ -189,74 +201,6 @@ async function main() {
   );
 
   console.log(`✅ Attractions créées (${attractions.length})`);
-
-  // ===== ATTRACTION IMAGES =====
-  await prisma.attractionImage.createMany({
-    data: [
-      {
-        attraction_id: attractions[0].id, // The Walking Dead Experience
-        url: 'https://cdn.zombieland.com/images/walking-dead-1.jpg',
-        alt_text: 'Vue extérieure de l\'attraction The Walking Dead Experience',
-      },
-      {
-        attraction_id: attractions[0].id,
-        url: 'https://cdn.zombieland.com/images/walking-dead-2.jpg',
-        alt_text: 'Intérieur sombre avec zombies',
-      },
-      {
-        attraction_id: attractions[1].id, // Zombie Apocalypse Ride
-        url: 'https://cdn.zombieland.com/images/ride-1.jpg',
-        alt_text: 'Montagnes russes Zombie Apocalypse',
-      },
-      {
-        attraction_id: attractions[2].id, // Labyrinthe des Infectés
-        url: 'https://cdn.zombieland.com/images/maze-1.jpg',
-        alt_text: 'Entrée du labyrinthe des infectés',
-      },
-      {
-        attraction_id: attractions[3].id, // Arena des Morts-Vivants
-        url: 'https://cdn.zombieland.com/images/arena-1.jpg',
-        alt_text: 'Arena des Morts-Vivants - vue du spectacle',
-      },
-      {
-        attraction_id: attractions[4].id, // Tour de la Chute Libre
-        url: 'https://cdn.zombieland.com/images/free-fall-tower.jpg',
-        alt_text: 'Tour de la Chute Libre de 80 mètres',
-      },
-      {
-        attraction_id: attractions[5].id, // Bunker VR Experience
-        url: 'https://cdn.zombieland.com/images/vr-bunker.jpg',
-        alt_text: 'Salle VR du bunker avec équipements',
-      },
-      {
-        attraction_id: attractions[6].id, // Train Fantôme Apocalypse
-        url: 'https://cdn.zombieland.com/images/ghost-train.jpg',
-        alt_text: 'Train fantôme traversant la ville abandonnée',
-      },
-      {
-        attraction_id: attractions[7].id, // Le Manège des Infectés
-        url: 'https://cdn.zombieland.com/images/carousel.jpg',
-        alt_text: 'Carrousel thématique zombies',
-      },
-      {
-        attraction_id: attractions[8].id, // Survivor Arena Show
-        url: 'https://cdn.zombieland.com/images/survivor-show.jpg',
-        alt_text: 'Spectacle Survivor Arena avec public',
-      },
-      {
-        attraction_id: attractions[9].id, // Pendule de l'Apocalypse
-        url: 'https://cdn.zombieland.com/images/pendulum.jpg',
-        alt_text: 'Balancier géant en action',
-      },
-      {
-        attraction_id: attractions[10].id, // Hôpital Hanté
-        url: 'https://cdn.zombieland.com/images/hospital.jpg',
-        alt_text: 'Entrée sombre de l\'hôpital hanté',
-      },
-    ],
-  });
-
-  console.log('✅ Images d\'attractions créées (11)');
 
   // ===== ACTIVITIES =====
   await prisma.activity.createMany({
@@ -413,45 +357,85 @@ async function main() {
     throw new Error('Pas assez de dates de parc ouvertes trouvées');
   }
 
-  await prisma.reservation.createMany({
-    data: [
-      {
-        reservation_number: `ZL-${Date.now()}-A7F3B`,
-        user_id: users[1].id, // jean
-        date_id: parkDate1.id,
-        price_id: prices[1].id, // Tarif Adulte
-        tickets_count: 2,
-        total_amount: 90.00, // 2 x 45.00
-        status: 'CONFIRMED',
-      },
-      {
-        reservation_number: `ZL-${Date.now() + 1}-B8G4C`,
-        user_id: users[2].id, // marie
-        date_id: parkDate2.id,
-        price_id: prices[0].id, // Tarif Étudiant
-        tickets_count: 1,
-        total_amount: 29.99,
-        status: 'PENDING',
-      },
-      {
-        reservation_number: `ZL-${Date.now() + 2}-C9H5D`,
-        user_id: users[1].id, // jean
-        date_id: parkDate2.id,
-        price_id: prices[3].id, // Pass 2 jours
-        tickets_count: 1,
-        total_amount: 79.99,
-        status: 'CONFIRMED',
-      },
-      {
-        reservation_number: `ZL-${Date.now() + 3}-D1J6E`,
-        user_id: users[3].id, // paul
-        date_id: parkDate1.id,
-        price_id: prices[2].id, // Tarif Groupe (10+ personnes)
-        tickets_count: 12,
-        total_amount: 420.00, // 12 x 35.00
-        status: 'CONFIRMED',
-      },
-    ],
+  // Créer des réservations avec le nouveau format tickets (JSON)
+  await prisma.reservation.create({
+    data: {
+      reservation_number: `ZL-${Date.now()}-A7F3B`,
+      user_id: users[1].id, // jean
+      date_id: parkDate1.id,
+      tickets: [
+        {
+          price_id: prices[1].id,
+          label: 'Adulte',
+          type: 'ADULT',
+          quantity: 2,
+          unit_price: 45.00,
+          subtotal: 90.00,
+        },
+      ],
+      total_amount: 90.00,
+      status: 'CONFIRMED',
+    },
+  });
+
+  await prisma.reservation.create({
+    data: {
+      reservation_number: `ZL-${Date.now() + 1}-B8G4C`,
+      user_id: users[2].id, // marie
+      date_id: parkDate2.id,
+      tickets: [
+        {
+          price_id: prices[0].id,
+          label: 'Étudiant',
+          type: 'STUDENT',
+          quantity: 1,
+          unit_price: 29.99,
+          subtotal: 29.99,
+        },
+      ],
+      total_amount: 29.99,
+      status: 'PENDING',
+    },
+  });
+
+  await prisma.reservation.create({
+    data: {
+      reservation_number: `ZL-${Date.now() + 2}-C9H5D`,
+      user_id: users[1].id, // jean
+      date_id: parkDate2.id,
+      tickets: [
+        {
+          price_id: prices[3].id,
+          label: 'Pass 2 jours',
+          type: 'PASS_2_DAYS',
+          quantity: 1,
+          unit_price: 79.99,
+          subtotal: 79.99,
+        },
+      ],
+      total_amount: 79.99,
+      status: 'CONFIRMED',
+    },
+  });
+
+  await prisma.reservation.create({
+    data: {
+      reservation_number: `ZL-${Date.now() + 3}-D1J6E`,
+      user_id: users[3].id, // paul
+      date_id: parkDate1.id,
+      tickets: [
+        {
+          price_id: prices[2].id,
+          label: 'Groupe (10+ personnes)',
+          type: 'GROUP',
+          quantity: 12,
+          unit_price: 35.00,
+          subtotal: 420.00,
+        },
+      ],
+      total_amount: 420.00,
+      status: 'CONFIRMED',
+    },
   });
 
   console.log('✅ Réservations créées (4)');
@@ -463,7 +447,6 @@ async function main() {
   console.log('   - 4 utilisateurs (1 admin, 3 clients)');
   console.log('   - 5 catégories');
   console.log('   - 11 attractions');
-  console.log('   - 11 images d\'attractions');
   console.log('   - 5 activités');
   console.log('   - 31 dates d\'ouverture (décembre 2025)');
   console.log('   - 5 tarifs (Étudiant, Adulte, Groupe x2, Pass 2J)');

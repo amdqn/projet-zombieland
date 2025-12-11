@@ -53,7 +53,6 @@ export class UsersService {
       where: { user_id: userId },
       include: {
         date: true,
-        price: true,
       },
       orderBy: { created_at: 'desc' },
     });

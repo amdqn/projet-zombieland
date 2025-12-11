@@ -56,16 +56,18 @@ export const Activities = () => {
   }, []);
 
   const enrichedActivities = useMemo(() => {
+    const defaultActivityImage = '/activities-images/zombie.jpg';
     const withMeta = activities.map((activity) => {
       const apiImage = activity.image_url?.trim();
       // Accepter les URLs HTTP/HTTPS et les chemins relatifs qui commencent par /
       const isValidHttp = apiImage?.startsWith('http://') || apiImage?.startsWith('https://');
       const isValidPath = apiImage?.startsWith('/');
-      const image = (isValidHttp || isValidPath) ? apiImage : undefined;
+      const image = (isValidHttp || isValidPath) ? apiImage : defaultActivityImage;
       
       // Valeurs par défaut car ces champs n'existent pas en BDD
       const thrill = activity.thrill_level ?? 3;
-      const duration = activity.duration ?? 45;
+      const durationMinutes = activity.duration ?? 45;
+      const duration = `${durationMinutes} min`;
       const categoryLabel = activity.category?.name ?? 'Activité';
       return { ...activity, image, thrill, duration, categoryLabel };
     });
@@ -84,14 +86,16 @@ export const Activities = () => {
   }, [activities, selectedCategory, minThrill, searchQuery]);
 
   const enrichedAttractions = useMemo(() => {
+    const defaultAttractionImage = '/activities-images/zombie.jpg';
     const withMeta = attractions.map((attraction) => {
       const apiImage = attraction.image_url?.trim();
       // Accepter les URLs HTTP/HTTPS et les chemins relatifs qui commencent par /
       const isValidHttp = apiImage?.startsWith('http://') || apiImage?.startsWith('https://');
       const isValidPath = apiImage?.startsWith('/');
-      const image = (isValidHttp || isValidPath) ? apiImage : undefined;
+      const image = (isValidHttp || isValidPath) ? apiImage : defaultAttractionImage;
       const thrill = attraction.thrill_level ?? 3;
-      const duration = attraction.duration ?? 45;
+      const durationMinutes = attraction.duration ?? 45;
+      const duration = `${durationMinutes} min`;
       const categoryLabel = attraction.category?.name ?? 'Attraction';
       return { ...attraction, image, thrill, duration, categoryLabel };
     });

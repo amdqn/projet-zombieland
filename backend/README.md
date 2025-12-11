@@ -114,12 +114,58 @@ npx prisma migrate dev --name nom_migration
 npx prisma migrate reset
 ```
 
+## 🧪 Tests unitaires
+
+Le projet inclut des tests unitaires pour les services principaux.
+
+### Lancer tous les tests
+
+```bash
+# Dans le conteneur Docker
+docker compose exec zombieland-api npm test
+
+# En local
+cd backend
+npm test
+```
+
+### Lancer des tests spécifiques
+
+```bash
+# Tests du service Users
+npm test users.service.spec.ts
+
+# Tests du service Reservations
+npm test reservations.service.spec.ts
+
+# Mode watch (relance automatiquement)
+npm test -- --watch
+```
+
+### Couverture de code
+
+```bash
+# Générer un rapport de couverture
+npm test -- --coverage
+```
+
+### Tests disponibles
+
+- **UsersService** : Tests pour findAll, findOne, findUserReservations, remove
+- **ReservationsService** : Tests complets incluant :
+  - Création avec validation (dates, parc ouvert/fermé, calcul du total)
+  - Récupération des réservations (findByUserId, findAll, findOne)
+  - Mise à jour du statut (updateStatus)
+  - Annulation/Suppression avec règle J-10 (remove)
+  - Contrôles d'accès CLIENT/ADMIN
+
 ## 📚 Technologies
 
 - **NestJS 11** - Framework backend
 - **Prisma 6** - ORM
 - **PostgreSQL 15** - Base de données
 - **JWT** - Authentification
+- **Jest** - Framework de tests
 - **OpenAPI Generator** - Génération des DTOs
 - **Swagger** - Documentation API
 

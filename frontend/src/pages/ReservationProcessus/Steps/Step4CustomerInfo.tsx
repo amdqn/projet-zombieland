@@ -2,15 +2,17 @@ import { Box, Typography } from "@mui/material";
 import { colors } from "../../../theme";
 import { InformationCard } from "../../../components/cards";
 import EmailIcon from '@mui/icons-material/Email';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Input } from "../../../components/common";
 import { useReservationStore } from "../../../stores/reservationStore";
+import { LoginContext } from "../../../context/UserLoginContext";
 
 export const Step4CustomerInfo = () => {
   const { customerInfo, setCustomerInfo } = useReservationStore();
+  const { email: loginEmail } = useContext(LoginContext);
   const [firstName, setFirstName] = useState(customerInfo?.firstName || '');
   const [lastName, setLastName] = useState(customerInfo?.lastName || '');
-  const [email, setEmail] = useState(customerInfo?.email || '');
+  const [email, setEmail] = useState(customerInfo?.email || loginEmail || '');
   const [phone, setPhone] = useState(customerInfo?.phone || '');
 
   // États pour les erreurs
@@ -71,6 +73,15 @@ export const Step4CustomerInfo = () => {
       setCustomerInfo({ firstName, lastName, email, phone });
     }
   }, [firstName, lastName, email, phone, setCustomerInfo]);
+
+  // Pré-remplir l'email avec celui du compte si disponible et non déjà saisi
+  useEffect(() => {
+    if (loginEmail && !customerInfo?.email) {
+      setEmail(loginEmail);
+      setCustomerInfo({ firstName, lastName, email: loginEmail, phone });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loginEmail]);
 
   return (
     <Box>

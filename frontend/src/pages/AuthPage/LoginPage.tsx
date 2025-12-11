@@ -4,17 +4,17 @@ import {CustomBreadcrumbs, Input, PrimaryButton} from "../../components/common";
 import {LoginContext} from "../../context/UserLoginContext.tsx";
 import {useContext, useState} from "react";
 import {login} from "../../services/auth.ts";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useLocation} from "react-router-dom";
 
 export default function LoginPage() {
 
     // On récupère le context
-    const { setIsLogged, isLogged, setRole, setPseudo, setToken, logout} = useContext(LoginContext)
+    const { setIsLogged, isLogged, setRole, setPseudo, setEmail, setToken, logout} = useContext(LoginContext)
     const [isLoading, setIsLoading] = useState(false);
     const [loginError, setLoginError] = useState("");
 
     // champs du formulaire
-    const [email, setEmail] = useState('');
+    const [emailInput, setEmailInput] = useState('');
     const [password, setPassword] = useState('');
 
     // état validation
@@ -23,12 +23,14 @@ export default function LoginPage() {
     const [touched, setTouched] = useState({email: false, password: false});
 
     const navigate = useNavigate();
+    const location = useLocation();
+    const redirectMessage = (location.state as { message?: string } | null)?.message;
 
     // validation email
-    const validateEmail = (email: string): string => {
-        if (!email) return "L'email est requis";
+    const validateEmail = (emailValue: string): string => {
+        if (!emailValue) return "L'email est requis";
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) return "Email invalide";
+        if (!emailRegex.test(emailValue)) return "Email invalide";
         return "";
     };
 
@@ -41,7 +43,7 @@ export default function LoginPage() {
 
     // validation formulaire
     const isFormValid = () => {
-        return email && password && !validateEmail(email) && !validatePassword(password);
+        return emailInput && password && !validateEmail(emailInput) && !validatePassword(password);
     };
 
     // soumission formulaire
@@ -49,7 +51,7 @@ export default function LoginPage() {
         e.preventDefault();
 
         //validation finale
-        const emailErr = validateEmail(email);
+        const emailErr = validateEmail(emailInput);
         const passwordErr = validatePassword(password);
 
         setEmailError(emailErr);
@@ -63,21 +65,24 @@ export default function LoginPage() {
 
         try {
             // Appel API
-            const data = await login(email, password)
+            const data = await login(emailInput, password)
 
             // Stocker dans le context
             setIsLogged(true);
             setRole(data.user.role)
             setPseudo(data.user.pseudo)
+            setEmail(data.user.email)
             setToken(data.access_token)
 
             // Stocker dans localStorage pour persistance
             localStorage.setItem("token", data.access_token);
             localStorage.setItem("role", data.user.role)
             localStorage.setItem("pseudo", data.user.pseudo)
+            localStorage.setItem("email", data.user.email)
 
-            // Redirection selon le rôle
-            navigate(data.user.role === "ADMIN" ? "/admin" : "/");
+            // Redirection selon le rôle ou retour à la page précédente
+            const from = (location.state as { from?: string } | null)?.from;
+            navigate(from || (data.user.role === "ADMIN" ? "/admin" : "/"));
 
         } catch (error: any) {
             console.error("Erreur de connexion:", error);
@@ -209,6 +214,11 @@ export default function LoginPage() {
                         </Typography>
 
                         {/* Message d'erreur global */}
+                        {redirectMessage && (
+                            <Alert severity="info" sx={{ mb: 2, width: '100%' }}>
+                                {redirectMessage}
+                            </Alert>
+                        )}
                         {loginError && (
                             <Alert severity="error" sx={{ mb: 2, width: '100%' }}>
                                 {loginError}
@@ -221,16 +231,16 @@ export default function LoginPage() {
                                 label="Email"
                                 type="email"
                                 placeholder="votre@email.com"
-                                value={email}
+                                value={emailInput}
                                 onChange={(e) => {
-                                    setEmail(e.target.value);
+                                    setEmailInput(e.target.value);
                                     if (touched.email) {
                                         setEmailError(validateEmail(e.target.value));
                                     }
                                 }}
                                 onBlur={() => {
                                     setTouched({ ...touched, email: true });
-                                    setEmailError(validateEmail(email));
+                                    setEmailError(validateEmail(emailInput));
                                 }}
                                 error={touched.email && !!emailError}
                                 helperText={touched.email ? emailError : ''}

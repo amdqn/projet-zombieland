@@ -1,19 +1,44 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Box, Typography, Checkbox, Link } from "@mui/material";
 import WarningIcon from '@mui/icons-material/Warning';
 import { colors } from "../../../theme";
 import { InformationCard } from "../../../components/cards";
-import { ticketsMock } from "../../../mocks";
 import { useReservationStore } from "../../../stores/reservationStore";
+import { getPrices } from "../../../services/prices";
+import type { Price } from "../../../@types/price";
 
 export const Step3Summary = () => {
   const { tickets, total, date, acceptedTerms, setAcceptedTerms } = useReservationStore();
   const [localAcceptedTerms, setLocalAcceptedTerms] = useState(acceptedTerms);
+  const [prices, setPrices] = useState<Price[]>([]);
+  const [priceError, setPriceError] = useState<string | null>(null);
+  const [isLoadingPrices, setIsLoadingPrices] = useState<boolean>(false);
 
   // Synchroniser avec le store
   useEffect(() => {
     setLocalAcceptedTerms(acceptedTerms);
   }, [acceptedTerms]);
+
+  // Récupérer les tarifs pour afficher les détails des billets sélectionnés
+  useEffect(() => {
+    const fetchPrices = async () => {
+      setIsLoadingPrices(true);
+      setPriceError(null);
+      try {
+        const apiPrices = await getPrices();
+        setPrices(apiPrices);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Impossible de récupérer les tarifs.";
+        setPriceError(message);
+      } finally {
+        setIsLoadingPrices(false);
+      }
+    };
+
+    fetchPrices();
+  }, []);
+
+  const priceMap = useMemo(() => new Map(prices.map((p) => [p.id, p])), [prices]);
 
   const handleAcceptedTermsChange = (value: boolean) => {
     setLocalAcceptedTerms(value);
@@ -33,9 +58,9 @@ export const Step3Summary = () => {
   // Récupérer tous les billets sélectionnés avec leurs informations
   const selectedTicketsWithDetails = tickets
     .map(ticketSelection => {
-      const ticket = ticketsMock.find(t => t.id === ticketSelection.ticketId);
+      const ticket = priceMap.get(ticketSelection.ticketId);
       if (!ticket) {
-        console.warn(`Ticket with id ${ticketSelection.ticketId} not found in ticketsMock`);
+        console.warn(`Tarif introuvable pour l'id ${ticketSelection.ticketId}`);
         return null;
       }
       return {
@@ -74,7 +99,29 @@ export const Step3Summary = () => {
         <InformationCard borderColor="red">
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {/* Affichage de tous les billets sélectionnés */}
-            {selectedTicketsWithDetails.length > 0 ? (
+            {isLoadingPrices ? (
+              <Typography
+                sx={{
+                  fontFamily: "'Lexend Deca', sans-serif",
+                  fontSize: { xs: '0.9rem', md: '1rem' },
+                  color: colors.secondaryGrey,
+                  textAlign: 'center',
+                }}
+              >
+                Chargement des billets...
+              </Typography>
+            ) : priceError ? (
+              <Typography
+                sx={{
+                  fontFamily: "'Lexend Deca', sans-serif",
+                  fontSize: { xs: '0.9rem', md: '1rem' },
+                  color: colors.primaryRed,
+                  textAlign: 'center',
+                }}
+              >
+                {priceError}
+              </Typography>
+            ) : selectedTicketsWithDetails.length > 0 ? (
               selectedTicketsWithDetails.map((item, index) => {
                 const ticket = item.ticket;
               
@@ -98,7 +145,7 @@ export const Step3Summary = () => {
                         color: colors.white,
                       }}
                     >
-                      {ticket.type} - 1 Jour
+                      {ticket.type} - {ticket.duration_days} jour{ticket.duration_days > 1 ? 's' : ''}
                     </Typography>
                   </Box>
 
@@ -142,7 +189,7 @@ export const Step3Summary = () => {
                         color: colors.white,
                       }}
                     >
-                      {ticket.price.toFixed(2).replace('.', ',')} €
+                      {ticket.amount.toFixed(2).replace('.', ',')} €
                     </Typography>
                   </Box>
 

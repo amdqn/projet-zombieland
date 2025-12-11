@@ -1,4 +1,4 @@
-import {Box, Card, CardActions, CardContent, Chip, Typography} from "@mui/material";
+import {Box, Card, CardActions, CardContent, Typography} from "@mui/material";
 import {PrimaryButton} from "../common/Button";
 import type {DateParc} from "../../@types/dateParc";
 
@@ -14,6 +14,8 @@ export function SchedulesCard({horaire}: SchedulesCardProps) {
         const dateObj = typeof date === "string" ? new Date(date) : date;
         return dateObj.toLocaleDateString("fr-FR", {weekday: "long", day: "numeric", month: "long", year: "numeric"});
     }
+
+    console.log(horaire.notes);
 
 
     return (

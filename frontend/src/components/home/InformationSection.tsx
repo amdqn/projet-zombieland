@@ -8,14 +8,18 @@ import type { DateParc } from "../../@types/dateParc";
 
 export default function InformationSection() {
     const [todaySchedule, setTodaySchedule] = useState<DateParc | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
         const fetchSchedule = async () => {
+            setIsLoading(true);
             try {
                 const schedule = await getTodaySchedule();
                 setTodaySchedule(schedule);
             } catch (error) {
                 console.error("Erreur lors de la récupération des horaires:", error);
+            }finally {
+                setIsLoading(false);
             }
         };
         fetchSchedule();
@@ -51,7 +55,17 @@ export default function InformationSection() {
                     gap: { xs: 2, sm: 3, md: 4 },
                     width: '100%'
                 }}>
-                    {todaySchedule && <SchedulesCard horaire={todaySchedule} />}
+                    {isLoading ? (
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 200 }}>
+                            <Typography>Chargement des horaires...</Typography>
+                        </Box>
+                    ) : todaySchedule ? (
+                        <SchedulesCard horaire={todaySchedule} />
+                    ) : (
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 200 }}>
+                            <Typography>Aucun horaire disponible pour aujourd'hui</Typography>
+                        </Box>
+                    )}
                     <AccessCard />
                 </Box>
             </Box>

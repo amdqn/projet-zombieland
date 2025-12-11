@@ -173,16 +173,13 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                         zIndex: 2
                     }}>
                         <Typography variant="h3" color="white" sx={{ mb: 2, fontWeight: 'bold' }}>
-                            ACTIVITÉS
+                            EXPERIENCES
                         </Typography>
-                        <Button sx={{ color: "white" }} onClick={() => navigate('/activities')}>
+                        <Button sx={{ color: "white" }} onClick={navigateActivitiesPage}>
+                            Activités
+                        </Button>
+                        <Button sx={{ color: "white" }} onClick={navigateActivitiesPage}>
                             Attractions
-                        </Button>
-                        <Button sx={{ color: "white" }}>
-                            Spectacles
-                        </Button>
-                        <Button sx={{ color: "white" }}>
-                            Événements
                         </Button>
                     </Box>
 
@@ -194,10 +191,10 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                         <Typography variant="h3" color="white" sx={{ mb: 2, fontWeight: 'bold' }}>
                             BILLETTERIE
                         </Typography>
-                        <Button sx={{ color: "white" }}>
+                        <Button sx={{ color: "white" }} onClick={navigateReservationPage}>
                             Tarifs
                         </Button>
-                        <Button sx={{ color: "white" }}>
+                        <Button sx={{ color: "white" }} onClick={navigateReservationPage}>
                             Réservation
                         </Button>
                     </Box>
@@ -210,13 +207,13 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                         <Typography variant="h3" color="white" sx={{ mb: 2, fontWeight: 'bold' }}>
                             INFORMATIONS
                         </Typography>
-                        <Button sx={{ color: "white" }}>
+                        <Button sx={{ color: "white" }} onClick={navigateInfoPage}>
                             Accessibilité du parc
                         </Button>
-                        <Button sx={{ color: "white" }}>
+                        <Button sx={{ color: "white" }} onClick={navigateInfoPage}>
                             Horaires
                         </Button>
-                        <Button sx={{ color: "white" }}>
+                        <Button sx={{ color: "white" }} onClick={navigateInfoPage}>
                             Contact
                         </Button>
                     </Box>

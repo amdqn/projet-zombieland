@@ -3,10 +3,10 @@ export interface Price {
     label: string;
     type: PriceType;
     amount: number;
-    durationDays: number;
-    createdAt: Date;
-    updatedAt: Date;
+    duration_days: number;
+    created_at: string; // ISO string format date-time
+    updated_at: string; // ISO string format date-time
 }
 
-export type PriceType = 'ADULTE' | 'ETUDIANT' | 'GROUPE' | 'PASS_2J';
+export type PriceType = 'ETUDIANT' | 'ADULTE' | 'GROUPE' | 'PASS_2J';
 

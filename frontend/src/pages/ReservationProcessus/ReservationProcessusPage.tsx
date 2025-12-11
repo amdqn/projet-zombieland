@@ -5,6 +5,7 @@ import { CustomBreadcrumbs, BackButton, PrimaryButton } from '../../components/c
 import { Step1SelectTicket, Step2SelectDate, Step3Summary, Step4CustomerInfo, Step5CustomerAddress, Step6PaymentInfo, Step7OrderConfirmed } from './Steps';
 import { colors } from '../../theme/theme';
 import { useReservationStore } from '../../stores/reservationStore';
+import { createReservation } from '../../services/reservations';
 
 const steps = [
   'Choix des billets',
@@ -23,16 +24,20 @@ export const ReservationProcessusPage = () => {
     stepFromUrl >= 0 && stepFromUrl < steps.length ? stepFromUrl : 0
   );
   const [step1View, setStep1View] = useState<'list' | 'quantity'>('list');
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
   
   // Utilisation du store Zustand
   const {
     tickets,
     total,
     date,
+    dateId,
     acceptedTerms,
     customerInfo,
     customerAddress,
     paymentInfo,
+    setCreatedReservations,
     reset,
   } = useReservationStore();
 
@@ -61,6 +66,98 @@ export const ReservationProcessusPage = () => {
       setSearchParams({ step: newStep.toString() }, { replace: true });
       // Scroll vers le haut de la page
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  // Fonction pour créer la réservation quand on clique sur "PAYER" à l'étape 5
+  const handlePayment = async () => {
+    if (tickets.length === 0) {
+      setPaymentError('Aucun billet sélectionné');
+      return;
+    }
+
+    if (!dateId) {
+      setPaymentError('Veuillez sélectionner une date de visite');
+      return;
+    }
+
+    // Vérifier que l'utilisateur est connecté (token présent et valide)
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setPaymentError('Vous devez être connecté pour finaliser votre réservation.');
+      window.location.href = '/login?redirect=/reservation?step=5';
+      return;
+    }
+
+    // Vérifier si le token est expiré
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const exp = payload.exp * 1000; // Convertir en millisecondes
+      const now = Date.now();
+      if (exp < now) {
+        setPaymentError('Votre session a expiré. Veuillez vous reconnecter.');
+        localStorage.removeItem('token');
+        localStorage.removeItem('role');
+        localStorage.removeItem('pseudo');
+        window.location.href = '/login?redirect=/reservation?step=5';
+        return;
+      }
+    } catch (error) {
+      // Si on ne peut pas décoder le token, on continue quand même (le backend le rejettera)
+    }
+
+    setIsProcessingPayment(true);
+    setPaymentError(null);
+
+    try {
+      // Créer une seule réservation avec tous les types de prices sélectionnés
+      const reservationData = {
+        date_id: dateId,
+        tickets: tickets.map(ticket => ({
+          price_id: ticket.ticketId, 
+          quantity: ticket.quantity,
+        })),
+      };
+
+      const createdReservation = await createReservation(reservationData);
+
+      // Stocker le numéro de réservation pour l'affichage dans Step7OrderConfirmed
+      setCreatedReservations([
+        {
+          reservation_number: createdReservation.reservation_number,
+          price_id: 0, // Plus besoin car une seule réservation
+          tickets_count: tickets.reduce((sum, t) => sum + t.quantity, 0),
+        }
+      ]);
+
+      // Si tout s'est bien passé, passer à l'étape 7 (OrderConfirmed - Réservation confirmée)
+      const newStep = 6; // Index 6 = étape 7 (Réservation confirmée)
+      setActiveStep(newStep);
+      setSearchParams({ step: newStep.toString() }, { replace: true });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
+    } catch (error) {
+      let errorMessage = 'Une erreur est survenue lors du paiement. Veuillez réessayer.';
+      
+      if (error instanceof Error) {
+        // Si c'est une erreur 401 (Unauthorized), suggérer de se reconnecter
+        if (error.message.includes('Unauthorized') || error.message.includes('401') || error.message.includes('expired')) {
+          errorMessage = 'Votre session a expiré. Veuillez vous reconnecter pour finaliser votre réservation.';
+          // Nettoyer le token expiré et rediriger vers login
+          localStorage.removeItem('token');
+          localStorage.removeItem('role');
+          localStorage.removeItem('pseudo');
+          setTimeout(() => {
+            window.location.href = '/login?redirect=/reservation?step=5';
+          }, 2000); 
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      
+      setPaymentError(errorMessage);
+    } finally {
+      setIsProcessingPayment(false);
     }
   };
 
@@ -226,7 +323,25 @@ export const ReservationProcessusPage = () => {
         </Box>
 
         {/* Contenu de l'étape */}
-        <Box sx={{ mb: { xs: 20, md: 16 } }}>{renderStepContent(activeStep)}</Box>
+        <Box sx={{ mb: { xs: 20, md: 16 } }}>
+          {renderStepContent(activeStep)}
+          
+          {/* Affichage des erreurs de paiement */}
+          {paymentError && activeStep === 5 && (
+            <Box
+              sx={{
+                mt: 3,
+                p: 2,
+                backgroundColor: colors.primaryRed,
+                borderRadius: '4px',
+                color: colors.white,
+                textAlign: 'center',
+              }}
+            >
+              <Typography>{paymentError}</Typography>
+            </Box>
+          )}
+        </Box>
 
         {/* Boutons de navigation - masqués pendant la sélection de quantité */}
         {!(activeStep === 0 && step1View === 'quantity') && (
@@ -263,17 +378,24 @@ export const ReservationProcessusPage = () => {
                   activeStep === 6
                     ? "RETOUR À L'ACCUEIL →"
                     : activeStep === 5
-                    ? `PAYER ${total.toFixed(2).replace('.', ',')} € →`
+                    ? isProcessingPayment
+                      ? 'TRAITEMENT EN COURS...'
+                      : `PAYER ${total.toFixed(2).replace('.', ',')} € →`
                     : activeStep === steps.length - 1
                     ? 'Confirmer'
                     : 'CONTINUER →'
                 }
-                onClick={activeStep === 6 ? () => {
-                  reset();
-                  window.location.href = '/';
-                } : handleNext}
+                onClick={activeStep === 6 
+                  ? () => {
+                      reset();
+                      // replace pour éviter de revenir sur l'étape 6 avec le bouton retour navigateur
+                      window.location.replace('/');
+                    }
+                  : activeStep === 5
+                  ? handlePayment
+                  : handleNext}
                 fullWidth={true}
-                disabled={activeStep === 6 ? false : !canProceed()}
+                disabled={activeStep === 6 ? false : (activeStep === 5 ? !canProceed() || isProcessingPayment : !canProceed())}
               />
             </Box>
           </Box>

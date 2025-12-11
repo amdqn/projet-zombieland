@@ -4,10 +4,11 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { ticketsMock, type Ticket } from '../../../mocks';
 import { InformationCard } from '../../../components/cards';
 import { colors } from '../../../theme/theme';
 import { useReservationStore } from '../../../stores/reservationStore';
+import { getPrices } from '../../../services/prices';
+import type { Price } from '../../../@types/price';
 
 interface Step1SelectTicketProps {
   onViewChange?: (view: 'list' | 'quantity') => void;
@@ -15,14 +16,24 @@ interface Step1SelectTicketProps {
 
 export const Step1SelectTicket = ({ onViewChange }: Step1SelectTicketProps) => {
   const { tickets, setTickets } = useReservationStore();
+  const [prices, setPrices] = useState<Price[]>([]);
+  const priceMap = new Map(prices.map((p) => [p.id, p]));
   
   // Initialiser selectedTickets depuis le store
   const [selectedTickets, setSelectedTickets] = useState<Map<number, number>>(
     new Map(tickets.map(t => [t.ticketId, t.quantity]))
   );
   const [currentView, setCurrentView] = useState<'list' | 'quantity'>('list');
-  const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
+  const [selectedTicket, setSelectedTicket] = useState<Price | null>(null);
   const [tempQuantity, setTempQuantity] = useState<number>(0);
+
+  useEffect(() => {
+    const fetchPrices = async () => {
+      const prices = await getPrices();
+      setPrices(prices);
+    };
+    fetchPrices();
+  }, []);
 
   // Synchroniser selectedTickets avec le store quand tickets change
   useEffect(() => {
@@ -42,8 +53,8 @@ export const Step1SelectTicket = ({ onViewChange }: Step1SelectTicketProps) => {
 
     // Calculer le total
     const total = Array.from(newSelections.entries()).reduce((sum, [id, qty]) => {
-      const ticket = ticketsMock.find(t => t.id === id);
-      return sum + (ticket ? ticket.price * qty : 0);
+      const price = priceMap.get(id);
+      return sum + (price ? price.amount * qty : 0);
     }, 0);
 
     // Sauvegarder dans le store
@@ -56,10 +67,10 @@ export const Step1SelectTicket = ({ onViewChange }: Step1SelectTicketProps) => {
 
   const handleTicketSelect = (ticketId: number) => {
     // Navigation automatique vers le sélecteur de quantité
-    const ticket = ticketsMock.find((t) => t.id === ticketId);
-    if (ticket) {
-      setSelectedTicket(ticket);
-      setTempQuantity(selectedTickets.get(ticket.id) || 0);
+    const price = priceMap.get(ticketId);
+    if (price) {
+      setSelectedTicket(price);
+      setTempQuantity(selectedTickets.get(price.id) || 0);
       setCurrentView('quantity');
       if (onViewChange) onViewChange('quantity');
     }
@@ -86,9 +97,9 @@ export const Step1SelectTicket = ({ onViewChange }: Step1SelectTicketProps) => {
   };
 
   const handleEditTicket = (ticketId: number) => {
-    const ticket = ticketsMock.find((t) => t.id === ticketId);
-    if (ticket) {
-      setSelectedTicket(ticket);
+    const price = priceMap.get(ticketId);
+    if (price) {
+      setSelectedTicket(price);
       setTempQuantity(selectedTickets.get(ticketId) || 0);
       setCurrentView('quantity');
       if (onViewChange) onViewChange('quantity');
@@ -136,16 +147,15 @@ export const Step1SelectTicket = ({ onViewChange }: Step1SelectTicketProps) => {
         }}
       >
         <Stack spacing={3} sx={{ width: '100%', maxWidth: '600px' }}>
-          {ticketsMock
-            .filter((ticket) => ticket.available)
-            .map((ticket) => {
-              const hasQuantity = selectedTickets.has(ticket.id);
-              const quantity = selectedTickets.get(ticket.id) || 0;
+          {prices
+            .map((price) => {
+              const hasQuantity = selectedTickets.has(price.id);
+              const quantity = selectedTickets.get(price.id) || 0;
 
               return (
-                <Box key={ticket.id}>
+                <Box key={price.id}>
                   <Box
-                    onClick={() => handleTicketSelect(ticket.id)}
+                    onClick={() => handleTicketSelect(price.id)}
                     sx={{
                       backgroundColor: colors.secondaryDarkAlt,
                       border: hasQuantity
@@ -194,7 +204,7 @@ export const Step1SelectTicket = ({ onViewChange }: Step1SelectTicketProps) => {
                           mb: 1,
                         }}
                       >
-                        {ticket.type}
+                      {price.type} - {price.duration_days} jour{price.duration_days > 1 ? 's' : ''}
                       </Typography>
                       <Typography
                         variant="body2"
@@ -204,7 +214,7 @@ export const Step1SelectTicket = ({ onViewChange }: Step1SelectTicketProps) => {
                           mb: 2,
                         }}
                       >
-                        {ticket.description}
+                        {price.label}
                       </Typography>
                       <Typography
                         variant="h4"
@@ -215,7 +225,7 @@ export const Step1SelectTicket = ({ onViewChange }: Step1SelectTicketProps) => {
                           color: colors.primaryGreen,
                         }}
                       >
-                        {ticket.price.toFixed(2)} €
+                        {price.amount.toFixed(2)} €
                       </Typography>
                     </Box>
                   </Box>
@@ -247,7 +257,7 @@ export const Step1SelectTicket = ({ onViewChange }: Step1SelectTicketProps) => {
                         size="small"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleEditTicket(ticket.id);
+                          handleEditTicket(price.id);
                         }}
                         sx={{
                           color: colors.white,
@@ -266,7 +276,7 @@ export const Step1SelectTicket = ({ onViewChange }: Step1SelectTicketProps) => {
                         size="small"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleDeleteTicket(ticket.id);
+                          handleDeleteTicket(price.id);
                         }}
                         sx={{
                           color: colors.primaryRed,
@@ -293,7 +303,7 @@ export const Step1SelectTicket = ({ onViewChange }: Step1SelectTicketProps) => {
   const renderQuantitySelector = () => {
     if (!selectedTicket) return null;
 
-    const totalPrice = selectedTicket.price * tempQuantity;
+    const totalPrice = selectedTicket.amount * tempQuantity;
 
     return (
       <Box>
@@ -439,7 +449,7 @@ export const Step1SelectTicket = ({ onViewChange }: Step1SelectTicketProps) => {
                         color: colors.white,
                       }}
                     >
-                      {selectedTicket.price.toFixed(2)} €
+                      {selectedTicket.amount.toFixed(2)} €
                     </Typography>
                   </Box>
 
@@ -506,22 +516,6 @@ export const Step1SelectTicket = ({ onViewChange }: Step1SelectTicketProps) => {
                 </Box>
               </InformationCard>
             </Box>
-          )}
-
-          {/* Conditions */}
-          {selectedTicket.conditions && tempQuantity > 0 && (
-            <Typography
-              variant="body2"
-              sx={{
-                mt: 1,
-                color: colors.warning,
-                fontSize: '0.85rem',
-                fontStyle: 'italic',
-                textAlign: 'center',
-              }}
-            >
-              ⚠️ {selectedTicket.conditions}
-            </Typography>
           )}
 
           {/* Boutons */}

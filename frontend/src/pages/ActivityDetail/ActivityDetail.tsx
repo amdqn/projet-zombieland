@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import {
   Box,
   Container,
@@ -24,6 +24,7 @@ import type { Attraction } from '../../@types/attraction';
 export const ActivityDetail = () => {
   const { id } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [isAttraction, setIsAttraction] = useState<boolean>(false);
@@ -163,6 +164,10 @@ export const ActivityDetail = () => {
     { label: isMobile ? 'Détail' : entityName, showOnMobile: true },
   ];
 
+  const handleReservationClick = () => {
+    navigate('/reservations');
+  };
+
   return (
     <Box
       sx={{
@@ -299,7 +304,7 @@ export const ActivityDetail = () => {
 
             <Box sx={{ display: { xs: 'none', md: 'block' } }}>
               <Box sx={{ marginTop: '2rem' }}>
-                <ReservationButton variant="desktop" />
+                <ReservationButton variant="desktop" onClick={handleReservationClick} />
               </Box>
             </Box>
           </Box>
@@ -344,7 +349,7 @@ export const ActivityDetail = () => {
             </Stack>
 
             <Box sx={{ display: { xs: 'block', md: 'none' }, mt: 2 }}>
-              <ReservationButton variant="mobile" />
+              <ReservationButton variant="mobile" onClick={handleReservationClick} />
             </Box>
           </Box>
         </Box>

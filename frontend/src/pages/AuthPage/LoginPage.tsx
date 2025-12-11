@@ -69,10 +69,10 @@ export default function LoginPage() {
             setIsLogged(true);
             setRole(data.user.role)
             setPseudo(data.user.pseudo)
-            setToken(data.token)
+            setToken(data.access_token)
 
             // Stocker dans localStorage pour persistance
-            localStorage.setItem("token", data.token);
+            localStorage.setItem("token", data.access_token);
             localStorage.setItem("role", data.user.role)
             localStorage.setItem("pseudo", data.user.pseudo)
 

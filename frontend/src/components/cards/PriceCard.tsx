@@ -17,7 +17,7 @@ export default function PriceCard({price}: PriceCardProps) {
         if (price.type === "PASS_2J") {
             return "PASS 2 JOURS";
         }
-        return `${price.type} - ${price.durationDays} JOUR${price.durationDays > 1 ? 'S' : ''}`;
+        return `${price.type} - ${price.duration_days} JOUR${price.duration_days > 1 ? 'S' : ''}`;
     }
 
     return (

@@ -34,6 +34,7 @@ interface ReservationStore {
   
   // Étape 2: Date et heure
   date?: string;
+  dateId?: number; // ID de la date dans la base de données
   time?: string;
   
   // Étape 3: Conditions générales
@@ -48,14 +49,22 @@ interface ReservationStore {
   // Étape 6: Informations de paiement
   paymentInfo?: PaymentInfo;
   
+  // Réservations créées (pour affichage dans Step7OrderConfirmed)
+  createdReservations?: Array<{
+    reservation_number: string;
+    price_id: number;
+    tickets_count: number;
+  }>;
+  
   // Actions
   setTickets: (tickets: TicketSelection[], total: number) => void;
-  setDate: (date: string | undefined) => void;
+  setDate: (date: string | undefined, dateId?: number) => void;
   setTime: (time: string | undefined) => void;
   setAcceptedTerms: (accepted: boolean) => void;
   setCustomerInfo: (info: CustomerInfo | undefined) => void;
   setCustomerAddress: (address: CustomerAddress | undefined) => void;
   setPaymentInfo: (info: PaymentInfo | undefined) => void;
+  setCreatedReservations: (reservations: Array<{ reservation_number: string; price_id: number; tickets_count: number }> | undefined) => void;
   reset: () => void;
 }
 
@@ -71,12 +80,13 @@ export const useReservationStore = create<ReservationStore>()(
       ...initialState,
       
       setTickets: (tickets, total) => set({ tickets, total }),
-      setDate: (date) => set({ date }),
+      setDate: (date, dateId) => set({ date, dateId }),
       setTime: (time) => set({ time }),
       setAcceptedTerms: (acceptedTerms) => set({ acceptedTerms }),
       setCustomerInfo: (customerInfo) => set({ customerInfo }),
       setCustomerAddress: (customerAddress) => set({ customerAddress }),
       setPaymentInfo: (paymentInfo) => set({ paymentInfo }),
+      setCreatedReservations: (createdReservations) => set({ createdReservations }),
       reset: () => set(initialState),
     }),
     {

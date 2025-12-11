@@ -5,7 +5,7 @@ import type {User} from "../@types/users";
 
 interface LoginResponse {
     user: User;
-    token: string;
+    access_token: string;
 }
 
 

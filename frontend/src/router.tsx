@@ -1,4 +1,5 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate, useLocation } from 'react-router-dom';
+import { type ReactElement, useContext } from 'react';
 import { ActivityDetail } from './pages/ActivityDetail';
 import { DesignSystem } from './DesignSystem';
 import { Activities } from './pages/Activities';
@@ -9,6 +10,18 @@ import LoginPage from "./pages/AuthPage/LoginPage.tsx";
 import AccountPage from "./pages/AuthPage/AccountPage.tsx";
 import RegisterPage from "./pages/AuthPage/RegisterPage.tsx";
 import SuccesAuthPage from "./pages/AuthPage/SuccesAuthPage.tsx";
+import { LoginContext } from './context/UserLoginContext.tsx';
+
+const ProtectedRoute = ({ children }: { children: ReactElement }) => {
+  const { isLogged } = useContext(LoginContext);
+  const location = useLocation();
+
+  if (!isLogged) {
+    return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+  }
+
+  return children;
+};
 
 export const router = createBrowserRouter([
   {
@@ -57,7 +70,11 @@ export const router = createBrowserRouter([
       },
       {
         path: 'reservations',
-        element: <ReservationProcessusPage />, // Réservations
+        element: (
+          <ProtectedRoute>
+            <ReservationProcessusPage />
+          </ProtectedRoute>
+        ), // Réservations
       },
       {
         path: 'contact',

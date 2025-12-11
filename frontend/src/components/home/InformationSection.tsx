@@ -11,10 +11,11 @@ export default function InformationSection() {
     const [todaySchedule, setTodaySchedule] = useState<DateParc | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
+    // On récupère les horaires avec await
     useEffect(() => {
         const fetchSchedule = async () => {
             try {
-                const schedule = await getTodaySchedule(); // Await la Promise
+                const schedule = await getTodaySchedule();
                 setTodaySchedule(schedule);
             } catch (error) {
                 console.error('Erreur lors de la récupération des horaires:', error);

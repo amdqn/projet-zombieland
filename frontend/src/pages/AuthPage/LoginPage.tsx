@@ -77,7 +77,7 @@ export default function LoginPage() {
             localStorage.setItem("pseudo", data.user.pseudo)
 
             // Redirection selon le rôle
-            navigate(data.user.role === "ADMIN" ? "/admin" : "/");
+            navigate("/account");
 
         } catch (error: any) {
             console.error("Erreur de connexion:", error);

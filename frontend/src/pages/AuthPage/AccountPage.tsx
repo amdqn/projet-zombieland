@@ -44,22 +44,6 @@ export default function AccountPage() {
         }
     }
 
-    // Soumettre le formulaire de modification
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        setIsLoading(true);
-        try {
-            // TODO: Appel API pour mettre à jour le profil
-            // await updateProfile({ email, pseudo, password });
-            return;
-        } catch (error) {
-            setError(`Erreur lors de la mise à jour : ${error}`);
-        } finally {
-            setIsLoading(false);
-        }
-    }
-
     useEffect(() => {
         if (isLogged) {
             getUserAuth();
@@ -113,9 +97,19 @@ export default function AccountPage() {
                             </Alert>
                         )}
 
-                        {/* Carte */}
-                        <UserCard user={user}/>
-                        <PrimaryButton text={"Mes réservations"}/>
+                        {/* Loader pendant le chargement */}
+                        {isLoading ? (
+                            <Typography>Chargement du profil...</Typography>
+                        ) : user ? (
+                            <>
+                                {/* Carte - Afficher seulement si user n'est pas null */}
+                                <UserCard user={user} />
+                                {user.role == "CLIENT" ? <PrimaryButton text={"Mes réservations"} /> : ""}
+                                {user.role == "ADMIN" ? <PrimaryButton text={"Back-Office"} /> : ""}
+                            </>
+                        ) : (
+                            <Typography>Impossible de charger les données du profil</Typography>
+                        )}
                     </Box>
                 ) : (
                     <Box sx={{ textAlign: 'center', mt: 10 }}>

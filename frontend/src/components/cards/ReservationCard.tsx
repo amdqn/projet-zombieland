@@ -27,6 +27,7 @@ interface ReservationCardProps {
   reservation: Reservation;
   onEdit?: (reservation: Reservation) => void;
   onDelete?: (reservation: Reservation) => void;
+  onClick?: (reservation: Reservation) => void;
 }
 
 const getStatusColor = (status: ReservationStatus): string => {
@@ -35,7 +36,7 @@ const getStatusColor = (status: ReservationStatus): string => {
       return colors.primaryGreen;
     case 'PENDING':
       return colors.warning;
-    case 'CANCELED':
+    case 'CANCELLED':
       return colors.primaryRed;
     default:
       return colors.secondaryGrey;
@@ -48,7 +49,7 @@ const getStatusLabel = (status: ReservationStatus): string => {
       return 'Confirmée';
     case 'PENDING':
       return 'En attente';
-    case 'CANCELED':
+    case 'CANCELLED':
       return 'Annulée';
     default:
       return status;
@@ -70,26 +71,39 @@ const formatPrice = (amount: number | string): string => {
   return `${numAmount.toFixed(2).replace('.', ',')} €`;
 };
 
-export const ReservationCard = ({ reservation, onEdit, onDelete }: ReservationCardProps) => {
+export const ReservationCard = ({ reservation, onEdit, onDelete, onClick }: ReservationCardProps) => {
   const customerName = reservation.user?.pseudo || `Utilisateur #${reservation.user_id}`;
   const reservationDate = reservation.date?.jour 
     ? formatDate(reservation.date.jour) 
     : 'Date non disponible';
 
-  const handleEdit = () => {
+  const handleEdit = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (onEdit) {
       onEdit(reservation);
     }
   };
 
-  const handleDelete = () => {
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (onDelete) {
       onDelete(reservation);
     }
   };
 
+  const handleCardClick = () => {
+    if (onClick) {
+      onClick(reservation);
+    }
+  };
+
   return (
-    <StyledReservationCard>
+    <StyledReservationCard
+      onClick={handleCardClick}
+      sx={{
+        cursor: onClick ? 'pointer' : 'default',
+      }}
+    >
       <CardContent>
         <Stack spacing={2}>
           {/* En-tête avec numéro de réservation, statut et actions */}

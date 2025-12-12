@@ -1,3 +1,12 @@
+export interface ReservationTicket {
+    price_id: number;
+    label: string;
+    type: string;
+    quantity: number;
+    unit_price: number;
+    subtotal: number;
+}
+
 export interface Reservation{
     id: number;
     reservation_number: string;
@@ -5,6 +14,7 @@ export interface Reservation{
     date_id: number;
     price_id?: number;
     tickets_count?: number;
+    tickets?: ReservationTicket[];
     total_amount: number;
     status: ReservationStatus;
     created_at: string;
@@ -23,4 +33,4 @@ export interface Reservation{
     };
 }
 
-export type ReservationStatus = 'PENDING' | 'CONFIRMED' | 'CANCELED';
+export type ReservationStatus = 'PENDING' | 'CONFIRMED' | 'CANCELLED';

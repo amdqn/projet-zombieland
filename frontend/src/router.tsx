@@ -1,5 +1,6 @@
 import { createBrowserRouter, Navigate, useLocation } from 'react-router-dom';
 import { type ReactElement, useContext } from 'react';
+import { Box, CircularProgress } from '@mui/material';
 import { ActivityDetail } from './pages/ActivityDetail';
 import { DesignSystem } from './DesignSystem';
 import { Activities } from './pages/Activities';
@@ -12,6 +13,7 @@ import RegisterPage from "./pages/AuthPage/RegisterPage.tsx";
 import SuccesAuthPage from "./pages/AuthPage/SuccesAuthPage.tsx";
 import { LoginContext } from './context/UserLoginContext.tsx';
 import { AdminDashboard } from './pages/Admin/AdminDashboard';
+import { colors } from './theme';
 
 const ProtectedRoute = ({ children }: { children: ReactElement }) => {
   const { isLogged, isLoading } = useContext(LoginContext);
@@ -19,7 +21,19 @@ const ProtectedRoute = ({ children }: { children: ReactElement }) => {
 
   // Attendre la fin du chargement initial avant de vérifier les permissions
   if (isLoading) {
-    return null; // ou un composant de chargement si vous en avez un
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '100vh',
+          backgroundColor: colors.secondaryDark,
+        }}
+      >
+        <CircularProgress sx={{ color: colors.primaryGreen }} />
+      </Box>
+    );
   }
 
   if (!isLogged) {
@@ -44,7 +58,19 @@ const AdminProtectedRoute = ({ children }: { children: ReactElement }) => {
 
   // Attendre la fin du chargement initial avant de vérifier les permissions
   if (isLoading) {
-    return null; // ou un composant de chargement si vous en avez un
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '100vh',
+          backgroundColor: colors.secondaryDark,
+        }}
+      >
+        <CircularProgress sx={{ color: colors.primaryGreen }} />
+      </Box>
+    );
   }
 
   // Redirige vers la connexion si l'utilisateur n'est pas authentifié

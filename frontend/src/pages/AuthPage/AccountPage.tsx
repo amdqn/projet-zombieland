@@ -50,8 +50,8 @@ export default function AccountPage() {
     }, [isLogged]);
 
     return (
-        <Box sx={{ minHeight: '100vh', paddingTop: '80px' }}>
-            <Container maxWidth="lg" sx={{ paddingY: 4 }}>
+        <Box sx={{ minHeight: '100vh'}}>
+            <Container maxWidth="lg">
                 <CustomBreadcrumbs
                     items={[
                         { label: 'Accueil', path: '/' },
@@ -106,7 +106,7 @@ export default function AccountPage() {
                                 </Box>
 
                                 {user.role == "CLIENT" ? <PrimaryButton onClick={() => navigate('/account/reservations')} text={"Mes réservations"} /> : ""}
-                                {user.role == "ADMIN" ? <PrimaryButton onClick={() => navigate('/admin')}  text={"Back-Office"} /> : ""}
+                                {user.role == "ADMIN" ? <PrimaryButton onClick={() => navigate('/admin')}  text={"Dashboard"} /> : ""}
                                 <PrimaryButton onClick={logoutAndNavigate}  text={"Se déconnecter"} />
                             </>
                         ) : (

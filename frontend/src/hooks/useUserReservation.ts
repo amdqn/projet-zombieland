@@ -28,7 +28,7 @@ export const useReservations = () => {
     return {
         reservations,           // ← Réservations complètes
         reservationNumbers,     // ← Juste les numéros
-        setReservations,        // ← Setter pour les réservations
+        setReservations,
         setReservationNumbers,
         fetchReservations
     };

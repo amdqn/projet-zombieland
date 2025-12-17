@@ -11,6 +11,8 @@ import {
 } from "@mui/material";
 import WarningIcon from "@mui/icons-material/Warning";
 import {colors} from "../../theme";
+import {useContext} from "react";
+import {LoginContext} from "../../context/UserLoginContext.tsx";
 
 interface ReservationCanceledModalProps {
     deleteDialogOpen: boolean;
@@ -29,6 +31,7 @@ export function ReservationCanceledModal({
                                              isDeleting,
                                              error // ← Destructuration de error
                                          }: ReservationCanceledModalProps) {
+    const { role } = useContext(LoginContext)
     return (
         <Dialog
             open={deleteDialogOpen}
@@ -110,7 +113,7 @@ export function ReservationCanceledModal({
                     .
                 </DialogContentText>
 
-                {reservationToDelete && (
+                {reservationToDelete && role == "ADMIN" &&(
                     <DialogContentText
                         sx={{
                             color: colors.secondaryGrey,
@@ -130,9 +133,9 @@ export function ReservationCanceledModal({
                     onClick={handleCloseDeleteDialog}
                     disabled={isDeleting}
                     sx={{
-                        color: colors.secondaryGrey,
+                        color: colors.white,
                         '&:hover': {
-                            backgroundColor: `${colors.secondaryGrey}20`,
+                            backgroundColor: `${colors.white}20`,
                         },
                     }}
                 >

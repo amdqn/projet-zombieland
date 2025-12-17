@@ -1,5 +1,4 @@
-import { Box, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Alert } from '@mui/material';
-import WarningIcon from '@mui/icons-material/Warning';
+import { Box, Typography } from '@mui/material';
 import { colors } from '../../../theme';
 import { useEffect, useState } from 'react';
 import type { Reservation } from '../../../@types/reservation';
@@ -7,6 +6,7 @@ import { getAllReservations, deleteReservation } from '../../../services/reserva
 import { ReservationCard } from '../../../components/cards/ReservationCard';
 import { UpdateReservationModal } from '../../../components/modals/UpdateReservationModal';
 import { ReservationDetailsModal } from '../../../components/modals/ReservationDetailsModal';
+import {ReservationCanceledModal} from "../../../components/modals/ReservationCanceledModal.tsx";
 
 export const ReservationList = () => {
     const [reservations, setReservations] = useState<Reservation[]>([]);
@@ -19,6 +19,7 @@ export const ReservationList = () => {
     const [isDeleting, setIsDeleting] = useState(false);
     const [detailsModalOpen, setDetailsModalOpen] = useState(false);
     const [reservationToView, setReservationToView] = useState<Reservation | null>(null);
+    const [deleteError, setDeleteError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchReservations = async () => {
@@ -49,6 +50,7 @@ export const ReservationList = () => {
         }
         setReservationToDelete(reservation);
         setDeleteDialogOpen(true);
+        setDeleteError(null);
     };
 
     const handleViewDetails = (reservation: Reservation) => {
@@ -60,6 +62,7 @@ export const ReservationList = () => {
         if (!reservationToDelete) return;
 
         setIsDeleting(true);
+        setDeleteError(null);
         try {
             await deleteReservation(reservationToDelete.id);
             setReservations(reservations.filter((r) => r.id !== reservationToDelete.id));
@@ -67,7 +70,7 @@ export const ReservationList = () => {
             setReservationToDelete(null);
         } catch (err) {
             const message = err instanceof Error ? err.message : 'Erreur lors de la suppression de la réservation';
-            setError(message);
+            setDeleteError(message);
         } finally {
             setIsDeleting(false);
         }
@@ -174,116 +177,15 @@ export const ReservationList = () => {
                 reservation={reservationToView}
             />
 
-            {/* Dialog de confirmation de suppression */}
-            <Dialog
-                open={deleteDialogOpen}
-                onClose={handleCloseDeleteDialog}
-                aria-labelledby="delete-dialog-title"
-                aria-describedby="delete-dialog-description"
-                maxWidth="sm"
-                fullWidth
-                disableEscapeKeyDown={isDeleting}
-                slotProps={{
-                    backdrop: {
-                        sx: {
-                            backgroundColor: 'rgba(0, 0, 0, 0.85)',
-                            zIndex: (theme) => theme.zIndex.modal + 1,
-                        },
-                    },
-                }}
-                sx={{
-                    zIndex: (theme) => theme.zIndex.modal + 1,
-                    '& .MuiDialog-container': {
-                        zIndex: (theme) => theme.zIndex.modal + 1,
-                    },
-                }}
-                PaperProps={{
-                    sx: {
-                        backgroundColor: colors.secondaryDark,
-                        border: `1px solid ${colors.secondaryGrey}`,
-                        zIndex: (theme) => theme.zIndex.modal + 1,
-                    },
-                }}
-            >
-                <DialogTitle
-                    id="delete-dialog-title"
-                    sx={{
-                        color: colors.primaryRed,
-                        fontWeight: 'bold',
-                    }}
-                >
-                    Confirmer la suppression
-                </DialogTitle>
-                <DialogContent>
-                    <Alert
-                        severity="warning"
-                        icon={<WarningIcon />}
-                        sx={{
-                            mb: 2,
-                            backgroundColor: `${colors.warning}20`,
-                            color: colors.white,
-                            '& .MuiAlert-icon': {
-                                color: colors.warning,
-                            },
-                        }}
-                    >
-                        Attention : Cette action est irréversible
-                    </Alert>
-                    <DialogContentText
-                        id="delete-dialog-description"
-                        sx={{
-                            color: colors.white,
-                            fontSize: '1rem',
-                            mb: 1,
-                        }}
-                    >
-                        Vous êtes sur le point de supprimer définitivement la réservation{' '}
-                        <strong style={{ color: colors.primaryGreen }}>
-                            #{reservationToDelete?.reservation_number}
-                        </strong>
-                        .
-                    </DialogContentText>
-                    {reservationToDelete && (
-                        <DialogContentText
-                            sx={{
-                                color: colors.secondaryGrey,
-                                fontSize: '0.875rem',
-                                mt: 1,
-                            }}
-                        >
-                            Client : {reservationToDelete.user?.pseudo || `Utilisateur #${reservationToDelete.user_id}`}
-                            <br />
-                            Montant : {reservationToDelete.total_amount} €
-                        </DialogContentText>
-                    )}
-                </DialogContent>
-                <DialogActions>
-                    <Button
-                        onClick={handleCloseDeleteDialog}
-                        disabled={isDeleting}
-                        sx={{
-                            color: colors.secondaryGrey,
-                            '&:hover': {
-                                backgroundColor: `${colors.secondaryGrey}20`,
-                            },
-                        }}
-                    >
-                        Annuler
-                    </Button>
-                    <Button
-                        onClick={handleConfirmDelete}
-                        disabled={isDeleting}
-                        sx={{
-                            color: colors.primaryRed,
-                            '&:hover': {
-                                backgroundColor: `${colors.primaryRed}20`,
-                            },
-                        }}
-                    >
-                        {isDeleting ? 'Suppression...' : 'Supprimer'}
-                    </Button>
-                </DialogActions>
-            </Dialog>
+            {/* Modal de confirmation de suppression */}
+            <ReservationCanceledModal
+                deleteDialogOpen={deleteDialogOpen}
+                handleCloseDeleteDialog={handleCloseDeleteDialog}
+                handleConfirmDelete={handleConfirmDelete}
+                reservationToDelete={reservationToDelete}
+                isDeleting={isDeleting}
+                error={deleteError}
+            />
         </Box>
     );
 };

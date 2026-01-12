@@ -105,6 +105,8 @@ model ParkDate {
   id           Int           @id @default(autoincrement())
   jour         DateTime      @unique @db.Date
   is_open      Boolean       @default(true)
+  open_hour    DateTime?     @db.Time
+  close_hour   DateTime?     @db.Time
   notes        String?
   reservations Reservation[]
   created_at   DateTime      @default(now())

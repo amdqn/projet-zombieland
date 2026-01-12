@@ -308,6 +308,8 @@ async function main() {
   const dates: Array<{
     jour: Date;
     is_open: boolean;
+    open_hour: Date | null;
+    close_hour: Date | null;
     notes: string | null;
   }> = [];
   const startDate = new Date('2025-12-01');
@@ -321,15 +323,30 @@ async function main() {
     const isOpen = dayOfWeek !== 1 && dayOfWeek !== 2;
     
     let notes: string | null = null;
-    if (currentDate.getDate() === 25) {
-      notes = 'Horaires étendus pour Noël (9h-23h)';
-    } else if (currentDate.getDate() === 31) {
-      notes = 'Soirée spéciale Nouvel An (10h-2h)';
+    let openHour: Date | null = null;
+    let closeHour: Date | null = null;
+    
+    if (isOpen) {
+      if (currentDate.getDate() === 25) {
+        notes = 'Horaires étendus pour Noël (9h-23h)';
+        openHour = new Date('1970-01-01T09:00:00');
+        closeHour = new Date('1970-01-01T23:00:00');
+      } else if (currentDate.getDate() === 31) {
+        notes = 'Soirée spéciale Nouvel An (10h-2h)';
+        openHour = new Date('1970-01-01T10:00:00');
+        closeHour = new Date('1970-01-02T02:00:00');
+      } else {
+        // Horaires normaux : 10h-22h
+        openHour = new Date('1970-01-01T10:00:00');
+        closeHour = new Date('1970-01-01T22:00:00');
+      }
     }
     
     dates.push({
       jour: currentDate,
       is_open: isOpen,
+      open_hour: openHour,
+      close_hour: closeHour,
       notes: notes,
     });
   }

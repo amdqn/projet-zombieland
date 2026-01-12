@@ -5,6 +5,7 @@ import CloudIcon from '@mui/icons-material/Cloud';
 import {colors} from "../../theme";
 import getTodaySchedule from "../../functions/getTodaySchedule.ts";
 import WeatherBackground from "./weather/WeatherBackground";
+import type { WeatherCondition } from "./weather/types/weatherTypes";
 
 export default function ImageBanner() {
     const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -13,7 +14,7 @@ export default function ImageBanner() {
     const weather = {
         city: "Zombieland",
         temperature: 12,
-        condition: "pluvieux",
+        condition: "pluvieux" as WeatherCondition,
         icon: "🌧️"
     };
 

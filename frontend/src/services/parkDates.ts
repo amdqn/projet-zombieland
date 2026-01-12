@@ -18,11 +18,11 @@ export const getParkDates = async (from?: string, to?: string): Promise<ParkDate
     const url = `/park-dates${queryString ? `?${queryString}` : ''}`;
     
     const res = await axiosInstance.get<ParkDate[]>(url);
-    const payload = res.data;
+    const payload = res.data as ParkDate[] | { data: ParkDate[] };
 
     if (Array.isArray(payload)) return payload;
 
-    if (payload?.data && Array.isArray(payload.data)) return payload.data;
+    if ('data' in payload && Array.isArray(payload.data)) return payload.data;
 
     throw new Error("Réponse inattendue du serveur pour les dates du parc.");
   } catch (error) {

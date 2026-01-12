@@ -82,16 +82,50 @@ export const ReservationCard = ({ reservation, onEdit, onDelete, onClick }: Rese
     ? formatDate(reservation.date.jour) 
     : 'Date non disponible';
 
+  // Vérifier si la date est passée
+  const isDatePassed = () => {
+    if (!reservation.date?.jour) return false;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const visitDate = new Date(reservation.date.jour);
+    visitDate.setHours(0, 0, 0, 0);
+    return visitDate < today;
+  };
+
+  // Vérifier si on peut annuler (règle J-10 pour admin)
+  const canCancel = () => {
+    if (isDatePassed()) return false;
+    if (!reservation.date?.jour) return true;
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const visitDate = new Date(reservation.date.jour);
+    visitDate.setHours(0, 0, 0, 0);
+    
+    const diffTime = visitDate.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    // Pour l'admin, vérification J-10
+    if (role === 'ADMIN') {
+      return diffDays >= 10;
+    }
+    
+    return true;
+  };
+
+  const datePassed = isDatePassed();
+  const canCancelReservation = canCancel();
+
   const handleEdit = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (onEdit) {
+    if (onEdit && !datePassed) {
       onEdit(reservation);
     }
   };
 
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (onDelete) {
+    if (onDelete && canCancelReservation) {
       onDelete(reservation);
     }
   };
@@ -143,13 +177,18 @@ export const ReservationCard = ({ reservation, onEdit, onDelete, onClick }: Rese
                     <IconButton
                       onClick={handleEdit}
                       size="small"
+                      disabled={datePassed}
                       sx={{
-                        color: colors.primaryGreen,
+                        color: datePassed ? colors.secondaryGrey : colors.primaryGreen,
                         '&:hover': {
-                          backgroundColor: `${colors.primaryGreen}20`,
+                          backgroundColor: datePassed ? 'transparent' : `${colors.primaryGreen}20`,
+                        },
+                        '&.Mui-disabled': {
+                          color: colors.secondaryGrey,
                         },
                       }}
                       aria-label="Modifier la réservation"
+                      title={datePassed ? 'Impossible de modifier une réservation dont la date est passée' : 'Modifier la réservation'}
                     >
                       <EditIcon fontSize="small" />
                     </IconButton>
@@ -158,13 +197,24 @@ export const ReservationCard = ({ reservation, onEdit, onDelete, onClick }: Rese
                     <IconButton
                       onClick={handleDelete}
                       size="small"
+                      disabled={!canCancelReservation}
                       sx={{
-                        color: colors.primaryRed,
+                        color: canCancelReservation ? colors.primaryRed : colors.secondaryGrey,
                         '&:hover': {
-                          backgroundColor: `${colors.primaryRed}20`,
+                          backgroundColor: canCancelReservation ? `${colors.primaryRed}20` : 'transparent',
+                        },
+                        '&.Mui-disabled': {
+                          color: colors.secondaryGrey,
                         },
                       }}
                       aria-label="Supprimer la réservation"
+                      title={
+                        datePassed 
+                          ? 'Impossible d\'annuler une réservation dont la date est passée'
+                          : !canCancelReservation && role === 'ADMIN'
+                          ? 'Annulation impossible : la visite est dans moins de 10 jours'
+                          : 'Supprimer la réservation'
+                      }
                     >
                       <DeleteIcon fontSize="small" />
                     </IconButton>

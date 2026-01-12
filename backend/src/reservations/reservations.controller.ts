@@ -10,6 +10,7 @@ import {
   HttpStatus,
   UseGuards,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { ReservationsService } from './reservations.service';
 import type {
@@ -48,8 +49,29 @@ async findMy(@CurrentUser() user: any) {
   @UseGuards(RolesGuard)
   @Roles('ADMIN')
   @HttpCode(HttpStatus.OK)
-  async findAll(@CurrentUser() user: any) {
-    return this.reservationsService.findAll(user.role);
+  async findAll(
+    @CurrentUser() user: any,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('search') search?: string,
+    @Query('userId') userId?: string,
+    @Query('status') status?: string,
+    @Query('dateFrom') dateFrom?: string,
+    @Query('dateTo') dateTo?: string,
+    @Query('ticketType') ticketType?: string,
+    @Query('sortBy') sortBy?: string,
+  ) {
+    return this.reservationsService.findAll(user.role, {
+      page: page ? parseInt(page, 10) : undefined,
+      limit: limit ? parseInt(limit, 10) : undefined,
+      search,
+      userId: userId ? parseInt(userId, 10) : undefined,
+      status,
+      dateFrom,
+      dateTo,
+      ticketType,
+      sortBy,
+    });
   }
 
   // 4. Voir UNE réservation (CLIENT si propriétaire, ADMIN toujours)

@@ -45,10 +45,45 @@ export const getMyReservations = async (): Promise<Reservation[]> => {
   }
 };
 
-// Récupérer toutes les réservations
-export const getAllReservations = async (): Promise<Reservation[]> => {
+// Interface pour les paramètres de recherche et filtres
+export interface ReservationFilters {
+  page?: number;
+  limit?: number;
+  search?: string;
+  userId?: number;
+  status?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  ticketType?: string;
+  sortBy?: string;
+}
+
+export interface PaginatedReservations {
+  data: Reservation[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+export const getAllReservations = async (filters?: ReservationFilters): Promise<PaginatedReservations> => {
   try {
-    const res = await axiosInstance.get<Reservation[]>('/reservations');
+    const params = new URLSearchParams();
+
+    if (filters?.page) params.append('page', filters.page.toString());
+    if (filters?.limit) params.append('limit', filters.limit.toString());
+    if (filters?.search) params.append('search', filters.search);
+    if (filters?.userId) params.append('userId', filters.userId.toString());
+    if (filters?.status) params.append('status', filters.status);
+    if (filters?.dateFrom) params.append('dateFrom', filters.dateFrom);
+    if (filters?.dateTo) params.append('dateTo', filters.dateTo);
+    if (filters?.ticketType) params.append('ticketType', filters.ticketType);
+    if (filters?.sortBy) params.append('sortBy', filters.sortBy);
+
+    const url = `/reservations${params.toString() ? `?${params.toString()}` : ''}`;
+    const res = await axiosInstance.get<PaginatedReservations>(url);
     return res.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {

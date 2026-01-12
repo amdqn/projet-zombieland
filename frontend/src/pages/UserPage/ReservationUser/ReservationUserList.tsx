@@ -1,19 +1,18 @@
-import { Box, Typography } from '@mui/material';
-import { colors } from '../../../theme';
-import { useEffect, useState } from 'react';
-import type { Reservation } from '../../../@types/reservation';
-import { getAllReservations, deleteReservation } from '../../../services/reservations';
-import { ReservationCard } from '../../../components/cards/ReservationCard';
-import { UpdateReservationModal } from '../../../components/modals/UpdateReservationModal';
-import { ReservationDetailsModal } from '../../../components/modals/ReservationDetailsModal';
+import {useEffect, useState} from "react";
+import {useReservations} from "../../../hooks/useUserReservation.ts";
+import {Box, Typography} from "@mui/material";
+import {colors} from "../../../theme";
+import {ReservationCard} from "../../../components/cards";
+import {ReservationDetailsModal} from "../../../components/modals";
+import type {Reservation} from "../../../@types/reservation";
+import {deleteReservation} from "../../../services/reservations.ts";
 import {ReservationCanceledModal} from "../../../components/modals/ReservationCanceledModal.tsx";
 
-export const ReservationList = () => {
-    const [reservations, setReservations] = useState<Reservation[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+export default function ReservationUserList() {
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    // Utilisation d'un hook personnalisé
+    const { reservations, setReservations, fetchReservations } = useReservations();
     const [error, setError] = useState<string | null>(null);
-    const [editModalOpen, setEditModalOpen] = useState(false);
-    const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [reservationToDelete, setReservationToDelete] = useState<Reservation | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -21,106 +20,70 @@ export const ReservationList = () => {
     const [reservationToView, setReservationToView] = useState<Reservation | null>(null);
     const [deleteError, setDeleteError] = useState<string | null>(null);
 
-    useEffect(() => {
-        const fetchReservations = async () => {
-            setIsLoading(true);
-            setError(null);
-            try {
-                const reservations = await getAllReservations();
-                setReservations(reservations);
-            } catch (err) {
-                const message = err instanceof Error ? err.message : 'Erreur lors de la récupération des réservations';
-                setError(message);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        fetchReservations();
-    }, []);
-
-    const handleEdit = (reservation: Reservation) => {
-        setSelectedReservation(reservation);
-        setEditModalOpen(true);
-    };
 
     const handleDelete = (reservation: Reservation) => {
-        if (editModalOpen) {
-            setEditModalOpen(false);
-            setSelectedReservation(null);
-        }
         setReservationToDelete(reservation);
         setDeleteDialogOpen(true);
         setDeleteError(null);
-    };
+    }
 
     const handleViewDetails = (reservation: Reservation) => {
         setReservationToView(reservation);
         setDetailsModalOpen(true);
-    };
+    }
 
     const handleConfirmDelete = async () => {
-        if (!reservationToDelete) return;
+        if(!reservationToDelete) return;
 
         setIsDeleting(true);
         setDeleteError(null);
+
         try {
             await deleteReservation(reservationToDelete.id);
-            setReservations(reservations.filter((r) => r.id !== reservationToDelete.id));
+
+            // Retirer la réservation supprimée de la liste
+            setReservations(reservations.filter(r => r.id !== reservationToDelete.id));
+
             setDeleteDialogOpen(false);
             setReservationToDelete(null);
+
         } catch (err) {
             const message = err instanceof Error ? err.message : 'Erreur lors de la suppression de la réservation';
+            // On affiche l'erreur dans le modal
             setDeleteError(message);
         } finally {
             setIsDeleting(false);
         }
-    };
+    }
 
     const handleCloseDeleteDialog = () => {
-        if (!isDeleting) {
-            setDeleteDialogOpen(false);
-            setReservationToDelete(null);
-        }
-    };
+      if(!isDeleting) {
+          setDeleteDialogOpen(false);
+          setReservationToDelete(null);
+      }
+    }
 
-    const handleUpdateSuccess = async () => {
-        // Rafraîchir la liste des réservations après mise à jour
-        try {
-            const updatedReservations = await getAllReservations();
-            setReservations(updatedReservations);
-        } catch (err) {
-            const message = err instanceof Error ? err.message : 'Erreur lors de la récupération des réservations';
-            setError(message);
-        }
-    };
+    useEffect(() => {
+        const loadReservations = async () => {
+            setIsLoading(true);
+            setError(null);
+            try {
+                await fetchReservations();
+            } catch (err) {
+                setError(err instanceof Error ? err.message : 'Erreur de chargement');
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        loadReservations();
+    }, [fetchReservations]);
 
     return (
         <Box>
-            <Box sx={{ mb: 3 }}>
-                <Typography
-                    variant="h2"
-                    sx={{
-                        fontSize: { xs: '1.5rem', md: '2rem' },
-                        mb: 2,
-                    }}
-                >
-                    Liste des réservations
-                </Typography>
-                <Typography
-                    variant="body2"
-                    sx={{
-                        color: colors.secondaryGrey,
-                    }}
-                >
-                    Gérez toutes les réservations du parc Zombieland.
-                </Typography>
-            </Box>
             <Box
                 sx={{
                     padding: 3,
                     backgroundColor: colors.secondaryDark,
-                    border: `1px solid ${colors.secondaryGrey}`,
-                    borderRadius: '8px',
                 }}
             >
                 {isLoading ? (
@@ -147,7 +110,6 @@ export const ReservationList = () => {
                             <ReservationCard
                                 key={reservation.id}
                                 reservation={reservation}
-                                onEdit={handleEdit}
                                 onDelete={handleDelete}
                                 onClick={handleViewDetails}
                             />
@@ -155,17 +117,6 @@ export const ReservationList = () => {
                     </Box>
                 )}
             </Box>
-
-            {/* Modal de modification */}
-            <UpdateReservationModal
-                open={editModalOpen}
-                onClose={() => {
-                    setEditModalOpen(false);
-                    setSelectedReservation(null);
-                }}
-                reservation={selectedReservation}
-                onUpdateSuccess={handleUpdateSuccess}
-            />
 
             {/* Modal de détails */}
             <ReservationDetailsModal
@@ -176,7 +127,6 @@ export const ReservationList = () => {
                 }}
                 reservation={reservationToView}
             />
-
             {/* Modal de confirmation de suppression */}
             <ReservationCanceledModal
                 deleteDialogOpen={deleteDialogOpen}
@@ -186,6 +136,7 @@ export const ReservationList = () => {
                 isDeleting={isDeleting}
                 error={deleteError}
             />
+
         </Box>
     );
-};
+}

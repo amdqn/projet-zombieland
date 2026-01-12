@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # Couleurs pour les messages
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
@@ -15,6 +14,11 @@ docker compose down -v --remove-orphans
 echo -e "${GREEN}Nettoyage complet effectué${NC}"
 echo ""
 
+echo -e "${BLUE}=== Génération de l'API (local) ===${NC}"
+cd backend
+npm run generate:api
+cd ..
+
 echo -e "${BLUE}=== Démarrage de l'environnement Docker ===${NC}"
 
 # Démarrer les containers Docker Compose
@@ -23,7 +27,7 @@ docker compose up -d
 
 # Attendre que les containers soient prêts
 echo -e "${GREEN}Attente du démarrage des containers...${NC}"
-sleep 5
+sleep 10
 
 # Vérifier que le container zombieland-api est en cours d'exécution
 if ! docker ps | grep -q "zombieland-api"; then
@@ -31,8 +35,12 @@ if ! docker ps | grep -q "zombieland-api"; then
     exit 1
 fi
 
-echo -e "${BLUE}=== Génération de l'API ===${NC}"
-docker exec zombieland-api npm run generate:api
+# Attendre que npm install soit terminé dans le container
+echo -e "${GREEN}Attente de la fin de l'installation des dépendances...${NC}"
+until docker exec zombieland-api test -d node_modules/.bin 2>/dev/null; do
+    echo -e "${GREEN}Installation en cours...${NC}"
+    sleep 5
+done
 
 echo -e "${BLUE}=== Génération du client Prisma ===${NC}"
 docker exec zombieland-api npx prisma generate

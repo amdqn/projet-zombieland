@@ -4,6 +4,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { colors } from '../../theme/theme';
 import type { Reservation, ReservationStatus } from '../../@types/reservation';
+import {useContext} from "react";
+import {LoginContext} from "../../context/UserLoginContext.tsx";
 
 const StyledReservationCard = styled(Card)({
   backgroundColor: colors.secondaryDark,
@@ -72,6 +74,9 @@ const formatPrice = (amount: number | string): string => {
 };
 
 export const ReservationCard = ({ reservation, onEdit, onDelete, onClick }: ReservationCardProps) => {
+
+  const { role } = useContext(LoginContext);
+
   const customerName = reservation.user?.pseudo || `Utilisateur #${reservation.user_id}`;
   const reservationDate = reservation.date?.jour 
     ? formatDate(reservation.date.jour) 
@@ -173,23 +178,29 @@ export const ReservationCard = ({ reservation, onEdit, onDelete, onClick }: Rese
 
           {/* Informations principales */}
           <Stack spacing={1.5}>
-            <Box>
-              <Typography
-                variant="body2"
-                sx={{
-                  color: colors.secondaryGrey,
-                  textTransform: 'uppercase',
-                  fontSize: '0.75rem',
-                  letterSpacing: '0.05em',
-                  mb: 0.5,
-                }}
-              >
-                Client
-              </Typography>
-              <Typography variant="body1" sx={{ color: colors.white, fontWeight: 600 }}>
-                {customerName}
-              </Typography>
-            </Box>
+
+            {/* Affichage client en fonction du role */}
+            {role === 'ADMIN' && (
+                <Box>
+                  <Typography
+                      variant="body2"
+                      sx={{
+                        color: colors.secondaryGrey,
+                        textTransform: 'uppercase',
+                        fontSize: '0.75rem',
+                        letterSpacing: '0.05em',
+                        mb: 0.5,
+                      }}
+                  >
+                    Client
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: colors.white, fontWeight: 600 }}>
+                    {customerName}
+                  </Typography>
+                </Box>
+
+            )}
+
 
             <Box>
               <Typography

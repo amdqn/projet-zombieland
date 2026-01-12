@@ -4,14 +4,16 @@ import { colors } from "../../../theme";
 import { InformationCard } from "../../../components/cards";
 import EmailIcon from '@mui/icons-material/Email';
 import { useReservationStore } from "../../../stores/reservationStore";
-import { getMyReservations } from "../../../services/reservations";
 import { getPrices } from "../../../services/prices";
 import type { Price } from "../../../@types/price";
+import {useReservations} from "../../../hooks/useUserReservation.ts";
 
 export const Step7OrderConfirmed = () => {
   const { tickets, total, date, createdReservations, customerInfo } = useReservationStore();
-  const [reservationNumbers, setReservationNumbers] = useState<string[]>([]);
   const [prices, setPrices] = useState<Price[]>([]);
+
+  // Utilisation d'un hook personnalisé
+  const { reservationNumbers, setReservationNumbers, fetchReservations } = useReservations();
 
   // Charger les prices pour afficher les détails
   useEffect(() => {
@@ -30,23 +32,11 @@ export const Step7OrderConfirmed = () => {
     if (createdReservations && createdReservations.length > 0) {
       setReservationNumbers(createdReservations.map(r => r.reservation_number));
     }
-  }, [createdReservations]);
+  }, [createdReservations, setReservationNumbers]);
 
   useEffect(() => {
-    const fetchReservations = async () => {
-      if (reservationNumbers.length > 0) return;
-      try {
-        const myReservations = await getMyReservations();
-        const numbers = myReservations
-          .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-          .map(r => r.reservation_number);
-        setReservationNumbers(numbers);
-      } catch (error) {
-        console.error("Impossible de récupérer vos réservations:", error);
-      }
-    };
     fetchReservations();
-  }, [reservationNumbers.length]);
+  }, [fetchReservations]);
 
   const mainReservationNumber = useMemo(
     () => (reservationNumbers.length > 0 ? reservationNumbers[0] : null),

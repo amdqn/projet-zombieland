@@ -1,0 +1,231 @@
+# ============================================
+# NOM DU WORKFLOW (affiché dans GitHub UI)
+# ============================================
+name: CI - Lint, Build & Test
+
+# ============================================
+# TRIGGERS : Quand le workflow se déclenche
+# ============================================
+on:
+  # À chaque push sur develop ou main
+  push:
+    branches: 
+      - develop
+  
+  # À chaque Pull Request vers develop ou main
+  pull_request:
+    branches:
+      - develop
+
+# ============================================
+# JOBS : Tâches à exécuter (en parallèle)
+# ============================================
+jobs:
+  # ==========================================
+  # JOB 1 : BACKEND (NestJS + Prisma)
+  # ==========================================
+  backend-ci:
+    name: 🔧 Backend - NestJS + Prisma
+    runs-on: ubuntu-latest
+    
+    # Toutes les commandes s'exécutent dans ./backend
+    defaults:
+      run:
+        working-directory: ./backend
+    
+    steps:
+      # ===== STEP 1 : Récupérer le code =====
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        # Clone ton repo dans la VM
+        # Sans ça, la VM est vide !
+      
+      # ===== STEP 2 : Installer Node.js =====
+      - name: 🟢 Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+        # Installe Node.js v22
+        # Active le cache npm pour aller plus vite
+        # 1ère fois : 2 min | Ensuite : 30s
+      
+      # ===== STEP 3 : Installer les dépendances =====
+      - name: 📦 Install dependencies
+        run: npm ci
+        # npm ci = npm install MAIS :
+        # - Plus rapide
+        # - Plus fiable (respect package-lock.json)
+        # - Ne modifie jamais package-lock.json
+        # TOUJOURS utiliser npm ci en CI/CD !
+      
+      # ===== STEP 4 : Générer Prisma Client =====
+      - name: 🔧 Generate Prisma Client
+        run: npx prisma generate
+        # Génère les types TypeScript depuis schema.prisma
+        # OBLIGATOIRE sinon erreurs TypeScript
+        # Équivalent à ce que tu fais en local
+      
+      # ===== STEP 5 : Vérifier OpenAPI Spec =====
+      - name: 📋 Validate OpenAPI Spec
+        run: |
+          if [ -f "api-spec.yml" ]; then
+            echo "✅ api-spec.yml found"
+          else
+            echo "❌ api-spec.yml missing!"
+            exit 1
+          fi
+        # Vérifie que le fichier OpenAPI existe
+        # Si absent → Échec du workflow
+      
+      # ===== STEP 6 : Linter (Qualité du code) =====
+      - name: 🔍 Lint code with ESLint
+        run: npm run lint
+        # Vérifie :
+        # - Syntaxe correcte
+        # - Respect des règles ESLint
+        # - Pas de variables inutilisées
+        # - Etc.
+        # Si erreur → Workflow échoue ❌
+      
+      # ===== STEP 7 : Build TypeScript =====
+      - name: 🏗️ Build TypeScript project
+        run: npm run build
+        # Compile TypeScript → JavaScript
+        # Vérifie :
+        # - Pas d'erreurs de typage
+        # - Imports corrects
+        # - Code compilable
+        # Génère ./dist/
+      
+      # ===== STEP 8 : Tests (si configurés) =====
+      - name: 🧪 Run unit tests
+        run: npm test || echo "⚠️ No tests configured yet"
+        continue-on-error: true
+        # || = Si npm test échoue, affiche message sans bloquer
+        # continue-on-error = N'échoue pas le job si ça crash
+        # À enlever quand tu auras des tests !
+      
+      # ===== STEP 9 : Vérifier Schema Prisma =====
+      - name: 🗄️ Validate Prisma Schema
+        run: npx prisma validate
+        # Vérifie que schema.prisma est valide
+        # Relations correctes, types OK, etc.
+      
+      # ===== STEP 10 : Check Migrations =====
+      - name: 📊 Check Prisma Migrations
+        run: |
+          if [ -d "prisma/migrations" ]; then
+            echo "✅ Migrations folder exists"
+            ls -la prisma/migrations/
+          else
+            echo "⚠️ No migrations yet"
+          fi
+        # Liste les migrations existantes
+        # Informatif, n'échoue pas
+
+  # ==========================================
+  # JOB 2 : FRONTEND (React + Vite)
+  # ==========================================
+  frontend-ci:
+    name: ⚛️ Frontend - React + Vite
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: ./frontend
+    
+    steps:
+      # ===== STEP 1 : Récupérer le code =====
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+      
+      # ===== STEP 2 : Installer Node.js =====
+      - name: 🟢 Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+      
+      # ===== STEP 3 : Installer les dépendances =====
+      - name: 📦 Install dependencies
+        run: npm ci
+      
+      # ===== STEP 4 : Linter =====
+      - name: 🔍 Lint code with ESLint
+        run: npm run lint
+        continue-on-error: true
+        # continue-on-error car lint peut ne pas être configuré
+        # À enlever quand c'est configuré !
+      
+      # ===== STEP 5 : Build Vite =====
+      - name: 🏗️ Build Vite project
+        run: npm run build
+        env:
+          # Variable d'env pour le build
+          VITE_API_URL: http://localhost:3001/api/v1
+        # Build avec Vite
+        # Génère ./dist/
+        # VITE_API_URL nécessaire pour que le build passe
+        # En prod, cette valeur sera différente (Railway)
+      
+      # ===== STEP 6 : Vérifier le build =====
+      - name: 📦 Check build output
+        run: |
+          if [ -d "dist" ]; then
+            echo "✅ Build successful!"
+            ls -lh dist/
+          else
+            echo "❌ Build folder not found!"
+            exit 1
+          fi
+        # Vérifie que ./dist/ existe bien
+        # Liste les fichiers générés
+      
+      # ===== STEP 7 : Tests (si configurés) =====
+      - name: 🧪 Run tests
+        run: npm test || echo "⚠️ No tests configured yet"
+        continue-on-error: true
+
+  # ==========================================
+  # JOB 3 : QUALITÉ GLOBALE (Optionnel)
+  # ==========================================
+  code-quality:
+    name: 📊 Code Quality Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+      
+      # ===== Vérifier structure projet =====
+      - name: 🗂️ Verify project structure
+        run: |
+          echo "Checking project structure..."
+          
+          # Vérifier fichiers essentiels backend
+          [ -f "backend/package.json" ] && echo "✅ backend/package.json" || echo "❌ Missing backend/package.json"
+          [ -f "backend/prisma/schema.prisma" ] && echo "✅ schema.prisma" || echo "❌ Missing schema.prisma"
+          [ -f "backend/api-spec.yml" ] && echo "✅ api-spec.yml" || echo "❌ Missing api-spec.yml"
+          
+          # Vérifier fichiers essentiels frontend
+          [ -f "frontend/package.json" ] && echo "✅ frontend/package.json" || echo "❌ Missing frontend/package.json"
+          [ -f "frontend/vite.config.ts" ] && echo "✅ vite.config.ts" || echo "❌ Missing vite.config.ts"
+          
+          # Vérifier Docker
+          [ -f "docker-compose.yml" ] && echo "✅ docker-compose.yml" || echo "❌ Missing docker-compose.yml"
+          
+          echo "Project structure validation complete!"
+      
+      # ===== Compter lignes de code =====
+      - name: 📈 Count lines of code
+        run: |
+          echo "=== Lines of Code ==="
+          echo "Backend TypeScript:"
+          find backend/src -name "*.ts" | xargs wc -l | tail -1
+          echo ""
+          echo "Frontend TypeScript/TSX:"
+          find frontend/src -name "*.ts" -o -name "*.tsx" | xargs wc -l | tail -1
+        continue-on-error: true

@@ -1,4 +1,19 @@
-// export type WeatherCondition = 'ensoleille' | 'pluvieux' | 'neige';
+export type WeatherCondition =
+    | "Clear"
+    | "Clouds"
+    | "Rain"
+    | "Drizzle"
+    | "Thunderstorm"
+    | "Snow"
+    | "Mist"
+    | "Smoke"
+    | "Haze"
+    | "Dust"
+    | "Fog"
+    | "Sand"
+    | "Ash"
+    | "Squall"
+    | "Tornado";
 
 export interface WeatherData {
   coord: {
@@ -7,7 +22,7 @@ export interface WeatherData {
   weather: [
         {
           id: number;
-          main: string;
+          main: WeatherCondition;
           description: string;
           icon: string
         }

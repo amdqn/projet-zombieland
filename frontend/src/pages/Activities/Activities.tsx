@@ -87,18 +87,20 @@ export const Activities = () => {
 
   const enrichedAttractions = useMemo(() => {
     const defaultAttractionImage = '/activities-images/zombie.jpg';
-    const withMeta = attractions.map((attraction) => {
-      const apiImage = attraction.image_url?.trim();
-      // Accepter les URLs HTTP/HTTPS et les chemins relatifs qui commencent par /
-      const isValidHttp = apiImage?.startsWith('http://') || apiImage?.startsWith('https://');
-      const isValidPath = apiImage?.startsWith('/');
-      const image = (isValidHttp || isValidPath) ? apiImage : defaultAttractionImage;
-      const thrill = attraction.thrill_level ?? 3;
-      const durationMinutes = attraction.duration ?? 45;
-      const duration = `${durationMinutes} min`;
-      const categoryLabel = attraction.category?.name ?? 'Attraction';
-      return { ...attraction, image, thrill, duration, categoryLabel };
-    });
+    const withMeta = attractions
+      .filter((attraction) => attraction.category?.name !== 'Restauration')
+      .map((attraction) => {
+        const apiImage = attraction.image_url?.trim();
+        // Accepter les URLs HTTP/HTTPS et les chemins relatifs qui commencent par /
+        const isValidHttp = apiImage?.startsWith('http://') || apiImage?.startsWith('https://');
+        const isValidPath = apiImage?.startsWith('/');
+        const image = (isValidHttp || isValidPath) ? apiImage : defaultAttractionImage;
+        const thrill = attraction.thrill_level ?? 3;
+        const durationMinutes = attraction.duration ?? 45;
+        const duration = `${durationMinutes} min`;
+        const categoryLabel = attraction.category?.name ?? 'Attraction';
+        return { ...attraction, image, thrill, duration, categoryLabel };
+      });
 
     const queryLower = searchQuery.toLowerCase().trim();
     const filtered = withMeta.filter(
@@ -113,15 +115,46 @@ export const Activities = () => {
     return filtered;
   }, [attractions, selectedCategory, minThrill, searchQuery]);
 
+  const enrichedRestaurants = useMemo(() => {
+    const defaultRestaurantImage = '/attractions-images/restaurant-default.jpg';
+    const withMeta = attractions
+      .filter((attraction) => attraction.category?.name === 'Restauration')
+      .map((restaurant) => {
+        const apiImage = restaurant.image_url?.trim();
+        // Accepter les URLs HTTP/HTTPS et les chemins relatifs qui commencent par /
+        const isValidHttp = apiImage?.startsWith('http://') || apiImage?.startsWith('https://');
+        const isValidPath = apiImage?.startsWith('/');
+        const image = (isValidHttp || isValidPath) ? apiImage : defaultRestaurantImage;
+        const thrill = undefined; // Pas de niveau de frisson pour la restauration
+        const duration = undefined; // Pas de durée pour la restauration
+        const categoryLabel = restaurant.category?.name ?? 'Restauration';
+        return { ...restaurant, image, thrill, duration, categoryLabel };
+      });
+
+    const queryLower = searchQuery.toLowerCase().trim();
+    const filtered = withMeta.filter(
+      (r) =>
+        !queryLower ||
+        r.name.toLowerCase().includes(queryLower) ||
+        r.description?.toLowerCase().includes(queryLower),
+    );
+
+    return filtered;
+  }, [attractions, searchQuery]);
+
   const categories = useMemo(() => {
     const allLabels = [
       ...activities.map((a) => a.category?.name),
       ...attractions.map((a) => a.category?.name),
-    ].filter((c): c is string => Boolean(c));
+    ].filter((c): c is string => Boolean(c) && c !== 'Restauration');
     return ['Toutes', ...Array.from(new Set(allLabels))];
   }, [activities, attractions]);
 
-  const currentItems = tabValue === 0 ? enrichedActivities : enrichedAttractions;
+  const currentItems = useMemo(() => {
+    if (tabValue === 0) return enrichedActivities;
+    if (tabValue === 1) return enrichedAttractions;
+    return enrichedRestaurants;
+  }, [tabValue, enrichedActivities, enrichedAttractions, enrichedRestaurants]);
 
   const heroImages = useMemo(() => {
     // Images par défaut car les activités n'ont pas d'images en BDD
@@ -178,6 +211,7 @@ export const Activities = () => {
           >
             <Tab label="Activités" />
             <Tab label="Attractions" />
+            <Tab label="Restauration" />
           </Tabs>
 
           <Typography
@@ -195,7 +229,9 @@ export const Activities = () => {
               letterSpacing: '2px',
             }}
           >
-            {tabValue === 0 ? 'Activités du parc' : 'Attractions du parc'}
+            {tabValue === 0 && 'Activités du parc'}
+            {tabValue === 1 && 'Attractions du parc'}
+            {tabValue === 2 && 'Restauration'}
           </Typography>
 
           <Typography
@@ -207,9 +243,9 @@ export const Activities = () => {
               mb: { xs: 1.5, md: 3 },
             }}
           >
-            {tabValue === 0
-              ? 'Frissons, immersions ou ateliers : découvre toutes les activités disponibles avant de réserver.'
-              : 'Parcours immersifs, expériences à sensations fortes : explore toutes nos attractions thématiques.'}
+            {tabValue === 0 && 'Frissons, immersions ou ateliers : découvre toutes les activités disponibles avant de réserver.'}
+            {tabValue === 1 && 'Parcours immersifs, expériences à sensations fortes : explore toutes nos attractions thématiques.'}
+            {tabValue === 2 && 'Restaurants, snacks et points de vente : découvre toutes nos options de restauration thématique.'}
           </Typography>
 
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 1, sm: 2 }} sx={{ mb: { xs: 1.5, md: 3 } }}>
@@ -222,29 +258,48 @@ export const Activities = () => {
               }}
             >
               <Typography variant="h6" sx={{ color: colors.primaryGreen }}>
-                {currentItems.length} {tabValue === 0 ? 'activités' : 'attractions'}
+                {currentItems.length} {tabValue === 0 ? 'activités' : tabValue === 1 ? 'attractions' : 'points de vente'}
               </Typography>
               <Typography variant="body2" sx={{ color: colors.white }}>
-                {tabValue === 0
-                  ? 'Zones immersives, ateliers, spectacles'
-                  : 'Parcours, expériences, sensations fortes'}
+                {tabValue === 0 && 'Zones immersives, ateliers, spectacles'}
+                {tabValue === 1 && 'Parcours, expériences, sensations fortes'}
+                {tabValue === 2 && 'Restaurants, snacks, bars et cafés'}
               </Typography>
             </Box>
-            <Box
-              sx={{
-                backgroundColor: `${colors.secondaryDarkAlt}90`,
-                border: `1px solid ${colors.secondaryGrey}`,
-                padding: '12px 16px',
-                minWidth: '170px',
-              }}
-            >
-              <Typography variant="h6" sx={{ color: colors.primaryRed }}>
-                Frisson jusqu'à 5/5
-              </Typography>
-              <Typography variant="body2" sx={{ color: colors.white }}>
-                Choisis ton niveau d'intensité
-              </Typography>
-            </Box>
+            {tabValue !== 2 && (
+              <Box
+                sx={{
+                  backgroundColor: `${colors.secondaryDarkAlt}90`,
+                  border: `1px solid ${colors.secondaryGrey}`,
+                  padding: '12px 16px',
+                  minWidth: '170px',
+                }}
+              >
+                <Typography variant="h6" sx={{ color: colors.primaryRed }}>
+                  Frisson jusqu'à 5/5
+                </Typography>
+                <Typography variant="body2" sx={{ color: colors.white }}>
+                  Choisis ton niveau d'intensité
+                </Typography>
+              </Box>
+            )}
+            {tabValue === 2 && (
+              <Box
+                sx={{
+                  backgroundColor: `${colors.secondaryDarkAlt}90`,
+                  border: `1px solid ${colors.secondaryGrey}`,
+                  padding: '12px 16px',
+                  minWidth: '170px',
+                }}
+              >
+                <Typography variant="h6" sx={{ color: colors.primaryGreen }}>
+                  Cuisine thématique
+                </Typography>
+                <Typography variant="body2" sx={{ color: colors.white }}>
+                  Des plats pour tous les goûts
+                </Typography>
+              </Box>
+            )}
             <Box
               sx={{
                 backgroundColor: `${colors.secondaryDarkAlt}90`,
@@ -254,10 +309,10 @@ export const Activities = () => {
               }}
             >
               <Typography variant="h6" sx={{ color: colors.primaryGreen }}>
-                Réservation en ligne
+                {tabValue === 2 ? 'Accès libre' : 'Réservation en ligne'}
               </Typography>
               <Typography variant="body2" sx={{ color: colors.white }}>
-                Places limitées par session
+                {tabValue === 2 ? 'Paiement sur place' : 'Places limitées par session'}
               </Typography>
             </Box>
           </Stack>
@@ -278,10 +333,14 @@ export const Activities = () => {
         <Stack spacing={3}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
             <Typography variant="h2" sx={{ fontSize: { xs: '1rem', md: '2rem' } }}>
-              Toutes les activités
+              {tabValue === 0 && 'Toutes les activités'}
+              {tabValue === 1 && 'Toutes les attractions'}
+              {tabValue === 2 && 'Tous les points de restauration'}
             </Typography>
             <Typography variant="body2" sx={{ color: colors.secondaryGrey, maxWidth: { md: '720px' } }}>
-              Parcours, VR, spectacles ou ateliers : découvre l'ensemble du parc et filtre par catégorie ou niveau de frisson.
+              {tabValue === 0 && 'Parcours, VR, spectacles ou ateliers : découvre l\'ensemble du parc et filtre par catégorie ou niveau de frisson.'}
+              {tabValue === 1 && 'Attractions extrêmes, expériences immersives ou parcours familiaux : filtre par catégorie ou niveau d\'intensité.'}
+              {tabValue === 2 && 'Restaurants gastronomiques, snacks rapides ou bars thématiques : découvre toutes nos options de restauration.'}
             </Typography>
           </Box>
 
@@ -324,10 +383,10 @@ export const Activities = () => {
                 alignItems={{ xs: 'flex-start', md: 'center' }}
               >
                 <Typography variant="h6" sx={{ textTransform: 'uppercase' }}>
-                  Filtrer les {tabValue === 0 ? 'activités' : 'attractions'}
+                  Filtrer {tabValue === 0 ? 'les activités' : tabValue === 1 ? 'les attractions' : 'la restauration'}
                 </Typography>
                 <Typography variant="body2" sx={{ color: colors.secondaryGrey }}>
-                  {currentItems.length} {tabValue === 0 ? 'activité(s)' : 'attraction(s)'} affichée(s)
+                  {currentItems.length} {tabValue === 0 ? 'activité(s)' : tabValue === 1 ? 'attraction(s)' : 'point(s) de vente'} affichée(s)
                 </Typography>
               </Stack>
 
@@ -368,63 +427,67 @@ export const Activities = () => {
                 />
               </Stack>
 
-              <Stack spacing={2}>
-                <Typography variant="body2" sx={{ color: colors.secondaryGrey }}>
-                  Catégories
-                </Typography>
-                <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
-                  {categories.map((category) => {
-                    const isActive = selectedCategory === category;
-                    return (
-                      <Chip
-                        key={category}
-                        label={category}
-                        onClick={() => setSelectedCategory(category)}
-                        sx={{
-                          backgroundColor: isActive ? colors.primaryGreen : colors.secondaryGrey,
-                          color: colors.white,
-                          fontWeight: 700,
-                          letterSpacing: '0.02em',
-                          borderRadius: '999px',
-                          px: 0.5,
-                        }}
-                      />
-                    );
-                  })}
-                </Stack>
-              </Stack>
-
-              <Stack spacing={1} sx={{ mt: 1 }}>
-                <Stack direction={{ xs: 'column', sm: 'row' }} alignItems="center" spacing={2}>
-                  <Typography variant="body2" sx={{ color: colors.secondaryGrey, minWidth: 150 }}>
-                    Intensité minimale
+              {tabValue !== 2 && (
+                <Stack spacing={2}>
+                  <Typography variant="body2" sx={{ color: colors.secondaryGrey }}>
+                    Catégories
                   </Typography>
-                  <Slider
-                    value={minThrill}
-                    onChange={(_, value) => setMinThrill(Array.isArray(value) ? 0 : value)}
-                    step={1}
-                    min={0}
-                    max={5}
-                    marks={[
-                      { value: 0, label: 'Tous' },
-                      { value: 1, label: '1' },
-                      { value: 2, label: '2' },
-                      { value: 3, label: '3' },
-                      { value: 4, label: '4' },
-                      { value: 5, label: '5' },
-                    ]}
-                    sx={{
-                      color: colors.primaryGreen,
-                      flex: 1,
-                      width: '100%',
-                      mt: 1,
-                      '& .MuiSlider-markLabel': {
-                        color: colors.secondaryGrey,
-                      },
-                    }}
-                  />
+                  <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+                    {categories.map((category) => {
+                      const isActive = selectedCategory === category;
+                      return (
+                        <Chip
+                          key={category}
+                          label={category}
+                          onClick={() => setSelectedCategory(category)}
+                          sx={{
+                            backgroundColor: isActive ? colors.primaryGreen : colors.secondaryGrey,
+                            color: colors.white,
+                            fontWeight: 700,
+                            letterSpacing: '0.02em',
+                            borderRadius: '999px',
+                            px: 0.5,
+                          }}
+                        />
+                      );
+                    })}
+                  </Stack>
                 </Stack>
-              </Stack>
+              )}
+
+              {tabValue !== 2 && (
+                <Stack spacing={1} sx={{ mt: 1 }}>
+                  <Stack direction={{ xs: 'column', sm: 'row' }} alignItems="center" spacing={2}>
+                    <Typography variant="body2" sx={{ color: colors.secondaryGrey, minWidth: 150 }}>
+                      Intensité minimale
+                    </Typography>
+                    <Slider
+                      value={minThrill}
+                      onChange={(_, value) => setMinThrill(Array.isArray(value) ? 0 : value)}
+                      step={1}
+                      min={0}
+                      max={5}
+                      marks={[
+                        { value: 0, label: 'Tous' },
+                        { value: 1, label: '1' },
+                        { value: 2, label: '2' },
+                        { value: 3, label: '3' },
+                        { value: 4, label: '4' },
+                        { value: 5, label: '5' },
+                      ]}
+                      sx={{
+                        color: colors.primaryGreen,
+                        flex: 1,
+                        width: '100%',
+                        mt: 1,
+                        '& .MuiSlider-markLabel': {
+                          color: colors.secondaryGrey,
+                        },
+                      }}
+                    />
+                  </Stack>
+                </Stack>
+              )}
             </Stack>
           </Box>
 
@@ -451,12 +514,13 @@ export const Activities = () => {
                   duration={item.duration}
                   description={item.description}
                   isAttraction={tabValue === 1}
+                  isRestaurant={tabValue === 2}
                 />
               </Box>
             ))}
           </Box>
 
-          {!loading && !error && enrichedActivities.length === 0 && (
+          {!loading && !error && currentItems.length === 0 && (
             <Box
               sx={{
                 border: `1px dashed ${colors.secondaryGrey}`,
@@ -467,7 +531,7 @@ export const Activities = () => {
               }}
             >
               <Typography variant="h6" sx={{ mb: 1 }}>
-                Aucune {tabValue === 0 ? 'activité' : 'attraction'} trouvée
+                Aucun{tabValue === 0 ? 'e activité' : tabValue === 1 ? 'e attraction' : ' point de restauration'} trouvé{tabValue === 0 ? 'e' : tabValue === 1 ? 'e' : ''}
               </Typography>
               <Typography variant="body2">
                 Réessaie plus tard ou contacte le support si le problème persiste.

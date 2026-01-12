@@ -49,7 +49,7 @@ export const ActivityDetail = () => {
 
       setLoading(true);
       try {
-        const isAttr = location.pathname.includes('/attractions/');
+        const isAttr = location.pathname.includes('/attractions/') || location.pathname.includes('/restaurants/');
         setIsAttraction(isAttr);
 
         if (isAttr) {
@@ -58,7 +58,14 @@ export const ActivityDetail = () => {
             setEntity(data);
             try {
               const allAttractions = await getAttractions();
-              const others = allAttractions.filter((att) => att.id !== data.id);
+              const isRestaurantPage = data.category?.name === 'Restauration';
+
+              // Si c'est un restaurant, afficher uniquement les autres restaurants
+              // Sinon, afficher toutes les attractions sauf les restaurants
+              const others = isRestaurantPage
+                ? allAttractions.filter((att) => att.id !== data.id && att.category?.name === 'Restauration')
+                : allAttractions.filter((att) => att.id !== data.id && att.category?.name !== 'Restauration');
+
               setRelatedAttractions(others);
             } catch {
               setRelatedAttractions([]);
@@ -212,9 +219,11 @@ export const ActivityDetail = () => {
         };
       });
 
+  const isRestaurant = location.pathname.includes('/restaurants/') || entityCategory === 'Restauration';
+
   const breadcrumbItems = [
     { label: 'Accueil', path: '/', showOnMobile: true },
-    { label: isAttraction ? 'Attractions' : 'Activités', path: isAttraction ? '/attractions' : '/activities', showOnMobile: false },
+    { label: isRestaurant ? 'Restauration' : isAttraction ? 'Attractions' : 'Activités', path: isAttraction ? '/attractions' : '/activities', showOnMobile: false },
     { label: entityCategory || (isAttraction ? 'Attraction' : 'Activité'), showOnMobile: false },
     { label: isMobile ? 'Détail' : entityName, showOnMobile: true },
   ];
@@ -305,7 +314,7 @@ export const ActivityDetail = () => {
                   fontSize: { xs: '1.6rem', md: '2.5rem' },
                 }}
               >
-                L'EXPÉRIENCE
+                {isRestaurant ? 'NOTRE ÉTABLISSEMENT' : 'L\'EXPÉRIENCE'}
               </Typography>
               <Typography
                 variant="body1"
@@ -317,95 +326,147 @@ export const ActivityDetail = () => {
               >
                 {'description' in entity ? entity.description : ''}
               </Typography>
-              <Typography
-                variant="body1"
-                sx={{
-                  fontSize: { xs: '0.95rem', md: '1.1rem' },
-                  lineHeight: { xs: 1.7, md: 1.8 },
-                }}
-              >
-                Plongez dans une expérience immersive totale où l'horreur prend vie.
-                Effets spéciaux saisissants, acteurs professionnels et atmosphère
-                oppressante vous attendent. Cris, odeurs de putréfaction, bruits de
-                chaînes... tout est conçu pour créer un cauchemar éveillé.
-              </Typography>
-
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1,
-                  mt: 3,
-                  p: 2,
-                  backgroundColor: `${colors.secondaryRed}40`,
-                  borderLeft: `4px solid ${colors.primaryRed}`,
-                }}
-              >
-                <Box
+              {!isRestaurant && (
+                <Typography
+                  variant="body1"
                   sx={{
-                    color: '#FFC107',
-                    fontSize: '1.5rem',
-                    display: 'flex',
-                    alignItems: 'center',
+                    fontSize: { xs: '0.95rem', md: '1.1rem' },
+                    lineHeight: { xs: 1.7, md: 1.8 },
                   }}
                 >
-                  ⚠
-                </Box>
-                <Typography variant="body2">
-                  Déconseillé aux âmes sensibles et aux moins de {minAge} ans.
+                  Plongez dans une expérience immersive totale où l'horreur prend vie.
+                  Effets spéciaux saisissants, acteurs professionnels et atmosphère
+                  oppressante vous attendent. Cris, odeurs de putréfaction, bruits de
+                  chaînes... tout est conçu pour créer un cauchemar éveillé.
                 </Typography>
-              </Box>
+              )}
+              {isRestaurant && (
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontSize: { xs: '0.95rem', md: '1.1rem' },
+                    lineHeight: { xs: 1.7, md: 1.8 },
+                  }}
+                >
+                  Découvrez une cuisine thématique unique dans une ambiance post-apocalyptique.
+                  Notre établissement vous propose des plats savoureux et originaux pour reprendre
+                  des forces entre deux attractions. Service rapide et convivial dans un décor immersif.
+                </Typography>
+              )}
+
+              {!isRestaurant && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
+                    mt: 3,
+                    p: 2,
+                    backgroundColor: `${colors.secondaryRed}40`,
+                    borderLeft: `4px solid ${colors.primaryRed}`,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      color: '#FFC107',
+                      fontSize: '1.5rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    ⚠
+                  </Box>
+                  <Typography variant="body2">
+                    Déconseillé aux âmes sensibles et aux moins de {minAge} ans.
+                  </Typography>
+                </Box>
+              )}
+              {isRestaurant && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
+                    mt: 3,
+                    p: 2,
+                    backgroundColor: `${colors.primaryGreen}20`,
+                    borderLeft: `4px solid ${colors.primaryGreen}`,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      color: colors.primaryGreen,
+                      fontSize: '1.5rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    ℹ
+                  </Box>
+                  <Typography variant="body2">
+                    Accès libre sans réservation. Paiement sur place.
+                  </Typography>
+                </Box>
+              )}
             </Box>
 
-            <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-              <Box sx={{ marginTop: '2rem' }}>
-                <ReservationButton variant="desktop" onClick={handleReservationClick} />
+            {!isRestaurant && (
+              <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+                <Box sx={{ marginTop: '2rem' }}>
+                  <ReservationButton variant="desktop" onClick={handleReservationClick} />
+                </Box>
               </Box>
-            </Box>
+            )}
           </Box>
 
           <Box sx={{ flex: { xs: '1 1 100%', md: '1 1 33%' } }}>
             <Stack spacing={2}>
-              <MetricBox title="DURÉE">
-              <Typography
-                className="metric-value"
-                sx={{
-                  fontSize: { xs: '1.4rem', md: '2rem' },
-                }}
-              >
-                {durationMinutes} {!isMobile ? 'minutes' : 'min'}
-              </Typography>
-            </MetricBox>
+              {!isRestaurant && (
+                <MetricBox title="DURÉE">
+                  <Typography
+                    className="metric-value"
+                    sx={{
+                      fontSize: { xs: '1.4rem', md: '2rem' },
+                    }}
+                  >
+                    {durationMinutes} {!isMobile ? 'minutes' : 'min'}
+                  </Typography>
+                </MetricBox>
+              )}
 
-            <MetricBox title={!isMobile ? 'NIVEAU DE FRISSON' : 'FRISSON'}>
-              <ThrillLevel level={thrillLevel} />
-              <Typography
-                className="metric-value"
-                sx={{
-                  fontSize: { xs: '1.4rem', md: '2rem' },
-                }}
-              >
-                {thrillLevel}/5
-              </Typography>
-            </MetricBox>
+              {!isRestaurant && (
+                <MetricBox title={!isMobile ? 'NIVEAU DE FRISSON' : 'FRISSON'}>
+                  <ThrillLevel level={thrillLevel} />
+                  <Typography
+                    className="metric-value"
+                    sx={{
+                      fontSize: { xs: '1.4rem', md: '2rem' },
+                    }}
+                  >
+                    {thrillLevel}/5
+                  </Typography>
+                </MetricBox>
+              )}
 
-            <MetricBox title="ACCESSIBILITÉ PMR">
-              <Typography
-                sx={{
-                  color: '#FFFFFF',
-                  fontFamily: "'Lexend Deca', sans-serif",
-                  fontSize: '1rem',
-                  mt: 1,
-                }}
-              >
-                {accessibility}
-              </Typography>
-            </MetricBox>
+              <MetricBox title="ACCESSIBILITÉ PMR">
+                <Typography
+                  sx={{
+                    color: '#FFFFFF',
+                    fontFamily: "'Lexend Deca', sans-serif",
+                    fontSize: '1rem',
+                    mt: 1,
+                  }}
+                >
+                  {accessibility}
+                </Typography>
+              </MetricBox>
             </Stack>
 
-            <Box sx={{ display: { xs: 'block', md: 'none' }, mt: 2 }}>
-              <ReservationButton variant="mobile" onClick={handleReservationClick} />
-            </Box>
+            {!isRestaurant && (
+              <Box sx={{ display: { xs: 'block', md: 'none' }, mt: 2 }}>
+                <ReservationButton variant="mobile" onClick={handleReservationClick} />
+              </Box>
+            )}
           </Box>
         </Box>
 
@@ -419,10 +480,10 @@ export const ActivityDetail = () => {
               }}
             >
               <Box component="span" sx={{ display: { xs: 'none', md: 'inline' } }}>
-                {isAttraction ? 'ATTRACTIONS SIMILAIRES' : 'ACTIVITÉS SIMILAIRES'}
+                {isRestaurant ? 'AUTRES RESTAURANTS' : isAttraction ? 'ATTRACTIONS SIMILAIRES' : 'ACTIVITÉS SIMILAIRES'}
               </Box>
               <Box component="span" sx={{ display: { xs: 'inline', md: 'none' } }}>
-                SIMILAIRES
+                {isRestaurant ? 'AUTRES' : 'SIMILAIRES'}
               </Box>
             </Typography>
             <ActivityCarousel activities={carouselItems} />

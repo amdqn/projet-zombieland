@@ -140,6 +140,55 @@ const attractionData = [
     duration: 25,
     categoryIndex: 1, // Expériences immersives
   },
+  // ===== RESTAURATION =====
+  {
+    name: 'Le Cerveau Fumant',
+    description: 'Restaurant gastronomique thématique proposant des plats raffinés dans une ambiance post-apocalyptique chic',
+    image_url: '/restaurants-images/cerveaufumant.jpg',
+    thrill_level: null,
+    duration: null,
+    categoryIndex: 4, // Restauration
+  },
+  {
+    name: 'Burger des Morts',
+    description: 'Fast-food proposant burgers, frites et grillades pour reprendre des forces entre deux attractions',
+    image_url: '/restaurants-images/burgerdesmorts.jpg',
+    thrill_level: null,
+    duration: null,
+    categoryIndex: 4, // Restauration
+  },
+  {
+    name: 'La Sucrerie Infectée',
+    description: 'Stand de confiseries, glaces et desserts thématiques pour les gourmands',
+    image_url: '/restaurants-images/sucrerieinfectee.jpg',
+    thrill_level: null,
+    duration: null,
+    categoryIndex: 4, // Restauration
+  },
+  {
+    name: 'Café des Survivants',
+    description: 'Café et boulangerie proposant boissons chaudes, viennoiseries et sandwichs pour une pause réconfortante',
+    image_url: '/restaurants-images/cafesurvivants.jpg',
+    thrill_level: null,
+    duration: null,
+    categoryIndex: 4, // Restauration
+  },
+  {
+    name: 'Glaces du Bunker',
+    description: 'Bar à glaces artisanales avec des parfums originaux et des toppings apocalyptiques',
+    image_url: '/restaurants-images/glacebunker.jpg',
+    thrill_level: null,
+    duration: null,
+    categoryIndex: 4, // Restauration
+  },
+  {
+    name: 'Le Truck Contaminé',
+    description: 'Food truck ambulant proposant hot-dogs, tacos et snacks à emporter partout dans le parc',
+    image_url: '/restaurants-images/truck-contamine.jpg',
+    thrill_level: null,
+    duration: null,
+    categoryIndex: 4, // Restauration
+  },
 ];
 
 async function main() {
@@ -446,7 +495,7 @@ async function main() {
   console.log('📊 Résumé :');
   console.log('   - 4 utilisateurs (1 admin, 3 clients)');
   console.log('   - 5 catégories');
-  console.log('   - 11 attractions');
+  console.log('   - 17 attractions (dont 6 points de restauration)');
   console.log('   - 5 activités');
   console.log('   - 31 dates d\'ouverture (décembre 2025)');
   console.log('   - 5 tarifs (Étudiant, Adulte, Groupe x2, Pass 2J)');

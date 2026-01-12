@@ -109,6 +109,10 @@ export const router = createBrowserRouter([
         element: <ActivityDetail />,
       },
       {
+        path: 'restaurants/:id',
+        element: <ActivityDetail />,
+      },
+      {
         path: 'design-system',
         element: <DesignSystem />,
       },

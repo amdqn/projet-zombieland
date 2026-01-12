@@ -31,6 +31,7 @@ interface ActivityCardProps {
   duration?: string;
   description?: string;
   isAttraction?: boolean;
+  isRestaurant?: boolean;
 }
 
 export const ActivityCard = ({
@@ -42,8 +43,13 @@ export const ActivityCard = ({
   duration,
   description,
   isAttraction = false,
+  isRestaurant = false,
 }: ActivityCardProps) => {
-  const detailPath = isAttraction ? `/attractions/${id}` : `/activities/${id}`;
+  const detailPath = isRestaurant
+    ? `/restaurants/${id}`
+    : isAttraction
+    ? `/attractions/${id}`
+    : `/activities/${id}`;
 
   return (
     <Link to={detailPath} style={{ textDecoration: 'none', width: '100%' }}>

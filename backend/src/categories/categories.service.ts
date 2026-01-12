@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+  BadRequestException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import type { CreateCategoryDto, UpdateCategoryDto } from 'src/generated';
 
@@ -68,7 +73,9 @@ export class CategoriesService {
     const { name, description } = createCategoryDto;
 
     if (!name || !description) {
-      throw new BadRequestException('Les champs name et description sont requis');
+      throw new BadRequestException(
+        'Les champs name et description sont requis',
+      );
     }
 
     const existingCategory = await this.prisma.category.findUnique({
@@ -76,7 +83,9 @@ export class CategoriesService {
     });
 
     if (existingCategory) {
-      throw new ConflictException(`Une catégorie avec le nom "${name}" existe déjà`);
+      throw new ConflictException(
+        `Une catégorie avec le nom "${name}" existe déjà`,
+      );
     }
 
     const category = await this.prisma.category.create({
@@ -109,7 +118,9 @@ export class CategoriesService {
       });
 
       if (existingCategory && existingCategory.id !== id) {
-        throw new ConflictException(`Une catégorie avec le nom "${updateCategoryDto.name}" existe déjà`);
+        throw new ConflictException(
+          `Une catégorie avec le nom "${updateCategoryDto.name}" existe déjà`,
+        );
       }
     }
 

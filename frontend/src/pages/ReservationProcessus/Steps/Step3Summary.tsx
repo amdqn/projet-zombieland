@@ -68,7 +68,7 @@ export const Step3Summary = () => {
         ticket,
       };
     })
-    .filter((item): item is { ticketId: number; quantity: number; ticket: typeof ticketsMock[0] } => item !== null);
+    .filter((item): item is { ticketId: number; quantity: number; ticket: Price } => item !== null);
 
   return (
     <Box>

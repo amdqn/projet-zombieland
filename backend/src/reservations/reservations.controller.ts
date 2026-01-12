@@ -33,15 +33,19 @@ export class ReservationsController {
     @Body() createReservationDto: CreateReservationDto,
     @CurrentUser() user: any,
   ) {
-    return this.reservationsService.create(createReservationDto, user.id, user.role);
+    return this.reservationsService.create(
+      createReservationDto,
+      user.id,
+      user.role,
+    );
   }
 
   // 2. Voir MES réservations (CLIENT)
-@Get('my')
-@HttpCode(HttpStatus.OK)
-async findMy(@CurrentUser() user: any) {
-  return this.reservationsService.findByUserId(user.id, user.role);  // ← Ajouter user.role
-}
+  @Get('my')
+  @HttpCode(HttpStatus.OK)
+  async findMy(@CurrentUser() user: any) {
+    return this.reservationsService.findByUserId(user.id, user.role); // ← Ajouter user.role
+  }
 
   // 3. Voir TOUTES les réservations (ADMIN uniquement)
   @Get()

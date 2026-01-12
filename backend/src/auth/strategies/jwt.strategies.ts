@@ -13,10 +13,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       // 1. Comment extraire le token de la requête
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      
+
       // 2. Rejeter si token expiré
       ignoreExpiration: false,
-      
+
       // 3. Secret pour vérifier la signature (avec valeur par défaut)
       secretOrKey: configService.get<string>('JWT_SECRET') || 'default-secret',
     });

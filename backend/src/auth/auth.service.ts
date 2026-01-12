@@ -4,16 +4,19 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import type { RegisterDto, LoginDto } from 'src/generated';
+import type { RegisterDto } from 'src/generated';
 import { UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 
-
 @Injectable()
 export class AuthService {
-  constructor(private readonly prisma: PrismaService, private readonly jwtService: JwtService, private readonly configService: ConfigService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
+  ) {}
 
   async register(registerDto: RegisterDto) {
     const { email, pseudo, password, confirmPassword } = registerDto;
@@ -26,7 +29,7 @@ export class AuthService {
     // Validation de l'email (regex simple)
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      throw new BadRequestException('L\'email n\'est pas valide');
+      throw new BadRequestException("L'email n'est pas valide");
     }
 
     // Validation du pseudo (3-20 caractères)
@@ -97,7 +100,6 @@ export class AuthService {
     return userWithoutPassword;
   }
 
-
   async validateUser(email: string, password: string) {
     // Validation des inputs
     if (!email || !password) {
@@ -138,9 +140,9 @@ export class AuthService {
     // Retourner user SANS le password
     const { password: _, ...userWithoutPassword } = user;
     return userWithoutPassword;
-  }    
+  }
 
-    async generateJwt(user: any) {
+  async generateJwt(user: any) {
     // Créer le payload (données dans le token)
     const payload = {
       sub: user.id,
@@ -158,7 +160,10 @@ export class AuthService {
     };
   }
 
-  async updateProfile(userId: number, updateData: { email?: string; password?: string }) {
+  async updateProfile(
+    userId: number,
+    updateData: { email?: string; password?: string },
+  ) {
     const { email, password } = updateData;
 
     // Validation des données

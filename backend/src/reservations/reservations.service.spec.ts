@@ -6,11 +6,14 @@ import {
   BadRequestException,
   ForbiddenException,
 } from '@nestjs/common';
-import type { CreateReservationDto, UpdateReservationStatusDto } from 'src/generated';
+import type {
+  CreateReservationDto,
+  UpdateReservationStatusDto,
+} from 'src/generated';
 
 describe('ReservationsService', () => {
   let service: ReservationsService;
-  let prismaService: PrismaService;
+  let _prismaService: PrismaService;
 
   const mockPrismaService = {
     parkDate: {
@@ -182,7 +185,7 @@ describe('ReservationsService', () => {
         NotFoundException,
       );
       await expect(service.create(validDto, 1, 'CLIENT')).rejects.toThrow(
-        'Date de parc avec l\'ID 1 non trouvée',
+        "Date de parc avec l'ID 1 non trouvée",
       );
     });
 
@@ -225,7 +228,7 @@ describe('ReservationsService', () => {
         NotFoundException,
       );
       await expect(service.create(validDto, 1, 'CLIENT')).rejects.toThrow(
-        'Tarif avec l\'ID 1 non trouvé',
+        "Tarif avec l'ID 1 non trouvé",
       );
     });
   });
@@ -270,7 +273,7 @@ describe('ReservationsService', () => {
       },
     ];
 
-    it('devrait retourner toutes les réservations d\'un utilisateur', async () => {
+    it("devrait retourner toutes les réservations d'un utilisateur", async () => {
       mockPrismaService.reservation.findMany.mockResolvedValue(
         mockReservations,
       );
@@ -418,7 +421,7 @@ describe('ReservationsService', () => {
         NotFoundException,
       );
       await expect(service.findOne(999, 1, 'CLIENT')).rejects.toThrow(
-        'Réservation avec l\'ID 999 non trouvée',
+        "Réservation avec l'ID 999 non trouvée",
       );
     });
 
@@ -431,7 +434,7 @@ describe('ReservationsService', () => {
         ForbiddenException,
       );
       await expect(service.findOne(1, 999, 'CLIENT')).rejects.toThrow(
-        'Vous n\'avez pas accès à cette réservation',
+        "Vous n'avez pas accès à cette réservation",
       );
     });
   });
@@ -518,7 +521,7 @@ describe('ReservationsService', () => {
         NotFoundException,
       );
       await expect(service.updateStatus(999, dto)).rejects.toThrow(
-        'Réservation avec l\'ID 999 non trouvée',
+        "Réservation avec l'ID 999 non trouvée",
       );
     });
 
@@ -565,7 +568,9 @@ describe('ReservationsService', () => {
 
       const result = await service.remove(1, 999, 'ADMIN');
 
-      expect(result.message).toContain('supprimée avec succès par l\'administrateur');
+      expect(result.message).toContain(
+        "supprimée avec succès par l'administrateur",
+      );
       expect(mockPrismaService.reservation.delete).toHaveBeenCalledWith({
         where: { id: 1 },
       });
@@ -657,7 +662,7 @@ describe('ReservationsService', () => {
         NotFoundException,
       );
       await expect(service.remove(999, 1, 'CLIENT')).rejects.toThrow(
-        'Réservation avec l\'ID 999 non trouvée',
+        "Réservation avec l'ID 999 non trouvée",
       );
     });
 

@@ -56,7 +56,7 @@ export function LoginProvider({ children }: LoginProviderProps) {
     const [token, setToken] = useState<string | null>(() => {
         return localStorage.getItem("token");
     });
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, _setIsLoading] = useState(false);
 
     const logout = () => {
         setIsLogged(false);

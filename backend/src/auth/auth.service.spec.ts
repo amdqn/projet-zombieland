@@ -9,7 +9,7 @@ jest.mock('bcrypt');
 
 describe('AuthService - Register', () => {
   let service: AuthService;
-  let prismaService: PrismaService;
+  let _prismaService: PrismaService;
 
   const mockPrismaService = {
     user: {
@@ -41,7 +41,7 @@ describe('AuthService - Register', () => {
   });
 
   describe('Validation des champs requis', () => {
-    it('devrait rejeter si l\'email est manquant', async () => {
+    it("devrait rejeter si l'email est manquant", async () => {
       const registerDto = {
         email: '',
         pseudo: 'TestUser',
@@ -84,7 +84,7 @@ describe('AuthService - Register', () => {
     });
   });
 
-  describe('Validation de l\'email', () => {
+  describe("Validation de l'email", () => {
     it('devrait rejeter un email invalide', async () => {
       const registerDto = {
         email: 'invalid-email',
@@ -97,7 +97,7 @@ describe('AuthService - Register', () => {
         BadRequestException,
       );
       await expect(service.register(registerDto)).rejects.toThrow(
-        'L\'email n\'est pas valide',
+        "L'email n'est pas valide",
       );
     });
 
@@ -271,8 +271,8 @@ describe('AuthService - Register', () => {
     });
   });
 
-  describe('Vérification d\'unicité', () => {
-    it('devrait rejeter si l\'email existe déjà', async () => {
+  describe("Vérification d'unicité", () => {
+    it("devrait rejeter si l'email existe déjà", async () => {
       const registerDto = {
         email: 'existing@example.com',
         pseudo: 'TestUser',
@@ -335,7 +335,7 @@ describe('AuthService - Register', () => {
     });
   });
 
-  describe('Création d\'utilisateur réussie', () => {
+  describe("Création d'utilisateur réussie", () => {
     it('devrait hash le mot de passe avec bcrypt', async () => {
       const registerDto = {
         email: 'test@example.com',
@@ -361,7 +361,7 @@ describe('AuthService - Register', () => {
       expect(bcrypt.hash).toHaveBeenCalledWith('Password123', 10);
     });
 
-    it('devrait créer l\'utilisateur avec le role CLIENT par défaut', async () => {
+    it("devrait créer l'utilisateur avec le role CLIENT par défaut", async () => {
       const registerDto = {
         email: 'test@example.com',
         pseudo: 'TestUser',
@@ -393,7 +393,7 @@ describe('AuthService - Register', () => {
       });
     });
 
-    it('devrait retourner l\'utilisateur sans le mot de passe', async () => {
+    it("devrait retourner l'utilisateur sans le mot de passe", async () => {
       const registerDto = {
         email: 'test@example.com',
         pseudo: 'TestUser',

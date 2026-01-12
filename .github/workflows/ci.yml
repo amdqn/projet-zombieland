@@ -67,7 +67,14 @@ jobs:
         # OBLIGATOIRE sinon erreurs TypeScript
         # Équivalent à ce que tu fais en local
       
-      # ===== STEP 5 : Vérifier OpenAPI Spec =====
+      # ===== STEP 5 : Générer types OpenAPI =====
+      - name: 📋 Generate OpenAPI Types
+        run: npm run generate:api
+        # Génère les DTOs TypeScript depuis api-spec.yml
+        # Crée src/generated/ avec tous les types
+        # OBLIGATOIRE sinon erreurs TS "Cannot find module 'src/generated'"
+      
+      # ===== STEP 6 : Vérifier OpenAPI Spec =====
       - name: 📋 Validate OpenAPI Spec
         run: |
           if [ -f "api-spec.yml" ]; then
@@ -79,7 +86,13 @@ jobs:
         # Vérifie que le fichier OpenAPI existe
         # Si absent → Échec du workflow
       
-      # ===== STEP 6 : Linter (Qualité du code) =====
+      # ===== STEP 7 : Linter (Qualité du code) =====
+      - name: 🔍 Lint code with ESLint
+        run: npm run lint
+        # Vérifie :
+        # - Syntaxe correcte
+        # - Respect des règles ESLint
+      # ===== STEP 7 : Linter (Qualité du code) =====
       - name: 🔍 Lint code with ESLint
         run: npm run lint
         # Vérifie :
@@ -89,7 +102,7 @@ jobs:
         # - Etc.
         # Si erreur → Workflow échoue ❌
       
-      # ===== STEP 7 : Build TypeScript =====
+      # ===== STEP 8 : Build TypeScript =====
       - name: 🏗️ Build TypeScript project
         run: npm run build
         # Compile TypeScript → JavaScript
@@ -99,7 +112,7 @@ jobs:
         # - Code compilable
         # Génère ./dist/
       
-      # ===== STEP 8 : Tests (si configurés) =====
+      # ===== STEP 9 : Tests (si configurés) =====
       - name: 🧪 Run unit tests
         run: npm test || echo "⚠️ No tests configured yet"
         continue-on-error: true
@@ -107,13 +120,16 @@ jobs:
         # continue-on-error = N'échoue pas le job si ça crash
         # À enlever quand tu auras des tests !
       
-      # ===== STEP 9 : Vérifier Schema Prisma =====
+      # ===== STEP 10 : Vérifier Schema Prisma =====
       - name: 🗄️ Validate Prisma Schema
         run: npx prisma validate
+        env:
+          DATABASE_URL: postgresql://user:password@localhost:5432/zombieland_ci
         # Vérifie que schema.prisma est valide
         # Relations correctes, types OK, etc.
+        # DATABASE_URL factice nécessaire pour la validation (pas de connexion réelle)
       
-      # ===== STEP 10 : Check Migrations =====
+      # ===== STEP 11 : Check Migrations =====
       - name: 📊 Check Prisma Migrations
         run: |
           if [ -d "prisma/migrations" ]; then

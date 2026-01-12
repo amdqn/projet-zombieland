@@ -6,7 +6,7 @@ import { Role } from '@prisma/client';
 
 describe('UsersService', () => {
   let service: UsersService;
-  let prismaService: PrismaService;
+  let _prismaService: PrismaService;
 
   const mockPrismaService = {
     user: {
@@ -31,7 +31,7 @@ describe('UsersService', () => {
     }).compile();
 
     service = module.get<UsersService>(UsersService);
-    prismaService = module.get<PrismaService>(PrismaService);
+    _prismaService = module.get<PrismaService>(PrismaService);
 
     // Reset all mocks before each test
     jest.clearAllMocks();
@@ -135,7 +135,7 @@ describe('UsersService', () => {
   });
 
   describe('findUserReservations', () => {
-    it('devrait retourner les réservations d\'un utilisateur', async () => {
+    it("devrait retourner les réservations d'un utilisateur", async () => {
       const mockUser = {
         id: 1,
         email: 'user@test.com',

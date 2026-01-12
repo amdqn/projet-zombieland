@@ -15,7 +15,7 @@ export class UsersService {
       orderBy: { created_at: 'desc' },
     });
 
-    return users.map(({ password, ...user }) => ({
+    return users.map(({ password: _password, ...user }) => ({
       ...user,
       created_at: user.created_at.toISOString(),
       updated_at: user.updated_at.toISOString(),
@@ -31,7 +31,7 @@ export class UsersService {
       throw new NotFoundException(`Utilisateur avec l'ID ${id} introuvable`);
     }
 
-    const { password, ...userWithoutPassword } = user;
+    const { password: _password, ...userWithoutPassword } = user;
 
     return {
       ...userWithoutPassword,
@@ -46,7 +46,9 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException(`Utilisateur avec l'ID ${userId} introuvable`);
+      throw new NotFoundException(
+        `Utilisateur avec l'ID ${userId} introuvable`,
+      );
     }
 
     const reservations = await this.prisma.reservation.findMany({

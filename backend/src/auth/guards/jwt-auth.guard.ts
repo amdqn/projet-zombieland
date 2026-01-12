@@ -8,7 +8,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   // - Appelle automatiquement JwtStrategy.validate() si token valide
   // - Retourne 401 si token manquant/invalide/expiré
   // - Injecte request.user si succès
-  
   // Pas besoin de code supplémentaire ici !
   // Tout est géré par Passport automatiquement
 }

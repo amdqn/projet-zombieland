@@ -41,6 +41,7 @@ export const ActivityList = () => {
   const [activityToDelete, setActivityToDelete] = useState<Activity | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [deleteSuccess, setDeleteSuccess] = useState<string | null>(null);
 
   const [search, setSearch] = useState('');
   const [searchInput, setSearchInput] = useState('');
@@ -127,11 +128,16 @@ export const ActivityList = () => {
 
     setIsDeleting(true);
     setDeleteError(null);
+    setDeleteSuccess(null);
     try {
       await deleteActivity(activityToDelete.id);
+      setDeleteSuccess('Activité supprimée avec succès');
       setActivities(activities.filter((a) => a.id !== activityToDelete.id));
-      setDeleteDialogOpen(false);
-      setActivityToDelete(null);
+      setTimeout(() => {
+        setDeleteDialogOpen(false);
+        setActivityToDelete(null);
+        setDeleteSuccess(null);
+      }, 1500);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erreur lors de la suppression de l\'activité';
       setDeleteError(message);
@@ -532,6 +538,7 @@ export const ActivityList = () => {
         activityToDelete={activityToDelete}
         isDeleting={isDeleting}
         error={deleteError}
+        success={deleteSuccess}
       />
     </Box>
   );

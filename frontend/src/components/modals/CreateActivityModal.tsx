@@ -107,7 +107,6 @@ export const CreateActivityModal = ({
         min_age: minAge ? Number(minAge) : null,
         accessibility: accessibility || null,
         is_published: isPublished,
-        related_activity_ids: relatedActivityIds.length > 0 ? relatedActivityIds : undefined,
       };
 
       await createActivity(dto);

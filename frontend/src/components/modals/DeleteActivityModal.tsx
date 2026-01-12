@@ -9,6 +9,7 @@ interface DeleteActivityModalProps {
   activityToDelete: Activity | null;
   isDeleting: boolean;
   error: string | null;
+  success?: string | null;
 }
 
 export const DeleteActivityModal = ({
@@ -18,6 +19,7 @@ export const DeleteActivityModal = ({
   activityToDelete,
   isDeleting,
   error,
+  success,
 }: DeleteActivityModalProps) => {
   return (
     <Dialog
@@ -40,13 +42,20 @@ export const DeleteActivityModal = ({
             {error}
           </Alert>
         )}
-        <Typography sx={{ color: colors.white }}>
-          Êtes-vous sûr de vouloir supprimer l'activité{' '}
-          <strong style={{ color: colors.primaryGreen }}>
-            {activityToDelete?.name}
-          </strong>
-          ? Cette action est irréversible.
-        </Typography>
+        {success && (
+          <Alert severity="success" sx={{ mb: 2 }}>
+            {success}
+          </Alert>
+        )}
+        {!success && (
+          <Typography sx={{ color: colors.white }}>
+            Êtes-vous sûr de vouloir supprimer l'activité{' '}
+            <strong style={{ color: colors.primaryGreen }}>
+              {activityToDelete?.name}
+            </strong>
+            ? Cette action est irréversible.
+          </Typography>
+        )}
       </DialogContent>
       <DialogActions sx={{ p: 2 }}>
         <Button

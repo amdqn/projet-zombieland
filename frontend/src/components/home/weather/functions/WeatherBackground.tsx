@@ -14,10 +14,8 @@ export default function WeatherBackground({ weather }: WeatherBackgroundProps) {
         return null;
     }
 
-    const test = "Mist"
-    const gradient = weatherGradients[test]?.gradient;
-    //const gradient = weatherGradients[weather.weather[0].main]?.gradient;
-    //const condition = weather.weather[0].main as WeatherCondition;
+    const gradient = weatherGradients[weather.weather[0].main]?.gradient;
+    const condition = weather.weather[0].main as WeatherCondition;
 
     return (
         <>
@@ -34,7 +32,7 @@ export default function WeatherBackground({ weather }: WeatherBackgroundProps) {
                 }}
               />
               {/* Weather animations */}
-            {renderWeatherAnimation(test)}
+            {renderWeatherAnimation(condition)}
         </>
     );
 }

@@ -12,8 +12,6 @@ export interface Price {
 
 export type PriceType = 'ETUDIANT' | 'ADULTE' | 'GROUPE' | 'PASS_2J';
 
-export const PRICES_TYPES : PriceType[] = ['ETUDIANT', 'ADULTE', 'GROUPE', 'PASS_2J']
-
 export interface PaginedPrices {
     data: Price[];
     pagination : {

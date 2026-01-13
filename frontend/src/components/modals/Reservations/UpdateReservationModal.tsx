@@ -4,6 +4,7 @@ import { updateReservation } from '../../../services/reservations.ts';
 import { colors } from '../../../theme';
 import { PrimaryButton } from '../../common';
 import type { Reservation, ReservationStatus } from '../../../@types/reservation';
+import {toast} from "react-toastify";
 
 interface UpdateReservationModalProps {
   open: boolean;

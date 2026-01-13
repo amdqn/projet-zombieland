@@ -2,19 +2,20 @@ import { Alert, Box, MenuItem, Modal, Select, Typography, FormControl, InputLabe
 import { useState, useEffect } from 'react';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { toast } from 'react-toastify';
-import { createAttraction, type CreateAttractionDto, getAttractions } from '../../services/attractions';
-import { getCategories } from '../../services/categories';
-import { uploadAttractionImage } from '../../services/upload';
-import { colors } from '../../theme';
-import { PrimaryButton } from '../common';
-import type { Category } from '../../@types/categorie';
-import type { Attraction } from '../../@types/attraction';
-import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE } from '../../utils/imageUtils';
+import { updateAttraction, type UpdateAttractionDto, getAttractions } from '../../../services/attractions.ts';
+import { getCategories } from '../../../services/categories.ts';
+import { uploadAttractionImage } from '../../../services/upload.ts';
+import { colors } from '../../../theme';
+import { PrimaryButton } from '../../common';
+import type { Category } from '../../../@types/categorie';
+import type { Attraction } from '../../../@types/attraction';
+import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE } from '../../../utils/imageUtils.ts';
 
-interface CreateAttractionModalProps {
+interface UpdateAttractionModalProps {
   open: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  attraction: Attraction | null;
+  onUpdateSuccess: () => void;
 }
 
 const style = {
@@ -31,11 +32,12 @@ const style = {
   p: 4,
 };
 
-export const CreateAttractionModal = ({
+export const UpdateAttractionModal = ({
   open,
   onClose,
-  onSuccess,
-}: CreateAttractionModalProps) => {
+  attraction,
+  onUpdateSuccess,
+}: UpdateAttractionModalProps) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [allAttractions, setAllAttractions] = useState<Attraction[]>([]);
   const [name, setName] = useState('');
@@ -67,23 +69,31 @@ export const CreateAttractionModal = ({
       };
       fetchData();
     }
-  }, [open]);
+  }, [open, attraction]);
+
+  useEffect(() => {
+    if (attraction) {
+      setName(attraction.name);
+      setDescription(attraction.description);
+      setCategoryId(attraction.category_id);
+      setImageUrl(attraction.image_url || '');
+      setThrillLevel(attraction.thrill_level || '');
+      setDuration(attraction.duration || '');
+      setIsPublished(attraction.is_published ?? true);
+      setRelatedAttractionIds(attraction.related_attractions?.map(a => a.id) || []);
+      setError(null);
+      setSuccess(null);
+    }
+  }, [attraction]);
 
   const handleClose = () => {
-    setName('');
-    setDescription('');
-    setCategoryId('');
-    setImageUrl('');
-    setThrillLevel('');
-    setDuration('');
-    setIsPublished(true);
-    setRelatedAttractionIds([]);
     setError(null);
     setSuccess(null);
     onClose();
   };
 
   const handleSubmit = async () => {
+    if (!attraction) return;
     if (!name || !description || !categoryId) {
       setError('Le nom, la description et la catégorie sont requis');
       return;
@@ -94,7 +104,7 @@ export const CreateAttractionModal = ({
     setSuccess(null);
 
     try {
-      const dto: CreateAttractionDto = {
+      const dto: UpdateAttractionDto = {
         name,
         description,
         category_id: Number(categoryId),
@@ -102,15 +112,15 @@ export const CreateAttractionModal = ({
         thrill_level: thrillLevel ? Number(thrillLevel) : null,
         duration: duration ? Number(duration) : null,
         is_published: isPublished,
-        related_attraction_ids: relatedAttractionIds.length > 0 ? relatedAttractionIds : undefined,
+        related_attraction_ids: relatedAttractionIds,
       };
 
-      await createAttraction(dto);
-      toast.success('Attraction créée avec succès !');
-      onSuccess();
+      await updateAttraction(attraction.id, dto);
+      toast.success('Attraction mise à jour avec succès !');
+      onUpdateSuccess();
       handleClose();
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erreur lors de la création de l\'attraction';
+      const message = err instanceof Error ? err.message : 'Erreur lors de la mise à jour de l\'attraction';
       setError(message);
     } finally {
       setIsLoading(false);
@@ -150,6 +160,8 @@ export const CreateAttractionModal = ({
     );
   };
 
+  if (!attraction) return null;
+
   return (
     <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title">
       <Box sx={style}>
@@ -164,7 +176,7 @@ export const CreateAttractionModal = ({
             textAlign: 'center',
           }}
         >
-          Créer une nouvelle attraction
+          Modifier l'attraction
         </Typography>
 
         {error && (
@@ -362,17 +374,17 @@ export const CreateAttractionModal = ({
               Attractions liées
             </Typography>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, maxHeight: '150px', overflow: 'auto', p: 1, border: `1px solid ${colors.secondaryGrey}`, borderRadius: 1 }}>
-              {allAttractions.map((attraction) => (
+              {allAttractions.filter(a => a.id !== attraction.id).map((attr) => (
                 <Chip
-                  key={attraction.id}
-                  label={attraction.name}
-                  onClick={() => toggleRelatedAttraction(attraction.id)}
-                  color={relatedAttractionIds.includes(attraction.id) ? 'primary' : 'default'}
+                  key={attr.id}
+                  label={attr.name}
+                  onClick={() => toggleRelatedAttraction(attr.id)}
+                  color={relatedAttractionIds.includes(attr.id) ? 'primary' : 'default'}
                   sx={{
-                    backgroundColor: relatedAttractionIds.includes(attraction.id) ? colors.primaryGreen : colors.secondaryDarkAlt,
+                    backgroundColor: relatedAttractionIds.includes(attr.id) ? colors.primaryGreen : colors.secondaryDarkAlt,
                     color: colors.white,
                     '&:hover': {
-                      backgroundColor: relatedAttractionIds.includes(attraction.id) ? colors.primaryGreen : colors.secondaryGrey,
+                      backgroundColor: relatedAttractionIds.includes(attr.id) ? colors.primaryGreen : colors.secondaryGrey,
                     },
                   }}
                 />
@@ -412,7 +424,7 @@ export const CreateAttractionModal = ({
             type="button"
           />
           <PrimaryButton
-            text="Créer"
+            text="Enregistrer"
             onClick={handleSubmit}
             fullWidth={false}
             disabled={isLoading}

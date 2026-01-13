@@ -2,14 +2,16 @@ import { Alert, Box, MenuItem, Modal, Select, Typography, FormControl, InputLabe
 import { useState } from 'react';
 import { colors } from '../../../theme';
 import { PrimaryButton } from '../../common';
-import {type CreatePriceDto, PRICES_TYPES, type PriceType} from "../../../@types/price";
 import {createPrice} from "../../../services/prices.ts";
 
+import {PRICES_TYPES} from "../../../utils/typePrice.ts";
+import type {CreatePriceDto, PriceType} from "../../../@types/price";
 
-interface UpdatePriceModalProps {
+
+interface CreatePriceModalProps {
     open: boolean;
     onClose: () => void;
-    onUpdateSuccess: () => void;
+    onCreateSuccess: () => void;
 }
 
 const style = {
@@ -31,11 +33,11 @@ const style = {
 export const CreatePriceModal = ({
                                      open,
                                      onClose,
-                                     onUpdateSuccess,
-                                 }: UpdatePriceModalProps) => {
+                                     onCreateSuccess,
+                                 }: CreatePriceModalProps) => {
     const [label, setLabel] = useState<string>('');
     const [type, setType] = useState<PriceType | string>('');
-    const [amount, setAmount] = useState<number>(0);
+    const [amount, setAmount] = useState<number | string>('');
     const [durationsDays, setDurationsDays] = useState<number | string>("");
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -65,14 +67,14 @@ export const CreatePriceModal = ({
             const dto: CreatePriceDto = {
                 label,
                 type: type as PriceType,
-                amount,
+                amount: typeof amount === 'string' ? parseFloat(amount) : amount,
                 duration_days: typeof durationsDays === 'string' ? parseInt(durationsDays) : durationsDays,
             };
 
             await createPrice(dto);
             setSuccess('Prix crée avec succès');
             setTimeout(() => {
-                onUpdateSuccess();
+                onCreateSuccess();
                 handleClose();
             }, 1500);
         } catch (err) {

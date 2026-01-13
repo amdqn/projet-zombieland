@@ -13,13 +13,15 @@ import {
 } from '@mui/material';
 import { colors } from '../../../theme';
 import { useEffect, useState, useRef } from 'react';
-import {deletePrice, getPrices} from "../../../services/prices.ts";
-import type {Price, PricesFilters} from "../../../@types/price";
-import PriceCard from "../../../components/cards/PriceCard.tsx";
-import {PriceDetailsModal} from "../../../components/modals/Prices/PriceDetailsModal.tsx";
+import { deletePrice, getPrices } from "../../../services/prices.ts";
+import type { Price, PricesFilters } from "../../../@types/price";
+import PriceCard from "../../../components/cards/Prices/PriceCard.tsx";
+import { PriceDetailsModal } from "../../../components/modals/Prices/PriceDetailsModal.tsx";
 import AddIcon from "@mui/icons-material/Add";
-import {UpdatePriceModal} from "../../../components/modals/Prices/UpdatePriceModal.tsx";
-import {DeletePriceModal} from "../../../components/modals/Prices/DeletePriceModal.tsx";
+import { UpdatePriceModal } from "../../../components/modals/Prices/UpdatePriceModal.tsx";
+import { DeletePriceModal } from "../../../components/modals/Prices/DeletePriceModal.tsx";
+import { CreatePriceModal } from "../../../components/modals/Prices/CreatePriceModal.tsx";
+import PriceAdminCard from "../../../components/cards/Prices/PricesAdminCard.tsx";
 
 export const PriceList = () => {
     const [prices, setPrices] = useState<Price[]>([]);
@@ -33,15 +35,15 @@ export const PriceList = () => {
     const [detailsModalOpen, setDetailsModalOpen] = useState(false);
     const [priceToView, setPriceToView] = useState<Price | null>(null);
     const [deleteError, setDeleteError] = useState<string | null>(null);
+    const [createModalOpen, setCreateModalOpen] = useState(false);
 
-    const [statusFilter, setStatusFilter] = useState('');
     const [dateFromFilter, setDateFromFilter] = useState('');
     const [dateToFilter, setDateToFilter] = useState('');
     const [priceType, setPriceType] = useState('');
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
     const [sortBy, setSortBy] = useState('created_desc');
-    const [amount, setAmount] = useState<number | undefined>(undefined);
+    const [amount, setAmount] = useState<number>(0);
     const [refreshTrigger, setRefreshTrigger] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
     const [total, setTotal] = useState(0);
@@ -49,7 +51,6 @@ export const PriceList = () => {
 
     useEffect(() => {
         if (debounceTimeoutRef.current) {
-            // Permet d'attendre avant d'envoyer la requête à l'API
             clearTimeout(debounceTimeoutRef.current);
         }
 
@@ -116,6 +117,7 @@ export const PriceList = () => {
             setPrices(prices.filter((r) => r.id !== priceToDelete.id));
             setDeleteDialogOpen(false);
             setPriceToDelete(null);
+            setRefreshTrigger((prev) => prev + 1);
         } catch (err) {
             const message = err instanceof Error ? err.message : 'Erreur lors de la suppression du prix';
             setDeleteError(message);
@@ -131,16 +133,21 @@ export const PriceList = () => {
         }
     };
 
-    const handleCreate = () => {}
+    const handleCreate = () => {
+        setCreateModalOpen(true);
+    };
 
-    const handleSuccessCreate = () => {}
+    const handleCreateSuccess = () => {
+        setCreateModalOpen(false);
+        setRefreshTrigger((prev) => prev + 1); // Rafraîchir la liste
+    };
 
     const handleUpdateSuccess = () => {
         setRefreshTrigger((prev) => prev + 1);
     };
 
     const handleResetFilters = () => {
-        setStatusFilter('');
+        setPriceType('');
         setDateFromFilter('');
         setDateToFilter('');
         setSortBy('created_desc');
@@ -162,7 +169,7 @@ export const PriceList = () => {
                         mb: 2,
                     }}
                 >
-                    Liste des réservations
+                    Liste des tarifs
                 </Typography>
                 <Typography
                     variant="body2"
@@ -171,7 +178,7 @@ export const PriceList = () => {
                         mb: 2,
                     }}
                 >
-                    Créez, modifiez et gérez tout les prix du parc Zombieland. Total : {prices.length} prix
+                    Créez, modifiez et gérez tous les prix du parc Zombieland. Total : {total} prix
                 </Typography>
 
                 <Button
@@ -187,14 +194,14 @@ export const PriceList = () => {
                         },
                         fontWeight: 600,
                         textTransform: 'uppercase',
+                        mb: 3,
                     }}
                 >
-                    Nouvelle activité
+                    Nouveau tarif
                 </Button>
 
                 {/* Barre de recherche */}
                 <Box sx={{ mb: 3 }}>
-
                     {/* Filtres */}
                     <Grid container spacing={2} sx={{ mb: 2 }}>
                         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
@@ -202,7 +209,7 @@ export const PriceList = () => {
                                 <InputLabel sx={{ color: colors.secondaryGrey }}>Type de prix</InputLabel>
                                 <Select
                                     value={priceType}
-                                    label="Statut"
+                                    label="Type de prix"
                                     onChange={(e) => {
                                         setPriceType(e.target.value);
                                         setPage(1);
@@ -247,7 +254,7 @@ export const PriceList = () => {
                                     <MenuItem value="">Tous</MenuItem>
                                     <MenuItem value="ETUDIANT">Tarif étudiant</MenuItem>
                                     <MenuItem value="GROUPE">Tarif groupe</MenuItem>
-                                    <MenuItem value="PASS_2J">Traif pass 2 jours</MenuItem>
+                                    <MenuItem value="PASS_2J">Tarif pass 2 jours</MenuItem>
                                 </Select>
                             </FormControl>
                         </Grid>
@@ -353,7 +360,7 @@ export const PriceList = () => {
                     >
                         <CircularProgress sx={{ color: colors.primaryRed }} size={60} />
                         <Typography variant="body1" sx={{ color: colors.white }}>
-                            Chargement des réservations...
+                            Chargement des tarifs...
                         </Typography>
                     </Box>
                 ) : error ? (
@@ -394,18 +401,18 @@ export const PriceList = () => {
                                 }}
                             >
                                 {prices.map((price) => (
-                                    <PriceCard
+                                    <PriceAdminCard
                                         key={price.id}
                                         price={price}
-                                        //onEdit={handleEdit}
-                                        //onDelete={handleDelete}
-                                        //onClick={handleViewDetails}
+                                        onEdit={handleEdit}
+                                        onDelete={handleDelete}
+                                        onClick={handleViewDetails}
                                     />
                                 ))}
                             </Box>
 
                             {/* Pagination */}
-                            {totalPages >= 1 && (
+                            {totalPages > 1 && (
                                 <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
                                     <Pagination
                                         count={totalPages}
@@ -455,7 +462,7 @@ export const PriceList = () => {
                 price={priceToView}
             />
 
-            {/* Modal de création de prix */}
+            {/* Modal de confirmation de suppression */}
             <DeletePriceModal
                 deleteDialogOpen={deleteDialogOpen}
                 handleCloseDeleteDialog={handleCloseDeleteDialog}
@@ -465,14 +472,11 @@ export const PriceList = () => {
                 error={deleteError}
             />
 
-            {/* Modal de confirmation de suppression */}
+            {/* Modal de création de prix */}
             <CreatePriceModal
-                deleteDialogOpen={deleteDialogOpen}
-                handleCloseDeleteDialog={handleCloseDeleteDialog}
-                handleConfirmDelete={handleConfirmDelete}
-                reservationToDelete={priceToDelete}
-                isDeleting={isDeleting}
-                error={deleteError}
+                open={createModalOpen}
+                onClose={() => setCreateModalOpen(false)}
+                onCreateSuccess={handleCreateSuccess}
             />
         </Box>
     );

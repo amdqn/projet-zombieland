@@ -24,10 +24,10 @@ import { getAttractions, deleteAttraction, type AttractionFilters } from '../../
 import { getCategories } from '../../../services/categories';
 import type { Category } from '../../../@types/categorie';
 import { AttractionCard } from '../../../components/cards/AttractionCard';
-import { CreateAttractionModal } from '../../../components/modals/CreateAttractionModal';
-import { UpdateAttractionModal } from '../../../components/modals/UpdateAttractionModal';
-import { AttractionDetailsModal } from '../../../components/modals/AttractionDetailsModal';
-import { DeleteAttractionModal } from '../../../components/modals/DeleteAttractionModal';
+import { CreateAttractionModal } from '../../../components/modals/Attractions/CreateAttractionModal.tsx';
+import { UpdateAttractionModal } from '../../../components/modals/Attractions/UpdateAttractionModal.tsx';
+import { AttractionDetailsModal } from '../../../components/modals/Attractions/AttractionDetailsModal.tsx';
+import { DeleteAttractionModal } from '../../../components/modals/Attractions/DeleteAttractionModal.tsx';
 
 export const AttractionList = () => {
   const [attractions, setAttractions] = useState<Attraction[]>([]);

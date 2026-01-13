@@ -1,6 +1,6 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
-import { colors } from '../../theme';
-import type { Attraction } from '../../@types/attraction';
+import { colors } from '../../../theme';
+import type { Attraction } from '../../../@types/attraction';
 
 interface DeleteAttractionModalProps {
   deleteDialogOpen: boolean;

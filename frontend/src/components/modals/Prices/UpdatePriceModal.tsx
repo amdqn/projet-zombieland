@@ -2,8 +2,9 @@ import { Alert, Box, MenuItem, Modal, Select, Typography, FormControl, InputLabe
 import { useState, useEffect } from 'react';
 import { colors } from '../../../theme';
 import { PrimaryButton } from '../../common';
-import {type Price, PRICES_TYPES, type PriceType, type UpdatePriceDto} from "../../../@types/price";
 import {updatePrice} from "../../../services/prices.ts";
+import {PRICES_TYPES} from "../../../utils/typePrice.ts";
+import type {Price, PriceType, UpdatePriceDto} from "../../../@types/price";
 
 interface UpdatePriceModalProps {
     open: boolean;

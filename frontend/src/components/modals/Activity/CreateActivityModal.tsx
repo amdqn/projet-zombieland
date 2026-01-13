@@ -115,11 +115,9 @@ export const CreateActivityModal = ({
       };
 
       await createActivity(dto);
-      setSuccess('Activité créée avec succès');
-      setTimeout(() => {
-        onSuccess();
-        handleClose();
-      }, 1500);
+      toast.success('Activité créée avec succès !');
+      onSuccess();
+      handleClose();
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erreur lors de la création de l\'activité';
       setError(message);

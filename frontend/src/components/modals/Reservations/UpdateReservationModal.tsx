@@ -61,11 +61,9 @@ export const UpdateReservationModal = ({
 
     try {
       await updateReservation(reservation.id, { status });
-      setSuccess('Réservation mise à jour avec succès');
-      setTimeout(() => {
-        onUpdateSuccess();
-        handleClose();
-      }, 1500);
+      toast.success('Réservation mise à jour avec succès !');
+      onUpdateSuccess();
+      handleClose();
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erreur lors de la mise à jour de la réservation';
       setError(message);

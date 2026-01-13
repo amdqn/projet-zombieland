@@ -32,6 +32,15 @@ export class AttractionsService {
         category: true,
         images: true,
         activities: true,
+        relatedFrom: {
+          include: {
+            related_attraction: {
+              include: {
+                category: true,
+              },
+            },
+          },
+        },
       },
       orderBy: {
         created_at: 'desc',
@@ -57,6 +66,11 @@ export class AttractionsService {
         created_at: activity.created_at.toISOString(),
         updated_at: activity.updated_at.toISOString(),
       })),
+      related_attractions: attraction.relatedFrom ? attraction.relatedFrom.map((rel: any) => ({
+        ...rel.related_attraction,
+        created_at: rel.related_attraction.created_at.toISOString(),
+        updated_at: rel.related_attraction.updated_at.toISOString(),
+      })) : [],
     }));
   }
 
@@ -71,6 +85,15 @@ export class AttractionsService {
         category: true,
         images: true,
         activities: true,
+        relatedFrom: {
+          include: {
+            related_attraction: {
+              include: {
+                category: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -97,11 +120,16 @@ export class AttractionsService {
         created_at: activity.created_at.toISOString(),
         updated_at: activity.updated_at.toISOString(),
       })),
+      related_attractions: (attraction.relatedFrom || []).map((rel: any) => ({
+        ...rel.related_attraction,
+        created_at: rel.related_attraction.created_at.toISOString(),
+        updated_at: rel.related_attraction.updated_at.toISOString(),
+      })),
     };
   }
 
-  async create(createAttractionDto: CreateAttractionDto) {
-    const { name, description, category_id } = createAttractionDto;
+  async create(createAttractionDto: CreateAttractionDto & { is_published?: boolean; related_attraction_ids?: number[] }) {
+    const { name, description, category_id, image_url, thrill_level, duration, is_published, related_attraction_ids } = createAttractionDto;
 
     // Validation des champs requis
     if (!name || !description || !category_id) {
@@ -120,16 +148,39 @@ export class AttractionsService {
       );
     }
 
+    const attractionData: any = {
+      name,
+      description,
+      category_id,
+      image_url: image_url || null,
+      thrill_level: thrill_level || null,
+      duration: duration || null,
+      is_published: is_published !== undefined ? is_published : true,
+    };
+
+    if (related_attraction_ids && related_attraction_ids.length > 0) {
+      attractionData.relatedFrom = {
+        create: related_attraction_ids.map(relatedId => ({
+          related_attraction_id: relatedId,
+        })),
+      };
+    }
+
     const attraction = await this.prisma.attraction.create({
-      data: {
-        name,
-        description,
-        category_id,
-      },
+      data: attractionData,
       include: {
         category: true,
         images: true,
         activities: true,
+        relatedFrom: {
+          include: {
+            related_attraction: {
+              include: {
+                category: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -152,10 +203,15 @@ export class AttractionsService {
         created_at: activity.created_at.toISOString(),
         updated_at: activity.updated_at.toISOString(),
       })),
+      related_attractions: (attraction.relatedFrom || []).map((rel: any) => ({
+        ...rel.related_attraction,
+        created_at: rel.related_attraction.created_at.toISOString(),
+        updated_at: rel.related_attraction.updated_at.toISOString(),
+      })),
     };
   }
 
-  async update(id: number, updateAttractionDto: UpdateAttractionDto) {
+  async update(id: number, updateAttractionDto: UpdateAttractionDto & { is_published?: boolean; related_attraction_ids?: number[] }) {
     if (!id || id <= 0) {
       throw new BadRequestException('ID invalide');
     }
@@ -168,7 +224,7 @@ export class AttractionsService {
       throw new NotFoundException(`Attraction avec l'ID ${id} non trouvée`);
     }
 
-    const { name, description, category_id } = updateAttractionDto;
+    const { name, description, category_id, image_url, thrill_level, duration, is_published, related_attraction_ids } = updateAttractionDto;
 
     // Si category_id fourni, vérifier qu'elle existe
     if (category_id) {
@@ -188,6 +244,27 @@ export class AttractionsService {
     if (name !== undefined) dataToUpdate.name = name;
     if (description !== undefined) dataToUpdate.description = description;
     if (category_id !== undefined) dataToUpdate.category_id = category_id;
+    if (image_url !== undefined) dataToUpdate.image_url = image_url;
+    if (thrill_level !== undefined) dataToUpdate.thrill_level = thrill_level;
+    if (duration !== undefined) dataToUpdate.duration = duration;
+    if (is_published !== undefined) dataToUpdate.is_published = is_published;
+
+    // Gérer les attractions liées
+    if (related_attraction_ids !== undefined) {
+      // Supprimer les anciennes relations
+      await (this.prisma as any).attractionRelation.deleteMany({
+        where: { attraction_id: id },
+      });
+
+      // Créer les nouvelles relations
+      if (related_attraction_ids.length > 0) {
+        dataToUpdate.relatedFrom = {
+          create: related_attraction_ids.map(relatedId => ({
+            related_attraction_id: relatedId,
+          })),
+        };
+      }
+    }
 
     const updatedAttraction = await this.prisma.attraction.update({
       where: { id },
@@ -196,6 +273,15 @@ export class AttractionsService {
         category: true,
         images: true,
         activities: true,
+        relatedFrom: {
+          include: {
+            related_attraction: {
+              include: {
+                category: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -217,6 +303,11 @@ export class AttractionsService {
         ...activity,
         created_at: activity.created_at.toISOString(),
         updated_at: activity.updated_at.toISOString(),
+      })),
+      related_attractions: (updatedAttraction.relatedFrom || []).map((rel: any) => ({
+        ...rel.related_attraction,
+        created_at: rel.related_attraction.created_at.toISOString(),
+        updated_at: rel.related_attraction.updated_at.toISOString(),
       })),
     };
   }

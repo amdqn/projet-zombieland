@@ -5,6 +5,7 @@ import { CustomBreadcrumbs } from '../../components/common';
 import { HeroSection } from '../../components/hero/HeroSection';
 import { ReservationList } from './ReservationManagement.tsx/ReservationList';
 import { ActivityList } from './ActivityManagement.tsx/ActivityList';
+import { AttractionList } from './AttractionManagement.tsx/AttractionList';
 
 export const AdminDashboard = () => {
   const [tabValue, setTabValue] = useState<number>(0);
@@ -19,6 +20,7 @@ export const AdminDashboard = () => {
   const tabs = [
     { label: 'Réservations', component: <ReservationList /> },
     { label: 'Activités', component: <ActivityList /> },
+    { label: 'Attractions', component: <AttractionList /> },
   ];
 
   return (

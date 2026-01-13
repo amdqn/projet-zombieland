@@ -19,27 +19,27 @@ import AddIcon from '@mui/icons-material/Add';
 import { toast } from 'react-toastify';
 import { colors } from '../../../theme';
 import { useEffect, useState, useRef } from 'react';
-import type { Activity } from '../../../@types/activity';
-import { getActivities, deleteActivity, type ActivityFilters } from '../../../services/activities';
+import type { Attraction } from '../../../@types/attraction';
+import { getAttractions, deleteAttraction, type AttractionFilters } from '../../../services/attractions';
 import { getCategories } from '../../../services/categories';
 import type { Category } from '../../../@types/categorie';
-import { ActivityCard } from '../../../components/cards/ActivityCard';
-import { CreateActivityModal } from '../../../components/modals/Activity/CreateActivityModal.tsx';
-import { UpdateActivityModal } from '../../../components/modals/Activity/UpdateActivityModal.tsx';
-import { ActivityDetailsModal } from '../../../components/modals/Activity/ActivityDetailsModal.tsx';
-import { DeleteActivityModal } from '../../../components/modals/Activity/DeleteActivityModal.tsx';
+import { AttractionCard } from '../../../components/cards/AttractionCard';
+import { CreateAttractionModal } from '../../../components/modals/CreateAttractionModal';
+import { UpdateAttractionModal } from '../../../components/modals/UpdateAttractionModal';
+import { AttractionDetailsModal } from '../../../components/modals/AttractionDetailsModal';
+import { DeleteAttractionModal } from '../../../components/modals/DeleteAttractionModal';
 
-export const ActivityList = () => {
-  const [activities, setActivities] = useState<Activity[]>([]);
+export const AttractionList = () => {
+  const [attractions, setAttractions] = useState<Attraction[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
+  const [selectedAttraction, setSelectedAttraction] = useState<Attraction | null>(null);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [activityToDelete, setActivityToDelete] = useState<Activity | null>(null);
+  const [attractionToDelete, setAttractionToDelete] = useState<Attraction | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [deleteSuccess, setDeleteSuccess] = useState<string | null>(null);
@@ -72,21 +72,21 @@ export const ActivityList = () => {
       setIsLoading(true);
       setError(null);
       try {
-        const filters: ActivityFilters = {
+        const filters: AttractionFilters = {
           search: search || undefined,
           categoryId: categoryFilter ? Number(categoryFilter) : undefined,
         };
 
-        const activitiesData = await getActivities(filters);
+        const attractionsData = await getAttractions(filters);
         // Filtrer par statut de publication côté client si nécessaire
-        let filtered = activitiesData;
+        let filtered = attractionsData;
         if (publishedFilter === 'published') {
-          filtered = activitiesData.filter((a: any) => a.is_published !== false);
+          filtered = attractionsData.filter((a: any) => a.is_published !== false);
         } else if (publishedFilter === 'draft') {
-          filtered = activitiesData.filter((a: any) => a.is_published === false);
+          filtered = attractionsData.filter((a: any) => a.is_published === false);
         }
 
-        // Trier les activités
+        // Trier les attractions
         const sorted = [...filtered].sort((a, b) => {
           switch (sortBy) {
             case 'name_asc':
@@ -106,9 +106,9 @@ export const ActivityList = () => {
           }
         });
 
-        setActivities(sorted);
+        setAttractions(sorted);
       } catch (err) {
-        const message = err instanceof Error ? err.message : 'Erreur lors de la récupération des activités';
+        const message = err instanceof Error ? err.message : 'Erreur lors de la récupération des attractions';
         setError(message);
       } finally {
         setIsLoading(false);
@@ -126,40 +126,40 @@ export const ActivityList = () => {
     setCreateModalOpen(true);
   };
 
-  const handleEdit = (activity: Activity) => {
-    setSelectedActivity(activity);
+  const handleEdit = (attraction: Attraction) => {
+    setSelectedAttraction(attraction);
     setEditModalOpen(true);
   };
 
-  const handleDelete = (activity: Activity) => {
+  const handleDelete = (attraction: Attraction) => {
     if (editModalOpen) {
       setEditModalOpen(false);
-      setSelectedActivity(null);
+      setSelectedAttraction(null);
     }
-    setActivityToDelete(activity);
+    setAttractionToDelete(attraction);
     setDeleteDialogOpen(true);
     setDeleteError(null);
   };
 
-  const handleViewDetails = (activity: Activity) => {
-    setSelectedActivity(activity);
+  const handleViewDetails = (attraction: Attraction) => {
+    setSelectedAttraction(attraction);
     setDetailsModalOpen(true);
   };
 
   const handleConfirmDelete = async () => {
-    if (!activityToDelete) return;
+    if (!attractionToDelete) return;
 
     setIsDeleting(true);
     setDeleteError(null);
     setDeleteSuccess(null);
     try {
-      await deleteActivity(activityToDelete.id);
-      toast.success('Activité supprimée avec succès !');
-      setActivities(activities.filter((a) => a.id !== activityToDelete.id));
+      await deleteAttraction(attractionToDelete.id);
+      toast.success('Attraction supprimée avec succès !');
+      setAttractions(attractions.filter((a) => a.id !== attractionToDelete.id));
       setDeleteDialogOpen(false);
-      setActivityToDelete(null);
+      setAttractionToDelete(null);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erreur lors de la suppression de l\'activité';
+      const message = err instanceof Error ? err.message : 'Erreur lors de la suppression de l\'attraction';
       setDeleteError(message);
     } finally {
       setIsDeleting(false);
@@ -169,7 +169,7 @@ export const ActivityList = () => {
   const handleCloseDeleteDialog = () => {
     if (!isDeleting) {
       setDeleteDialogOpen(false);
-      setActivityToDelete(null);
+      setAttractionToDelete(null);
     }
   };
 
@@ -177,43 +177,43 @@ export const ActivityList = () => {
     setCreateModalOpen(false);
     // Rafraîchir la liste
     try {
-      const filters: ActivityFilters = {
+      const filters: AttractionFilters = {
         search: search || undefined,
         categoryId: categoryFilter ? Number(categoryFilter) : undefined,
       };
-      const activitiesData = await getActivities(filters);
-      let filtered = activitiesData;
+      const attractionsData = await getAttractions(filters);
+      let filtered = attractionsData;
       if (publishedFilter === 'published') {
-        filtered = activitiesData.filter((a: any) => a.is_published !== false);
+        filtered = attractionsData.filter((a: any) => a.is_published !== false);
       } else if (publishedFilter === 'draft') {
-        filtered = activitiesData.filter((a: any) => a.is_published === false);
+        filtered = attractionsData.filter((a: any) => a.is_published === false);
       }
-      setActivities(filtered);
+      setAttractions(filtered);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erreur lors de la récupération des activités';
+      const message = err instanceof Error ? err.message : 'Erreur lors de la récupération des attractions';
       setError(message);
     }
   };
 
   const handleUpdateSuccess = async () => {
     setEditModalOpen(false);
-    setSelectedActivity(null);
+    setSelectedAttraction(null);
     // Rafraîchir la liste
     try {
-      const filters: ActivityFilters = {
+      const filters: AttractionFilters = {
         search: search || undefined,
         categoryId: categoryFilter ? Number(categoryFilter) : undefined,
       };
-      const activitiesData = await getActivities(filters);
-      let filtered = activitiesData;
+      const attractionsData = await getAttractions(filters);
+      let filtered = attractionsData;
       if (publishedFilter === 'published') {
-        filtered = activitiesData.filter((a: any) => a.is_published !== false);
+        filtered = attractionsData.filter((a: any) => a.is_published !== false);
       } else if (publishedFilter === 'draft') {
-        filtered = activitiesData.filter((a: any) => a.is_published === false);
+        filtered = attractionsData.filter((a: any) => a.is_published === false);
       }
-      setActivities(filtered);
+      setAttractions(filtered);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erreur lors de la récupération des activités';
+      const message = err instanceof Error ? err.message : 'Erreur lors de la récupération des attractions';
       setError(message);
     }
   };
@@ -249,7 +249,7 @@ export const ActivityList = () => {
               color: colors.white,
             }}
           >
-            Gestion des activités
+            Gestion des attractions
           </Typography>
           <Typography
             variant="body2"
@@ -258,7 +258,7 @@ export const ActivityList = () => {
               mb: 2,
             }}
           >
-            Créez, modifiez et gérez toutes les activités du parc Zombieland. Total : {activities.length} activité{activities.length > 1 ? 's' : ''}
+            Créez, modifiez et gérez toutes les attractions du parc Zombieland. Total : {attractions.length} attraction{attractions.length > 1 ? 's' : ''}
           </Typography>
         </Box>
         <Button
@@ -276,7 +276,7 @@ export const ActivityList = () => {
             textTransform: 'uppercase',
           }}
         >
-          Nouvelle activité
+          Nouvelle attraction
         </Button>
       </Box>
 
@@ -285,7 +285,7 @@ export const ActivityList = () => {
         <TextField
           fullWidth
           variant="outlined"
-          placeholder="Rechercher une activité..."
+          placeholder="Rechercher une attraction..."
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           onKeyPress={(e) => {
@@ -508,7 +508,7 @@ export const ActivityList = () => {
         </FormControl>
       </Box>
 
-      {/* Liste des activités */}
+      {/* Liste des attractions */}
       <Box
         sx={{
           padding: 3,
@@ -532,7 +532,7 @@ export const ActivityList = () => {
           >
             <CircularProgress sx={{ color: colors.primaryGreen }} size={60} />
             <Typography variant="body1" sx={{ color: colors.white }}>
-              Chargement des activités...
+              Chargement des attractions...
             </Typography>
           </Box>
         ) : error ? (
@@ -548,7 +548,7 @@ export const ActivityList = () => {
               Erreur : {error}
             </Typography>
           </Box>
-        ) : activities.length === 0 ? (
+        ) : attractions.length === 0 ? (
           <Box
             sx={{
               display: 'flex',
@@ -558,17 +558,17 @@ export const ActivityList = () => {
             }}
           >
             <Typography variant="body1" sx={{ color: colors.white }}>
-              Aucune activité trouvée.
+              Aucune attraction trouvée.
             </Typography>
           </Box>
         ) : (
           <Fade in={!isLoading} timeout={500}>
             <Box>
               <Grid container spacing={2}>
-                {activities.map((activity) => (
-                  <Grid size={{ xs: 12, sm: 6, md: 4 }} key={activity.id}>
-                    <ActivityCard
-                      activity={activity}
+                {attractions.map((attraction) => (
+                  <Grid size={{ xs: 12, sm: 6, md: 4 }} key={attraction.id}>
+                    <AttractionCard
+                      attraction={attraction}
                       onEdit={handleEdit}
                       onDelete={handleDelete}
                       onClick={handleViewDetails}
@@ -582,36 +582,36 @@ export const ActivityList = () => {
       </Box>
 
       {/* Modals */}
-      <CreateActivityModal
+      <CreateAttractionModal
         open={createModalOpen}
         onClose={() => setCreateModalOpen(false)}
         onSuccess={handleCreateSuccess}
       />
 
-      <UpdateActivityModal
+      <UpdateAttractionModal
         open={editModalOpen}
         onClose={() => {
           setEditModalOpen(false);
-          setSelectedActivity(null);
+          setSelectedAttraction(null);
         }}
-        activity={selectedActivity}
+        attraction={selectedAttraction}
         onUpdateSuccess={handleUpdateSuccess}
       />
 
-      <ActivityDetailsModal
+      <AttractionDetailsModal
         open={detailsModalOpen}
         onClose={() => {
           setDetailsModalOpen(false);
-          setSelectedActivity(null);
+          setSelectedAttraction(null);
         }}
-        activity={selectedActivity}
+        attraction={selectedAttraction}
       />
 
-      <DeleteActivityModal
+      <DeleteAttractionModal
         deleteDialogOpen={deleteDialogOpen}
         handleCloseDeleteDialog={handleCloseDeleteDialog}
         handleConfirmDelete={handleConfirmDelete}
-        activityToDelete={activityToDelete}
+        attractionToDelete={attractionToDelete}
         isDeleting={isDeleting}
         error={deleteError}
         success={deleteSuccess}

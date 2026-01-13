@@ -1,20 +1,20 @@
 import { Alert, Box, MenuItem, Modal, Select, Typography, FormControl, InputLabel, Switch, FormControlLabel, TextField, Chip, Button, CircularProgress } from '@mui/material';
 import { useState, useEffect } from 'react';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { updateActivity, type UpdateActivityDto } from '../../../services/activities.ts';
-import { getCategories } from '../../../services/categories.ts';
-import { getActivities } from '../../../services/activities.ts';
-import { uploadActivityImage } from '../../../services/upload.ts';
-import { colors } from '../../../theme';
-import { PrimaryButton } from '../../common';
-import type { Category } from '../../../@types/categorie';
-import type { Activity } from '../../../@types/activity';
-import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE } from '../../../utils/imageUtils.ts';
+import { toast } from 'react-toastify';
+import { updateAttraction, type UpdateAttractionDto, getAttractions } from '../../services/attractions';
+import { getCategories } from '../../services/categories';
+import { uploadAttractionImage } from '../../services/upload';
+import { colors } from '../../theme';
+import { PrimaryButton } from '../common';
+import type { Category } from '../../@types/categorie';
+import type { Attraction } from '../../@types/attraction';
+import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE } from '../../utils/imageUtils';
 
-interface UpdateActivityModalProps {
+interface UpdateAttractionModalProps {
   open: boolean;
   onClose: () => void;
-  activity: Activity | null;
+  attraction: Attraction | null;
   onUpdateSuccess: () => void;
 }
 
@@ -32,25 +32,22 @@ const style = {
   p: 4,
 };
 
-export const UpdateActivityModal = ({
+export const UpdateAttractionModal = ({
   open,
   onClose,
-  activity,
+  attraction,
   onUpdateSuccess,
-}: UpdateActivityModalProps) => {
+}: UpdateAttractionModalProps) => {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [allActivities, setAllActivities] = useState<Activity[]>([]);
+  const [allAttractions, setAllAttractions] = useState<Attraction[]>([]);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [categoryId, setCategoryId] = useState<number | ''>('');
-  const [attractionId, setAttractionId] = useState<number | ''>('');
   const [imageUrl, setImageUrl] = useState('');
   const [thrillLevel, setThrillLevel] = useState<number | ''>('');
   const [duration, setDuration] = useState<number | ''>('');
-  const [minAge, setMinAge] = useState<number | ''>('');
-  const [accessibility, setAccessibility] = useState('');
   const [isPublished, setIsPublished] = useState(true);
-  const [relatedActivityIds, setRelatedActivityIds] = useState<number[]>([]);
+  const [relatedAttractionIds, setRelatedAttractionIds] = useState<number[]>([]);
   const [uploading, setUploading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -60,37 +57,34 @@ export const UpdateActivityModal = ({
     if (open) {
       const fetchData = async () => {
         try {
-          const [cats, acts] = await Promise.all([
+          const [cats, attrs] = await Promise.all([
             getCategories(),
-            getActivities(),
+            getAttractions(),
           ]);
           setCategories(cats);
-          setAllActivities(acts.filter(a => a.id !== activity?.id));
+          setAllAttractions(attrs);
         } catch (err) {
           console.error('Erreur lors du chargement des données:', err);
         }
       };
       fetchData();
     }
-  }, [open, activity]);
+  }, [open, attraction]);
 
   useEffect(() => {
-    if (activity) {
-      setName(activity.name);
-      setDescription(activity.description);
-      setCategoryId(activity.category_id);
-      setAttractionId(activity.attraction_id || '');
-      setImageUrl(activity.image_url || '');
-      setThrillLevel(activity.thrill_level || '');
-      setDuration(activity.duration || '');
-      setMinAge((activity as any).min_age || '');
-      setAccessibility((activity as any).accessibility || '');
-      setIsPublished((activity as any).is_published !== false);
-      setRelatedActivityIds((activity as any).related_activities?.map((r: any) => r.id) || []);
+    if (attraction) {
+      setName(attraction.name);
+      setDescription(attraction.description);
+      setCategoryId(attraction.category_id);
+      setImageUrl(attraction.image_url || '');
+      setThrillLevel(attraction.thrill_level || '');
+      setDuration(attraction.duration || '');
+      setIsPublished(attraction.is_published ?? true);
+      setRelatedAttractionIds(attraction.related_attractions?.map(a => a.id) || []);
       setError(null);
       setSuccess(null);
     }
-  }, [activity]);
+  }, [attraction]);
 
   const handleClose = () => {
     setError(null);
@@ -99,7 +93,7 @@ export const UpdateActivityModal = ({
   };
 
   const handleSubmit = async () => {
-    if (!activity) return;
+    if (!attraction) return;
     if (!name || !description || !categoryId) {
       setError('Le nom, la description et la catégorie sont requis');
       return;
@@ -110,26 +104,23 @@ export const UpdateActivityModal = ({
     setSuccess(null);
 
     try {
-      const dto: UpdateActivityDto = {
+      const dto: UpdateAttractionDto = {
         name,
         description,
         category_id: Number(categoryId),
-        attraction_id: attractionId ? Number(attractionId) : null,
         image_url: imageUrl || null,
         thrill_level: thrillLevel ? Number(thrillLevel) : null,
         duration: duration ? Number(duration) : null,
-        min_age: minAge ? Number(minAge) : null,
-        accessibility: accessibility || null,
         is_published: isPublished,
-        related_activity_ids: relatedActivityIds.length > 0 ? relatedActivityIds : undefined,
+        related_attraction_ids: relatedAttractionIds,
       };
 
-      await updateActivity(activity.id, dto);
-      toast.success('Activité mise à jour avec succès !');
+      await updateAttraction(attraction.id, dto);
+      toast.success('Attraction mise à jour avec succès !');
       onUpdateSuccess();
       handleClose();
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erreur lors de la mise à jour de l\'activité';
+      const message = err instanceof Error ? err.message : 'Erreur lors de la mise à jour de l\'attraction';
       setError(message);
     } finally {
       setIsLoading(false);
@@ -149,7 +140,7 @@ export const UpdateActivityModal = ({
     setUploading(true);
     setError(null);
     try {
-      const response = await uploadActivityImage(file);
+      const response = await uploadAttractionImage(file);
       setImageUrl(response.url);
       setSuccess('Image uploadée avec succès');
       setTimeout(() => setSuccess(null), 3000);
@@ -161,15 +152,15 @@ export const UpdateActivityModal = ({
     }
   };
 
-  const toggleRelatedActivity = (activityId: number) => {
-    setRelatedActivityIds((prev) =>
-      prev.includes(activityId)
-        ? prev.filter((id) => id !== activityId)
-        : [...prev, activityId]
+  const toggleRelatedAttraction = (attractionId: number) => {
+    setRelatedAttractionIds((prev) =>
+      prev.includes(attractionId)
+        ? prev.filter((id) => id !== attractionId)
+        : [...prev, attractionId]
     );
   };
 
-  if (!activity) return null;
+  if (!attraction) return null;
 
   return (
     <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title">
@@ -185,7 +176,7 @@ export const UpdateActivityModal = ({
             textAlign: 'center',
           }}
         >
-          Modifier l'activité
+          Modifier l'attraction
         </Typography>
 
         {error && (
@@ -244,7 +235,7 @@ export const UpdateActivityModal = ({
           {/* Upload d'image */}
           <Box sx={{ mb: 2 }}>
             <Typography variant="subtitle2" sx={{ mb: 1, color: colors.primaryGold }}>
-              Image de l'activité
+              Image de l'attraction
             </Typography>
 
             <Button
@@ -358,53 +349,12 @@ export const UpdateActivityModal = ({
             />
           </Box>
 
-          <Box sx={{ display: 'flex', gap: 2 }}>
-            <TextField
-              label="Durée (minutes)"
-              type="number"
-              value={duration}
-              onChange={(e) => setDuration(e.target.value ? Number(e.target.value) : '')}
-              inputProps={{ min: 1 }}
-              fullWidth
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  backgroundColor: colors.secondaryDarkAlt,
-                  color: colors.white,
-                  '& fieldset': { borderColor: colors.secondaryGrey },
-                  '&:hover fieldset': { borderColor: colors.primaryGreen },
-                  '&.Mui-focused fieldset': { borderColor: colors.primaryGreen },
-                },
-                '& .MuiInputLabel-root': { color: colors.secondaryGrey },
-                '& .MuiInputLabel-root.Mui-focused': { color: colors.primaryGreen },
-              }}
-            />
-
-            <TextField
-              label="Âge minimum"
-              type="number"
-              value={minAge}
-              onChange={(e) => setMinAge(e.target.value ? Number(e.target.value) : '')}
-              inputProps={{ min: 0 }}
-              fullWidth
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  backgroundColor: colors.secondaryDarkAlt,
-                  color: colors.white,
-                  '& fieldset': { borderColor: colors.secondaryGrey },
-                  '&:hover fieldset': { borderColor: colors.primaryGreen },
-                  '&.Mui-focused fieldset': { borderColor: colors.primaryGreen },
-                },
-                '& .MuiInputLabel-root': { color: colors.secondaryGrey },
-                '& .MuiInputLabel-root.Mui-focused': { color: colors.primaryGreen },
-              }}
-            />
-          </Box>
-
           <TextField
-            label="Accessibilité"
-            value={accessibility}
-            onChange={(e) => setAccessibility(e.target.value)}
-            placeholder="Ex: Accessible, Partiellement accessible..."
+            label="Durée (minutes)"
+            type="number"
+            value={duration}
+            onChange={(e) => setDuration(e.target.value ? Number(e.target.value) : '')}
+            inputProps={{ min: 1 }}
             fullWidth
             sx={{
               '& .MuiOutlinedInput-root': {
@@ -421,20 +371,20 @@ export const UpdateActivityModal = ({
 
           <Box>
             <Typography sx={{ mb: 1, color: colors.secondaryGrey, fontSize: '0.9rem' }}>
-              Activités liées
+              Attractions liées
             </Typography>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, maxHeight: '150px', overflow: 'auto', p: 1, border: `1px solid ${colors.secondaryGrey}`, borderRadius: 1 }}>
-              {allActivities.map((act) => (
+              {allAttractions.filter(a => a.id !== attraction.id).map((attr) => (
                 <Chip
-                  key={act.id}
-                  label={act.name}
-                  onClick={() => toggleRelatedActivity(act.id)}
-                  color={relatedActivityIds.includes(act.id) ? 'primary' : 'default'}
+                  key={attr.id}
+                  label={attr.name}
+                  onClick={() => toggleRelatedAttraction(attr.id)}
+                  color={relatedAttractionIds.includes(attr.id) ? 'primary' : 'default'}
                   sx={{
-                    backgroundColor: relatedActivityIds.includes(act.id) ? colors.primaryGreen : colors.secondaryDarkAlt,
+                    backgroundColor: relatedAttractionIds.includes(attr.id) ? colors.primaryGreen : colors.secondaryDarkAlt,
                     color: colors.white,
                     '&:hover': {
-                      backgroundColor: relatedActivityIds.includes(act.id) ? colors.primaryGreen : colors.secondaryGrey,
+                      backgroundColor: relatedAttractionIds.includes(attr.id) ? colors.primaryGreen : colors.secondaryGrey,
                     },
                   }}
                 />

@@ -40,8 +40,15 @@ export const Activities = () => {
           getActivities(),
           getAttractions(),
         ]);
-        setActivities(Array.isArray(activitiesData) ? (activitiesData as Activity[]) : []);
-        setAttractions(Array.isArray(attractionsData) ? (attractionsData as Attraction[]) : []);
+        // Filtrer pour n'afficher que les éléments publiés sur la page publique
+        const publishedActivities = Array.isArray(activitiesData)
+          ? (activitiesData as Activity[]).filter((a: any) => a.is_published !== false)
+          : [];
+        const publishedAttractions = Array.isArray(attractionsData)
+          ? (attractionsData as Attraction[]).filter((a: any) => a.is_published !== false)
+          : [];
+        setActivities(publishedActivities);
+        setAttractions(publishedAttractions);
         
       } catch (err) {
         const message =

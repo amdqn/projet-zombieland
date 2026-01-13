@@ -6,6 +6,7 @@ import {createPrice} from "../../../services/prices.ts";
 
 import {PRICES_TYPES} from "../../../utils/typePrice.ts";
 import type {CreatePriceDto, PriceType} from "../../../@types/price";
+import {toast} from "react-toastify";
 
 
 interface CreatePriceModalProps {
@@ -72,13 +73,13 @@ export const CreatePriceModal = ({
             };
 
             await createPrice(dto);
-            setSuccess('Prix crée avec succès');
+            toast.success('Tarif crée avec succès !');
             setTimeout(() => {
                 onCreateSuccess();
                 handleClose();
             }, 1500);
         } catch (err) {
-            const message = err instanceof Error ? err.message : 'Erreur lors de la création du prix';
+            const message = err instanceof Error ? err.message : 'Erreur lors de la création du tarif';
             setError(message);
         } finally {
             setIsLoading(false);

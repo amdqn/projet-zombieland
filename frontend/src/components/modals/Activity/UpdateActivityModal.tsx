@@ -10,6 +10,7 @@ import { PrimaryButton } from '../../common';
 import type { Category } from '../../../@types/categorie';
 import type { Activity } from '../../../@types/activity';
 import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE } from '../../../utils/imageUtils.ts';
+import {toast} from "react-toastify";
 
 interface UpdateActivityModalProps {
   open: boolean;

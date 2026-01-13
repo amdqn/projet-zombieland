@@ -5,6 +5,7 @@ import { PrimaryButton } from '../../common';
 import {updatePrice} from "../../../services/prices.ts";
 import {PRICES_TYPES} from "../../../utils/typePrice.ts";
 import type {Price, PriceType, UpdatePriceDto} from "../../../@types/price";
+import {toast} from "react-toastify";
 
 interface UpdatePriceModalProps {
     open: boolean;
@@ -81,7 +82,7 @@ export const UpdatePriceModal = ({
 
 
             await updatePrice(price.id, dto);
-            setSuccess('Tarif mis à jour avec succès');
+            toast.success('Tarif mis à jour avec succès !');
             setTimeout(() => {
                 onUpdateSuccess();
                 handleClose();

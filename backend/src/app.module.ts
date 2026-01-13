@@ -12,7 +12,17 @@ import { ParkDatesModule } from './park-dates/park-dates.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
-  imports: [PrismaModule, AuthModule, ActivitiesModule, AttractionsModule, ReservationsModule, CategoriesModule, PricesModule, ParkDatesModule, UsersModule],
+  imports: [
+    PrismaModule,
+    AuthModule,
+    ActivitiesModule,
+    AttractionsModule,
+    ReservationsModule,
+    CategoriesModule,
+    PricesModule,
+    ParkDatesModule,
+    UsersModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

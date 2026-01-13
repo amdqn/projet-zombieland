@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import type { CreatePriceDto, UpdatePriceDto } from 'src/generated';
 
@@ -78,7 +82,10 @@ export class PricesService {
       throw new BadRequestException('Le montant doit être supérieur à 0');
     }
 
-    if (updatePriceDto.duration_days !== undefined && updatePriceDto.duration_days < 1) {
+    if (
+      updatePriceDto.duration_days !== undefined &&
+      updatePriceDto.duration_days < 1
+    ) {
       throw new BadRequestException('La durée doit être au moins 1 jour');
     }
 

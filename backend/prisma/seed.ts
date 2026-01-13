@@ -308,35 +308,70 @@ async function main() {
   const dates: Array<{
     jour: Date;
     is_open: boolean;
+    open_hour: Date | null;
+    close_hour: Date | null;
     notes: string | null;
   }> = [];
-  const startDate = new Date('2025-12-01');
   
-  for (let i = 0; i < 31; i++) {
-    const currentDate = new Date(startDate);
-    currentDate.setDate(startDate.getDate() + i);
+  // Générer dates de janvier à juin 2026
+  let year = 2026;
+  let month = 1;
+  let day = 1;
+  
+  while (month <= 6) {
+    const daysInMonth = new Date(year, month, 0).getDate();
     
-    // Fermé les lundis et mardis
-    const dayOfWeek = currentDate.getDay();
-    const isOpen = dayOfWeek !== 1 && dayOfWeek !== 2;
-    
-    let notes: string | null = null;
-    if (currentDate.getDate() === 25) {
-      notes = 'Horaires étendus pour Noël (9h-23h)';
-    } else if (currentDate.getDate() === 31) {
-      notes = 'Soirée spéciale Nouvel An (10h-2h)';
+    for (day = 1; day <= daysInMonth; day++) {
+      const currentDate = new Date(year, month - 1, day);
+      
+      // Fermé les lundis et mardis
+      const dayOfWeek = currentDate.getDay();
+      const isOpen = dayOfWeek !== 1 && dayOfWeek !== 2;
+      
+      let notes: string | null = null;
+      let openHour: Date | null = null;
+      let closeHour: Date | null = null;
+      
+      if (isOpen) {
+        // Événements spéciaux
+        if (month === 1 && day === 1) {
+          notes = 'Nouvel An - Ouverture à midi';
+          openHour = new Date('1970-01-01T12:00:00');
+          closeHour = new Date('1970-01-01T22:00:00');
+        } else if (month === 2 && day === 14) {
+          notes = 'Saint-Valentin - Soirée spéciale';
+          openHour = new Date('1970-01-01T10:00:00');
+          closeHour = new Date('1970-01-02T00:00:00');
+        } else if (month === 4 && day === 1) {
+          notes = 'Poisson d\'avril - Animations surprise';
+          openHour = new Date('1970-01-01T10:00:00');
+          closeHour = new Date('1970-01-01T22:00:00');
+        } else if (month === 5 && day === 1) {
+          notes = 'Fête du Travail';
+          openHour = new Date('1970-01-01T10:00:00');
+          closeHour = new Date('1970-01-01T23:00:00');
+        } else {
+          // Horaires normaux : 10h-22h
+          openHour = new Date('1970-01-01T10:00:00');
+          closeHour = new Date('1970-01-01T22:00:00');
+        }
+      }
+      
+      dates.push({
+        jour: currentDate,
+        is_open: isOpen,
+        open_hour: openHour,
+        close_hour: closeHour,
+        notes: notes,
+      });
     }
     
-    dates.push({
-      jour: currentDate,
-      is_open: isOpen,
-      notes: notes,
-    });
+    month++;
   }
 
   await prisma.parkDate.createMany({ data: dates });
 
-  console.log('✅ Dates d\'ouverture créées (31 jours - décembre 2025)');
+  console.log(`✅ Dates d'ouverture créées (${dates.length} jours - janvier à juin 2026)`);
 
   // ===== PRICES =====
   const prices = await Promise.all([
@@ -497,7 +532,7 @@ async function main() {
   console.log('   - 5 catégories');
   console.log('   - 17 attractions (dont 6 points de restauration)');
   console.log('   - 5 activités');
-  console.log('   - 31 dates d\'ouverture (décembre 2025)');
+  console.log('   - 181 dates d\'ouverture (janvier à juin 2026)');
   console.log('   - 5 tarifs (Étudiant, Adulte, Groupe x2, Pass 2J)');
   console.log('   - 4 réservations');
   console.log('');

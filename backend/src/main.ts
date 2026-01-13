@@ -24,6 +24,8 @@ async function bootstrap() {
   console.log(
     `📚 Documentation (Swagger UI) : http://localhost:${process.env.PORT || 3001}/swagger-ui`,
   );
-  console.log(`🔗 Endpoints API : http://localhost:${process.env.PORT || 3001}/api/v1`);
+  console.log(
+    `🔗 Endpoints API : http://localhost:${process.env.PORT || 3001}/api/v1`,
+  );
 }
 void bootstrap();

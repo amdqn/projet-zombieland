@@ -5,7 +5,10 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import type { CreateReservationDto, UpdateReservationStatusDto } from 'src/generated';
+import type {
+  CreateReservationDto,
+  UpdateReservationStatusDto,
+} from 'src/generated';
 
 @Injectable()
 export class ReservationsService {
@@ -61,13 +64,17 @@ export class ReservationsService {
     const { date_id, tickets } = dto;
 
     if (!date_id || !tickets || tickets.length === 0) {
-      throw new BadRequestException('La date et au moins un type de ticket sont requis');
+      throw new BadRequestException(
+        'La date et au moins un type de ticket sont requis',
+      );
     }
 
     // Vérifier que toutes les quantités sont positives
     for (const ticket of tickets) {
       if (!ticket.price_id || !ticket.quantity || ticket.quantity <= 0) {
-        throw new BadRequestException('Chaque ticket doit avoir un price_id et une quantité positive');
+        throw new BadRequestException(
+          'Chaque ticket doit avoir un price_id et une quantité positive',
+        );
       }
     }
 
@@ -76,7 +83,9 @@ export class ReservationsService {
     });
 
     if (!parkDate) {
-      throw new NotFoundException(`Date de parc avec l'ID ${date_id} non trouvée`);
+      throw new NotFoundException(
+        `Date de parc avec l'ID ${date_id} non trouvée`,
+      );
     }
 
     if (!parkDate.is_open) {
@@ -86,12 +95,14 @@ export class ReservationsService {
     // Vérifier que la date n'est pas dans le passé
     const visitDate = new Date(parkDate.jour);
     visitDate.setHours(0, 0, 0, 0);
-    
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
     if (visitDate < today) {
-      throw new BadRequestException('Impossible de réserver pour une date passée');
+      throw new BadRequestException(
+        'Impossible de réserver pour une date passée',
+      );
     }
 
     // Récupérer tous les tarifs et calculer le total
@@ -104,7 +115,9 @@ export class ReservationsService {
       });
 
       if (!price) {
-        throw new NotFoundException(`Tarif avec l'ID ${ticket.price_id} non trouvé`);
+        throw new NotFoundException(
+          `Tarif avec l'ID ${ticket.price_id} non trouvé`,
+        );
       }
 
       const subtotal = Number(price.amount) * ticket.quantity;
@@ -319,7 +332,7 @@ export class ReservationsService {
     }
 
     if (userRole !== 'ADMIN' && reservation.user_id !== userId) {
-      throw new ForbiddenException('Vous n\'avez pas accès à cette réservation');
+      throw new ForbiddenException("Vous n'avez pas accès à cette réservation");
     }
 
     return this.formatReservationResponse(reservation, userRole);
@@ -411,25 +424,25 @@ export class ReservationsService {
     };
   }
 
-private calculateCancellationInfo(reservation: any, userRole: string) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  private calculateCancellationInfo(reservation: any, userRole: string) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-  const visitDate = new Date(reservation.date.jour);
-  visitDate.setHours(0, 0, 0, 0);
+    const visitDate = new Date(reservation.date.jour);
+    visitDate.setHours(0, 0, 0, 0);
 
-  const diffTime = visitDate.getTime() - today.getTime();
-  const daysUntilVisit = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffTime = visitDate.getTime() - today.getTime();
+    const daysUntilVisit = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-  const canCancel = userRole === 'ADMIN' || daysUntilVisit >= 10;
+    const canCancel = userRole === 'ADMIN' || daysUntilVisit >= 10;
 
-  const cancellationDeadline = new Date(visitDate);
-  cancellationDeadline.setDate(visitDate.getDate() - 10);
+    const cancellationDeadline = new Date(visitDate);
+    cancellationDeadline.setDate(visitDate.getDate() - 10);
 
-  return {
-    can_cancel: canCancel,
-    days_until_visit: daysUntilVisit,
-    cancellation_deadline: cancellationDeadline.toISOString(),
+    return {
+      can_cancel: canCancel,
+      days_until_visit: daysUntilVisit,
+      cancellation_deadline: cancellationDeadline.toISOString(),
     };
   }
 }

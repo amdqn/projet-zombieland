@@ -2299,6 +2299,34 @@ components:
           type: integer
           nullable: true
           example: null
+        image_url:
+          type: string
+          nullable: true
+          example: "/activities-images/laser-game.jpg"
+        thrill_level:
+          type: integer
+          nullable: true
+          minimum: 1
+          maximum: 5
+          example: 3
+        duration:
+          type: integer
+          nullable: true
+          minimum: 1
+          example: 30
+        min_age:
+          type: integer
+          nullable: true
+          minimum: 0
+          example: 12
+        accessibility:
+          type: string
+          nullable: true
+          example: "Accessible"
+        is_published:
+          type: boolean
+          default: true
+          example: true
 
     UpdateActivityDto:
       type: object
@@ -2312,6 +2340,27 @@ components:
         attraction_id:
           type: integer
           nullable: true
+        image_url:
+          type: string
+          nullable: true
+        thrill_level:
+          type: integer
+          nullable: true
+          minimum: 1
+          maximum: 5
+        duration:
+          type: integer
+          nullable: true
+          minimum: 1
+        min_age:
+          type: integer
+          nullable: true
+          minimum: 0
+        accessibility:
+          type: string
+          nullable: true
+        is_published:
+          type: boolean
 
     CreateParkDateDto:
       type: object

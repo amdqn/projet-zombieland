@@ -17,9 +17,10 @@ import { getAttractions } from '../../services/attractions';
 import { colors } from '../../theme';
 import { CustomBreadcrumbs } from '../../components/common';
 import { HeroSection } from '../../components/hero/HeroSection';
-import { ActivityCard } from '../../components/cards/ActivityCard';
+import { ActivityCardPublic } from '../../components/cards/ActivityCardPublic';
 import type { Activity } from '../../@types/activity';
 import type { Attraction } from '../../@types/attraction';
+import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE, DEFAULT_RESTAURANT_IMAGE } from '../../utils/imageUtils';
 
 export const Activities = () => {
   const [tabValue, setTabValue] = useState<number>(0);
@@ -56,21 +57,18 @@ export const Activities = () => {
   }, []);
 
   const enrichedActivities = useMemo(() => {
-    const defaultActivityImage = '/activities-images/zombie.jpg';
-    const withMeta = activities.map((activity) => {
-      const apiImage = activity.image_url?.trim();
-      // Accepter les URLs HTTP/HTTPS et les chemins relatifs qui commencent par /
-      const isValidHttp = apiImage?.startsWith('http://') || apiImage?.startsWith('https://');
-      const isValidPath = apiImage?.startsWith('/');
-      const image = (isValidHttp || isValidPath) ? apiImage : defaultActivityImage;
-      
-      // Valeurs par défaut car ces champs n'existent pas en BDD
-      const thrill = activity.thrill_level ?? 3;
-      const durationMinutes = activity.duration ?? 45;
-      const duration = `${durationMinutes} min`;
-      const categoryLabel = activity.category?.name ?? 'Activité';
-      return { ...activity, image, thrill, duration, categoryLabel };
-    });
+    const withMeta = activities
+      .filter((activity) => (activity as any).is_published !== false) // Filtrer les activités non publiées
+      .map((activity) => {
+        const image = resolveImageUrl(activity.image_url, DEFAULT_ACTIVITY_IMAGE);
+
+        // Valeurs par défaut car ces champs n'existent pas en BDD
+        const thrill = activity.thrill_level ?? 3;
+        const durationMinutes = activity.duration ?? 45;
+        const duration = `${durationMinutes} min`;
+        const categoryLabel = activity.category?.name ?? 'Activité';
+        return { ...activity, image, thrill, duration, categoryLabel };
+      });
 
     const queryLower = searchQuery.toLowerCase().trim();
     const filtered = withMeta.filter(
@@ -86,15 +84,10 @@ export const Activities = () => {
   }, [activities, selectedCategory, minThrill, searchQuery]);
 
   const enrichedAttractions = useMemo(() => {
-    const defaultAttractionImage = '/activities-images/zombie.jpg';
     const withMeta = attractions
-      .filter((attraction) => attraction.category?.name !== 'Restauration')
+      .filter((attraction) => attraction.category?.name !== 'Restauration' && (attraction as any).is_published !== false) // Filtrer les attractions non publiées
       .map((attraction) => {
-        const apiImage = attraction.image_url?.trim();
-        // Accepter les URLs HTTP/HTTPS et les chemins relatifs qui commencent par /
-        const isValidHttp = apiImage?.startsWith('http://') || apiImage?.startsWith('https://');
-        const isValidPath = apiImage?.startsWith('/');
-        const image = (isValidHttp || isValidPath) ? apiImage : defaultAttractionImage;
+        const image = resolveImageUrl(attraction.image_url, DEFAULT_ACTIVITY_IMAGE);
         const thrill = attraction.thrill_level ?? 3;
         const durationMinutes = attraction.duration ?? 45;
         const duration = `${durationMinutes} min`;
@@ -116,15 +109,10 @@ export const Activities = () => {
   }, [attractions, selectedCategory, minThrill, searchQuery]);
 
   const enrichedRestaurants = useMemo(() => {
-    const defaultRestaurantImage = '/attractions-images/restaurant-default.jpg';
     const withMeta = attractions
       .filter((attraction) => attraction.category?.name === 'Restauration')
       .map((restaurant) => {
-        const apiImage = restaurant.image_url?.trim();
-        // Accepter les URLs HTTP/HTTPS et les chemins relatifs qui commencent par /
-        const isValidHttp = apiImage?.startsWith('http://') || apiImage?.startsWith('https://');
-        const isValidPath = apiImage?.startsWith('/');
-        const image = (isValidHttp || isValidPath) ? apiImage : defaultRestaurantImage;
+        const image = resolveImageUrl(restaurant.image_url, DEFAULT_RESTAURANT_IMAGE);
         const thrill = undefined; // Pas de niveau de frisson pour la restauration
         const duration = undefined; // Pas de durée pour la restauration
         const categoryLabel = restaurant.category?.name ?? 'Restauration';
@@ -505,7 +493,7 @@ export const Activities = () => {
           >
             {currentItems.map((item) => (
               <Box key={item.id} sx={{ display: 'flex' }}>
-                <ActivityCard
+                <ActivityCardPublic
                   id={item.id}
                   name={item.name}
                   category={item.categoryLabel}

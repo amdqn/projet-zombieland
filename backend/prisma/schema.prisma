@@ -97,8 +97,22 @@ model Activity {
   min_age       Int?
   accessibility String?
   is_published  Boolean     @default(true)
+  relatedFrom   ActivityRelation[] @relation("ActivityFrom")
+  relatedTo     ActivityRelation[] @relation("ActivityTo")
 
   @@map("activities")
+}
+
+model ActivityRelation {
+  id                  Int      @id @default(autoincrement())
+  activity_id         Int
+  related_activity_id Int
+  created_at          DateTime @default(now())
+  activity            Activity @relation("ActivityFrom", fields: [activity_id], references: [id], onDelete: Cascade)
+  related_activity    Activity @relation("ActivityTo", fields: [related_activity_id], references: [id], onDelete: Cascade)
+
+  @@unique([activity_id, related_activity_id])
+  @@map("activity_relations")
 }
 
 model ParkDate {

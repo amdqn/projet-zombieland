@@ -57,16 +57,18 @@ export const Activities = () => {
   }, []);
 
   const enrichedActivities = useMemo(() => {
-    const withMeta = activities.map((activity) => {
-      const image = resolveImageUrl(activity.image_url, DEFAULT_ACTIVITY_IMAGE);
+    const withMeta = activities
+      .filter((activity) => (activity as any).is_published !== false) // Filtrer les activités non publiées
+      .map((activity) => {
+        const image = resolveImageUrl(activity.image_url, DEFAULT_ACTIVITY_IMAGE);
 
-      // Valeurs par défaut car ces champs n'existent pas en BDD
-      const thrill = activity.thrill_level ?? 3;
-      const durationMinutes = activity.duration ?? 45;
-      const duration = `${durationMinutes} min`;
-      const categoryLabel = activity.category?.name ?? 'Activité';
-      return { ...activity, image, thrill, duration, categoryLabel };
-    });
+        // Valeurs par défaut car ces champs n'existent pas en BDD
+        const thrill = activity.thrill_level ?? 3;
+        const durationMinutes = activity.duration ?? 45;
+        const duration = `${durationMinutes} min`;
+        const categoryLabel = activity.category?.name ?? 'Activité';
+        return { ...activity, image, thrill, duration, categoryLabel };
+      });
 
     const queryLower = searchQuery.toLowerCase().trim();
     const filtered = withMeta.filter(
@@ -83,7 +85,7 @@ export const Activities = () => {
 
   const enrichedAttractions = useMemo(() => {
     const withMeta = attractions
-      .filter((attraction) => attraction.category?.name !== 'Restauration')
+      .filter((attraction) => attraction.category?.name !== 'Restauration' && (attraction as any).is_published !== false) // Filtrer les attractions non publiées
       .map((attraction) => {
         const image = resolveImageUrl(attraction.image_url, DEFAULT_ACTIVITY_IMAGE);
         const thrill = attraction.thrill_level ?? 3;

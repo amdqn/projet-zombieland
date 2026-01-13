@@ -30,34 +30,38 @@ export default function CarouselActivityMain(){
 
     // Combiner en mettant les activités en premier, puis les attractions
     const cards = useMemo(() => {
-        const activityCards = activities.map((activity) => {
-            const activityImage = resolveImageUrl(activity.image_url, DEFAULT_ACTIVITY_IMAGE);
+        const activityCards = activities
+            .filter((activity) => (activity as any).is_published !== false) // Filtrer les activités non publiées
+            .map((activity) => {
+                const activityImage = resolveImageUrl(activity.image_url, DEFAULT_ACTIVITY_IMAGE);
 
-            return (
-                <ActivityCardHome
-                    key={`activity-${activity.id}`}
-                    id={activity.id}
-                    name={activity.name}
-                    category={activity.category?.name || 'Activité'}
-                    image={activityImage}
-                />
-            );
-        });
+                return (
+                    <ActivityCardHome
+                        key={`activity-${activity.id}`}
+                        id={activity.id}
+                        name={activity.name}
+                        category={activity.category?.name || 'Activité'}
+                        image={activityImage}
+                    />
+                );
+            });
 
-        const attractionCards = attractions.map((attraction) => {
-            const image = resolveImageUrl(attraction.image_url, DEFAULT_ACTIVITY_IMAGE);
+        const attractionCards = attractions
+            .filter((attraction) => (attraction as any).is_published !== false) // Filtrer les attractions non publiées
+            .map((attraction) => {
+                const image = resolveImageUrl(attraction.image_url, DEFAULT_ACTIVITY_IMAGE);
 
-            return (
-                <ActivityCardHome
-                    key={`attraction-${attraction.id}`}
-                    id={attraction.id}
-                    name={attraction.name}
-                    category={attraction.category?.name || 'Attraction'}
-                    image={image}
-                    type="attraction"
-                />
-            );
-        });
+                return (
+                    <ActivityCardHome
+                        key={`attraction-${attraction.id}`}
+                        id={attraction.id}
+                        name={attraction.name}
+                        category={attraction.category?.name || 'Attraction'}
+                        image={image}
+                        type="attraction"
+                    />
+                );
+            });
 
         return [...activityCards, ...attractionCards];
     }, [activities, attractions]);

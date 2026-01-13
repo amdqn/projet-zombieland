@@ -157,6 +157,18 @@ export const ActivityCard = ({ activity, onEdit, onDelete, onClick }: ActivityCa
               }}
             />
           )}
+          {(activity as any).related_activities && (activity as any).related_activities.length > 0 && (
+            <Chip
+              label={`${(activity as any).related_activities.length} activité(s) liée(s)`}
+              size="small"
+              sx={{
+                backgroundColor: colors.primaryGold,
+                color: colors.secondaryDark,
+                fontSize: '0.75rem',
+                fontWeight: 600,
+              }}
+            />
+          )}
         </Stack>
 
         <Stack direction="row" spacing={1} justifyContent="flex-end">

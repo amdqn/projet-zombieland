@@ -40,14 +40,22 @@ export class ActivitiesService {
       include: {
         category: true,
         attraction: true,
-      },
+        relatedFrom: {
+          include: {
+            related_activity: {
+              include: {
+                category: true,
+              },
+            },
+          },
+        },
+      } as any,
       orderBy: {
         created_at: 'desc',
       },
     });
 
-    // Convertir les dates en ISO string
-    return activities.map((activity) => ({
+    return activities.map((activity: any) => ({
       ...activity,
       created_at: activity.created_at.toISOString(),
       updated_at: activity.updated_at.toISOString(),
@@ -63,6 +71,16 @@ export class ActivitiesService {
             updated_at: activity.attraction.updated_at.toISOString(),
           }
         : null,
+      related_activities: activity.relatedFrom ? activity.relatedFrom.map((rel: any) => ({
+        ...rel.related_activity,
+        created_at: rel.related_activity.created_at.toISOString(),
+        updated_at: rel.related_activity.updated_at.toISOString(),
+        category: {
+          ...rel.related_activity.category,
+          created_at: rel.related_activity.category.created_at.toISOString(),
+          updated_at: rel.related_activity.category.updated_at.toISOString(),
+        },
+      })) : [],
     }));
   }
 
@@ -76,7 +94,16 @@ export class ActivitiesService {
       include: {
         category: true,
         attraction: true,
-      },
+        relatedFrom: {
+          include: {
+            related_activity: {
+              include: {
+                category: true,
+              },
+            },
+          },
+        },
+      } as any,
     });
 
     if (!activity) {
@@ -84,27 +111,39 @@ export class ActivitiesService {
     }
 
     // Convertir les dates en ISO string
+    const activityWithRelations = activity as any;
     return {
-      ...activity,
-      created_at: activity.created_at.toISOString(),
-      updated_at: activity.updated_at.toISOString(),
+      ...activityWithRelations,
+      created_at: activityWithRelations.created_at.toISOString(),
+      updated_at: activityWithRelations.updated_at.toISOString(),
       category: {
-        ...activity.category,
-        created_at: activity.category.created_at.toISOString(),
-        updated_at: activity.category.updated_at.toISOString(),
+        ...activityWithRelations.category,
+        created_at: activityWithRelations.category.created_at.toISOString(),
+        updated_at: activityWithRelations.category.updated_at.toISOString(),
       },
-      attraction: activity.attraction
+      attraction: activityWithRelations.attraction
         ? {
-            ...activity.attraction,
-            created_at: activity.attraction.created_at.toISOString(),
-            updated_at: activity.attraction.updated_at.toISOString(),
+            ...activityWithRelations.attraction,
+            created_at: activityWithRelations.attraction.created_at.toISOString(),
+            updated_at: activityWithRelations.attraction.updated_at.toISOString(),
           }
         : null,
+      related_activities: (activityWithRelations.relatedFrom || []).map((rel: any) => ({
+        ...rel.related_activity,
+        created_at: rel.related_activity.created_at.toISOString(),
+        updated_at: rel.related_activity.updated_at.toISOString(),
+        category: {
+          ...rel.related_activity.category,
+          created_at: rel.related_activity.category.created_at.toISOString(),
+          updated_at: rel.related_activity.category.updated_at.toISOString(),
+        },
+      })),
     };
   }
 
-  async create(createActivityDto: CreateActivityDto) {
-    const { name, description, category_id, attraction_id, image_url, thrill_level, duration, min_age, accessibility, is_published } = createActivityDto;
+  async create(createActivityDto: CreateActivityDto & { related_activity_ids?: number[] }) {
+    const { name, description, category_id, attraction_id, image_url, thrill_level, duration, min_age, accessibility, is_published, related_activity_ids } = createActivityDto;
+
 
     // Validation des champs requis
     if (!name || !description || !category_id) {
@@ -136,46 +175,78 @@ export class ActivitiesService {
       }
     }
 
+    const activityData: any = {
+      name,
+      description,
+      category_id,
+      attraction_id: attraction_id ?? null,
+      image_url: image_url ?? null,
+      thrill_level: thrill_level ?? null,
+      duration: duration ?? null,
+      min_age: min_age ?? null,
+      accessibility: accessibility ?? null,
+      is_published: is_published !== undefined ? is_published : true,
+    };
+
+    if (related_activity_ids && related_activity_ids.length > 0) {
+      activityData.relatedFrom = {
+        create: related_activity_ids.map(relatedId => ({
+          related_activity_id: relatedId,
+        })),
+      };
+    }
+
     const activity = await this.prisma.activity.create({
-      data: {
-        name,
-        description,
-        category_id,
-        attraction_id: attraction_id ?? null,
-        image_url: image_url ?? null,
-        thrill_level: thrill_level ?? null,
-        duration: duration ?? null,
-        min_age: min_age ?? null,
-        accessibility: accessibility ?? null,
-        is_published: is_published !== undefined ? is_published : true,
-      },
+      data: activityData,
       include: {
         category: true,
         attraction: true,
-      },
+        relatedFrom: {
+          include: {
+            related_activity: {
+              include: {
+                category: true,
+              },
+            },
+          },
+        },
+      } as any,
     });
 
     // Convertir les dates en ISO string
-    return {
-      ...activity,
-      created_at: activity.created_at.toISOString(),
-      updated_at: activity.updated_at.toISOString(),
+    const createdActivity = activity as any;
+    const result = {
+      ...createdActivity,
+      created_at: createdActivity.created_at.toISOString(),
+      updated_at: createdActivity.updated_at.toISOString(),
       category: {
-        ...activity.category,
-        created_at: activity.category.created_at.toISOString(),
-        updated_at: activity.category.updated_at.toISOString(),
+        ...createdActivity.category,
+        created_at: createdActivity.category.created_at.toISOString(),
+        updated_at: createdActivity.category.updated_at.toISOString(),
       },
-      attraction: activity.attraction
+      attraction: createdActivity.attraction
         ? {
-            ...activity.attraction,
-            created_at: activity.attraction.created_at.toISOString(),
-            updated_at: activity.attraction.updated_at.toISOString(),
+            ...createdActivity.attraction,
+            created_at: createdActivity.attraction.created_at.toISOString(),
+            updated_at: createdActivity.attraction.updated_at.toISOString(),
           }
         : null,
+      related_activities: (createdActivity.relatedFrom || []).map((rel: any) => ({
+        ...rel.related_activity,
+        created_at: rel.related_activity.created_at.toISOString(),
+        updated_at: rel.related_activity.updated_at.toISOString(),
+        category: {
+          ...rel.related_activity.category,
+          created_at: rel.related_activity.category.created_at.toISOString(),
+          updated_at: rel.related_activity.category.updated_at.toISOString(),
+        },
+      })),
     };
+
+    return result;
   }
 
-  async update(id: number, updateActivityDto: UpdateActivityDto) {
+  async update(id: number, updateActivityDto: UpdateActivityDto & { related_activity_ids?: number[] }) {
     if (!id || id <= 0) {
       throw new BadRequestException('ID invalide');
     }
@@ -188,7 +259,7 @@ export class ActivitiesService {
       throw new NotFoundException(`Activité avec l'ID ${id} non trouvée`);
     }
 
-    const { name, description, category_id, attraction_id, image_url, thrill_level, duration, min_age, accessibility, is_published } = updateActivityDto;
+    const { name, description, category_id, attraction_id, image_url, thrill_level, duration, min_age, accessibility, is_published, related_activity_ids } = updateActivityDto;
 
     // Si category_id fourni, vérifier qu'elle existe
     if (category_id) {
@@ -229,33 +300,72 @@ export class ActivitiesService {
     if (accessibility !== undefined) dataToUpdate.accessibility = accessibility;
     if (is_published !== undefined) dataToUpdate.is_published = is_published;
 
+    // Gérer les activités liées
+    if (related_activity_ids !== undefined) {
+      // Supprimer les anciennes relations
+      await (this.prisma as any).activityRelation.deleteMany({
+        where: { activity_id: id },
+      });
+
+      // Créer les nouvelles relations
+      if (related_activity_ids.length > 0) {
+        dataToUpdate.relatedFrom = {
+          create: related_activity_ids.map(relatedId => ({
+            related_activity_id: relatedId,
+          })),
+        };
+      }
+    }
+
     const updatedActivity = await this.prisma.activity.update({
       where: { id },
       data: dataToUpdate,
       include: {
         category: true,
         attraction: true,
-      },
+        relatedFrom: {
+          include: {
+            related_activity: {
+              include: {
+                category: true,
+              },
+            },
+          },
+        },
+      } as any,
     });
 
     // Convertir les dates en ISO string
-    return {
-      ...updatedActivity,
-      created_at: updatedActivity.created_at.toISOString(),
-      updated_at: updatedActivity.updated_at.toISOString(),
+    const updatedActivityData = updatedActivity as any;
+    const result = {
+      ...updatedActivityData,
+      created_at: updatedActivityData.created_at.toISOString(),
+      updated_at: updatedActivityData.updated_at.toISOString(),
       category: {
-        ...updatedActivity.category,
-        created_at: updatedActivity.category.created_at.toISOString(),
-        updated_at: updatedActivity.category.updated_at.toISOString(),
+        ...updatedActivityData.category,
+        created_at: updatedActivityData.category.created_at.toISOString(),
+        updated_at: updatedActivityData.category.updated_at.toISOString(),
       },
-      attraction: updatedActivity.attraction
+      attraction: updatedActivityData.attraction
         ? {
-            ...updatedActivity.attraction,
-            created_at: updatedActivity.attraction.created_at.toISOString(),
-            updated_at: updatedActivity.attraction.updated_at.toISOString(),
+            ...updatedActivityData.attraction,
+            created_at: updatedActivityData.attraction.created_at.toISOString(),
+            updated_at: updatedActivityData.attraction.updated_at.toISOString(),
           }
         : null,
+      related_activities: (updatedActivityData.relatedFrom || []).map((rel: any) => ({
+        ...rel.related_activity,
+        created_at: rel.related_activity.created_at.toISOString(),
+        updated_at: rel.related_activity.updated_at.toISOString(),
+        category: {
+          ...rel.related_activity.category,
+          created_at: rel.related_activity.category.created_at.toISOString(),
+          updated_at: rel.related_activity.category.updated_at.toISOString(),
+        },
+      })),
     };
+
+    return result;
   }
 
   async remove(id: number) {

@@ -46,6 +46,7 @@ export const AttractionList = () => {
   const [search, setSearch] = useState('');
   const [searchInput, setSearchInput] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<number | ''>('');
+  const [publishedFilter, setPublishedFilter] = useState<string>('');
   const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -75,7 +76,14 @@ export const AttractionList = () => {
         };
 
         const attractionsData = await getAttractions(filters);
-        setAttractions(attractionsData);
+        // Filtrer par statut de publication côté client si nécessaire
+        let filtered = attractionsData;
+        if (publishedFilter === 'published') {
+          filtered = attractionsData.filter((a: any) => a.is_published !== false);
+        } else if (publishedFilter === 'draft') {
+          filtered = attractionsData.filter((a: any) => a.is_published === false);
+        }
+        setAttractions(filtered);
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Erreur lors de la récupération des attractions';
         setError(message);
@@ -89,7 +97,7 @@ export const AttractionList = () => {
         clearTimeout(debounceTimeoutRef.current);
       }
     };
-  }, [search, categoryFilter]);
+  }, [search, categoryFilter, publishedFilter]);
 
   const handleCreate = () => {
     setCreateModalOpen(true);
@@ -154,7 +162,13 @@ export const AttractionList = () => {
         categoryId: categoryFilter ? Number(categoryFilter) : undefined,
       };
       const attractionsData = await getAttractions(filters);
-      setAttractions(attractionsData);
+      let filtered = attractionsData;
+      if (publishedFilter === 'published') {
+        filtered = attractionsData.filter((a: any) => a.is_published !== false);
+      } else if (publishedFilter === 'draft') {
+        filtered = attractionsData.filter((a: any) => a.is_published === false);
+      }
+      setAttractions(filtered);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erreur lors de la récupération des attractions';
       setError(message);
@@ -171,7 +185,13 @@ export const AttractionList = () => {
         categoryId: categoryFilter ? Number(categoryFilter) : undefined,
       };
       const attractionsData = await getAttractions(filters);
-      setAttractions(attractionsData);
+      let filtered = attractionsData;
+      if (publishedFilter === 'published') {
+        filtered = attractionsData.filter((a: any) => a.is_published !== false);
+      } else if (publishedFilter === 'draft') {
+        filtered = attractionsData.filter((a: any) => a.is_published === false);
+      }
+      setAttractions(filtered);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erreur lors de la récupération des attractions';
       setError(message);
@@ -191,9 +211,10 @@ export const AttractionList = () => {
     setSearchInput('');
     setSearch('');
     setCategoryFilter('');
+    setPublishedFilter('');
   };
 
-  const hasActiveFilters = search || categoryFilter;
+  const hasActiveFilters = search || categoryFilter || publishedFilter;
 
   return (
     <Box>
@@ -330,6 +351,57 @@ export const AttractionList = () => {
                     {category.name}
                   </MenuItem>
                 ))}
+              </Select>
+            </FormControl>
+          </Grid>
+
+          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+            <FormControl fullWidth sx={{ minWidth: '200px' }}>
+              <InputLabel sx={{ color: colors.secondaryGrey }}>Statut</InputLabel>
+              <Select
+                value={publishedFilter}
+                label="Statut"
+                onChange={(e) => setPublishedFilter(e.target.value)}
+                sx={{
+                  backgroundColor: colors.secondaryDark,
+                  color: colors.white,
+                  minHeight: '56px',
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: colors.secondaryGrey,
+                  },
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: colors.primaryGreen,
+                  },
+                  '& .MuiSelect-select': {
+                    paddingY: '16.5px',
+                    minWidth: '100px',
+                    display: 'flex',
+                    alignItems: 'center',
+                  },
+                }}
+                MenuProps={{
+                  PaperProps: {
+                    sx: {
+                      backgroundColor: colors.secondaryDark,
+                      '& .MuiMenuItem-root': {
+                        color: colors.white,
+                        '&:hover': {
+                          backgroundColor: `${colors.primaryGreen}20`,
+                        },
+                        '&.Mui-selected': {
+                          backgroundColor: `${colors.primaryGreen}40`,
+                          '&:hover': {
+                            backgroundColor: `${colors.primaryGreen}60`,
+                          },
+                        },
+                      },
+                    },
+                  },
+                }}
+              >
+                <MenuItem value="">Tous</MenuItem>
+                <MenuItem value="published">Publiées</MenuItem>
+                <MenuItem value="draft">Brouillons</MenuItem>
               </Select>
             </FormControl>
           </Grid>

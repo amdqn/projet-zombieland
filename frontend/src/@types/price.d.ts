@@ -10,3 +10,18 @@ export interface Price {
 
 export type PriceType = 'ETUDIANT' | 'ADULTE' | 'GROUPE' | 'PASS_2J';
 
+export interface PaginedPrices {
+    data: Price[];
+    total: number;
+    page: number;
+    limit: number;
+}
+
+export interface PricesFilters {
+    priceType?: string;
+    page?: number;
+    limit?: number;
+    sortBy?: string;
+    amount?: number;
+}
+

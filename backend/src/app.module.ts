@@ -10,6 +10,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { PricesModule } from './prices/prices.module';
 import { ParkDatesModule } from './park-dates/park-dates.module';
 import { UsersModule } from './users/users.module';
+import { MapModule } from './map/map.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UsersModule } from './users/users.module';
     PricesModule,
     ParkDatesModule,
     UsersModule,
+    MapModule,
   ],
   controllers: [AppController],
   providers: [AppService],

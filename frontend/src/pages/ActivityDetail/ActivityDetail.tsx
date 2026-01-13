@@ -20,6 +20,7 @@ import { getActivityById, getActivities } from '../../services/activities';
 import { getAttractionById, getAttractions } from '../../services/attractions';
 import type { Activity } from '../../@types/activity';
 import type { Attraction } from '../../@types/attraction';
+import { resolveImageUrl } from '../../utils/imageUtils';
 
 export const ActivityDetail = () => {
   const { id } = useParams();
@@ -156,13 +157,9 @@ export const ActivityDetail = () => {
     '/activities-images/zombie.jpg',
   ];
 
+  // Utilise l'utilitaire pour résoudre les URLs d'images
   const getValidImage = (url?: string | null, fallback?: string) => {
-    if (!url) return fallback;
-    const trimmed = url.trim();
-    const isValidHttp = trimmed.startsWith('http://') || trimmed.startsWith('https://');
-    const isValidPath = trimmed.startsWith('/');
-    if (isValidHttp || isValidPath) return trimmed;
-    return fallback;
+    return resolveImageUrl(url, fallback);
   };
 
   // Hero images : priorité aux images attraction, sinon image_url activité, sinon défaut

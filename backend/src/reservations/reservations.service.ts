@@ -176,15 +176,144 @@ export class ReservationsService {
   }
 
   // === 3. FIND ALL - Toutes les réservations (ADMIN) ===
-  async findAll(userRole: string = 'ADMIN') {
-    const reservations = await this.prisma.reservation.findMany({
-      include: this.RESERVATION_INCLUDE,
-      orderBy: { created_at: 'desc' },
-    });
+  async findAll(
+    userRole: string = 'ADMIN',
+    options?: {
+      page?: number;
+      limit?: number;
+      search?: string;
+      userId?: number;
+      status?: string;
+      dateFrom?: string;
+      dateTo?: string;
+      ticketType?: string;
+      sortBy?: string;
+    }
+  ) {
+    const page = options?.page || 1;
+    const limit = options?.limit || 10;
+    const skip = (page - 1) * limit;
 
-    return reservations.map((reservation) =>
-      this.formatReservationResponse(reservation, userRole),
-    );
+    // Construction des filtres
+    const where: any = {};
+
+    // Recherche globale
+    if (options?.search) {
+      const search = options.search.toLowerCase();
+      const searchConditions: any[] = [
+        {
+          reservation_number: {
+            contains: search,
+            mode: 'insensitive',
+          },
+        },
+        {
+          user: {
+            email: {
+              contains: search,
+              mode: 'insensitive',
+            },
+          },
+        },
+        {
+          user: {
+            pseudo: {
+              contains: search,
+              mode: 'insensitive',
+            },
+          },
+        },
+      ];
+
+      // Recherche par statut 
+      const searchUpper = search.toUpperCase();
+      if (searchUpper === 'PENDING' || searchUpper === 'EN ATTENTE' || searchUpper.includes('PEND') || searchUpper.includes('ATTENT')) {
+        searchConditions.push({ status: 'PENDING' });
+      }
+      if (searchUpper === 'CONFIRMED' || searchUpper === 'CONFIRMÉE' || searchUpper === 'CONFIRME' || searchUpper.includes('CONF')) {
+        searchConditions.push({ status: 'CONFIRMED' });
+      }
+      if (searchUpper === 'CANCELLED' || searchUpper === 'ANNULÉE' || searchUpper === 'ANNULE' || searchUpper.includes('ANN')) {
+        searchConditions.push({ status: 'CANCELLED' });
+      }
+
+      where.OR = searchConditions;
+    }
+
+    // Filtre par utilisateur
+    if (options?.userId) {
+      where.user_id = options.userId;
+    }
+
+    // Filtre par statut
+    if (options?.status) {
+      where.status = options.status;
+    }
+
+    // Filtre par date (plage)
+    if (options?.dateFrom || options?.dateTo) {
+      where.date = {
+        jour: {},
+      };
+      if (options?.dateFrom) {
+        where.date.jour.gte = new Date(options.dateFrom);
+      }
+      if (options?.dateTo) {
+        where.date.jour.lte = new Date(options.dateTo);
+      }
+    }
+
+    // Gestion du tri
+    let orderBy: any = { created_at: 'desc' }; // Par défaut : plus récentes en premier
+
+    if (options?.sortBy) {
+      const [field, order] = options.sortBy.split('_');
+      const sortOrder = order === 'asc' ? 'asc' : 'desc';
+
+      switch (field) {
+        case 'created':
+          orderBy = { created_at: sortOrder };
+          break;
+        case 'date':
+          orderBy = { date: { jour: sortOrder } };
+          break;
+        case 'amount':
+          orderBy = { total_amount: sortOrder };
+          break;
+        case 'status':
+          orderBy = { status: sortOrder };
+          break;
+        case 'number':
+          orderBy = { reservation_number: sortOrder };
+          break;
+        default:
+          orderBy = { created_at: 'desc' };
+      }
+    }
+
+    // Requête avec pagination
+    const [reservations, total] = await Promise.all([
+      this.prisma.reservation.findMany({
+        where,
+        include: this.RESERVATION_INCLUDE,
+        orderBy,
+        skip,
+        take: limit,
+      }),
+      this.prisma.reservation.count({ where }),
+    ]);
+
+    return {
+      data: reservations.map((reservation) =>
+        this.formatReservationResponse(reservation, userRole),
+      ),
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.max(1, Math.ceil(total / limit)), 
+      },
+    };
   }
 
   // === 4. FIND ONE - Détail d'une réservation ===

@@ -12,6 +12,7 @@ export const colors = {
   backButtonBg: '#101010', // Alias pour secondaryDarkAlt
   white: '#FFFFFF',
   warning: '#FFC107',
+  primaryGold: '#FFC107', // Alias pour warning (couleur dorée)
 };
 
 // Thème Material UI personnalisé

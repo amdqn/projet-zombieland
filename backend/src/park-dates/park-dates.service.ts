@@ -31,6 +31,8 @@ export class ParkDatesService {
     return dates.map((date) => ({
       ...date,
       jour: date.jour.toISOString().split('T')[0],
+      open_hour: date.open_hour ? date.open_hour.toISOString().split('T')[1].split('.')[0] : null,
+      close_hour: date.close_hour ? date.close_hour.toISOString().split('T')[1].split('.')[0] : null,
       created_at: date.created_at.toISOString(),
     }));
   }
@@ -47,12 +49,14 @@ export class ParkDatesService {
     return {
       ...parkDate,
       jour: parkDate.jour.toISOString().split('T')[0],
+      open_hour: parkDate.open_hour ? parkDate.open_hour.toISOString().split('T')[1].split('.')[0] : null,
+      close_hour: parkDate.close_hour ? parkDate.close_hour.toISOString().split('T')[1].split('.')[0] : null,
       created_at: parkDate.created_at.toISOString(),
     };
   }
 
   async create(createParkDateDto: CreateParkDateDto): Promise<ParkDateDto> {
-    const { jour, is_open, notes } = createParkDateDto;
+    const { jour, is_open, open_hour, close_hour, notes } = createParkDateDto;
 
     if (!jour) {
       throw new BadRequestException('Le champ "jour" est obligatoire');
@@ -70,6 +74,8 @@ export class ParkDatesService {
       data: {
         jour: new Date(jour),
         is_open: is_open ?? true,
+        open_hour: open_hour ? new Date(`1970-01-01T${open_hour}`) : null,
+        close_hour: close_hour ? new Date(`1970-01-01T${close_hour}`) : null,
         notes: notes ?? null,
       },
     });
@@ -77,6 +83,8 @@ export class ParkDatesService {
     return {
       ...newParkDate,
       jour: newParkDate.jour.toISOString().split('T')[0],
+      open_hour: newParkDate.open_hour ? newParkDate.open_hour.toISOString().split('T')[1].split('.')[0] : null,
+      close_hour: newParkDate.close_hour ? newParkDate.close_hour.toISOString().split('T')[1].split('.')[0] : null,
       created_at: newParkDate.created_at.toISOString(),
     };
   }
@@ -91,7 +99,7 @@ export class ParkDatesService {
       throw new NotFoundException(`ParkDate avec l'ID ${id} introuvable`);
     }
 
-    const { jour, is_open, notes } = updateParkDateDto;
+    const { jour, is_open, open_hour, close_hour, notes } = updateParkDateDto;
 
     if (jour && jour !== parkDate.jour.toISOString().split('T')[0]) {
       const existingDate = await this.prisma.parkDate.findUnique({
@@ -108,6 +116,8 @@ export class ParkDatesService {
       data: {
         ...(jour && { jour: new Date(jour) }),
         ...(is_open !== undefined && { is_open }),
+        ...(open_hour !== undefined && { open_hour: open_hour ? new Date(`1970-01-01T${open_hour}`) : null }),
+        ...(close_hour !== undefined && { close_hour: close_hour ? new Date(`1970-01-01T${close_hour}`) : null }),
         ...(notes !== undefined && { notes }),
       },
     });
@@ -115,6 +125,8 @@ export class ParkDatesService {
     return {
       ...updatedParkDate,
       jour: updatedParkDate.jour.toISOString().split('T')[0],
+      open_hour: updatedParkDate.open_hour ? updatedParkDate.open_hour.toISOString().split('T')[1].split('.')[0] : null,
+      close_hour: updatedParkDate.close_hour ? updatedParkDate.close_hour.toISOString().split('T')[1].split('.')[0] : null,
       created_at: updatedParkDate.created_at.toISOString(),
     };
   }

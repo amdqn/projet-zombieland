@@ -15,7 +15,6 @@ import { colors } from '../../../theme';
 import { useEffect, useState, useRef } from 'react';
 import { deletePrice, getPrices } from "../../../services/prices.ts";
 import type { Price, PricesFilters } from "../../../@types/price";
-import PriceCard from "../../../components/cards/Prices/PriceCard.tsx";
 import { PriceDetailsModal } from "../../../components/modals/Prices/PriceDetailsModal.tsx";
 import AddIcon from "@mui/icons-material/Add";
 import { UpdatePriceModal } from "../../../components/modals/Prices/UpdatePriceModal.tsx";
@@ -65,7 +64,7 @@ export const PriceList = () => {
                     page,
                     limit,
                     sortBy,
-                    amount
+                    amount: amount || undefined,
                 };
 
                 const response = await getPrices(filters);
@@ -178,7 +177,7 @@ export const PriceList = () => {
                         mb: 2,
                     }}
                 >
-                    Créez, modifiez et gérez tous les prix du parc Zombieland. Total : {total} prix
+                    Créez, modifiez et gérez tous les tarifs du parc Zombieland. Total : {total} tarifs
                 </Typography>
 
                 <Button
@@ -308,9 +307,10 @@ export const PriceList = () => {
                                 >
                                     <MenuItem value="created_desc">Date création (récent)</MenuItem>
                                     <MenuItem value="created_asc">Date création (ancien)</MenuItem>
+                                    <MenuItem value="updated_desc">Date modification (récent)</MenuItem>
+                                    <MenuItem value="updated_asc">Date modification (ancien)</MenuItem>
                                     <MenuItem value="amount_desc">Montant (décroissant)</MenuItem>
                                     <MenuItem value="amount_asc">Montant (croissant)</MenuItem>
-                                    <MenuItem value="status">Type</MenuItem>
                                 </Select>
                             </FormControl>
                         </Grid>

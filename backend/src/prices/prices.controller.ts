@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
   ParseIntPipe,
-  UseGuards,
+  UseGuards, Query,
 } from '@nestjs/common';
 import { PricesService } from './prices.service';
 import type { CreatePriceDto, UpdatePriceDto } from 'src/generated';
@@ -20,8 +20,38 @@ export class PricesController {
   constructor(private readonly pricesService: PricesService) {}
 
   @Get()
-  findAll() {
-    return this.pricesService.findAll();
+  findAll(
+      @Query('priceType') priceType?: string,
+      @Query('page') page?: string,
+      @Query('limit') limit?: string,
+      @Query('sortBy') sortBy?: string,
+      @Query('amount') amount?: string,
+  ) {
+    const filters: any = {};
+
+    if (priceType) {
+      filters.priceType = priceType;
+    }
+
+    if (page) {
+      filters.page = parseInt(page, 10);
+    }
+
+    if (limit) {
+      filters.limit = parseInt(limit, 10);
+    }
+
+    if (sortBy) {
+      filters.sortBy = sortBy;
+    }
+
+    if (amount) {
+      filters.amount = parseFloat(amount);
+    }
+
+
+
+    return this.pricesService.findAll(filters);
   }
 
   @Get(':id')

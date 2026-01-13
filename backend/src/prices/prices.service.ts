@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import type { CreatePriceDto, UpdatePriceDto } from 'src/generated';
+import {Prisma} from "@prisma/client";
 
 @Injectable()
 export class PricesService {
@@ -23,13 +24,70 @@ export class PricesService {
     };
   }
 
-  async findAll() {
-    const prices = await this.prisma.price.findMany({
-      orderBy: { amount: 'asc' },
-    });
+  async findAll(
+      options?: {
+        page?: number;
+        limit?: number;
+        sortBy?: string;
+        amount?: number;
+        priceType?: string;
+      }
+  ) {
 
-    return prices.map((price) => this.formatPriceResponse(price));
+    const page = options?.page || 1;
+    const limit = options?.limit || 10;
+    const skip = (page - 1) * limit;
+
+    // Construction des filtres
+    const where: any = {};
+
+    // Recherche par type de prix
+    if (options?.priceType) {
+      where.priceType = options.priceType;
+    }
+
+    // Recherche par montant
+    if (options?.amount !== undefined) {
+      where.amount = options.amount;
+    }
+
+    // Mapping du tri
+    const orderByMapping: Record<string, Prisma.PriceOrderByWithRelationInput> = {
+      'created_desc': { created_at: 'desc' },
+      'created_asc': { created_at: 'asc' },
+      'amount_desc': { amount: 'desc' },
+      'amount_asc': { amount: 'asc' },
+      'updated_desc': { updated_at: 'desc' },
+      'updated_asc': { updated_at: 'asc' },
+    };
+
+    const sortBy = options?.sortBy || 'created_desc';
+    const orderBy = orderByMapping[sortBy] || orderByMapping['created_desc'];
+
+    // Requête avec pagination
+    const [prices, total] = await Promise.all([
+      this.prisma.price.findMany({
+        where,
+        orderBy,
+        skip,
+        take: limit,
+      }),
+      this.prisma.price.count({ where }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      data: prices.map((price) => this.formatPriceResponse(price)),
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages,
+      },
+    };
   }
+
   async findOne(id: number) {
     const price = await this.prisma.price.findUnique({
       where: { id },

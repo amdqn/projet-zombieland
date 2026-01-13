@@ -171,9 +171,6 @@ export const CreatePriceModal = ({
                                 required
                                 displayEmpty
                                 renderValue={(selected) => {
-                                    if (!selected) {
-                                        return <span style={{ color: colors.secondaryGrey }}>Sélectionner un type de tarif</span>;
-                                    }
                                     return selected;
                                 }}
                                 sx={{

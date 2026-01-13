@@ -1,6 +1,8 @@
 import { Box, Modal, Typography, Chip, Stack } from '@mui/material';
 import { colors } from '../../../theme';
 import type {Price} from "../../../@types/price";
+import {formatTime} from "../../../functions/formatTime.ts";
+import {formatDay} from "../../../functions/formatDay.ts";
 
 interface PriceDetailsModalProps {
     open: boolean;
@@ -107,11 +109,11 @@ export const PriceDetailsModal = ({
                         </Typography>
                         <Typography sx={{ color: colors.secondaryGrey }}>Crée le:</Typography>
                         <Typography sx={{ color: colors.white, fontWeight: 600 }}>
-                            {price.created_at}
+                             {formatDay(price.created_at)} à {formatTime(price.created_at)}
                         </Typography>
                         <Typography sx={{ color: colors.secondaryGrey }}>Mis à jour le:</Typography>
                         <Typography sx={{ color: colors.white, fontWeight: 600 }}>
-                            {price.updated_at}
+                            {formatDay(price.updated_at)} à {formatTime(price.updated_at)}
                         </Typography>
                     </Stack>
                 </Box>

@@ -5,11 +5,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { colors } from '../../theme';
 import type { Activity } from '../../@types/activity';
+import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE } from '../../utils/imageUtils';
 
-const StyledActivityCard = styled(Card)({
+const StyledActivityCard = styled(Card)(({ theme }) => ({
   backgroundColor: colors.secondaryDark,
   border: `1px solid ${colors.secondaryGrey}`,
   height: '100%',
+  minWidth: '280px',
   display: 'flex',
   flexDirection: 'column',
   transition: 'all 0.3s ease',
@@ -25,7 +27,10 @@ const StyledActivityCard = styled(Card)({
     display: 'flex',
     flexDirection: 'column',
   },
-});
+  [theme.breakpoints.down('sm')]: {
+    minWidth: '100%',
+  },
+}));
 
 interface ActivityCardProps {
   activity: Activity;
@@ -35,11 +40,7 @@ interface ActivityCardProps {
 }
 
 export const ActivityCard = ({ activity, onEdit, onDelete, onClick }: ActivityCardProps) => {
-  const defaultImage = '/activities-images/zombie.jpg';
-  const imageUrl = activity.image_url?.trim();
-  const isValidHttp = imageUrl?.startsWith('http://') || imageUrl?.startsWith('https://');
-  const isValidPath = imageUrl?.startsWith('/');
-  const image = (isValidHttp || isValidPath) ? imageUrl : defaultImage;
+  const image = resolveImageUrl(activity.image_url, DEFAULT_ACTIVITY_IMAGE);
 
   const handleEdit = (e: React.MouseEvent) => {
     e.stopPropagation();

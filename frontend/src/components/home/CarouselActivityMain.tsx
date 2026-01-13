@@ -6,6 +6,7 @@ import { getActivities } from "../../services/activities";
 import { getAttractions } from "../../services/attractions";
 import type { Activity } from "../../@types/activity";
 import type { Attraction } from "../../@types/attraction";
+import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE } from "../../utils/imageUtils";
 
 export default function CarouselActivityMain(){
     const [activities, setActivities] = useState<Activity[]>([]);
@@ -29,30 +30,23 @@ export default function CarouselActivityMain(){
 
     // Combiner en mettant les activités en premier, puis les attractions
     const cards = useMemo(() => {
-        const defaultAttractionImage = '/activities-images/zombie.jpg';
-        
-        const activityCards = activities.map((activity) => (
-            <ActivityCardHome
-                key={`activity-${activity.id}`}
-                id={activity.id}
-                name={activity.name}
-                category={activity.category?.name || 'Activité'}
-                image={activity.image_url || undefined}
-            />
-        ));
+        const activityCards = activities.map((activity) => {
+            const activityImage = resolveImageUrl(activity.image_url, DEFAULT_ACTIVITY_IMAGE);
+
+            return (
+                <ActivityCardHome
+                    key={`activity-${activity.id}`}
+                    id={activity.id}
+                    name={activity.name}
+                    category={activity.category?.name || 'Activité'}
+                    image={activityImage}
+                />
+            );
+        });
 
         const attractionCards = attractions.map((attraction) => {
-            // Vérifier si l'image_url existe et est valide
-            let image: string | undefined = defaultAttractionImage;
-            if (attraction.image_url) {
-                const apiImage = attraction.image_url.trim();
-                const isValidHttp = apiImage.startsWith('http://') || apiImage.startsWith('https://');
-                const isValidPath = apiImage.startsWith('/');
-                if (isValidHttp || isValidPath) {
-                    image = apiImage;
-                }
-            }
-            
+            const image = resolveImageUrl(attraction.image_url, DEFAULT_ACTIVITY_IMAGE);
+
             return (
                 <ActivityCardHome
                     key={`attraction-${attraction.id}`}

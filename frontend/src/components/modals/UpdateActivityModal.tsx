@@ -1,12 +1,15 @@
-import { Alert, Box, MenuItem, Modal, Select, Typography, FormControl, InputLabel, Switch, FormControlLabel, TextField, Chip } from '@mui/material';
+import { Alert, Box, MenuItem, Modal, Select, Typography, FormControl, InputLabel, Switch, FormControlLabel, TextField, Chip, Button, CircularProgress } from '@mui/material';
 import { useState, useEffect } from 'react';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { updateActivity, type UpdateActivityDto } from '../../services/activities';
 import { getCategories } from '../../services/categories';
 import { getActivities } from '../../services/activities';
+import { uploadActivityImage } from '../../services/upload';
 import { colors } from '../../theme';
 import { PrimaryButton } from '../common';
 import type { Category } from '../../@types/categorie';
 import type { Activity } from '../../@types/activity';
+import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE } from '../../utils/imageUtils';
 
 interface UpdateActivityModalProps {
   open: boolean;
@@ -48,6 +51,7 @@ export const UpdateActivityModal = ({
   const [accessibility, setAccessibility] = useState('');
   const [isPublished, setIsPublished] = useState(true);
   const [relatedActivityIds, setRelatedActivityIds] = useState<number[]>([]);
+  const [uploading, setUploading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -134,6 +138,31 @@ export const UpdateActivityModal = ({
     }
   };
 
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validation taille (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      setError('L\'image ne doit pas dépasser 5MB');
+      return;
+    }
+
+    setUploading(true);
+    setError(null);
+    try {
+      const response = await uploadActivityImage(file);
+      setImageUrl(response.url);
+      setSuccess('Image uploadée avec succès');
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (err) {
+      setError('Erreur lors de l\'upload de l\'image');
+      console.error(err);
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const toggleRelatedActivity = (activityId: number) => {
     setRelatedActivityIds((prev) =>
       prev.includes(activityId)
@@ -214,24 +243,68 @@ export const UpdateActivityModal = ({
             }}
           />
 
-          <TextField
-            label="URL de l'image"
-            value={imageUrl}
-            onChange={(e) => setImageUrl(e.target.value)}
-            placeholder="/activities-images/nom-image.jpg"
-            fullWidth
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                backgroundColor: colors.secondaryDarkAlt,
+          {/* Upload d'image */}
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="subtitle2" sx={{ mb: 1, color: colors.primaryGold }}>
+              Image de l'activité
+            </Typography>
+
+            <Button
+              component="label"
+              variant="outlined"
+              startIcon={<CloudUploadIcon />}
+              disabled={uploading}
+              fullWidth
+              sx={{
+                borderColor: colors.secondaryGrey,
                 color: colors.white,
-                '& fieldset': { borderColor: colors.secondaryGrey },
-                '&:hover fieldset': { borderColor: colors.primaryGreen },
-                '&.Mui-focused fieldset': { borderColor: colors.primaryGreen },
-              },
-              '& .MuiInputLabel-root': { color: colors.secondaryGrey },
-              '& .MuiInputLabel-root.Mui-focused': { color: colors.primaryGreen },
-            }}
-          />
+                '&:hover': {
+                  borderColor: colors.primaryGreen,
+                  backgroundColor: 'rgba(118, 255, 122, 0.1)',
+                },
+              }}
+            >
+              {uploading ? 'Upload en cours...' : 'Choisir une image'}
+              <input
+                type="file"
+                hidden
+                accept="image/jpeg,image/jpg,image/png,image/webp"
+                onChange={handleFileChange}
+              />
+            </Button>
+
+            {/* Indicateur de chargement */}
+            {uploading && (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
+                <CircularProgress size={20} sx={{ color: colors.primaryGreen }} />
+                <Typography variant="body2" sx={{ color: colors.white }}>
+                  Upload en cours...
+                </Typography>
+              </Box>
+            )}
+
+            {/* Aperçu de l'image */}
+            {imageUrl && !uploading && (
+              <Box sx={{ mt: 2, textAlign: 'center' }}>
+                <img
+                  src={resolveImageUrl(imageUrl, DEFAULT_ACTIVITY_IMAGE)}
+                  alt="Aperçu"
+                  style={{
+                    maxWidth: '100%',
+                    maxHeight: '200px',
+                    borderRadius: '8px',
+                    border: `2px solid ${colors.primaryGreen}`,
+                  }}
+                />
+                <Typography
+                  variant="caption"
+                  sx={{ display: 'block', mt: 1, color: colors.primaryGold }}
+                >
+                  {imageUrl}
+                </Typography>
+              </Box>
+            )}
+          </Box>
 
           <Box sx={{ display: 'flex', gap: 2 }}>
             <FormControl fullWidth>

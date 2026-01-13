@@ -1,6 +1,7 @@
 import { Box, Modal, Typography, Chip, Stack } from '@mui/material';
 import { colors } from '../../theme';
 import type { Activity } from '../../@types/activity';
+import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE } from '../../utils/imageUtils';
 
 interface ActivityDetailsModalProps {
   open: boolean;
@@ -29,11 +30,7 @@ export const ActivityDetailsModal = ({
 }: ActivityDetailsModalProps) => {
   if (!activity) return null;
 
-  const defaultImage = '/activities-images/zombie.jpg';
-  const imageUrl = activity.image_url?.trim();
-  const isValidHttp = imageUrl?.startsWith('http://') || imageUrl?.startsWith('https://');
-  const isValidPath = imageUrl?.startsWith('/');
-  const image = (isValidHttp || isValidPath) ? imageUrl : defaultImage;
+  const image = resolveImageUrl(activity.image_url, DEFAULT_ACTIVITY_IMAGE);
   const isPublished = (activity as any).is_published !== false;
 
   return (

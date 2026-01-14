@@ -104,7 +104,7 @@ export function SchedulesCard({schedules}: SchedulesCardProps) {
                     )}
                 </CardContent>
                 <CardActions sx={{ justifyContent: 'center', paddingBottom: 5 }}>
-                    <PrimaryButton text={"Plus d'horaires"} href={"/informations"} fullWidth={false}/>
+                    <PrimaryButton text={"Plus d'horaires"} href={"/info"} fullWidth={false}/>
                 </CardActions>
             </Card>
         </>

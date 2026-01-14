@@ -69,9 +69,13 @@ interface ReservationStore {
 }
 
 const initialState = {
-  tickets: [],
-  total: 0,
-  acceptedTerms: false,
+    tickets: [],
+    total: 0,
+    acceptedTerms: false,
+    customerInfo: undefined,
+    customerAddress: undefined,
+    paymentInfo: undefined,
+    createdReservations: undefined,
 };
 
 export const useReservationStore = create<ReservationStore>()(

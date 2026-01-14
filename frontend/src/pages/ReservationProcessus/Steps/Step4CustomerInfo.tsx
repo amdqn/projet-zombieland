@@ -29,6 +29,38 @@ export const Step4CustomerInfo = () => {
     phone: false,
   });
 
+    // Charger/Réinitialiser depuis le store
+    useEffect(() => {
+        if (customerInfo === undefined) {
+            // Nouvelle réservation → réinitialiser les champs
+            setFirstName('');
+            setLastName('');
+            setEmail(loginEmail || '');
+            setPhone('');
+            setFirstNameError('');
+            setLastNameError('');
+            setEmailError('');
+            setPhoneError('');
+            setTouched({
+                firstName: false,
+                lastName: false,
+                email: false,
+                phone: false,
+            });
+        } else if (customerInfo) {
+            setFirstName(customerInfo.firstName || '');
+            setLastName(customerInfo.lastName || '');
+            setEmail(customerInfo.email || loginEmail || '');
+            setPhone(customerInfo.phone || '');
+        }
+    }, [customerInfo, loginEmail]);
+
+    // Sauvegarder dans le store
+    useEffect(() => {
+        if (firstName || lastName || email || phone) {
+            setCustomerInfo({ firstName, lastName, email, phone });
+        }
+    }, [firstName, lastName, email, phone, setCustomerInfo]);
   // Fonctions de validation
   const validateFirstName = (value: string) => {
     if (!value.trim()) {
@@ -66,22 +98,6 @@ export const Step4CustomerInfo = () => {
     }
     return '';
   };
-
-  // Synchroniser avec le store à chaque changement
-  useEffect(() => {
-    if (firstName || lastName || email || phone) {
-      setCustomerInfo({ firstName, lastName, email, phone });
-    }
-  }, [firstName, lastName, email, phone, setCustomerInfo]);
-
-  // Pré-remplir l'email avec celui du compte si disponible et non déjà saisi
-  useEffect(() => {
-    if (loginEmail && !customerInfo?.email) {
-      setEmail(loginEmail);
-      setCustomerInfo({ firstName, lastName, email: loginEmail, phone });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loginEmail]);
 
   return (
     <Box>

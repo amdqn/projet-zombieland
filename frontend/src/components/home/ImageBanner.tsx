@@ -21,7 +21,7 @@ export default function ImageBanner() {
         const fetchSchedule = async () => {
             try {
                 const schedule = await getTodaySchedule();
-                setIsOpen(schedule.isOpen);
+                setIsOpen(schedule.is_open);
             } catch (error) {
                 console.error("Erreur lors de la récupération des horaires:", error);
                 setIsOpen(false);
@@ -49,7 +49,7 @@ export default function ImageBanner() {
             sx={{
                 position: 'relative',
                 width: '100%',
-                height: '400px',
+                height: { xs: '400px', md: '300px' },
                 backgroundColor: 'black',
                 overflow: 'hidden'
             }}
@@ -72,7 +72,7 @@ export default function ImageBanner() {
             <Box
                 sx={{
                     position: 'absolute',
-                    top: '30%',
+                    top: { xs: '30%', md: '50%' },
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
                     color: 'white',

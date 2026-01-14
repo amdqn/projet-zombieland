@@ -1,23 +1,16 @@
 import {Box, Card, CardActions, CardContent, Chip, Typography} from "@mui/material";
 import {PrimaryButton} from "../common/Button";
-import type {DateParc} from "../../@types/dateParc";
-import {formatTime} from "../../functions/formatTime.ts";
+import type {ParkDate} from "../../@types/parkDate.ts";
+import {formatDay} from "../../functions/formatDay.ts";
+import formatHour from "../../functions/formatHour.ts";
 
 
 
 interface SchedulesCardProps {
-    horaire: DateParc
+    schedules: ParkDate
 }
 
-export function SchedulesCard({horaire}: SchedulesCardProps) {
-
-    const formatDay = (date: Date | string) => {
-        const dateObj = typeof date === "string" ? new Date(date) : date;
-        return dateObj.toLocaleDateString("fr-FR", {weekday: "long", day: "numeric", month: "long", year: "numeric"});
-    }
-
-    console.log(horaire.notes);
-
+export function SchedulesCard({schedules}: SchedulesCardProps) {
 
     return (
         <>
@@ -28,19 +21,19 @@ export function SchedulesCard({horaire}: SchedulesCardProps) {
                         textAlign: 'center'
                     }}>
                         <Typography variant="h5">
-                            Aujourd'hui, {formatDay(horaire.jour)}, le parc est{' '}
+                            Aujourd'hui, {formatDay(schedules.jour)}, le parc est{' '}
                             <Box
                                 component="span"
                                 sx={{
-                                    color: horaire.isOpen ? "primary.main" : "error.main",
+                                    color: schedules.is_open ? "primary.main" : "error.main",
                                     fontWeight: 'bold'
                                 }}
                             >
-                                {horaire.isOpen ? "ouvert" : "fermé"}
+                                {schedules.is_open ? "ouvert" : "fermé"}
                             </Box>
                         </Typography>
                     </Box>
-                    {/* {horaire.notes && (
+                    {schedules.notes && (
                         <Box sx={{
                             display: "flex",
                             justifyContent: 'center',
@@ -49,41 +42,54 @@ export function SchedulesCard({horaire}: SchedulesCardProps) {
                             paddingBottom: 5,
                         }}>
                             <Typography variant="body2" sx={{ fontStyle: 'italic', textAlign: 'center' }}>
-                                {horaire.notes}
+                                {schedules.notes}
                             </Typography>
                         </Box>
-                    )}*/}
+                    )}
 
-                    {horaire.isOpen ? (
-                        <Box sx={{
-                            display: "flex",
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            gap: 4,
-                            paddingBottom: 5
-                        }}>
-                            <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3}}>
-                                <Typography variant="body1">
-                                    Heure d'ouverture
-                                </Typography>
-                                <Chip
-                                    label={formatTime(horaire.openHour)}
-                                    variant="outlined"
-                                    sx={{fontWeight: 'bold', fontSize: '1.5rem', padding: 1, borderRadius: 3}}
-                                />
-                            </Box>
+                    {schedules.is_open ? (
+                        schedules.open_hour && schedules.close_hour ? (
+                            <Box sx={{
+                                display: "flex",
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                gap: 4,
+                                paddingBottom: 5
+                            }}>
+                                <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3}}>
+                                    <Typography variant="body1">
+                                        Heure d'ouverture
+                                    </Typography>
+                                    <Chip
+                                        label={formatHour(schedules.open_hour)}
+                                        variant="outlined"
+                                        sx={{fontWeight: 'bold', fontSize: '1.5rem', padding: 1, borderRadius: 3}}
+                                    />
+                                </Box>
 
-                            <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3}}>
-                                <Typography variant="body1">
-                                    Heure de fermeture
-                                </Typography>
-                                <Chip
-                                    label={formatTime(horaire.closeHour)}
-                                    variant="outlined"
-                                    sx={{fontWeight: 'bold', fontSize: '1.5rem', padding: 1, borderRadius: 3}}
-                                />
+                                <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3}}>
+                                    <Typography variant="body1">
+                                        Heure de fermeture
+                                    </Typography>
+                                    <Chip
+                                        label={formatHour(schedules.close_hour)}
+                                        variant="outlined"
+                                        sx={{fontWeight: 'bold', fontSize: '1.5rem', padding: 1, borderRadius: 3}}
+                                    />
+                                </Box>
                             </Box>
-                        </Box>
+                        ) : (
+                            <Box sx={{
+                                display: "flex",
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                minHeight: '200px',
+                            }}>
+                                <Typography variant="body1">
+                                    Pas d'horaires disponibles.
+                                </Typography>
+                            </Box>
+                        )
                     ) : (
                         <Box sx={{
                             display: "flex",
@@ -92,13 +98,13 @@ export function SchedulesCard({horaire}: SchedulesCardProps) {
                             minHeight: '200px',
                         }}>
                             <Typography variant="body1">
-                                Pas d'horaires disponibles.
+                                Le parc est fermé ce jour-là.
                             </Typography>
                         </Box>
                     )}
                 </CardContent>
                 <CardActions sx={{ justifyContent: 'center', paddingBottom: 5 }}>
-                    <PrimaryButton text={"Plus d'horaires"} href={"/informations"} fullWidth={false}/>
+                    <PrimaryButton text={"Plus d'horaires"} href={"/info"} fullWidth={false}/>
                 </CardActions>
             </Card>
         </>

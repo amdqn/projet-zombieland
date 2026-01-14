@@ -16,7 +16,7 @@ import { formatWeather } from '../../functions/formatWeather';
 import type { MapData } from '../../@types/map';
 import type { Category } from '../../@types/categorie';
 import type { WeatherCondition } from '../../components/home/weather/types/weatherTypes';
-import type { DateParc } from '../../@types/dateParc';
+import type { ParkDate } from '../../@types/parkDate';
 import type { Price } from '../../@types/price';
 
 export function InformationPage() {
@@ -26,7 +26,7 @@ export function InformationPage() {
   const [error, setError] = useState<string | null>(null);
 
   // Horaires et météo
-  const [schedule, setSchedule] = useState<DateParc | null>(null);
+  const [schedule, setSchedule] = useState<ParkDate | null>(null);
   const [weather, setWeather] = useState<any>(null);
   const [prices, setPrices] = useState<Price[]>([]);
 
@@ -134,21 +134,21 @@ export function InformationPage() {
                 padding: { xs: '12px 16px', md: '14px 20px' },
                 borderRadius: '8px',
                 backdropFilter: 'blur(4px)',
-                border: `1px solid ${schedule.isOpen ? colors.primaryGreen : colors.primaryRed}40`,
+                border: `1px solid ${schedule.is_open ? colors.primaryGreen : colors.primaryRed}40`,
               }}
             >
               <CircleIcon
                 sx={{
-                  color: schedule.isOpen ? colors.primaryGreen : colors.primaryRed,
+                  color: schedule.is_open ? colors.primaryGreen : colors.primaryRed,
                   fontSize: '1rem',
                 }}
               />
               <Typography variant="body2" sx={{ fontSize: { xs: '0.85rem', md: '0.95rem' } }}>
-                {schedule.isOpen ? (
+                {schedule.is_open ? (
                   <>
                     Ouvert aujourd'hui
-                    {schedule.openHour && schedule.closeHour && (
-                      <> : {schedule.openHour.slice(0, 5)} - {schedule.closeHour.slice(0, 5)}</>
+                    {schedule.open_hour && schedule.close_hour && (
+                      <> : {schedule.open_hour.slice(0, 5)} - {schedule.close_hour.slice(0, 5)}</>
                     )}
                   </>
                 ) : (

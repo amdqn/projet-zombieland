@@ -3,12 +3,12 @@ import {SchedulesCard} from "../cards/SchedulesCard.tsx";
 import {Box, Typography} from "@mui/material";
 import AccessCard from "../cards/AccessCard.tsx";
 import getTodaySchedule from "../../functions/getTodaySchedule.ts";
-import type { DateParc } from "../../@types/dateParc";
+import type {ParkDate} from "../../@types/parkDate.ts";
 
 
 export default function InformationSection() {
-    const [todaySchedule, setTodaySchedule] = useState<DateParc | null>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [todaySchedule, setTodaySchedule] = useState<ParkDate | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchSchedule = async () => {
@@ -23,6 +23,7 @@ export default function InformationSection() {
             }
         };
         fetchSchedule();
+
     }, []);
 
     return (
@@ -60,7 +61,7 @@ export default function InformationSection() {
                             <Typography>Chargement des horaires...</Typography>
                         </Box>
                     ) : todaySchedule ? (
-                        <SchedulesCard horaire={todaySchedule} />
+                        <SchedulesCard schedules={todaySchedule} />
                     ) : (
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 200 }}>
                             <Typography>Aucun horaire disponible pour aujourd'hui</Typography>

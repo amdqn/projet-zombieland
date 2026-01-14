@@ -18,13 +18,14 @@ import ClearIcon from '@mui/icons-material/Clear';
 import AddIcon from '@mui/icons-material/Add';
 import { colors } from '../../../theme';
 import { useEffect, useState, useRef, useMemo } from 'react';
+import { toast } from 'react-toastify';
 import type { Category } from '../../../@types/categorie';
 import { getCategories, deleteCategory } from '../../../services/categories';
 import { CategoryCard } from '../../../components/cards/CategoryCard';
-import { CreateCategoryModal } from '../../../components/modals/CreateCategoryModal';
-import { UpdateCategoryModal } from '../../../components/modals/UpdateCategoryModal';
-import { CategoryDetailsModal } from '../../../components/modals/CategoryDetailsModal';
-import { DeleteCategoryModal } from '../../../components/modals/DeleteCategoryModal';
+import { CreateCategoryModal } from '../../../components/modals/Categories/CreateCategoryModal';
+import { UpdateCategoryModal } from '../../../components/modals/Categories/UpdateCategoryModal';
+import { CategoryDetailsModal } from '../../../components/modals/Categories/CategoryDetailsModal';
+import { DeleteCategoryModal } from '../../../components/modals/Categories/DeleteCategoryModal';
 
 export const CategoryList = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -156,6 +157,7 @@ export const CategoryList = () => {
     setDeleteSuccess(null);
     try {
       await deleteCategory(categoryToDelete.id);
+      toast.success('Catégorie supprimée avec succès !');
       setDeleteSuccess('Catégorie supprimée avec succès');
       setCategories(categories.filter((c) => c.id !== categoryToDelete.id));
       setTimeout(() => {

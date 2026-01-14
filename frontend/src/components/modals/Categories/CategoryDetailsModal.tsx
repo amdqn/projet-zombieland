@@ -2,10 +2,10 @@ import { Box, Modal, Typography, Chip, Stack, Button, CircularProgress, Grid, Ca
 import { useEffect, useState } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { colors } from '../../theme';
-import type { Category } from '../../@types/categorie';
-import { getCategoryById } from '../../services/categories';
-import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE } from '../../utils/imageUtils';
+import { colors } from '../../../theme';
+import type { Category } from '../../../@types/categorie';
+import { getCategoryById } from '../../../services/categories';
+import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE } from '../../../utils/imageUtils';
 
 interface CategoryDetailsModalProps {
   open: boolean;
@@ -273,40 +273,58 @@ export const CategoryDetailsModal = ({
                 >
                   Attractions associées ({detailedCategory.attractions.length})
                 </Typography>
-                <Stack spacing={1}>
+                <Grid container spacing={2}>
                   {detailedCategory.attractions.map((attraction) => (
-                    <Box
-                      key={attraction.id}
-                      sx={{
-                        p: 2,
-                        backgroundColor: colors.secondaryDarkAlt,
-                        borderRadius: 1,
-                        border: `1px solid ${colors.secondaryGrey}`,
-                      }}
-                    >
-                      <Typography
-                        variant="subtitle1"
+                    <Grid size={{ xs: 12, sm: 6 }} key={attraction.id}>
+                      <Card
                         sx={{
-                          color: colors.white,
-                          fontWeight: 600,
-                          mb: 0.5,
+                          backgroundColor: colors.secondaryDarkAlt,
+                          border: `1px solid ${colors.secondaryGrey}`,
                         }}
                       >
-                        {attraction.name}
-                      </Typography>
-                      {attraction.description && (
-                        <Typography
-                          variant="body2"
+                        <Box
                           sx={{
-                            color: colors.secondaryGrey,
+                            width: '100%',
+                            height: '120px',
+                            backgroundImage: `url(${resolveImageUrl(attraction.image_url, DEFAULT_ACTIVITY_IMAGE)})`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
                           }}
-                        >
-                          {attraction.description}
-                        </Typography>
-                      )}
-                    </Box>
+                        />
+                        <CardContent>
+                          <Typography
+                            variant="subtitle1"
+                            sx={{
+                              color: colors.white,
+                              fontWeight: 600,
+                              mb: 0.5,
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            {attraction.name}
+                          </Typography>
+                          {attraction.description && (
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                color: colors.secondaryGrey,
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                display: '-webkit-box',
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: 'vertical',
+                              }}
+                            >
+                              {attraction.description}
+                            </Typography>
+                          )}
+                        </CardContent>
+                      </Card>
+                    </Grid>
                   ))}
-                </Stack>
+                </Grid>
               </Box>
             )}
 

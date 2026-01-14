@@ -1,7 +1,7 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography, Box } from '@mui/material';
 import WarningIcon from '@mui/icons-material/Warning';
-import { colors } from '../../theme';
-import type { Category } from '../../@types/categorie';
+import { colors } from '../../../theme';
+import type { Category } from '../../../@types/categorie';
 
 interface DeleteCategoryModalProps {
   deleteDialogOpen: boolean;

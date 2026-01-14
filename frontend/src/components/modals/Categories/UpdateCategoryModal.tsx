@@ -1,12 +1,15 @@
 import { Alert, Box, Modal, Typography, TextField, Button, CircularProgress } from '@mui/material';
-import { useState } from 'react';
-import { createCategory, type CreateCategoryDto } from '../../services/categories';
-import { colors } from '../../theme';
+import { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
+import { updateCategory, type UpdateCategoryDto } from '../../../services/categories';
+import { colors } from '../../../theme';
+import type { Category } from '../../../@types/categorie';
 
-interface CreateCategoryModalProps {
+interface UpdateCategoryModalProps {
   open: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  category: Category | null;
+  onUpdateSuccess: () => void;
 }
 
 const style = {
@@ -23,16 +26,26 @@ const style = {
   p: 4,
 };
 
-export const CreateCategoryModal = ({
+export const UpdateCategoryModal = ({
   open,
   onClose,
-  onSuccess,
-}: CreateCategoryModalProps) => {
+  category,
+  onUpdateSuccess,
+}: UpdateCategoryModalProps) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (category && open) {
+      setName(category.name);
+      setDescription(category.description);
+      setError(null);
+      setSuccess(null);
+    }
+  }, [category, open]);
 
   const handleClose = () => {
     setName('');
@@ -43,6 +56,8 @@ export const CreateCategoryModal = ({
   };
 
   const handleSubmit = async () => {
+    if (!category) return;
+
     if (!name || !description) {
       setError('Le nom et la description sont requis');
       return;
@@ -63,24 +78,27 @@ export const CreateCategoryModal = ({
     setSuccess(null);
 
     try {
-      const dto: CreateCategoryDto = {
+      const dto: UpdateCategoryDto = {
         name,
         description,
       };
 
-      await createCategory(dto);
-      setSuccess('Catégorie créée avec succès');
+      await updateCategory(category.id, dto);
+      toast.success('Catégorie modifiée avec succès !');
+      setSuccess('Catégorie modifiée avec succès');
       setTimeout(() => {
-        onSuccess();
+        onUpdateSuccess();
         handleClose();
       }, 1500);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erreur lors de la création de la catégorie';
+      const message = err instanceof Error ? err.message : 'Erreur lors de la modification de la catégorie';
       setError(message);
     } finally {
       setIsLoading(false);
     }
   };
+
+  if (!category) return null;
 
   return (
     <Modal open={open} onClose={isLoading ? undefined : handleClose}>
@@ -88,13 +106,29 @@ export const CreateCategoryModal = ({
         <Typography
           variant="h5"
           sx={{
-            mb: 3,
+            mb: 1,
             color: colors.primaryGreen,
             fontWeight: 700,
             textAlign: 'center',
           }}
         >
-          Créer une nouvelle catégorie
+          Modifier la catégorie
+        </Typography>
+
+        <Typography
+          variant="caption"
+          sx={{
+            display: 'block',
+            mb: 3,
+            color: colors.secondaryGrey,
+            textAlign: 'center',
+          }}
+        >
+          Dernière modification : {new Date(category.updated_at).toLocaleDateString('fr-FR', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+          })}
         </Typography>
 
         {error && (
@@ -190,7 +224,7 @@ export const CreateCategoryModal = ({
                 },
               }}
             >
-              {isLoading ? <CircularProgress size={24} sx={{ color: colors.secondaryDark }} /> : 'Créer'}
+              {isLoading ? <CircularProgress size={24} sx={{ color: colors.secondaryDark }} /> : 'Mettre à jour'}
             </Button>
           </Box>
         </Box>

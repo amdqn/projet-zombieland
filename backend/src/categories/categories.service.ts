@@ -44,6 +44,7 @@ export class CategoriesService {
             id: true,
             name: true,
             description: true,
+            image_url: true,
           },
         },
         activities: {
@@ -51,6 +52,7 @@ export class CategoriesService {
             id: true,
             name: true,
             description: true,
+            image_url: true,
           },
         },
         _count: {

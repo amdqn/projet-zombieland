@@ -1,4 +1,4 @@
-import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography, Box, TextField } from '@mui/material';
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography, TextField } from '@mui/material';
 import WarningIcon from '@mui/icons-material/Warning';
 import { useState } from 'react';
 import { colors } from '../../../theme';

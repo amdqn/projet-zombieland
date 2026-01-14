@@ -25,7 +25,7 @@ export const AdminDashboard = () => {
     { label: 'Activités', component: <ActivityList /> },
     { label: 'Attractions', component: <AttractionList /> },
     { label: 'Tarifs', component: <PriceList /> },
-    { label: 'Utilisateurs', component: <UserList /> },,
+    { label: 'Utilisateurs', component: <UserList /> },
     { label: 'Catégories', component: <CategoryList /> },
   ];
 

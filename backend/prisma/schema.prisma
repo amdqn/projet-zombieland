@@ -29,32 +29,36 @@ enum PriceType {
 // ===== MODELS =====
 
 model User {
-  id              Int            @id @default(autoincrement())
-  email           String         @unique
-  pseudo          String         @unique
-  password        String
-  role            Role           @default(CLIENT)
-  is_active       Boolean        @default(true)
-  reservations    Reservation[]
-  auditLogs       UserAuditLog[] @relation("UserAuditLogs")
-  modifiedAudits  UserAuditLog[] @relation("ModifiedByAudits")
-  created_at      DateTime       @default(now())
-  updated_at      DateTime       @updatedAt
+  id                   Int            @id @default(autoincrement())
+  email                String         @unique
+  pseudo               String         @unique
+  password             String
+  role                 Role           @default(CLIENT)
+  is_active            Boolean        @default(true)
+  reservations         Reservation[]
+  auditLogs            UserAuditLog[] @relation("UserAuditLogs")
+  modifiedAudits       UserAuditLog[] @relation("ModifiedByAudits")
+  // relation messagerie
+  conversationsAsUser  Conversation[] @relation("UserConversations")
+  conversationsAsAdmin Conversation[] @relation("AdminConversations")
+  messages             Message[]
+  created_at           DateTime       @default(now())
+  updated_at           DateTime       @updatedAt
 
   @@map("users")
 }
 
 model UserAuditLog {
-  id              Int      @id @default(autoincrement())
-  user_id         Int
-  modified_by_id  Int      // ID de l'admin qui a fait la modification
-  action          String   // 'UPDATE', 'DELETE', 'ACTIVATE', 'DEACTIVATE'
-  field_name      String?  // Nom du champ modifié (pseudo, email, role, is_active)
-  old_value       String?  // Ancienne valeur (JSON stringifié)
-  new_value       String?  // Nouvelle valeur (JSON stringifié)
-  user            User     @relation("UserAuditLogs", fields: [user_id], references: [id], onDelete: Cascade)
-  modified_by     User     @relation("ModifiedByAudits", fields: [modified_by_id], references: [id])
-  created_at      DateTime @default(now())
+  id             Int      @id @default(autoincrement())
+  user_id        Int
+  modified_by_id Int // ID de l'admin qui a fait la modification
+  action         String // 'UPDATE', 'DELETE', 'ACTIVATE', 'DEACTIVATE'
+  field_name     String? // Nom du champ modifié (pseudo, email, role, is_active)
+  old_value      String? // Ancienne valeur (JSON stringifié)
+  new_value      String? // Nouvelle valeur (JSON stringifié)
+  user           User     @relation("UserAuditLogs", fields: [user_id], references: [id], onDelete: Cascade)
+  modified_by    User     @relation("ModifiedByAudits", fields: [modified_by_id], references: [id])
+  created_at     DateTime @default(now())
 
   @@map("user_audit_logs")
 }
@@ -72,23 +76,23 @@ model Category {
 }
 
 model Attraction {
-  id           Int                 @id @default(autoincrement())
+  id           Int                  @id @default(autoincrement())
   name         String
   description  String
   image_url    String?
   thrill_level Int?
   duration     Int?
-  latitude     Decimal?          @db.Decimal(10, 8)
-  longitude    Decimal?          @db.Decimal(11, 8)
+  latitude     Decimal?             @db.Decimal(10, 8)
+  longitude    Decimal?             @db.Decimal(11, 8)
   category_id  Int
-  is_published Boolean             @default(true)
-  category     Category            @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  is_published Boolean              @default(true)
+  category     Category             @relation(fields: [category_id], references: [id], onDelete: Cascade)
   images       AttractionImage[]
   activities   Activity[]
-  relatedFrom AttractionRelation[] @relation("AttractionFrom")
+  relatedFrom  AttractionRelation[] @relation("AttractionFrom")
   relatedTo    AttractionRelation[] @relation("AttractionTo")
-  created_at   DateTime            @default(now())
-  updated_at   DateTime            @updatedAt
+  created_at   DateTime             @default(now())
+  updated_at   DateTime             @updatedAt
 
   @@map("attractions")
 }
@@ -105,23 +109,23 @@ model AttractionImage {
 }
 
 model Activity {
-  id            Int         @id @default(autoincrement())
+  id            Int                @id @default(autoincrement())
   name          String
   description   String
   image_url     String?
   thrill_level  Int?
   duration      Int?
-  latitude      Decimal?    @db.Decimal(10, 8)
-  longitude     Decimal?    @db.Decimal(11, 8)
+  latitude      Decimal?           @db.Decimal(10, 8)
+  longitude     Decimal?           @db.Decimal(11, 8)
   category_id   Int
   attraction_id Int?
-  category      Category    @relation(fields: [category_id], references: [id], onDelete: Cascade)
-  attraction    Attraction? @relation(fields: [attraction_id], references: [id], onDelete: SetNull)
-  created_at    DateTime    @default(now())
-  updated_at    DateTime    @updatedAt
+  category      Category           @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  attraction    Attraction?        @relation(fields: [attraction_id], references: [id], onDelete: SetNull)
+  created_at    DateTime           @default(now())
+  updated_at    DateTime           @updatedAt
   min_age       Int?
   accessibility String?
-  is_published  Boolean     @default(true)
+  is_published  Boolean            @default(true)
   relatedFrom   ActivityRelation[] @relation("ActivityFrom")
   relatedTo     ActivityRelation[] @relation("ActivityTo")
 
@@ -141,12 +145,12 @@ model ActivityRelation {
 }
 
 model AttractionRelation {
-  id                   Int        @id @default(autoincrement())
-  attraction_id        Int
+  id                    Int        @id @default(autoincrement())
+  attraction_id         Int
   related_attraction_id Int
-  created_at           DateTime   @default(now())
-  attraction          Attraction  @relation("AttractionFrom", fields: [attraction_id], references: [id], onDelete: Cascade)
-  related_attraction   Attraction @relation("AttractionTo", fields: [related_attraction_id], references: [id], onDelete: Cascade)
+  created_at            DateTime   @default(now())
+  attraction            Attraction @relation("AttractionFrom", fields: [attraction_id], references: [id], onDelete: Cascade)
+  related_attraction    Attraction @relation("AttractionTo", fields: [related_attraction_id], references: [id], onDelete: Cascade)
 
   @@unique([attraction_id, related_attraction_id])
   @@map("attraction_relations")
@@ -166,13 +170,13 @@ model ParkDate {
 }
 
 model Price {
-  id            Int      @id @default(autoincrement())
+  id            Int       @id @default(autoincrement())
   label         String
   type          PriceType
-  amount        Decimal  @db.Decimal(10, 2)
-  duration_days Int      @default(1)
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
+  amount        Decimal   @db.Decimal(10, 2)
+  duration_days Int       @default(1)
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
 
   @@map("prices")
 }
@@ -182,7 +186,7 @@ model Reservation {
   reservation_number String            @unique
   user_id            Int
   date_id            Int
-  tickets            Json              // Array of { price_id, label, type, quantity, unit_price, subtotal }
+  tickets            Json // Array of { price_id, label, type, quantity, unit_price, subtotal }
   total_amount       Decimal           @db.Decimal(10, 2)
   status             ReservationStatus @default(PENDING)
   user               User              @relation(fields: [user_id], references: [id], onDelete: Cascade)
@@ -196,7 +200,7 @@ model Reservation {
 model PointOfInterest {
   id          Int      @id @default(autoincrement())
   name        String
-  type        String   // "toilets", "shop", "entrance", "exit"
+  type        String // "toilets", "shop", "entrance", "exit"
   description String?
   icon        String?
   latitude    Decimal  @db.Decimal(10, 8)
@@ -205,4 +209,46 @@ model PointOfInterest {
   updated_at  DateTime @updatedAt
 
   @@map("points_of_interest")
+}
+
+model Conversation {
+  id       Int                @id @default(autoincrement())
+  user_id  Int
+  admin_id Int? // Nullable car peut être non assigné au début
+  status   ConversationStatus @default(WAITING)
+
+  user     User      @relation("UserConversations", fields: [user_id], references: [id], onDelete: Cascade)
+  admin    User?     @relation("AdminConversations", fields: [admin_id], references: [id], onDelete: SetNull)
+  messages Message[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([user_id])
+  @@index([admin_id])
+  @@index([status])
+  @@map("conversations")
+}
+
+model Message {
+  id              Int     @id @default(autoincrement())
+  conversation_id Int
+  sender_id       Int
+  content         String  @db.Text
+  is_read         Boolean @default(false)
+
+  conversation Conversation @relation(fields: [conversation_id], references: [id], onDelete: Cascade)
+  sender       User         @relation(fields: [sender_id], references: [id], onDelete: Cascade)
+
+  created_at DateTime @default(now())
+
+  @@index([conversation_id, created_at])
+  @@index([sender_id])
+  @@map("messages")
+}
+
+enum ConversationStatus {
+  WAITING // En attente d'un admin
+  ASSIGNED // Assignée à un admin
+  CLOSED // Conversation fermée
 }

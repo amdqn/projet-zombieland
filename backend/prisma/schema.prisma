@@ -29,16 +29,34 @@ enum PriceType {
 // ===== MODELS =====
 
 model User {
-  id           Int           @id @default(autoincrement())
-  email        String        @unique
-  pseudo       String        @unique
-  password     String
-  role         Role          @default(CLIENT)
-  reservations Reservation[]
-  created_at   DateTime      @default(now())
-  updated_at   DateTime      @updatedAt
+  id              Int            @id @default(autoincrement())
+  email           String         @unique
+  pseudo          String         @unique
+  password        String
+  role            Role           @default(CLIENT)
+  is_active       Boolean        @default(true)
+  reservations    Reservation[]
+  auditLogs       UserAuditLog[] @relation("UserAuditLogs")
+  modifiedAudits  UserAuditLog[] @relation("ModifiedByAudits")
+  created_at      DateTime       @default(now())
+  updated_at      DateTime       @updatedAt
 
   @@map("users")
+}
+
+model UserAuditLog {
+  id              Int      @id @default(autoincrement())
+  user_id         Int
+  modified_by_id  Int      // ID de l'admin qui a fait la modification
+  action          String   // 'UPDATE', 'DELETE', 'ACTIVATE', 'DEACTIVATE'
+  field_name      String?  // Nom du champ modifié (pseudo, email, role, is_active)
+  old_value       String?  // Ancienne valeur (JSON stringifié)
+  new_value       String?  // Nouvelle valeur (JSON stringifié)
+  user            User     @relation("UserAuditLogs", fields: [user_id], references: [id], onDelete: Cascade)
+  modified_by     User     @relation("ModifiedByAudits", fields: [modified_by_id], references: [id])
+  created_at      DateTime @default(now())
+
+  @@map("user_audit_logs")
 }
 
 model Category {

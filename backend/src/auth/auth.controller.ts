@@ -7,6 +7,7 @@ import {
   Get,
   UseGuards,
   Patch,
+  Delete,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import type {
@@ -69,5 +70,12 @@ export class AuthController {
       created_at: updatedUser.created_at.toISOString(),
       updated_at: updatedUser.updated_at.toISOString(),
     };
+  }
+
+  @Delete('me')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async deleteAccount(@CurrentUser() user: UserDto) {
+    return this.authService.deleteAccount(user.id!);
   }
 }

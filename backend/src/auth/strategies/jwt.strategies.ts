@@ -32,6 +32,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException('Utilisateur introuvable');
     }
 
+    // Vérifier si le compte est actif
+    if ((user as any).is_active === false) {
+      throw new UnauthorizedException('Il semble y avoir un problème. Veuillez contacter l\'administrateur.');
+    }
+
     // Retourner user sans password (sera dans request.user)
     const { password: _, ...userWithoutPassword } = user;
     return userWithoutPassword;

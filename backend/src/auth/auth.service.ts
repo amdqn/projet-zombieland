@@ -2,6 +2,7 @@ import {
   Injectable,
   ConflictException,
   BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import type { RegisterDto } from 'src/generated';
@@ -137,6 +138,11 @@ export class AuthService {
       throw new UnauthorizedException('Email ou mot de passe invalide');
     }
 
+    // Vérifier si le compte est actif
+    if ((user as any).is_active === false) {
+      throw new UnauthorizedException('Il semble y avoir un problème. Veuillez contacter l\'administrateur.');
+    }
+
     // Retourner user SANS le password
     const { password: _, ...userWithoutPassword } = user;
     return userWithoutPassword;
@@ -218,5 +224,33 @@ export class AuthService {
     // Retourner sans le password
     const { password: _, ...userWithoutPassword } = updatedUser;
     return userWithoutPassword;
+  }
+
+  async deleteAccount(userId: number) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        _count: {
+          select: { reservations: true },
+        },
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`Utilisateur avec l'ID ${userId} introuvable`);
+    }
+
+    // Vérifier s'il y a des réservations
+    if (user._count.reservations > 0) {
+      throw new BadRequestException(
+        `Impossible de supprimer votre compte : ${user._count.reservations} réservation(s) associée(s). Veuillez d'abord annuler ou supprimer vos réservations.`,
+      );
+    }
+
+    await this.prisma.user.delete({ where: { id: userId } });
+
+    return {
+      message: `Votre compte a été supprimé avec succès`,
+    };
   }
 }

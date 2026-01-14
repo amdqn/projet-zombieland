@@ -1,7 +1,6 @@
 import axiosInstance from './getApi.ts';
 import type {ParkDate} from "../@types/parkDate.ts";
 
-
 export const getParkDates = async (from?: string, to?: string): Promise<ParkDate[]> => {
   try {
     const params = new URLSearchParams();

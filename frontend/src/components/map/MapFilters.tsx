@@ -26,8 +26,15 @@ export function MapFilters({
       value: 'attraction',
       label: 'Attractions',
       icon: (
-        <svg viewBox="0 0 24 24" width="16" height="16" style={{ fill: 'currentColor' }}>
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-4h2v2h-2zm0-10h2v6h-2z"/>
+        <svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg" style={{ fill: 'none', stroke: 'currentColor' }}>
+          <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="1.5"/>
+          <circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/>
+          <line x1="12" y1="3" x2="12" y2="21" stroke="currentColor" strokeWidth="1.5"/>
+          <line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" strokeWidth="1.5"/>
+          <circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none"/>
+          <circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none"/>
+          <circle cx="5" cy="12" r="1.5" fill="currentColor" stroke="none"/>
+          <circle cx="19" cy="12" r="1.5" fill="currentColor" stroke="none"/>
         </svg>
       ),
       color: colors.primaryRed
@@ -36,8 +43,10 @@ export function MapFilters({
       value: 'activity',
       label: 'Activités',
       icon: (
-        <svg viewBox="0 0 24 24" width="16" height="16" style={{ fill: 'currentColor' }}>
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+        <svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg" style={{ fill: 'none', stroke: 'currentColor' }}>
+          <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="2"/>
+          <circle cx="12" cy="12" r="6" fill="none" stroke="currentColor" strokeWidth="1.5"/>
+          <circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/>
         </svg>
       ),
       color: colors.primaryGreen
@@ -46,8 +55,8 @@ export function MapFilters({
       value: 'poi',
       label: 'Services',
       icon: (
-        <svg viewBox="0 0 24 24" width="16" height="16" style={{ fill: 'currentColor' }}>
-          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+        <svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg" style={{ fill: 'currentColor' }}>
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="currentColor"/>
         </svg>
       ),
       color: colors.secondaryGrey

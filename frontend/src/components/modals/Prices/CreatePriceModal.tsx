@@ -74,10 +74,8 @@ export const CreatePriceModal = ({
 
             await createPrice(dto);
             toast.success('Tarif crée avec succès !');
-            setTimeout(() => {
-                onCreateSuccess();
-                handleClose();
-            }, 1500);
+            onCreateSuccess();
+            handleClose();
         } catch (err) {
             const message = err instanceof Error ? err.message : 'Erreur lors de la création du tarif';
             setError(message);

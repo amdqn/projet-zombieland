@@ -83,10 +83,8 @@ export const UpdatePriceModal = ({
 
             await updatePrice(price.id, dto);
             toast.success('Tarif mis à jour avec succès !');
-            setTimeout(() => {
-                onUpdateSuccess();
-                handleClose();
-            }, 1500);
+            onUpdateSuccess();
+            handleClose();
         } catch (err) {
             const message = err instanceof Error ? err.message : 'Erreur lors de la mise à jour du tarif';
             setError(message);

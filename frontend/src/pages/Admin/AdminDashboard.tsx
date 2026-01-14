@@ -8,6 +8,7 @@ import { ActivityList } from './ActivityManagement.tsx/ActivityList';
 import { AttractionList } from './AttractionManagement.tsx/AttractionList';
 import {PriceList} from "./PriceManagement/PriceList.tsx";
 import { CategoryList } from './CategoryManagement/CategoryList';
+import { UserList } from './UserManagement/UserList';
 
 export const AdminDashboard = () => {
   const [tabValue, setTabValue] = useState<number>(0);
@@ -23,7 +24,8 @@ export const AdminDashboard = () => {
     { label: 'Réservations', component: <ReservationList /> },
     { label: 'Activités', component: <ActivityList /> },
     { label: 'Attractions', component: <AttractionList /> },
-      { label: 'Tarifs', component: <PriceList />},
+    { label: 'Tarifs', component: <PriceList /> },
+    { label: 'Utilisateurs', component: <UserList /> },
     { label: 'Catégories', component: <CategoryList /> },
   ];
 
@@ -43,11 +45,20 @@ export const AdminDashboard = () => {
           <Tabs
             value={tabValue}
             onChange={(_, newValue) => setTabValue(newValue)}
+            variant="scrollable"
+            scrollButtons="auto"
+            allowScrollButtonsMobile
             sx={{
               mb: { xs: 1.5, md: 3 },
               '& .MuiTabs-indicator': {
                 backgroundColor: colors.primaryGreen,
                 height: 3,
+              },
+              '& .MuiTabs-scrollButtons': {
+                color: colors.white,
+                '&.Mui-disabled': {
+                  opacity: 0.3,
+                },
               },
               '& .MuiTab-root': {
                 color: colors.white,

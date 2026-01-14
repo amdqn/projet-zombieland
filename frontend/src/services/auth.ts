@@ -51,3 +51,7 @@ export const updateProfile = async (data: UpdateProfileData): Promise<LoginRespo
     const response = await axiosInstance.patch<LoginResponse>('auth/me', data);
     return response.data;
 }
+
+export const deleteAccount = async (): Promise<void> => {
+    await axiosInstance.delete('auth/me');
+}

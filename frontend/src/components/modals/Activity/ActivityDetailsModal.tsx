@@ -1,7 +1,7 @@
 import { Box, Modal, Typography, Chip, Stack } from '@mui/material';
-import { colors } from '../../theme';
-import type { Activity } from '../../@types/activity';
-import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE } from '../../utils/imageUtils';
+import { colors } from '../../../theme';
+import type { Activity } from '../../../@types/activity';
+import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE } from '../../../utils/imageUtils.ts';
 
 interface ActivityDetailsModalProps {
   open: boolean;

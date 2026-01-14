@@ -2,14 +2,14 @@ import { Alert, Box, MenuItem, Modal, Select, Typography, FormControl, InputLabe
 import { useState, useEffect } from 'react';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { toast } from 'react-toastify';
-import { createAttraction, type CreateAttractionDto, getAttractions } from '../../services/attractions';
-import { getCategories } from '../../services/categories';
-import { uploadAttractionImage } from '../../services/upload';
-import { colors } from '../../theme';
-import { PrimaryButton } from '../common';
-import type { Category } from '../../@types/categorie';
-import type { Attraction } from '../../@types/attraction';
-import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE } from '../../utils/imageUtils';
+import { createAttraction, type CreateAttractionDto, getAttractions } from '../../../services/attractions.ts';
+import { getCategories } from '../../../services/categories.ts';
+import { uploadAttractionImage } from '../../../services/upload.ts';
+import { colors } from '../../../theme';
+import { PrimaryButton } from '../../common';
+import type { Category } from '../../../@types/categorie';
+import type { Attraction } from '../../../@types/attraction';
+import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE } from '../../../utils/imageUtils.ts';
 
 interface CreateAttractionModalProps {
   open: boolean;

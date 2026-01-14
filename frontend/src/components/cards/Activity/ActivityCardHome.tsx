@@ -1,5 +1,5 @@
 import {Card, CardContent, Chip, Typography, Box} from "@mui/material";
-import {colors} from "../../theme";
+import {colors} from "../../../theme";
 import {Link} from "react-router-dom";
 import {styled} from "@mui/material/styles";
 

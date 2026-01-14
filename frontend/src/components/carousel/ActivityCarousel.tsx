@@ -1,4 +1,4 @@
-import { ActivityCardPublic } from '../cards/ActivityCardPublic';
+import { ActivityCardPublic } from '../cards/Activity/ActivityCardPublic.tsx';
 import { Carousel } from './Carousel';
 
 interface Activity {

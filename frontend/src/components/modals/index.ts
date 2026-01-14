@@ -1,3 +1,3 @@
 export * from './BurgerMenu';
-export * from './UpdateReservationModal';
-export * from './ReservationDetailsModal';
+export * from './Reservations/UpdateReservationModal.tsx';
+export * from './Reservations/ReservationDetailsModal.tsx';

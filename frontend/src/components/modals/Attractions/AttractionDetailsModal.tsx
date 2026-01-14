@@ -1,7 +1,7 @@
 import { Box, Modal, Typography, Chip, Stack } from '@mui/material';
-import { colors } from '../../theme';
-import type { Attraction } from '../../@types/attraction';
-import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE } from '../../utils/imageUtils';
+import { colors } from '../../../theme';
+import type { Attraction } from '../../../@types/attraction';
+import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE } from '../../../utils/imageUtils.ts';
 
 interface AttractionDetailsModalProps {
   open: boolean;

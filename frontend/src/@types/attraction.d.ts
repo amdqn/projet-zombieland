@@ -8,6 +8,8 @@ export interface Attraction {
     thrill_level?: number | null;
     duration?: number | null;
     image_url?: string | null;
+    latitude?: number | null;
+    longitude?: number | null;
     category_id: number;
     is_published: boolean;
     created_at: string;

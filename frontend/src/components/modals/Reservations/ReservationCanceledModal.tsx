@@ -1,5 +1,5 @@
 // ReservationCanceledModal.tsx
-import type {Reservation} from "../../@types/reservation";
+import type {Reservation} from "../../../@types/reservation";
 import {
     Alert,
     Button,
@@ -10,9 +10,9 @@ import {
     DialogTitle
 } from "@mui/material";
 import WarningIcon from "@mui/icons-material/Warning";
-import {colors} from "../../theme";
+import {colors} from "../../../theme";
 import {useContext} from "react";
-import {LoginContext} from "../../context/UserLoginContext.tsx";
+import {LoginContext} from "../../../context/UserLoginContext.tsx";
 
 interface ReservationCanceledModalProps {
     deleteDialogOpen: boolean;

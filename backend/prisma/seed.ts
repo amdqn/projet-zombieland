@@ -58,6 +58,8 @@ const attractionData = [
     image_url: '/attractions-images/walking-dead-experience.jpg',
     thrill_level: 4,
     duration: 30,
+    latitude: 48.8550,
+    longitude: 2.3700,
     categoryIndex: 1, // Expériences immersives
   },
   {
@@ -66,6 +68,8 @@ const attractionData = [
     image_url: '/attractions-images/zombie-ride.jpg',
     thrill_level: 5,
     duration: 5,
+    latitude: 48.8700,
+    longitude: 2.3350,
     categoryIndex: 0, // Attractions extrêmes
   },
   {
@@ -74,6 +78,8 @@ const attractionData = [
     image_url: '/attractions-images/labyrinthe-infectes.jpg',
     thrill_level: 2,
     duration: 20,
+    latitude: 48.8450,
+    longitude: 2.3800,
     categoryIndex: 2, // Activités familiales
   },
   {
@@ -82,6 +88,8 @@ const attractionData = [
     image_url: '/attractions-images/arena-morts-vivants.jpg',
     thrill_level: 3,
     duration: 45,
+    latitude: 48.8575,
+    longitude: 2.3525,
     categoryIndex: 3, // Spectacles
   },
   {
@@ -90,6 +98,8 @@ const attractionData = [
     image_url: '/attractions-images/tour-chute-libre.jpg',
     thrill_level: 5,
     duration: 3,
+    latitude: 48.8680,
+    longitude: 2.3850,
     categoryIndex: 0, // Attractions extrêmes
   },
   {
@@ -98,6 +108,8 @@ const attractionData = [
     image_url: '/attractions-images/bunker-vr.jpg',
     thrill_level: 4,
     duration: 15,
+    latitude: 48.8650,
+    longitude: 2.3250,
     categoryIndex: 1, // Expériences immersives
   },
   {
@@ -106,6 +118,8 @@ const attractionData = [
     image_url: '/attractions-images/train-fantome.jpg',
     thrill_level: 2,
     duration: 10,
+    latitude: 48.8500,
+    longitude: 2.3350,
     categoryIndex: 2, // Activités familiales
   },
   {
@@ -114,6 +128,8 @@ const attractionData = [
     image_url: '/attractions-images/manege-infectes.jpg',
     thrill_level: 1,
     duration: 5,
+    latitude: 48.8480,
+    longitude: 2.3250,
     categoryIndex: 2, // Activités familiales
   },
   {
@@ -122,6 +138,8 @@ const attractionData = [
     image_url: '/attractions-images/survivor-arena-show.jpg',
     thrill_level: 2,
     duration: 50,
+    latitude: 48.8600,
+    longitude: 2.3450,
     categoryIndex: 3, // Spectacles
   },
   {
@@ -130,6 +148,8 @@ const attractionData = [
     image_url: '/attractions-images/pendule-peur.jpg',
     thrill_level: 5,
     duration: 4,
+    latitude: 48.8700,
+    longitude: 2.3750,
     categoryIndex: 0, // Attractions extrêmes
   },
   {
@@ -138,6 +158,8 @@ const attractionData = [
     image_url: '/attractions-images/hopital-hante.jpg',
     thrill_level: 4,
     duration: 25,
+    latitude: 48.8520,
+    longitude: 2.3600,
     categoryIndex: 1, // Expériences immersives
   },
   // ===== RESTAURATION =====
@@ -147,6 +169,8 @@ const attractionData = [
     image_url: '/restaurants-images/cerveaufumant.jpg',
     thrill_level: null,
     duration: null,
+    latitude: 48.8570,
+    longitude: 2.3550,
     categoryIndex: 4, // Restauration
   },
   {
@@ -155,6 +179,8 @@ const attractionData = [
     image_url: '/restaurants-images/burgerdesmorts.jpg',
     thrill_level: null,
     duration: null,
+    latitude: 48.8630,
+    longitude: 2.3300,
     categoryIndex: 4, // Restauration
   },
   {
@@ -163,6 +189,8 @@ const attractionData = [
     image_url: '/restaurants-images/sucrerieinfectee.jpg',
     thrill_level: null,
     duration: null,
+    latitude: 48.8460,
+    longitude: 2.3650,
     categoryIndex: 4, // Restauration
   },
   {
@@ -171,6 +199,8 @@ const attractionData = [
     image_url: '/restaurants-images/cafesurvivants.jpg',
     thrill_level: null,
     duration: null,
+    latitude: 48.8660,
+    longitude: 2.3650,
     categoryIndex: 4, // Restauration
   },
   {
@@ -179,6 +209,8 @@ const attractionData = [
     image_url: '/restaurants-images/glacebunker.jpg',
     thrill_level: null,
     duration: null,
+    latitude: 48.8530,
+    longitude: 2.3450,
     categoryIndex: 4, // Restauration
   },
   {
@@ -187,6 +219,8 @@ const attractionData = [
     image_url: '/restaurants-images/truck-contamine.jpg',
     thrill_level: null,
     duration: null,
+    latitude: 48.8490,
+    longitude: 2.3550,
     categoryIndex: 4, // Restauration
   },
 ];
@@ -203,6 +237,7 @@ async function main() {
   await prisma.parkDate.deleteMany();
   await prisma.price.deleteMany();
   await prisma.user.deleteMany();
+  await prisma.pointOfInterest.deleteMany();
 
   console.log('✅ Base de données nettoyée');
 
@@ -243,6 +278,8 @@ async function main() {
           image_url: attraction.image_url,
           thrill_level: attraction.thrill_level,
           duration: attraction.duration,
+          latitude: attraction.latitude,
+          longitude: attraction.longitude,
           category_id: categories[attraction.categoryIndex].id,
         },
       }),
@@ -260,6 +297,8 @@ async function main() {
         image_url: '/activities-images/escape-game.jpg',
         thrill_level: 3,
         duration: 60,
+        latitude: 48.8550,
+        longitude: 2.3500,
         category_id: categories[1].id, // Expériences immersives
         attraction_id: attractions[0].id, // The Walking Dead Experience
       },
@@ -269,6 +308,8 @@ async function main() {
         image_url: '/activities-images/laser-game.jpg',
         thrill_level: 3,
         duration: 30,
+        latitude: 48.8670,
+        longitude: 2.3800,
         category_id: categories[0].id, // Attractions extrêmes
         attraction_id: null,
       },
@@ -278,6 +319,8 @@ async function main() {
         image_url: '/activities-images/maquillage.jpg',
         thrill_level: 1,
         duration: 20,
+        latitude: 48.8510,
+        longitude: 2.3280,
         category_id: categories[2].id, // Activités familiales
         attraction_id: null,
       },
@@ -287,6 +330,8 @@ async function main() {
         image_url: '/activities-images/spectacle.jpg',
         thrill_level: 3,
         duration: 40,
+        latitude: 48.8600,
+        longitude: 2.3400,
         category_id: categories[3].id, // Spectacles
         attraction_id: null,
       },
@@ -296,6 +341,8 @@ async function main() {
         image_url: '/activities-images/tir-arc.jpg',
         thrill_level: 2,
         duration: 15,
+        latitude: 48.8470,
+        longitude: 2.3750,
         category_id: categories[2].id, // Activités familiales
         attraction_id: null,
       },
@@ -303,6 +350,56 @@ async function main() {
   });
 
   console.log('✅ Activités créées (5)');
+
+  // ===== POINTS OF INTEREST =====
+  await prisma.pointOfInterest.createMany({
+    data: [
+      // Toilettes
+      {
+        name: 'Toilettes Nord',
+        type: 'toilets',
+        description: 'Sanitaires situés près de la zone des attractions extrêmes',
+        icon: 'restroom',
+        latitude: 48.8690,
+        longitude: 2.3280,
+      },
+      {
+        name: 'Toilettes Sud',
+        type: 'toilets',
+        description: 'Sanitaires situés près de la zone familiale',
+        icon: 'restroom',
+        latitude: 48.8440,
+        longitude: 2.3320,
+      },
+      // Boutiques
+      {
+        name: 'Boutique Survivor',
+        type: 'shop',
+        description: 'Boutique principale de souvenirs et produits dérivés',
+        icon: 'shopping_bag',
+        latitude: 48.8580,
+        longitude: 2.3380,
+      },
+      {
+        name: 'Armurerie du Parc',
+        type: 'shop',
+        description: 'Vente d\'accessoires et équipements de survie',
+        icon: 'shopping_bag',
+        latitude: 48.8610,
+        longitude: 2.3720,
+      },
+      {
+        name: 'Galerie des Infectés',
+        type: 'shop',
+        description: 'Boutique de figurines, vêtements et objets de collection',
+        icon: 'shopping_bag',
+        latitude: 48.8440,
+        longitude: 2.3850,
+      },
+    ],
+  });
+
+  console.log('✅ Points d\'intérêt créés (5 : 2 toilettes, 3 boutiques)');
 
   // ===== PARK DATES =====
   const dates: Array<{
@@ -530,11 +627,14 @@ async function main() {
   console.log('📊 Résumé :');
   console.log('   - 4 utilisateurs (1 admin, 3 clients)');
   console.log('   - 5 catégories');
-  console.log('   - 17 attractions (dont 6 points de restauration)');
-  console.log('   - 5 activités');
+  console.log('   - 17 attractions avec GPS (dont 6 points de restauration)');
+  console.log('   - 5 activités avec GPS');
+  console.log('   - 5 points d\'intérêt (2 toilettes, 3 boutiques)');
   console.log('   - 181 dates d\'ouverture (janvier à juin 2026)');
   console.log('   - 5 tarifs (Étudiant, Adulte, Groupe x2, Pass 2J)');
   console.log('   - 4 réservations');
+  console.log('');
+  console.log('🗺️  Toutes les attractions ont des coordonnées GPS pour la carte interactive !');
   console.log('');
   console.log('🔑 Credentials de test :');
   console.log('   Admin   : admin@zombieland.com / password123');

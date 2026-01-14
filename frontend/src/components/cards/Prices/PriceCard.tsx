@@ -1,9 +1,9 @@
 
 import {Card, CardContent, Typography} from "@mui/material";
-import {theme} from "../../theme";
+import {theme} from "../../../theme";
 import {motion} from "framer-motion";
 import {useNavigate} from "react-router";
-import type {Price} from "../../@types/price";
+import type {Price} from "../../../@types/price";
 
 interface PriceCardProps {
     price: Price;

@@ -1,6 +1,6 @@
 import { Box, Modal, Typography, Divider, Chip, Stack } from '@mui/material';
-import { colors } from '../../theme';
-import type { Reservation, ReservationStatus } from '../../@types/reservation';
+import { colors } from '../../../theme';
+import type { Reservation, ReservationStatus } from '../../../@types/reservation';
 
 interface ReservationDetailsModalProps {
   open: boolean;

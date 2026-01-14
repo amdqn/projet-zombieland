@@ -60,6 +60,8 @@ model Attraction {
   image_url    String?
   thrill_level Int?
   duration     Int?
+  latitude     Decimal?          @db.Decimal(10, 8)
+  longitude    Decimal?          @db.Decimal(11, 8)
   category_id  Int
   is_published Boolean             @default(true)
   category     Category            @relation(fields: [category_id], references: [id], onDelete: Cascade)
@@ -91,6 +93,8 @@ model Activity {
   image_url     String?
   thrill_level  Int?
   duration      Int?
+  latitude      Decimal?    @db.Decimal(10, 8)
+  longitude     Decimal?    @db.Decimal(11, 8)
   category_id   Int
   attraction_id Int?
   category      Category    @relation(fields: [category_id], references: [id], onDelete: Cascade)
@@ -169,4 +173,18 @@ model Reservation {
   updated_at         DateTime          @updatedAt
 
   @@map("reservations")
+}
+
+model PointOfInterest {
+  id          Int      @id @default(autoincrement())
+  name        String
+  type        String   // "toilets", "shop", "entrance", "exit"
+  description String?
+  icon        String?
+  latitude    Decimal  @db.Decimal(10, 8)
+  longitude   Decimal  @db.Decimal(11, 8)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@map("points_of_interest")
 }

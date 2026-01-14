@@ -17,7 +17,7 @@ import { getAttractions } from '../../services/attractions';
 import { colors } from '../../theme';
 import { CustomBreadcrumbs } from '../../components/common';
 import { HeroSection } from '../../components/hero/HeroSection';
-import { ActivityCardPublic } from '../../components/cards/ActivityCardPublic';
+import { ActivityCardPublic } from '../../components/cards/Activity/ActivityCardPublic.tsx';
 import type { Activity } from '../../@types/activity';
 import type { Attraction } from '../../@types/attraction';
 import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE, DEFAULT_RESTAURANT_IMAGE } from '../../utils/imageUtils';

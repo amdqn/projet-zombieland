@@ -1,16 +1,16 @@
 import { Alert, Box, MenuItem, Modal, Select, Typography, FormControl, InputLabel, Switch, FormControlLabel, TextField, Chip, Button, CircularProgress } from '@mui/material';
 import { useState, useEffect } from 'react';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { toast } from 'react-toastify';
-import { createActivity, type CreateActivityDto } from '../../services/activities';
-import { getCategories } from '../../services/categories';
-import { getActivities } from '../../services/activities';
-import { uploadActivityImage } from '../../services/upload';
-import { colors } from '../../theme';
-import { PrimaryButton } from '../common';
-import type { Category } from '../../@types/categorie';
-import type { Activity } from '../../@types/activity';
-import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE } from '../../utils/imageUtils';
+import { createActivity, type CreateActivityDto } from '../../../services/activities.ts';
+import { getCategories } from '../../../services/categories.ts';
+import { getActivities } from '../../../services/activities.ts';
+import { uploadActivityImage } from '../../../services/upload.ts';
+import { colors } from '../../../theme';
+import { PrimaryButton } from '../../common';
+import type { Category } from '../../../@types/categorie';
+import type { Activity } from '../../../@types/activity';
+import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE } from '../../../utils/imageUtils.ts';
+import {toast} from "react-toastify";
 
 interface CreateActivityModalProps {
   open: boolean;

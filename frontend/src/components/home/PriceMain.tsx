@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import {Box, Typography} from "@mui/material";
-import PriceCard from "../cards/PriceCard.tsx";
+import PriceCard from "../cards/Prices/PriceCard.tsx";
 import { getPrices } from "../../services/prices";
 import type { Price } from "../../@types/price";
 

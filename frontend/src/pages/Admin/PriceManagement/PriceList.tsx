@@ -1,54 +1,51 @@
 import {
     Box,
     Typography,
-    TextField,
     MenuItem,
     Select,
     FormControl,
     InputLabel,
     Pagination,
     Grid,
-    InputAdornment,
-    IconButton,
     Button,
     CircularProgress,
     Fade
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import ClearIcon from '@mui/icons-material/Clear';
-import { toast } from 'react-toastify';
 import { colors } from '../../../theme';
 import { useEffect, useState, useRef } from 'react';
-import type { Reservation } from '../../../@types/reservation';
-import { getAllReservations, deleteReservation, type ReservationFilters } from '../../../services/reservations';
-import { ReservationCard } from '../../../components/cards/ReservationCard';
-import { UpdateReservationModal } from '../../../components/modals/Reservations/UpdateReservationModal.tsx';
-import { ReservationDetailsModal } from '../../../components/modals/Reservations/ReservationDetailsModal.tsx';
-import {ReservationCanceledModal} from "../../../components/modals/Reservations/ReservationCanceledModal.tsx";
+import { deletePrice, getPrices } from "../../../services/prices.ts";
+import type { Price, PricesFilters } from "../../../@types/price";
+import { PriceDetailsModal } from "../../../components/modals/Prices/PriceDetailsModal.tsx";
+import AddIcon from "@mui/icons-material/Add";
+import { UpdatePriceModal } from "../../../components/modals/Prices/UpdatePriceModal.tsx";
+import { DeletePriceModal } from "../../../components/modals/Prices/DeletePriceModal.tsx";
+import { CreatePriceModal } from "../../../components/modals/Prices/CreatePriceModal.tsx";
+import PriceAdminCard from "../../../components/cards/Prices/PricesAdminCard.tsx";
 
-export const ReservationList = () => {
-    const [reservations, setReservations] = useState<Reservation[]>([]);
+export const PriceList = () => {
+    const [prices, setPrices] = useState<Price[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [editModalOpen, setEditModalOpen] = useState(false);
-    const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
+    const [selectedPrice, setSelectedPrice] = useState<Price | null>(null);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const [reservationToDelete, setReservationToDelete] = useState<Reservation | null>(null);
+    const [priceToDelete, setPriceToDelete] = useState<Price | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
     const [detailsModalOpen, setDetailsModalOpen] = useState(false);
-    const [reservationToView, setReservationToView] = useState<Reservation | null>(null);
+    const [priceToView, setPriceToView] = useState<Price | null>(null);
     const [deleteError, setDeleteError] = useState<string | null>(null);
+    const [createModalOpen, setCreateModalOpen] = useState(false);
 
-    const [page, setPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const [total, setTotal] = useState(0);
-    const [search, setSearch] = useState('');
-    const [searchInput, setSearchInput] = useState('');
-    const [statusFilter, setStatusFilter] = useState('');
     const [dateFromFilter, setDateFromFilter] = useState('');
     const [dateToFilter, setDateToFilter] = useState('');
+    const [priceType, setPriceType] = useState('');
+    const [page, setPage] = useState(1);
+    const [limit] = useState(10);
     const [sortBy, setSortBy] = useState('created_desc');
+    const [amount] = useState<number>(0);
     const [refreshTrigger, setRefreshTrigger] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const [total, setTotal] = useState(0);
     const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(() => {
@@ -62,22 +59,20 @@ export const ReservationList = () => {
             setIsLoading(true);
             setError(null);
             try {
-                const filters: ReservationFilters = {
+                const filters: PricesFilters = {
+                    priceType,
                     page,
-                    limit: 10,
-                    search: search || undefined,
-                    status: statusFilter || undefined,
-                    dateFrom: dateFromFilter || undefined,
-                    dateTo: dateToFilter || undefined,
-                    sortBy: sortBy || undefined,
+                    limit,
+                    sortBy,
+                    amount: amount || undefined,
                 };
 
-                const response = await getAllReservations(filters);
-                setReservations(response.data);
+                const response = await getPrices(filters);
+                setPrices(response.data);
                 setTotalPages(response.pagination.totalPages);
                 setTotal(response.pagination.total);
             } catch (err) {
-                const message = err instanceof Error ? err.message : 'Erreur lors de la récupération des réservations';
+                const message = err instanceof Error ? err.message : 'Erreur lors de la récupération des prix';
                 setError(message);
             } finally {
                 setIsLoading(false);
@@ -89,41 +84,41 @@ export const ReservationList = () => {
                 clearTimeout(debounceTimeoutRef.current);
             }
         };
-    }, [page, search, statusFilter, dateFromFilter, dateToFilter, sortBy, refreshTrigger]);
+    }, [page, priceType, limit, amount, sortBy, refreshTrigger, dateFromFilter, dateToFilter]);
 
-    const handleEdit = (reservation: Reservation) => {
-        setSelectedReservation(reservation);
+    const handleEdit = (price: Price) => {
+        setSelectedPrice(price);
         setEditModalOpen(true);
     };
 
-    const handleDelete = (reservation: Reservation) => {
+    const handleDelete = (price: Price) => {
         if (editModalOpen) {
             setEditModalOpen(false);
-            setSelectedReservation(null);
+            setSelectedPrice(null);
         }
-        setReservationToDelete(reservation);
+        setPriceToDelete(price);
         setDeleteDialogOpen(true);
         setDeleteError(null);
     };
 
-    const handleViewDetails = (reservation: Reservation) => {
-        setReservationToView(reservation);
+    const handleViewDetails = (price: Price) => {
+        setPriceToView(price);
         setDetailsModalOpen(true);
     };
 
     const handleConfirmDelete = async () => {
-        if (!reservationToDelete) return;
+        if (!priceToDelete) return;
 
         setIsDeleting(true);
         setDeleteError(null);
         try {
-            await deleteReservation(reservationToDelete.id);
-            toast.success('Réservation annulée avec succès !');
-            setReservations(reservations.filter((r) => r.id !== reservationToDelete.id));
+            await deletePrice(priceToDelete.id);
+            setPrices(prices.filter((r) => r.id !== priceToDelete.id));
             setDeleteDialogOpen(false);
-            setReservationToDelete(null);
+            setPriceToDelete(null);
+            setRefreshTrigger((prev) => prev + 1);
         } catch (err) {
-            const message = err instanceof Error ? err.message : 'Erreur lors de la suppression de la réservation';
+            const message = err instanceof Error ? err.message : 'Erreur lors de la suppression du prix';
             setDeleteError(message);
         } finally {
             setIsDeleting(false);
@@ -133,31 +128,27 @@ export const ReservationList = () => {
     const handleCloseDeleteDialog = () => {
         if (!isDeleting) {
             setDeleteDialogOpen(false);
-            setReservationToDelete(null);
+            setPriceToDelete(null);
         }
+    };
+
+    const handleCreate = () => {
+        setCreateModalOpen(true);
+    };
+
+    const handleCreateSuccess = () => {
+        setCreateModalOpen(false);
+        setRefreshTrigger((prev) => prev + 1); // Rafraîchir la liste
     };
 
     const handleUpdateSuccess = () => {
         setRefreshTrigger((prev) => prev + 1);
     };
 
-    const handleSearch = () => {
-        setSearch(searchInput);
-        setPage(1); // Réinitialiser à la première page lors d'une recherche
-    };
-
-    const handleClearSearch = () => {
-        setSearchInput('');
-        setSearch('');
-        setPage(1);
-    };
-
     const handleResetFilters = () => {
-        setStatusFilter('');
+        setPriceType('');
         setDateFromFilter('');
         setDateToFilter('');
-        setSearchInput('');
-        setSearch('');
         setSortBy('created_desc');
         setPage(1);
     };
@@ -177,7 +168,7 @@ export const ReservationList = () => {
                         mb: 2,
                     }}
                 >
-                    Liste des réservations
+                    Liste des tarifs
                 </Typography>
                 <Typography
                     variant="body2"
@@ -186,59 +177,40 @@ export const ReservationList = () => {
                         mb: 2,
                     }}
                 >
-                    Gérez toutes les réservations du parc Zombieland. Total : {total} réservation(s)
+                    Créez, modifiez et gérez tous les tarifs du parc Zombieland. Total : {total} tarifs
                 </Typography>
+
+                <Button
+                    variant="contained"
+                    startIcon={<AddIcon />}
+                    onClick={handleCreate}
+                    sx={{
+                        backgroundColor: colors.primaryGreen,
+                        color: colors.secondaryDark,
+                        '&:hover': {
+                            backgroundColor: colors.primaryGreen,
+                            opacity: 0.9,
+                        },
+                        fontWeight: 600,
+                        textTransform: 'uppercase',
+                        mb: 3,
+                    }}
+                >
+                    Nouveau tarif
+                </Button>
 
                 {/* Barre de recherche */}
                 <Box sx={{ mb: 3 }}>
-                    <TextField
-                        fullWidth
-                        variant="outlined"
-                        placeholder="Rechercher par numéro de réservation, utilisateur, statut..."
-                        value={searchInput}
-                        onChange={(e) => setSearchInput(e.target.value)}
-                        onKeyPress={(e) => {
-                            if (e.key === 'Enter') {
-                                handleSearch();
-                            }
-                        }}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <SearchIcon sx={{ color: colors.secondaryGrey }} />
-                                </InputAdornment>
-                            ),
-                            endAdornment: searchInput && (
-                                <InputAdornment position="end">
-                                    <IconButton onClick={handleClearSearch} size="small">
-                                        <ClearIcon sx={{ color: colors.secondaryGrey }} />
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                            sx: {
-                                backgroundColor: colors.secondaryDark,
-                                color: colors.white,
-                                '& .MuiOutlinedInput-notchedOutline': {
-                                    borderColor: colors.secondaryGrey,
-                                },
-                                '&:hover .MuiOutlinedInput-notchedOutline': {
-                                    borderColor: colors.primaryRed,
-                                },
-                            },
-                        }}
-                        sx={{ mb: 2 }}
-                    />
-
                     {/* Filtres */}
                     <Grid container spacing={2} sx={{ mb: 2 }}>
-                        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                             <FormControl fullWidth sx={{ minWidth: '200px' }}>
-                                <InputLabel sx={{ color: colors.secondaryGrey }}>Statut</InputLabel>
+                                <InputLabel sx={{ color: colors.secondaryGrey }}>Type de prix</InputLabel>
                                 <Select
-                                    value={statusFilter}
-                                    label="Statut"
+                                    value={priceType}
+                                    label="Type de prix"
                                     onChange={(e) => {
-                                        setStatusFilter(e.target.value);
+                                        setPriceType(e.target.value);
                                         setPage(1);
                                     }}
                                     sx={{
@@ -279,69 +251,68 @@ export const ReservationList = () => {
                                     }}
                                 >
                                     <MenuItem value="">Tous</MenuItem>
-                                    <MenuItem value="PENDING">En attente</MenuItem>
-                                    <MenuItem value="CONFIRMED">Confirmée</MenuItem>
-                                    <MenuItem value="CANCELLED">Annulée</MenuItem>
+                                    <MenuItem value="ETUDIANT">Tarif étudiant</MenuItem>
+                                    <MenuItem value="GROUPE">Tarif groupe</MenuItem>
+                                    <MenuItem value="PASS_2J">Tarif pass 2 jours</MenuItem>
                                 </Select>
                             </FormControl>
                         </Grid>
 
-                        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                            <TextField
-                                fullWidth
-                                type="date"
-                                label="Date de visite (de)"
-                                value={dateFromFilter}
-                                onChange={(e) => {
-                                    setDateFromFilter(e.target.value);
-                                    setPage(1);
-                                }}
-                                InputLabelProps={{ shrink: true }}
-                                sx={{
-                                    backgroundColor: colors.secondaryDark,
-                                    '& .MuiOutlinedInput-root': {
+                        <Grid size={{ xs: 12, sm: 6, md: 6}}>
+                            <FormControl fullWidth sx={{ minWidth: '200px' }}>
+                                <InputLabel sx={{ color: colors.secondaryGrey }}>Trier par</InputLabel>
+                                <Select
+                                    value={sortBy}
+                                    label="Trier par"
+                                    onChange={(e) => {
+                                        setSortBy(e.target.value);
+                                        setPage(1);
+                                    }}
+                                    sx={{
+                                        backgroundColor: colors.secondaryDark,
                                         color: colors.white,
-                                        '& fieldset': {
+                                        minHeight: '56px',
+                                        '& .MuiOutlinedInput-notchedOutline': {
                                             borderColor: colors.secondaryGrey,
                                         },
-                                        '&:hover fieldset': {
+                                        '&:hover .MuiOutlinedInput-notchedOutline': {
                                             borderColor: colors.primaryRed,
                                         },
-                                    },
-                                    '& .MuiInputLabel-root': {
-                                        color: colors.secondaryGrey,
-                                    },
-                                }}
-                            />
-                        </Grid>
-
-                        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                            <TextField
-                                fullWidth
-                                type="date"
-                                label="Date de visite (à)"
-                                value={dateToFilter}
-                                onChange={(e) => {
-                                    setDateToFilter(e.target.value);
-                                    setPage(1);
-                                }}
-                                InputLabelProps={{ shrink: true }}
-                                sx={{
-                                    backgroundColor: colors.secondaryDark,
-                                    '& .MuiOutlinedInput-root': {
-                                        color: colors.white,
-                                        '& fieldset': {
-                                            borderColor: colors.secondaryGrey,
+                                        '& .MuiSelect-select': {
+                                            paddingY: '16.5px',
+                                            minWidth: '100px',
+                                            display: 'flex',
+                                            alignItems: 'center',
                                         },
-                                        '&:hover fieldset': {
-                                            borderColor: colors.primaryRed,
+                                    }}
+                                    MenuProps={{
+                                        PaperProps: {
+                                            sx: {
+                                                backgroundColor: colors.secondaryDark,
+                                                '& .MuiMenuItem-root': {
+                                                    color: colors.white,
+                                                    '&:hover': {
+                                                        backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                                                    },
+                                                    '&.Mui-selected': {
+                                                        backgroundColor: 'rgba(255, 0, 0, 0.2)',
+                                                        '&:hover': {
+                                                            backgroundColor: 'rgba(255, 0, 0, 0.3)',
+                                                        },
+                                                    },
+                                                },
+                                            },
                                         },
-                                    },
-                                    '& .MuiInputLabel-root': {
-                                        color: colors.secondaryGrey,
-                                    },
-                                }}
-                            />
+                                    }}
+                                >
+                                    <MenuItem value="created_desc">Date création (récent)</MenuItem>
+                                    <MenuItem value="created_asc">Date création (ancien)</MenuItem>
+                                    <MenuItem value="updated_desc">Date modification (récent)</MenuItem>
+                                    <MenuItem value="updated_asc">Date modification (ancien)</MenuItem>
+                                    <MenuItem value="amount_desc">Montant (décroissant)</MenuItem>
+                                    <MenuItem value="amount_asc">Montant (croissant)</MenuItem>
+                                </Select>
+                            </FormControl>
                         </Grid>
 
                         <Grid size={{ xs: 12, sm: 6, md: 2 }}>
@@ -364,66 +335,6 @@ export const ReservationList = () => {
                         </Grid>
                     </Grid>
                 </Box>
-            </Box>
-
-            {/* Filtre de tri */}
-            <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
-                <FormControl sx={{ minWidth: '250px' }}>
-                    <InputLabel sx={{ color: colors.secondaryGrey }}>Trier par</InputLabel>
-                    <Select
-                        value={sortBy}
-                        label="Trier par"
-                        onChange={(e) => {
-                            setSortBy(e.target.value);
-                            setPage(1);
-                        }}
-                        sx={{
-                            backgroundColor: colors.secondaryDark,
-                            color: colors.white,
-                            minHeight: '56px',
-                            '& .MuiOutlinedInput-notchedOutline': {
-                                borderColor: colors.secondaryGrey,
-                            },
-                            '&:hover .MuiOutlinedInput-notchedOutline': {
-                                borderColor: colors.primaryRed,
-                            },
-                            '& .MuiSelect-select': {
-                                paddingY: '16.5px',
-                                minWidth: '100px',
-                                display: 'flex',
-                                alignItems: 'center',
-                            },
-                        }}
-                        MenuProps={{
-                            PaperProps: {
-                                sx: {
-                                    backgroundColor: colors.secondaryDark,
-                                    '& .MuiMenuItem-root': {
-                                        color: colors.white,
-                                        '&:hover': {
-                                            backgroundColor: 'rgba(255, 0, 0, 0.1)',
-                                        },
-                                        '&.Mui-selected': {
-                                            backgroundColor: 'rgba(255, 0, 0, 0.2)',
-                                            '&:hover': {
-                                                backgroundColor: 'rgba(255, 0, 0, 0.3)',
-                                            },
-                                        },
-                                    },
-                                },
-                            },
-                        }}
-                    >
-                        <MenuItem value="created_desc">Date création (récent)</MenuItem>
-                        <MenuItem value="created_asc">Date création (ancien)</MenuItem>
-                        <MenuItem value="date_desc">Date visite (récent)</MenuItem>
-                        <MenuItem value="date_asc">Date visite (ancien)</MenuItem>
-                        <MenuItem value="amount_desc">Montant (décroissant)</MenuItem>
-                        <MenuItem value="amount_asc">Montant (croissant)</MenuItem>
-                        <MenuItem value="status">Statut</MenuItem>
-                        <MenuItem value="number">Numéro</MenuItem>
-                    </Select>
-                </FormControl>
             </Box>
 
             <Box
@@ -449,7 +360,7 @@ export const ReservationList = () => {
                     >
                         <CircularProgress sx={{ color: colors.primaryRed }} size={60} />
                         <Typography variant="body1" sx={{ color: colors.white }}>
-                            Chargement des réservations...
+                            Chargement des tarifs...
                         </Typography>
                     </Box>
                 ) : error ? (
@@ -465,7 +376,7 @@ export const ReservationList = () => {
                             Erreur : {error}
                         </Typography>
                     </Box>
-                ) : reservations.length === 0 ? (
+                ) : prices.length === 0 ? (
                     <Box
                         sx={{
                             display: 'flex',
@@ -475,7 +386,7 @@ export const ReservationList = () => {
                         }}
                     >
                         <Typography variant="body1" sx={{ color: colors.white }}>
-                            Aucune réservation trouvée.
+                            Aucun tarif trouvé.
                         </Typography>
                     </Box>
                 ) : (
@@ -489,10 +400,10 @@ export const ReservationList = () => {
                                     mb: 3,
                                 }}
                             >
-                                {reservations.map((reservation) => (
-                                    <ReservationCard
-                                        key={reservation.id}
-                                        reservation={reservation}
+                                {prices.map((price) => (
+                                    <PriceAdminCard
+                                        key={price.id}
+                                        price={price}
                                         onEdit={handleEdit}
                                         onDelete={handleDelete}
                                         onClick={handleViewDetails}
@@ -501,7 +412,7 @@ export const ReservationList = () => {
                             </Box>
 
                             {/* Pagination */}
-                            {totalPages >= 1 && (
+                            {totalPages > 1 && (
                                 <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
                                     <Pagination
                                         count={totalPages}
@@ -531,34 +442,41 @@ export const ReservationList = () => {
             </Box>
 
             {/* Modal de modification */}
-            <UpdateReservationModal
+            <UpdatePriceModal
                 open={editModalOpen}
                 onClose={() => {
                     setEditModalOpen(false);
-                    setSelectedReservation(null);
+                    setSelectedPrice(null);
                 }}
-                reservation={selectedReservation}
+                price={selectedPrice}
                 onUpdateSuccess={handleUpdateSuccess}
             />
 
             {/* Modal de détails */}
-            <ReservationDetailsModal
+            <PriceDetailsModal
                 open={detailsModalOpen}
                 onClose={() => {
                     setDetailsModalOpen(false);
-                    setReservationToView(null);
+                    setPriceToView(null);
                 }}
-                reservation={reservationToView}
+                price={priceToView}
             />
 
             {/* Modal de confirmation de suppression */}
-            <ReservationCanceledModal
+            <DeletePriceModal
                 deleteDialogOpen={deleteDialogOpen}
                 handleCloseDeleteDialog={handleCloseDeleteDialog}
                 handleConfirmDelete={handleConfirmDelete}
-                reservationToDelete={reservationToDelete}
+                priceToDelete={priceToDelete}
                 isDeleting={isDeleting}
                 error={deleteError}
+            />
+
+            {/* Modal de création de prix */}
+            <CreatePriceModal
+                open={createModalOpen}
+                onClose={() => setCreateModalOpen(false)}
+                onCreateSuccess={handleCreateSuccess}
             />
         </Box>
     );

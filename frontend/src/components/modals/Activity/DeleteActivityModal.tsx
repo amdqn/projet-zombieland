@@ -1,6 +1,6 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
-import { colors } from '../../theme';
-import type { Activity } from '../../@types/activity';
+import { colors } from '../../../theme';
+import type { Activity } from '../../../@types/activity';
 
 interface DeleteActivityModalProps {
   deleteDialogOpen: boolean;

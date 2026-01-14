@@ -1,10 +1,10 @@
 import {Alert, Box, Modal, Typography} from "@mui/material";
-import {getValidateEmail} from "../../functions/validateEmail.ts";
+import {getValidateEmail} from "../../../functions/validateEmail.ts";
 import {useState} from "react";
-import {getValidatePassword} from "../../functions/validatePassword.ts";
-import {updateProfile} from "../../services/auth.ts";
-import {colors} from "../../theme";
-import {Input, PrimaryButton} from "../common";
+import {getValidatePassword} from "../../../functions/validatePassword.ts";
+import {updateProfile} from "../../../services/auth.ts";
+import {colors} from "../../../theme";
+import {Input, PrimaryButton} from "../../common";
 
 interface ModalProps {
     open: boolean;

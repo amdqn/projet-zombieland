@@ -3,9 +3,9 @@ import { styled } from '@mui/material/styles';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { colors } from '../../theme';
-import type { Activity } from '../../@types/activity';
-import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE } from '../../utils/imageUtils';
+import { colors } from '../../../theme';
+import type { Activity } from '../../../@types/activity';
+import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE } from '../../../utils/imageUtils.ts';
 
 const StyledActivityCard = styled(Card)(({ theme }) => ({
   backgroundColor: colors.secondaryDark,

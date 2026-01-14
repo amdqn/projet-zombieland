@@ -1,0 +1,282 @@
+import { useEffect, useState } from 'react';
+import { MapContainer, ImageOverlay, Marker, Popup } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import { Box, CircularProgress, Alert } from '@mui/material';
+import { colors } from '../../theme';
+import type { MapData, MapPoint } from '../../@types/map';
+import type { Attraction } from '../../@types/attraction';
+import type { Activity } from '../../@types/activity';
+import type { PointOfInterest } from '../../@types/pointOfInterest';
+
+// Fix des icônes Leaflet par défaut
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+});
+
+interface ParkMapProps {
+  data: MapData | null;
+  loading: boolean;
+  error: string | null;
+  selectedTypes: string[];
+  selectedCategories: number[];
+  searchQuery: string;
+}
+
+export function ParkMap({ data, loading, error, selectedTypes, selectedCategories, searchQuery }: ParkMapProps) {
+  const [mapPoints, setMapPoints] = useState<MapPoint[]>([]);
+
+  // Convertir les données en points de carte et appliquer les filtres
+  useEffect(() => {
+    if (!data) return;
+
+    const points: MapPoint[] = [];
+
+    // Ajouter les attractions
+    if (selectedTypes.includes('attraction')) {
+      data.attractions
+        .filter((a: Attraction) => a.latitude && a.longitude)
+        .filter((a: Attraction) =>
+          selectedCategories.length === 0 || selectedCategories.includes(a.category_id)
+        )
+        .filter((a: Attraction) => {
+          if (!searchQuery) return true;
+          const query = searchQuery.toLowerCase();
+          return a.name.toLowerCase().includes(query) ||
+                 a.description?.toLowerCase().includes(query);
+        })
+        .forEach((attraction: Attraction) => {
+          points.push({
+            id: attraction.id,
+            name: attraction.name,
+            latitude: Number(attraction.latitude),
+            longitude: Number(attraction.longitude),
+            type: 'attraction',
+            description: attraction.description,
+            image_url: attraction.image_url,
+            thrill_level: attraction.thrill_level,
+            duration: attraction.duration,
+            category: attraction.category,
+          });
+        });
+    }
+
+    // Ajouter les activités
+    if (selectedTypes.includes('activity')) {
+      data.activities
+        .filter((a: Activity) => a.latitude && a.longitude)
+        .filter((a: Activity) =>
+          selectedCategories.length === 0 || selectedCategories.includes(a.category_id)
+        )
+        .filter((a: Activity) => {
+          if (!searchQuery) return true;
+          const query = searchQuery.toLowerCase();
+          return a.name.toLowerCase().includes(query) ||
+                 a.description?.toLowerCase().includes(query);
+        })
+        .forEach((activity: Activity) => {
+          points.push({
+            id: activity.id,
+            name: activity.name,
+            latitude: Number(activity.latitude),
+            longitude: Number(activity.longitude),
+            type: 'activity',
+            description: activity.description,
+            image_url: activity.image_url,
+            thrill_level: activity.thrill_level,
+            duration: activity.duration,
+            category: activity.category,
+          });
+        });
+    }
+
+    // Ajouter les POI (toilettes, boutiques)
+    if (selectedTypes.includes('poi')) {
+      data.pois.forEach((poi: PointOfInterest) => {
+        points.push({
+          id: poi.id,
+          name: poi.name,
+          latitude: Number(poi.latitude),
+          longitude: Number(poi.longitude),
+          type: 'poi',
+          description: poi.description || undefined,
+          icon: poi.icon || undefined,
+          poi_type: poi.type,
+        });
+      });
+    }
+
+    setMapPoints(points);
+  }, [data, selectedTypes, selectedCategories, searchQuery]);
+
+  // Créer des icônes personnalisées selon le type
+  const createCustomIcon = (point: MapPoint) => {
+    let color = colors.primaryGreen;
+    let svgPath = '';
+
+    if (point.type === 'attraction') {
+      color = colors.primaryRed;
+      // Icône manège / roller coaster
+      svgPath = 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-4h2v2h-2zm0-10h2v6h-2z';
+    } else if (point.type === 'activity') {
+      color = colors.primaryGreen;
+      // Icône activité / cible
+      svgPath = 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z';
+    } else if (point.type === 'poi') {
+      if (point.poi_type === 'toilets') {
+        color = colors.white;
+        // Icône WC
+        svgPath = 'M5.5 22v-7.5H4V9c0-1.1.9-2 2-2h3c1.1 0 2 .9 2 2v5.5H9.5V22h-4zM18 22v-6h3l-2.54-7.63C18.18 7.55 17.42 7 16.56 7h-.12c-.86 0-1.63.55-1.9 1.37L12 16h3v6h3zM7.5 6c1.11 0 2-.89 2-2s-.89-2-2-2-2 .89-2 2 .89 2 2 2zm9 0c1.11 0 2-.89 2-2s-.89-2-2-2-2 .89-2 2 .89 2 2 2z';
+      } else if (point.poi_type === 'shop') {
+        color = colors.primaryGreen;
+        // Icône boutique
+        svgPath = 'M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4V8h16v11z';
+      } else {
+        color = colors.secondaryGrey;
+        // Icône par défaut (point d'intérêt)
+        svgPath = 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z';
+      }
+    }
+
+    const html = `
+      <div style="
+        width: 36px;
+        height: 36px;
+        background-color: ${color};
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 3px solid white;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+      ">
+        <svg viewBox="0 0 24 24" width="20" height="20" style="fill: ${point.type === 'poi' && point.poi_type === 'toilets' ? '#10130C' : 'white'};">
+          <path d="${svgPath}"/>
+        </svg>
+      </div>
+    `;
+
+    return L.divIcon({
+      html,
+      className: 'custom-marker',
+      iconSize: [36, 36],
+      iconAnchor: [18, 18],
+      popupAnchor: [0, -18],
+    });
+  };
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: 600,
+          bgcolor: colors.secondaryDarkAlt,
+          borderRadius: 2,
+        }}
+      >
+        <CircularProgress sx={{ color: colors.primaryGreen }} />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Alert severity="error" sx={{ borderRadius: 2 }}>
+        {error}
+      </Alert>
+    );
+  }
+
+  if (!data || mapPoints.length === 0) {
+    return (
+      <Alert severity="info" sx={{ borderRadius: 2 }}>
+        Aucun point à afficher sur la carte.
+      </Alert>
+    );
+  }
+
+  // Bornes de la carte basées sur l'image (élargies pour remplir le viewport)
+  const imageBounds: L.LatLngBoundsExpression = [
+    [48.843, 2.315],  // Sud-Ouest (agrandi en hauteur et largeur)
+    [48.872, 2.390],  // Nord-Est (agrandi en hauteur et largeur)
+  ];
+
+  return (
+    <Box
+      sx={{
+        width: '100%',
+        aspectRatio: '1024 / 535',
+        maxHeight: { xs: 400, md: 550, lg: 600 },
+        borderRadius: 2,
+        overflow: 'hidden',
+        border: `2px solid ${colors.secondaryGrey}`,
+        position: 'relative',
+        '& .leaflet-container': {
+          height: '100%',
+          width: '100%',
+          bgcolor: colors.secondaryDark,
+        },
+      }}
+    >
+      <MapContainer
+        center={[48.8575, 2.3525]}
+        zoom={14}
+        minZoom={14}
+        maxZoom={18}
+        style={{ height: '100%', width: '100%' }}
+        zoomControl={true}
+      >
+        {/* Image de fond du parc */}
+        <ImageOverlay
+          url="/map-images/carte-parc.png"
+          bounds={imageBounds}
+          opacity={0.9}
+        />
+
+        {/* Marqueurs */}
+        {mapPoints.map((point) => (
+          <Marker
+            key={`${point.type}-${point.id}`}
+            position={[point.latitude, point.longitude]}
+            icon={createCustomIcon(point)}
+          >
+            <Popup>
+              <Box sx={{ p: 1, minWidth: 200, maxWidth: 300 }}>
+                <Box sx={{ fontWeight: 'bold', fontSize: 16, mb: 1 }}>
+                  {point.name}
+                </Box>
+                {point.category && (
+                  <Box sx={{ fontSize: 12, color: colors.primaryGreen, mb: 1 }}>
+                    {point.category.name}
+                  </Box>
+                )}
+                {point.description && (
+                  <Box sx={{ fontSize: 14, mb: 1 }}>
+                    {point.description.slice(0, 100)}
+                    {point.description.length > 100 && '...'}
+                  </Box>
+                )}
+                {point.thrill_level && (
+                  <Box sx={{ fontSize: 12 }}>
+                    😱 Frisson: {point.thrill_level}/5
+                  </Box>
+                )}
+                {point.duration && (
+                  <Box sx={{ fontSize: 12 }}>
+                    ⏱️ Durée: {point.duration} min
+                  </Box>
+                )}
+              </Box>
+            </Popup>
+          </Marker>
+        ))}
+      </MapContainer>
+    </Box>
+  );
+}

@@ -1,10 +1,10 @@
 import { Alert, Box, MenuItem, Modal, Select, Typography } from '@mui/material';
 import { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
-import { updateReservation } from '../../services/reservations';
-import { colors } from '../../theme';
-import { PrimaryButton } from '../common';
-import type { Reservation, ReservationStatus } from '../../@types/reservation';
+import { updateReservation } from '../../../services/reservations.ts';
+import { colors } from '../../../theme';
+import { PrimaryButton } from '../../common';
+import type { Reservation, ReservationStatus } from '../../../@types/reservation';
+import {toast} from "react-toastify";
 
 interface UpdateReservationModalProps {
   open: boolean;

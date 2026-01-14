@@ -5,7 +5,8 @@ import { Calendar } from "../../../components/common";
 import { InformationCard } from "../../../components/cards";
 import { colors } from "../../../theme/theme";
 import { useReservationStore } from "../../../stores/reservationStore";
-import { getParkDates, type ParkDate } from "../../../services/parkDates";
+import {getParkDates} from "../../../services/parkDates.ts";
+import type {ParkDate} from "../../../@types/parkDate.ts";
 
 export const Step2SelectDate = () => {
   const { date, dateId, setDate } = useReservationStore();

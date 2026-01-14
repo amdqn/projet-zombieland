@@ -115,29 +115,29 @@ export function ParkMap({ data, loading, error, selectedTypes, selectedCategorie
   // Créer des icônes personnalisées selon le type
   const createCustomIcon = (point: MapPoint) => {
     let color = colors.primaryGreen;
-    let svgPath = '';
+    let svgContent = '';
 
     if (point.type === 'attraction') {
       color = colors.primaryRed;
-      // Icône manège / roller coaster
-      svgPath = 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-4h2v2h-2zm0-10h2v6h-2z';
+      // Icône manège / roue (ferris wheel)
+      svgContent = '<circle cx="12" cy="12" r="9" fill="none" stroke="white" stroke-width="1.5"/><circle cx="12" cy="12" r="2" fill="white"/><line x1="12" y1="3" x2="12" y2="21" stroke="white" stroke-width="1.5"/><line x1="3" y1="12" x2="21" y2="12" stroke="white" stroke-width="1.5"/><circle cx="12" cy="5" r="1.5" fill="white"/><circle cx="12" cy="19" r="1.5" fill="white"/><circle cx="5" cy="12" r="1.5" fill="white"/><circle cx="19" cy="12" r="1.5" fill="white"/>';
     } else if (point.type === 'activity') {
       color = colors.primaryGreen;
       // Icône activité / cible
-      svgPath = 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z';
+      svgContent = '<circle cx="12" cy="12" r="10" fill="none" stroke="white" stroke-width="2"/><circle cx="12" cy="12" r="6" fill="none" stroke="white" stroke-width="1.5"/><circle cx="12" cy="12" r="2" fill="white"/>';
     } else if (point.type === 'poi') {
       if (point.poi_type === 'toilets') {
         color = colors.white;
         // Icône WC
-        svgPath = 'M5.5 22v-7.5H4V9c0-1.1.9-2 2-2h3c1.1 0 2 .9 2 2v5.5H9.5V22h-4zM18 22v-6h3l-2.54-7.63C18.18 7.55 17.42 7 16.56 7h-.12c-.86 0-1.63.55-1.9 1.37L12 16h3v6h3zM7.5 6c1.11 0 2-.89 2-2s-.89-2-2-2-2 .89-2 2 .89 2 2 2zm9 0c1.11 0 2-.89 2-2s-.89-2-2-2-2 .89-2 2 .89 2 2 2z';
+        svgContent = '<path d="M5.5 22v-7.5H4V9c0-1.1.9-2 2-2h3c1.1 0 2 .9 2 2v5.5H9.5V22h-4zM18 22v-6h3l-2.54-7.63C18.18 7.55 17.42 7 16.56 7h-.12c-.86 0-1.63.55-1.9 1.37L12 16h3v6h3zM7.5 6c1.11 0 2-.89 2-2s-.89-2-2-2-2 .89-2 2 .89 2 2 2zm9 0c1.11 0 2-.89 2-2s-.89-2-2-2-2 .89-2 2 .89 2 2 2z" fill="' + (colors.secondaryDark) + '"/>';
       } else if (point.poi_type === 'shop') {
         color = colors.primaryGreen;
         // Icône boutique
-        svgPath = 'M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4V8h16v11z';
+        svgContent = '<path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4V8h16v11z" fill="white"/>';
       } else {
         color = colors.secondaryGrey;
         // Icône par défaut (point d'intérêt)
-        svgPath = 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z';
+        svgContent = '<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="white"/>';
       }
     }
 
@@ -153,8 +153,8 @@ export function ParkMap({ data, loading, error, selectedTypes, selectedCategorie
         border: 3px solid white;
         box-shadow: 0 2px 8px rgba(0,0,0,0.6);
       ">
-        <svg viewBox="0 0 24 24" width="20" height="20" style="fill: ${point.type === 'poi' && point.poi_type === 'toilets' ? '#10130C' : 'white'};">
-          <path d="${svgPath}"/>
+        <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+          ${svgContent}
         </svg>
       </div>
     `;
@@ -263,13 +263,13 @@ export function ParkMap({ data, loading, error, selectedTypes, selectedCategorie
                   </Box>
                 )}
                 {point.thrill_level && (
-                  <Box sx={{ fontSize: 12 }}>
-                    😱 Frisson: {point.thrill_level}/5
+                  <Box sx={{ fontSize: 12, display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    <Box component="span" sx={{ fontWeight: 'bold' }}>Frisson:</Box> {point.thrill_level}/5
                   </Box>
                 )}
                 {point.duration && (
-                  <Box sx={{ fontSize: 12 }}>
-                    ⏱️ Durée: {point.duration} min
+                  <Box sx={{ fontSize: 12, display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    <Box component="span" sx={{ fontWeight: 'bold' }}>Durée:</Box> {point.duration} min
                   </Box>
                 )}
               </Box>

@@ -20,14 +20,17 @@ export default function Footer() {
                     <Typography onClick={() => navigate("/static/mentions-legales")} sx={{ cursor: 'pointer' }}>
                         Mentions légales
                     </Typography>
-                    <Typography onClick={() => navigate("/static/cookies")} sx={{ cursor: 'pointer' }}>
+                    <Typography onClick={() => navigate("/static/gestion-cookies")} sx={{ cursor: 'pointer' }}>
                         Gestion des cookies
                     </Typography>
-                    <Typography onClick={() => navigate("/static/conditions-vente")} sx={{ cursor: 'pointer' }}>
+                    <Typography onClick={() => navigate("/static/cgv")} sx={{ cursor: 'pointer' }}>
                         Conditions de vente
                     </Typography>
                     <Typography onClick={() => navigate("/static/cgu")} sx={{ cursor: 'pointer' }}>
                         CGU
+                    </Typography>
+                    <Typography onClick={() => navigate("/static/rgpd")} sx={{ cursor: 'pointer' }}>
+                        RGPD
                     </Typography>
                 </Box>
 

@@ -6,7 +6,9 @@ import CssBaseline from '@mui/material/CssBaseline'
 import { theme } from './theme/theme'
 import './index.css'
 import { router } from './router'
-import {LoginProvider} from "./context/UserLoginContext.tsx";
+import {LoginProvider} from "./context/UserLoginContext.tsx"
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 
 createRoot(document.getElementById('root')!).render(
@@ -15,6 +17,18 @@ createRoot(document.getElementById('root')!).render(
         <CssBaseline />
             <LoginProvider>
                 <RouterProvider router={router} />
+                <ToastContainer
+                    position="top-right"
+                    autoClose={3000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="dark"
+                />
             </LoginProvider>
     </ThemeProvider>
   </StrictMode>,

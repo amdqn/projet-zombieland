@@ -1,21 +1,21 @@
 import { Alert, Box, MenuItem, Modal, Select, Typography, FormControl, InputLabel, Switch, FormControlLabel, TextField, Chip, Button, CircularProgress } from '@mui/material';
 import { useState, useEffect } from 'react';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { updateActivity, type UpdateActivityDto } from '../../services/activities';
-import { getCategories } from '../../services/categories';
-import { getActivities } from '../../services/activities';
-import { uploadActivityImage } from '../../services/upload';
-import { colors } from '../../theme';
-import { PrimaryButton } from '../common';
-import type { Category } from '../../@types/categorie';
-import type { Activity } from '../../@types/activity';
-import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE } from '../../utils/imageUtils';
+import { createActivity, type CreateActivityDto } from '../../../services/activities.ts';
+import { getCategories } from '../../../services/categories.ts';
+import { getActivities } from '../../../services/activities.ts';
+import { uploadActivityImage } from '../../../services/upload.ts';
+import { colors } from '../../../theme';
+import { PrimaryButton } from '../../common';
+import type { Category } from '../../../@types/categorie';
+import type { Activity } from '../../../@types/activity';
+import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE } from '../../../utils/imageUtils.ts';
+import {toast} from "react-toastify";
 
-interface UpdateActivityModalProps {
+interface CreateActivityModalProps {
   open: boolean;
   onClose: () => void;
-  activity: Activity | null;
-  onUpdateSuccess: () => void;
+  onSuccess: () => void;
 }
 
 const style = {
@@ -32,12 +32,11 @@ const style = {
   p: 4,
 };
 
-export const UpdateActivityModal = ({
+export const CreateActivityModal = ({
   open,
   onClose,
-  activity,
-  onUpdateSuccess,
-}: UpdateActivityModalProps) => {
+  onSuccess,
+}: CreateActivityModalProps) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [allActivities, setAllActivities] = useState<Activity[]>([]);
   const [name, setName] = useState('');
@@ -65,41 +64,33 @@ export const UpdateActivityModal = ({
             getActivities(),
           ]);
           setCategories(cats);
-          setAllActivities(acts.filter(a => a.id !== activity?.id));
+          setAllActivities(acts);
         } catch (err) {
           console.error('Erreur lors du chargement des données:', err);
         }
       };
       fetchData();
     }
-  }, [open, activity]);
-
-  useEffect(() => {
-    if (activity) {
-      setName(activity.name);
-      setDescription(activity.description);
-      setCategoryId(activity.category_id);
-      setAttractionId(activity.attraction_id || '');
-      setImageUrl(activity.image_url || '');
-      setThrillLevel(activity.thrill_level || '');
-      setDuration(activity.duration || '');
-      setMinAge((activity as any).min_age || '');
-      setAccessibility((activity as any).accessibility || '');
-      setIsPublished((activity as any).is_published !== false);
-      setRelatedActivityIds((activity as any).related_activities?.map((r: any) => r.id) || []);
-      setError(null);
-      setSuccess(null);
-    }
-  }, [activity]);
+  }, [open]);
 
   const handleClose = () => {
+    setName('');
+    setDescription('');
+    setCategoryId('');
+    setAttractionId('');
+    setImageUrl('');
+    setThrillLevel('');
+    setDuration('');
+    setMinAge('');
+    setAccessibility('');
+    setIsPublished(true);
+    setRelatedActivityIds([]);
     setError(null);
     setSuccess(null);
     onClose();
   };
 
   const handleSubmit = async () => {
-    if (!activity) return;
     if (!name || !description || !categoryId) {
       setError('Le nom, la description et la catégorie sont requis');
       return;
@@ -110,7 +101,7 @@ export const UpdateActivityModal = ({
     setSuccess(null);
 
     try {
-      const dto: UpdateActivityDto = {
+      const dto: CreateActivityDto = {
         name,
         description,
         category_id: Number(categoryId),
@@ -124,14 +115,12 @@ export const UpdateActivityModal = ({
         related_activity_ids: relatedActivityIds.length > 0 ? relatedActivityIds : undefined,
       };
 
-      await updateActivity(activity.id, dto);
-      setSuccess('Activité mise à jour avec succès');
-      setTimeout(() => {
-        onUpdateSuccess();
-        handleClose();
-      }, 1500);
+      await createActivity(dto);
+      toast.success('Activité créée avec succès !');
+      onSuccess();
+      handleClose();
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erreur lors de la mise à jour de l\'activité';
+      const message = err instanceof Error ? err.message : 'Erreur lors de la création de l\'activité';
       setError(message);
     } finally {
       setIsLoading(false);
@@ -171,8 +160,6 @@ export const UpdateActivityModal = ({
     );
   };
 
-  if (!activity) return null;
-
   return (
     <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title">
       <Box sx={style}>
@@ -187,7 +174,7 @@ export const UpdateActivityModal = ({
             textAlign: 'center',
           }}
         >
-          Modifier l'activité
+          Créer une nouvelle activité
         </Typography>
 
         {error && (
@@ -426,17 +413,17 @@ export const UpdateActivityModal = ({
               Activités liées
             </Typography>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, maxHeight: '150px', overflow: 'auto', p: 1, border: `1px solid ${colors.secondaryGrey}`, borderRadius: 1 }}>
-              {allActivities.map((act) => (
+              {allActivities.map((activity) => (
                 <Chip
-                  key={act.id}
-                  label={act.name}
-                  onClick={() => toggleRelatedActivity(act.id)}
-                  color={relatedActivityIds.includes(act.id) ? 'primary' : 'default'}
+                  key={activity.id}
+                  label={activity.name}
+                  onClick={() => toggleRelatedActivity(activity.id)}
+                  color={relatedActivityIds.includes(activity.id) ? 'primary' : 'default'}
                   sx={{
-                    backgroundColor: relatedActivityIds.includes(act.id) ? colors.primaryGreen : colors.secondaryDarkAlt,
+                    backgroundColor: relatedActivityIds.includes(activity.id) ? colors.primaryGreen : colors.secondaryDarkAlt,
                     color: colors.white,
                     '&:hover': {
-                      backgroundColor: relatedActivityIds.includes(act.id) ? colors.primaryGreen : colors.secondaryGrey,
+                      backgroundColor: relatedActivityIds.includes(activity.id) ? colors.primaryGreen : colors.secondaryGrey,
                     },
                   }}
                 />
@@ -476,7 +463,7 @@ export const UpdateActivityModal = ({
             type="button"
           />
           <PrimaryButton
-            text="Enregistrer"
+            text="Créer"
             onClick={handleSubmit}
             fullWidth={false}
             disabled={isLoading}

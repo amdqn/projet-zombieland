@@ -6,7 +6,7 @@ import {ReservationCard} from "../../../components/cards";
 import {ReservationDetailsModal} from "../../../components/modals";
 import type {Reservation} from "../../../@types/reservation";
 import {deleteReservation} from "../../../services/reservations.ts";
-import {ReservationCanceledModal} from "../../../components/modals/ReservationCanceledModal.tsx";
+import {ReservationCanceledModal} from "../../../components/modals/Reservations/ReservationCanceledModal.tsx";
 
 export default function ReservationUserList() {
     const [isLoading, setIsLoading] = useState<boolean>(false);

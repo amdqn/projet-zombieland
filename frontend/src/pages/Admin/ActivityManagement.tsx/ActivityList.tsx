@@ -16,17 +16,18 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import AddIcon from '@mui/icons-material/Add';
+import { toast } from 'react-toastify';
 import { colors } from '../../../theme';
 import { useEffect, useState, useRef } from 'react';
 import type { Activity } from '../../../@types/activity';
 import { getActivities, deleteActivity, type ActivityFilters } from '../../../services/activities';
 import { getCategories } from '../../../services/categories';
 import type { Category } from '../../../@types/categorie';
-import { ActivityCard } from '../../../components/cards/ActivityCard';
-import { CreateActivityModal } from '../../../components/modals/CreateActivityModal';
-import { UpdateActivityModal } from '../../../components/modals/UpdateActivityModal';
-import { ActivityDetailsModal } from '../../../components/modals/ActivityDetailsModal';
-import { DeleteActivityModal } from '../../../components/modals/DeleteActivityModal';
+import { ActivityCard } from '../../../components/cards/Activity/ActivityCard.tsx';
+import { CreateActivityModal } from '../../../components/modals/Activity/CreateActivityModal.tsx';
+import { UpdateActivityModal } from '../../../components/modals/Activity/UpdateActivityModal.tsx';
+import { ActivityDetailsModal } from '../../../components/modals/Activity/ActivityDetailsModal.tsx';
+import { DeleteActivityModal } from '../../../components/modals/Activity/DeleteActivityModal.tsx';
 
 export const ActivityList = () => {
   const [activities, setActivities] = useState<Activity[]>([]);
@@ -47,6 +48,7 @@ export const ActivityList = () => {
   const [searchInput, setSearchInput] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<number | ''>('');
   const [publishedFilter, setPublishedFilter] = useState<string>('');
+  const [sortBy, setSortBy] = useState<string>('created_desc');
   const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -83,7 +85,28 @@ export const ActivityList = () => {
         } else if (publishedFilter === 'draft') {
           filtered = activitiesData.filter((a: any) => a.is_published === false);
         }
-        setActivities(filtered);
+
+        // Trier les activités
+        const sorted = [...filtered].sort((a, b) => {
+          switch (sortBy) {
+            case 'name_asc':
+              return a.name.localeCompare(b.name);
+            case 'name_desc':
+              return b.name.localeCompare(a.name);
+            case 'created_desc':
+              return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+            case 'created_asc':
+              return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+            case 'updated_desc':
+              return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+            case 'updated_asc':
+              return new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime();
+            default:
+              return 0;
+          }
+        });
+
+        setActivities(sorted);
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Erreur lors de la récupération des activités';
         setError(message);
@@ -97,7 +120,7 @@ export const ActivityList = () => {
         clearTimeout(debounceTimeoutRef.current);
       }
     };
-  }, [search, categoryFilter, publishedFilter]);
+  }, [search, categoryFilter, publishedFilter, sortBy]);
 
   const handleCreate = () => {
     setCreateModalOpen(true);
@@ -131,13 +154,10 @@ export const ActivityList = () => {
     setDeleteSuccess(null);
     try {
       await deleteActivity(activityToDelete.id);
-      setDeleteSuccess('Activité supprimée avec succès');
+      toast.success('Activité supprimée avec succès !');
       setActivities(activities.filter((a) => a.id !== activityToDelete.id));
-      setTimeout(() => {
-        setDeleteDialogOpen(false);
-        setActivityToDelete(null);
-        setDeleteSuccess(null);
-      }, 1500);
+      setDeleteDialogOpen(false);
+      setActivityToDelete(null);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erreur lors de la suppression de l\'activité';
       setDeleteError(message);
@@ -212,6 +232,7 @@ export const ActivityList = () => {
     setSearch('');
     setCategoryFilter('');
     setPublishedFilter('');
+    setSortBy('created_desc');
   };
 
   const hasActiveFilters = search || categoryFilter || publishedFilter;
@@ -430,6 +451,61 @@ export const ActivityList = () => {
             </Button>
           </Grid>
         </Grid>
+      </Box>
+
+      {/* Filtre de tri */}
+      <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
+        <FormControl sx={{ minWidth: '250px' }}>
+          <InputLabel sx={{ color: colors.secondaryGrey }}>Trier par</InputLabel>
+          <Select
+            value={sortBy}
+            label="Trier par"
+            onChange={(e) => setSortBy(e.target.value)}
+            sx={{
+              backgroundColor: colors.secondaryDark,
+              color: colors.white,
+              minHeight: '56px',
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: colors.secondaryGrey,
+              },
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: colors.primaryGreen,
+              },
+              '& .MuiSelect-select': {
+                paddingY: '16.5px',
+                minWidth: '100px',
+                display: 'flex',
+                alignItems: 'center',
+              },
+            }}
+            MenuProps={{
+              PaperProps: {
+                sx: {
+                  backgroundColor: colors.secondaryDark,
+                  '& .MuiMenuItem-root': {
+                    color: colors.white,
+                    '&:hover': {
+                      backgroundColor: `${colors.primaryGreen}20`,
+                    },
+                    '&.Mui-selected': {
+                      backgroundColor: `${colors.primaryGreen}40`,
+                      '&:hover': {
+                        backgroundColor: `${colors.primaryGreen}60`,
+                      },
+                    },
+                  },
+                },
+              },
+            }}
+          >
+            <MenuItem value="created_desc">Date création (récent)</MenuItem>
+            <MenuItem value="created_asc">Date création (ancien)</MenuItem>
+            <MenuItem value="updated_desc">Dernière modification (récent)</MenuItem>
+            <MenuItem value="updated_asc">Dernière modification (ancien)</MenuItem>
+            <MenuItem value="name_asc">Nom (A-Z)</MenuItem>
+            <MenuItem value="name_desc">Nom (Z-A)</MenuItem>
+          </Select>
+        </FormControl>
       </Box>
 
       {/* Liste des activités */}

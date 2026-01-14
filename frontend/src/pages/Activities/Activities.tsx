@@ -17,7 +17,7 @@ import { getAttractions } from '../../services/attractions';
 import { colors } from '../../theme';
 import { CustomBreadcrumbs } from '../../components/common';
 import { HeroSection } from '../../components/hero/HeroSection';
-import { ActivityCardPublic } from '../../components/cards/ActivityCardPublic';
+import { ActivityCardPublic } from '../../components/cards/Activity/ActivityCardPublic.tsx';
 import type { Activity } from '../../@types/activity';
 import type { Attraction } from '../../@types/attraction';
 import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE, DEFAULT_RESTAURANT_IMAGE } from '../../utils/imageUtils';
@@ -40,8 +40,15 @@ export const Activities = () => {
           getActivities(),
           getAttractions(),
         ]);
-        setActivities(Array.isArray(activitiesData) ? (activitiesData as Activity[]) : []);
-        setAttractions(Array.isArray(attractionsData) ? (attractionsData as Attraction[]) : []);
+        // Filtrer pour n'afficher que les éléments publiés sur la page publique
+        const publishedActivities = Array.isArray(activitiesData)
+          ? (activitiesData as Activity[]).filter((a: any) => a.is_published !== false)
+          : [];
+        const publishedAttractions = Array.isArray(attractionsData)
+          ? (attractionsData as Attraction[]).filter((a: any) => a.is_published !== false)
+          : [];
+        setActivities(publishedActivities);
+        setAttractions(publishedAttractions);
         
       } catch (err) {
         const message =

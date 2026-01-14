@@ -1,12 +1,12 @@
 import { Box, Modal, Typography, Chip, Stack } from '@mui/material';
-import { colors } from '../../theme';
-import type { Activity } from '../../@types/activity';
-import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE } from '../../utils/imageUtils';
+import { colors } from '../../../theme';
+import type { Attraction } from '../../../@types/attraction';
+import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE } from '../../../utils/imageUtils.ts';
 
-interface ActivityDetailsModalProps {
+interface AttractionDetailsModalProps {
   open: boolean;
   onClose: () => void;
-  activity: Activity | null;
+  attraction: Attraction | null;
 }
 
 const style = {
@@ -23,15 +23,14 @@ const style = {
   p: 4,
 };
 
-export const ActivityDetailsModal = ({
+export const AttractionDetailsModal = ({
   open,
   onClose,
-  activity,
-}: ActivityDetailsModalProps) => {
-  if (!activity) return null;
+  attraction,
+}: AttractionDetailsModalProps) => {
+  if (!attraction) return null;
 
-  const image = resolveImageUrl(activity.image_url, DEFAULT_ACTIVITY_IMAGE);
-  const isPublished = (activity as any).is_published !== false;
+  const image = resolveImageUrl(attraction.image_url, DEFAULT_ACTIVITY_IMAGE);
 
   return (
     <Modal open={open} onClose={onClose} aria-labelledby="modal-modal-title">
@@ -47,7 +46,7 @@ export const ActivityDetailsModal = ({
             textAlign: 'center',
           }}
         >
-          Détails de l'activité
+          Détails de l'attraction
         </Typography>
 
         <Box sx={{ mb: 3 }}>
@@ -67,23 +66,21 @@ export const ActivityDetailsModal = ({
         <Box sx={{ mb: 2 }}>
           <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
             <Chip
-              label={activity.category?.name || 'Activité'}
+              label={attraction.category?.name || 'Attraction'}
               sx={{
                 backgroundColor: colors.primaryGreen,
                 color: colors.secondaryDark,
                 fontWeight: 600,
               }}
             />
-            {!isPublished && (
-              <Chip
-                label="Brouillon"
-                sx={{
-                  backgroundColor: colors.warning,
-                  color: colors.secondaryDark,
-                  fontWeight: 600,
-                }}
-              />
-            )}
+            <Chip
+              label={attraction.is_published ? 'Publiée' : 'Brouillon'}
+              sx={{
+                backgroundColor: attraction.is_published ? colors.primaryGreen : colors.secondaryGrey,
+                color: colors.white,
+                fontWeight: 600,
+              }}
+            />
           </Stack>
 
           <Typography
@@ -94,7 +91,7 @@ export const ActivityDetailsModal = ({
               fontWeight: 600,
             }}
           >
-            {activity.name}
+            {attraction.name}
           </Typography>
 
           <Typography
@@ -105,7 +102,7 @@ export const ActivityDetailsModal = ({
               lineHeight: 1.6,
             }}
           >
-            {activity.description}
+            {attraction.description}
           </Typography>
         </Box>
 
@@ -129,54 +126,61 @@ export const ActivityDetailsModal = ({
           </Typography>
 
           <Stack spacing={1}>
-            {activity.thrill_level && (
+            {attraction.thrill_level && (
               <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Typography sx={{ color: colors.secondaryGrey }}>Niveau de frisson:</Typography>
                 <Typography sx={{ color: colors.white, fontWeight: 600 }}>
-                  {activity.thrill_level}/5
+                  {attraction.thrill_level}/5
                 </Typography>
               </Box>
             )}
 
-            {activity.duration && (
+            {attraction.duration && (
               <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Typography sx={{ color: colors.secondaryGrey }}>Durée:</Typography>
                 <Typography sx={{ color: colors.white, fontWeight: 600 }}>
-                  {activity.duration} minutes
-                </Typography>
-              </Box>
-            )}
-
-            {(activity as any).min_age && (
-              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Typography sx={{ color: colors.secondaryGrey }}>Âge minimum:</Typography>
-                <Typography sx={{ color: colors.white, fontWeight: 600 }}>
-                  {(activity as any).min_age} ans
-                </Typography>
-              </Box>
-            )}
-
-            {(activity as any).accessibility && (
-              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Typography sx={{ color: colors.secondaryGrey }}>Accessibilité:</Typography>
-                <Typography sx={{ color: colors.white, fontWeight: 600 }}>
-                  {(activity as any).accessibility}
-                </Typography>
-              </Box>
-            )}
-
-            {activity.attraction && (
-              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Typography sx={{ color: colors.secondaryGrey }}>Attraction liée:</Typography>
-                <Typography sx={{ color: colors.white, fontWeight: 600 }}>
-                  {activity.attraction.name}
+                  {attraction.duration} minutes
                 </Typography>
               </Box>
             )}
           </Stack>
         </Box>
 
-        {(activity as any).related_activities && (activity as any).related_activities.length > 0 && (
+        {attraction.activities && attraction.activities.length > 0 && (
+          <Box
+            sx={{
+              p: 2,
+              backgroundColor: colors.secondaryDarkAlt,
+              borderRadius: 2,
+              mb: 2,
+            }}
+          >
+            <Typography
+              variant="h6"
+              sx={{
+                mb: 2,
+                color: colors.primaryGreen,
+                fontWeight: 600,
+              }}
+            >
+              Activités liées
+            </Typography>
+            <Stack direction="row" spacing={1} flexWrap="wrap" gap={1}>
+              {attraction.activities.map((activity: any) => (
+                <Chip
+                  key={activity.id}
+                  label={activity.name || `Activité #${activity.id}`}
+                  sx={{
+                    backgroundColor: colors.secondaryGrey,
+                    color: colors.white,
+                  }}
+                />
+              ))}
+            </Stack>
+          </Box>
+        )}
+
+        {attraction.related_attractions && attraction.related_attractions.length > 0 && (
           <Box
             sx={{
               p: 2,
@@ -192,13 +196,13 @@ export const ActivityDetailsModal = ({
                 fontWeight: 600,
               }}
             >
-              Activités liées
+              Attractions similaires
             </Typography>
             <Stack direction="row" spacing={1} flexWrap="wrap" gap={1}>
-              {(activity as any).related_activities.map((rel: any) => (
+              {attraction.related_attractions.map((relatedAttraction: any) => (
                 <Chip
-                  key={rel.id}
-                  label={rel.name || `Activité #${rel.id}`}
+                  key={relatedAttraction.id}
+                  label={relatedAttraction.name || `Attraction #${relatedAttraction.id}`}
                   sx={{
                     backgroundColor: colors.secondaryGrey,
                     color: colors.white,

@@ -3,7 +3,7 @@ import type {User} from "../../@types/users";
 import {formatDay} from "../../functions/formatDay.ts";
 import {PrimaryButton} from "../common";
 import {useState} from "react";
-import UpdateProfilModal from "../modals/UpdateProfilModal.tsx";
+import UpdateProfilModal from "../modals/Profil/UpdateProfilModal.tsx";
 
 interface UserCardProps {
     user: User;

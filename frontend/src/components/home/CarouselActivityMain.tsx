@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import ActivityCardHome from "../cards/ActivityCardHome.tsx";
+import ActivityCardHome from "../cards/Activity/ActivityCardHome.tsx";
 import {Box, Typography} from "@mui/material";
 import {Carousel} from "../carousel";
 import { getActivities } from "../../services/activities";

@@ -1,6 +1,6 @@
 import { Box, Card, CardContent, Chip, Stack, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { colors } from '../../theme';
+import { colors } from '../../../theme';
 import { useNavigate } from 'react-router-dom';
 
 const StyledActivityCard = styled(Card)(({ theme }) => ({

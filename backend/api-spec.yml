@@ -2241,6 +2241,11 @@ components:
         description:
           type: string
           example: Montagnes russes extrêmes dans un décor post-apocalyptique
+        image_url:
+          type: string
+          nullable: true
+          example: /attractions-images/zombie-ride.jpg
+          description: URL de l'image principale de l'attraction
         thrill_level:
           type: integer
           nullable: true
@@ -2265,6 +2270,10 @@ components:
           type: string
         description:
           type: string
+        image_url:
+          type: string
+          nullable: true
+          description: URL de l'image principale de l'attraction
         thrill_level:
           type: integer
           nullable: true

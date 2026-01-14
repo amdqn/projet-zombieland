@@ -54,18 +54,23 @@ model Category {
 }
 
 model Attraction {
-  id           Int               @id @default(autoincrement())
+  id           Int                 @id @default(autoincrement())
   name         String
   description  String
   image_url    String?
   thrill_level Int?
   duration     Int?
+  latitude     Decimal?          @db.Decimal(10, 8)
+  longitude    Decimal?          @db.Decimal(11, 8)
   category_id  Int
-  category     Category          @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  is_published Boolean             @default(true)
+  category     Category            @relation(fields: [category_id], references: [id], onDelete: Cascade)
   images       AttractionImage[]
   activities   Activity[]
-  created_at   DateTime          @default(now())
-  updated_at   DateTime          @updatedAt
+  relatedFrom AttractionRelation[] @relation("AttractionFrom")
+  relatedTo    AttractionRelation[] @relation("AttractionTo")
+  created_at   DateTime            @default(now())
+  updated_at   DateTime            @updatedAt
 
   @@map("attractions")
 }
@@ -88,6 +93,8 @@ model Activity {
   image_url     String?
   thrill_level  Int?
   duration      Int?
+  latitude      Decimal?    @db.Decimal(10, 8)
+  longitude     Decimal?    @db.Decimal(11, 8)
   category_id   Int
   attraction_id Int?
   category      Category    @relation(fields: [category_id], references: [id], onDelete: Cascade)
@@ -113,6 +120,18 @@ model ActivityRelation {
 
   @@unique([activity_id, related_activity_id])
   @@map("activity_relations")
+}
+
+model AttractionRelation {
+  id                   Int        @id @default(autoincrement())
+  attraction_id        Int
+  related_attraction_id Int
+  created_at           DateTime   @default(now())
+  attraction          Attraction  @relation("AttractionFrom", fields: [attraction_id], references: [id], onDelete: Cascade)
+  related_attraction   Attraction @relation("AttractionTo", fields: [related_attraction_id], references: [id], onDelete: Cascade)
+
+  @@unique([attraction_id, related_attraction_id])
+  @@map("attraction_relations")
 }
 
 model ParkDate {
@@ -154,4 +173,18 @@ model Reservation {
   updated_at         DateTime          @updatedAt
 
   @@map("reservations")
+}
+
+model PointOfInterest {
+  id          Int      @id @default(autoincrement())
+  name        String
+  type        String   // "toilets", "shop", "entrance", "exit"
+  description String?
+  icon        String?
+  latitude    Decimal  @db.Decimal(10, 8)
+  longitude   Decimal  @db.Decimal(11, 8)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@map("points_of_interest")
 }

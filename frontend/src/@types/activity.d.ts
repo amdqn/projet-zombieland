@@ -9,6 +9,8 @@ export interface Activity {
     thrill_level?: number | null;
     duration?: number | null;
     image_url?: string | null;
+    latitude?: number | null;
+    longitude?: number | null;
     min_age?: number | null;
     accessibility?: string | null;
     is_published?: boolean;

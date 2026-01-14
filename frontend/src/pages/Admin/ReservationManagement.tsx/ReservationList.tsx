@@ -16,14 +16,15 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
+import { toast } from 'react-toastify';
 import { colors } from '../../../theme';
 import { useEffect, useState, useRef } from 'react';
 import type { Reservation } from '../../../@types/reservation';
 import { getAllReservations, deleteReservation, type ReservationFilters } from '../../../services/reservations';
 import { ReservationCard } from '../../../components/cards/ReservationCard';
-import { UpdateReservationModal } from '../../../components/modals/UpdateReservationModal';
-import { ReservationDetailsModal } from '../../../components/modals/ReservationDetailsModal';
-import {ReservationCanceledModal} from "../../../components/modals/ReservationCanceledModal.tsx";
+import { UpdateReservationModal } from '../../../components/modals/Reservations/UpdateReservationModal.tsx';
+import { ReservationDetailsModal } from '../../../components/modals/Reservations/ReservationDetailsModal.tsx';
+import {ReservationCanceledModal} from "../../../components/modals/Reservations/ReservationCanceledModal.tsx";
 
 export const ReservationList = () => {
     const [reservations, setReservations] = useState<Reservation[]>([]);
@@ -117,6 +118,7 @@ export const ReservationList = () => {
         setDeleteError(null);
         try {
             await deleteReservation(reservationToDelete.id);
+            toast.success('Réservation annulée avec succès !');
             setReservations(reservations.filter((r) => r.id !== reservationToDelete.id));
             setDeleteDialogOpen(false);
             setReservationToDelete(null);
@@ -229,7 +231,7 @@ export const ReservationList = () => {
 
                     {/* Filtres */}
                     <Grid container spacing={2} sx={{ mb: 2 }}>
-                        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                             <FormControl fullWidth sx={{ minWidth: '200px' }}>
                                 <InputLabel sx={{ color: colors.secondaryGrey }}>Statut</InputLabel>
                                 <Select
@@ -284,66 +286,7 @@ export const ReservationList = () => {
                             </FormControl>
                         </Grid>
 
-                        <Grid size={{ xs: 12, sm: 6, md: 2 }}>
-                            <FormControl fullWidth sx={{ minWidth: '200px' }}>
-                                <InputLabel sx={{ color: colors.secondaryGrey }}>Trier par</InputLabel>
-                                <Select
-                                    value={sortBy}
-                                    label="Trier par"
-                                    onChange={(e) => {
-                                        setSortBy(e.target.value);
-                                        setPage(1);
-                                    }}
-                                    sx={{
-                                        backgroundColor: colors.secondaryDark,
-                                        color: colors.white,
-                                        minHeight: '56px',
-                                        '& .MuiOutlinedInput-notchedOutline': {
-                                            borderColor: colors.secondaryGrey,
-                                        },
-                                        '&:hover .MuiOutlinedInput-notchedOutline': {
-                                            borderColor: colors.primaryRed,
-                                        },
-                                        '& .MuiSelect-select': {
-                                            paddingY: '16.5px',
-                                            minWidth: '100px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                        },
-                                    }}
-                                    MenuProps={{
-                                        PaperProps: {
-                                            sx: {
-                                                backgroundColor: colors.secondaryDark,
-                                                '& .MuiMenuItem-root': {
-                                                    color: colors.white,
-                                                    '&:hover': {
-                                                        backgroundColor: 'rgba(255, 0, 0, 0.1)',
-                                                    },
-                                                    '&.Mui-selected': {
-                                                        backgroundColor: 'rgba(255, 0, 0, 0.2)',
-                                                        '&:hover': {
-                                                            backgroundColor: 'rgba(255, 0, 0, 0.3)',
-                                                        },
-                                                    },
-                                                },
-                                            },
-                                        },
-                                    }}
-                                >
-                                    <MenuItem value="created_desc">Date création (récent)</MenuItem>
-                                    <MenuItem value="created_asc">Date création (ancien)</MenuItem>
-                                    <MenuItem value="date_desc">Date visite (récent)</MenuItem>
-                                    <MenuItem value="date_asc">Date visite (ancien)</MenuItem>
-                                    <MenuItem value="amount_desc">Montant (décroissant)</MenuItem>
-                                    <MenuItem value="amount_asc">Montant (croissant)</MenuItem>
-                                    <MenuItem value="status">Statut</MenuItem>
-                                    <MenuItem value="number">Numéro</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
-
-                        <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+                        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                             <TextField
                                 fullWidth
                                 type="date"
@@ -421,6 +364,66 @@ export const ReservationList = () => {
                         </Grid>
                     </Grid>
                 </Box>
+            </Box>
+
+            {/* Filtre de tri */}
+            <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
+                <FormControl sx={{ minWidth: '250px' }}>
+                    <InputLabel sx={{ color: colors.secondaryGrey }}>Trier par</InputLabel>
+                    <Select
+                        value={sortBy}
+                        label="Trier par"
+                        onChange={(e) => {
+                            setSortBy(e.target.value);
+                            setPage(1);
+                        }}
+                        sx={{
+                            backgroundColor: colors.secondaryDark,
+                            color: colors.white,
+                            minHeight: '56px',
+                            '& .MuiOutlinedInput-notchedOutline': {
+                                borderColor: colors.secondaryGrey,
+                            },
+                            '&:hover .MuiOutlinedInput-notchedOutline': {
+                                borderColor: colors.primaryRed,
+                            },
+                            '& .MuiSelect-select': {
+                                paddingY: '16.5px',
+                                minWidth: '100px',
+                                display: 'flex',
+                                alignItems: 'center',
+                            },
+                        }}
+                        MenuProps={{
+                            PaperProps: {
+                                sx: {
+                                    backgroundColor: colors.secondaryDark,
+                                    '& .MuiMenuItem-root': {
+                                        color: colors.white,
+                                        '&:hover': {
+                                            backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                                        },
+                                        '&.Mui-selected': {
+                                            backgroundColor: 'rgba(255, 0, 0, 0.2)',
+                                            '&:hover': {
+                                                backgroundColor: 'rgba(255, 0, 0, 0.3)',
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        }}
+                    >
+                        <MenuItem value="created_desc">Date création (récent)</MenuItem>
+                        <MenuItem value="created_asc">Date création (ancien)</MenuItem>
+                        <MenuItem value="date_desc">Date visite (récent)</MenuItem>
+                        <MenuItem value="date_asc">Date visite (ancien)</MenuItem>
+                        <MenuItem value="amount_desc">Montant (décroissant)</MenuItem>
+                        <MenuItem value="amount_asc">Montant (croissant)</MenuItem>
+                        <MenuItem value="status">Statut</MenuItem>
+                        <MenuItem value="number">Numéro</MenuItem>
+                    </Select>
+                </FormControl>
             </Box>
 
             <Box

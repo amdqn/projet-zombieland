@@ -1,9 +1,10 @@
 import { Alert, Box, MenuItem, Modal, Select, Typography } from '@mui/material';
 import { useState, useEffect } from 'react';
-import { updateReservation } from '../../services/reservations';
-import { colors } from '../../theme';
-import { PrimaryButton } from '../common';
-import type { Reservation, ReservationStatus } from '../../@types/reservation';
+import { updateReservation } from '../../../services/reservations.ts';
+import { colors } from '../../../theme';
+import { PrimaryButton } from '../../common';
+import type { Reservation, ReservationStatus } from '../../../@types/reservation';
+import {toast} from "react-toastify";
 
 interface UpdateReservationModalProps {
   open: boolean;
@@ -61,11 +62,9 @@ export const UpdateReservationModal = ({
 
     try {
       await updateReservation(reservation.id, { status });
-      setSuccess('Réservation mise à jour avec succès');
-      setTimeout(() => {
-        onUpdateSuccess();
-        handleClose();
-      }, 1500);
+      toast.success('Réservation mise à jour avec succès !');
+      onUpdateSuccess();
+      handleClose();
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erreur lors de la mise à jour de la réservation';
       setError(message);

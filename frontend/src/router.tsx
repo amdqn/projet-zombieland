@@ -15,6 +15,7 @@ import { LoginContext } from './context/UserLoginContext.tsx';
 import { AdminDashboard } from './pages/Admin/AdminDashboard';
 import { colors } from './theme';
 import {UserDashboard} from "./pages/UserPage/UserDashboard.tsx";
+import { InformationPage } from './pages/InformationPage';
 
 const ProtectedRoute = ({ children }: { children: ReactElement }) => {
   const { isLogged, isLoading } = useContext(LoginContext);
@@ -162,7 +163,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'info',
-        // element: <GeneralInfo />, // InformationsMain générales
+        element: <InformationPage />, // Informations générales + carte interactive
       },
       {
         path: 'static/:pageType',

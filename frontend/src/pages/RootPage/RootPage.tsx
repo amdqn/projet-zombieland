@@ -4,6 +4,7 @@ import "../../index.css";
 import LateralBar from "../../components/layout/LateralBar";
 import Footer from "../../components/layout/footer";
 import {Box} from "@mui/material";
+import CookieConsent from "../../components/layout/CookieConsent.tsx";
 
 export default function RootPage(){
 
@@ -14,6 +15,7 @@ export default function RootPage(){
             <Box component="main" sx={{ minHeight: '100vh' }}>
                 <Outlet/>
             </Box>
+            <CookieConsent/>
             <Footer/>
         </>
     )

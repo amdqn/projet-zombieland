@@ -13,6 +13,11 @@ interface StaticPagesContent {
     [key: string]: StaticPageData;
 }
 
+function handleOpenCookieSettings() {
+    localStorage.removeItem('cookieConsent');
+    window.location.reload();
+}
+
 export const staticPagesContent: StaticPagesContent = {
     "gestion-cookies": {
         title: "Gestion des Cookies",
@@ -64,6 +69,9 @@ export const staticPagesContent: StaticPagesContent = {
                     Les cookies sont conservés pour une durée maximale de 13 mois à compter de leur dépôt sur
                     votre terminal.
                 </Typography>
+                <Link onClick={handleOpenCookieSettings} sx={{ cursor: 'pointer' }}>
+                    Supprimer les cookies
+                </Link>
             </>
         )
     },

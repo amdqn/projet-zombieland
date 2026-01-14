@@ -210,7 +210,7 @@ export function InformationPage() {
           <Typography
             variant="h2"
             sx={{
-              color: colors.primaryGreen,
+              color: colors.primaryRed,
               fontFamily: 'Creepster',
               mb: 3,
               fontSize: { xs: 24, md: 32 },
@@ -238,7 +238,7 @@ export function InformationPage() {
           <Typography
             variant="h3"
             sx={{
-              color: colors.primaryGreen,
+              color: colors.primaryRed,
               fontFamily: 'Creepster',
               mb: 2,
               fontSize: { xs: 20, md: 28 },
@@ -332,7 +332,7 @@ export function InformationPage() {
           <Typography
             variant="h6"
             sx={{
-              color: colors.primaryGreen,
+              color: colors.primaryRed,
               mb: 2,
               fontWeight: 'bold',
             }}
@@ -516,7 +516,7 @@ export function InformationPage() {
           <Typography
             variant="h3"
             sx={{
-              color: colors.primaryGreen,
+              color: colors.primaryRed,
               fontFamily: 'Creepster',
               mb: 3,
               fontSize: { xs: 20, md: 28 },
@@ -625,7 +625,7 @@ export function InformationPage() {
             >
               <Typography
                 variant="h6"
-                sx={{ color: colors.primaryGreen, mb: 3, fontWeight: 'bold', fontSize: 18 }}
+                sx={{ color: colors.primaryRed, mb: 3, fontWeight: 'bold', fontSize: 18 }}
               >
                 Coordonnées
               </Typography>
@@ -677,7 +677,7 @@ export function InformationPage() {
             >
               <Typography
                 variant="h6"
-                sx={{ color: colors.primaryGreen, mb: 3, fontWeight: 'bold', fontSize: 18 }}
+                sx={{ color: colors.primaryRed, mb: 3, fontWeight: 'bold', fontSize: 18 }}
               >
                 Besoin d'aide ?
               </Typography>
@@ -716,7 +716,7 @@ export function InformationPage() {
           <Typography
             variant="h3"
             sx={{
-              color: colors.primaryGreen,
+              color: colors.primaryRed,
               fontFamily: 'Creepster',
               mb: 3,
               fontSize: { xs: 20, md: 28 },
@@ -741,7 +741,7 @@ export function InformationPage() {
             >
               <Typography
                 variant="h6"
-                sx={{ color: colors.primaryGreen, mb: 3, fontWeight: 'bold', fontSize: 18 }}
+                sx={{ color: colors.primaryRed, mb: 3, fontWeight: 'bold', fontSize: 18 }}
               >
                 Adresse
               </Typography>
@@ -752,7 +752,7 @@ export function InformationPage() {
 
               <Typography
                 variant="h6"
-                sx={{ color: colors.primaryGreen, mb: 2, mt: 4, fontWeight: 'bold', fontSize: 18 }}
+                sx={{ color: colors.primaryRed, mb: 2, mt: 4, fontWeight: 'bold', fontSize: 18 }}
               >
                 En Transports en Commun
               </Typography>
@@ -797,7 +797,7 @@ export function InformationPage() {
             >
               <Typography
                 variant="h6"
-                sx={{ color: colors.primaryGreen, mb: 3, fontWeight: 'bold', fontSize: 18 }}
+                sx={{ color: colors.primaryRed, mb: 3, fontWeight: 'bold', fontSize: 18 }}
               >
                 En Voiture
               </Typography>

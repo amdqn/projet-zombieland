@@ -179,6 +179,12 @@ export const UserList = () => {
   };
 
   const handleToggleActive = async (user: User) => {
+    // Empêcher l'activation/désactivation des admins
+    if (user.role === 'ADMIN') {
+      toast.error('Impossible de modifier le statut d\'un administrateur');
+      return;
+    }
+
     try {
       await updateUser(user.id, { is_active: !user.is_active });
       toast.success(`Compte ${!user.is_active ? 'activé' : 'désactivé'} avec succès !`);
@@ -558,10 +564,11 @@ export const UserList = () => {
                               Statut:
                             </Typography>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                              <Tooltip title={user.is_active !== false ? 'Compte actif' : 'Compte désactivé'}>
+                              <Tooltip title={user.role === 'ADMIN' ? 'Impossible de modifier le statut d\'un administrateur' : (user.is_active !== false ? 'Compte actif' : 'Compte désactivé')}>
                                 <Switch
                                   checked={user.is_active !== false}
                                   onChange={() => handleToggleActive(user)}
+                                  disabled={user.role === 'ADMIN'}
                                   size="small"
                                   sx={{
                                     '& .MuiSwitch-switchBase.Mui-checked': {
@@ -693,10 +700,11 @@ export const UserList = () => {
                           </TableCell>
                           <TableCell>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                              <Tooltip title={user.is_active !== false ? 'Compte actif' : 'Compte désactivé'}>
+                              <Tooltip title={user.role === 'ADMIN' ? 'Impossible de modifier le statut d\'un administrateur' : (user.is_active !== false ? 'Compte actif' : 'Compte désactivé')}>
                                 <Switch
                                   checked={user.is_active !== false}
                                   onChange={() => handleToggleActive(user)}
+                                  disabled={user.role === 'ADMIN'}
                                   size="small"
                                   sx={{
                                     '& .MuiSwitch-switchBase.Mui-checked': {

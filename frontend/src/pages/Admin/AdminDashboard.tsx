@@ -7,6 +7,7 @@ import { ReservationList } from './ReservationManagement.tsx/ReservationList';
 import { ActivityList } from './ActivityManagement.tsx/ActivityList';
 import { AttractionList } from './AttractionManagement.tsx/AttractionList';
 import {PriceList} from "./PriceManagement/PriceList.tsx";
+import { CategoryList } from './CategoryManagement/CategoryList';
 
 export const AdminDashboard = () => {
   const [tabValue, setTabValue] = useState<number>(0);
@@ -22,7 +23,8 @@ export const AdminDashboard = () => {
     { label: 'Réservations', component: <ReservationList /> },
     { label: 'Activités', component: <ActivityList /> },
     { label: 'Attractions', component: <AttractionList /> },
-      { label: 'Tarifs', component: <PriceList />}
+      { label: 'Tarifs', component: <PriceList />},
+    { label: 'Catégories', component: <CategoryList /> },
   ];
 
   return (

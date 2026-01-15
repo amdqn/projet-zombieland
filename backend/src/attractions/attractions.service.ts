@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import type { CreateAttractionDto, UpdateAttractionDto } from 'src/generated';
+import { AttractionMapper } from './mappers/attraction.mapper';
 
 @Injectable()
 export class AttractionsService {
@@ -49,9 +50,7 @@ export class AttractionsService {
 
     // Convertir les dates en ISO string
     return attractions.map((attraction) => ({
-      ...attraction,
-      created_at: attraction.created_at.toISOString(),
-      updated_at: attraction.updated_at.toISOString(),
+      ...AttractionMapper.toDto(attraction),
       category: {
         ...attraction.category,
         created_at: attraction.category.created_at.toISOString(),
@@ -103,9 +102,7 @@ export class AttractionsService {
 
     // Convertir les dates en ISO string
     return {
-      ...attraction,
-      created_at: attraction.created_at.toISOString(),
-      updated_at: attraction.updated_at.toISOString(),
+      ...AttractionMapper.toDto(attraction),
       category: {
         ...attraction.category,
         created_at: attraction.category.created_at.toISOString(),
@@ -186,9 +183,7 @@ export class AttractionsService {
 
     // Convertir les dates en ISO string
     return {
-      ...attraction,
-      created_at: attraction.created_at.toISOString(),
-      updated_at: attraction.updated_at.toISOString(),
+      ...AttractionMapper.toDto(attraction),
       category: {
         ...attraction.category,
         created_at: attraction.category.created_at.toISOString(),
@@ -287,9 +282,7 @@ export class AttractionsService {
 
     // Convertir les dates en ISO string
     return {
-      ...updatedAttraction,
-      created_at: updatedAttraction.created_at.toISOString(),
-      updated_at: updatedAttraction.updated_at.toISOString(),
+      ...AttractionMapper.toDto(updatedAttraction),
       category: {
         ...updatedAttraction.category,
         created_at: updatedAttraction.category.created_at.toISOString(),

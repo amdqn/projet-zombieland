@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import type { CreateActivityDto, UpdateActivityDto } from 'src/generated';
+import { ActivityMapper } from './mappers/activity.mapper';
 
 @Injectable()
 export class ActivitiesService {
@@ -56,9 +57,7 @@ export class ActivitiesService {
     });
 
     return activities.map((activity: any) => ({
-      ...activity,
-      created_at: activity.created_at.toISOString(),
-      updated_at: activity.updated_at.toISOString(),
+      ...ActivityMapper.toDto(activity),
       category: {
         ...activity.category,
         created_at: activity.category.created_at.toISOString(),
@@ -110,12 +109,10 @@ export class ActivitiesService {
       throw new NotFoundException(`Activité avec l'ID ${id} non trouvée`);
     }
 
-    // Convertir les dates en ISO string
+    // Convertir les dates en ISO string avec mapper
     const activityWithRelations = activity as any;
     return {
-      ...activityWithRelations,
-      created_at: activityWithRelations.created_at.toISOString(),
-      updated_at: activityWithRelations.updated_at.toISOString(),
+      ...ActivityMapper.toDto(activity),
       category: {
         ...activityWithRelations.category,
         created_at: activityWithRelations.category.created_at.toISOString(),
@@ -213,12 +210,10 @@ export class ActivitiesService {
       } as any,
     });
 
-    // Convertir les dates en ISO string
+    // Convertir les dates en ISO string avec mapper
     const createdActivity = activity as any;
     const result = {
-      ...createdActivity,
-      created_at: createdActivity.created_at.toISOString(),
-      updated_at: createdActivity.updated_at.toISOString(),
+      ...ActivityMapper.toDto(activity),
       category: {
         ...createdActivity.category,
         created_at: createdActivity.category.created_at.toISOString(),
@@ -335,12 +330,10 @@ export class ActivitiesService {
       } as any,
     });
 
-    // Convertir les dates en ISO string
+    // Convertir les dates en ISO string avec mapper
     const updatedActivityData = updatedActivity as any;
     const result = {
-      ...updatedActivityData,
-      created_at: updatedActivityData.created_at.toISOString(),
-      updated_at: updatedActivityData.updated_at.toISOString(),
+      ...ActivityMapper.toDto(updatedActivity),
       category: {
         ...updatedActivityData.category,
         created_at: updatedActivityData.category.created_at.toISOString(),

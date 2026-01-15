@@ -9,6 +9,7 @@ import type {
   CreateReservationDto,
   UpdateReservationStatusDto,
 } from 'src/generated';
+import { ReservationMapper } from './mappers/reservation.mapper';
 
 @Injectable()
 export class ReservationsService {
@@ -34,10 +35,10 @@ export class ReservationsService {
    * Formate une réservation avec conversion des dates et champs calculés
    */
   private formatReservationResponse(reservation: any, userRole: string) {
+    const baseDto = ReservationMapper.toDto(reservation);
+    
     const formatted: any = {
-      ...reservation,
-      created_at: reservation.created_at.toISOString(),
-      updated_at: reservation.updated_at.toISOString(),
+      ...baseDto,
       date: {
         ...reservation.date,
         jour: reservation.date.jour.toISOString(),

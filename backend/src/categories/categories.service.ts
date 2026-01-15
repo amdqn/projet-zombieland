@@ -6,18 +6,11 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import type { CreateCategoryDto, UpdateCategoryDto } from 'src/generated';
+import { CategoryMapper } from './mappers/category.mapper';
 
 @Injectable()
 export class CategoriesService {
   constructor(private readonly prisma: PrismaService) {}
-
-  private formatCategoryResponse(category: any) {
-    return {
-      ...category,
-      created_at: category.created_at.toISOString(),
-      updated_at: category.updated_at.toISOString(),
-    };
-  }
 
   async findAll() {
     const categories = await this.prisma.category.findMany({
@@ -32,7 +25,7 @@ export class CategoriesService {
       },
     });
 
-    return categories.map((category) => this.formatCategoryResponse(category));
+    return categories.map((category) => CategoryMapper.toDto(category));
   }
 
   async findOne(id: number) {
@@ -68,7 +61,7 @@ export class CategoriesService {
       throw new NotFoundException(`Catégorie avec l'ID ${id} non trouvée`);
     }
 
-    return this.formatCategoryResponse(category);
+    return CategoryMapper.toDto(category);
   }
 
   async create(createCategoryDto: CreateCategoryDto) {
@@ -102,7 +95,7 @@ export class CategoriesService {
       },
     });
 
-    return this.formatCategoryResponse(category);
+    return CategoryMapper.toDto(category);
   }
 
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
@@ -139,7 +132,7 @@ export class CategoriesService {
       },
     });
 
-    return this.formatCategoryResponse(updatedCategory);
+    return CategoryMapper.toDto(updatedCategory);
   }
 
   async remove(id: number) {

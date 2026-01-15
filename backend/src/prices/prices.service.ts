@@ -6,23 +6,11 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import type { CreatePriceDto, UpdatePriceDto } from 'src/generated';
 import {Prisma, PriceType} from "@prisma/client";
+import { PriceMapper } from './mappers/price.mapper';
 
 @Injectable()
 export class PricesService {
   constructor(private readonly prisma: PrismaService) {}
-
-  /**
-   * Helper DRY : Formate la réponse d'un tarif
-   * Convertit les dates en ISO et amount (Decimal) en number
-   */
-  private formatPriceResponse(price: any) {
-    return {
-      ...price,
-      amount: parseFloat(price.amount.toString()),
-      created_at: price.created_at.toISOString(),
-      updated_at: price.updated_at.toISOString(),
-    };
-  }
 
   async findAll(
       options?: {
@@ -79,7 +67,7 @@ export class PricesService {
     const totalPages = Math.ceil(total / limit);
 
     return {
-      data: prices.map((price) => this.formatPriceResponse(price)),
+      data: PriceMapper.toDtoArray(prices),
       pagination: {
         total,
         page,
@@ -98,7 +86,7 @@ export class PricesService {
       throw new NotFoundException(`Tarif avec l'ID ${id} non trouvé`);
     }
 
-    return this.formatPriceResponse(price);
+    return PriceMapper.toDto(price);
   }
 
   async create(createPriceDto: CreatePriceDto) {
@@ -125,7 +113,7 @@ export class PricesService {
       },
     });
 
-    return this.formatPriceResponse(price);
+    return PriceMapper.toDto(price);
   }
 
   async update(id: number, updatePriceDto: UpdatePriceDto) {
@@ -153,7 +141,7 @@ export class PricesService {
       data: updatePriceDto,
     });
 
-    return this.formatPriceResponse(updatedPrice);
+    return PriceMapper.toDto(updatedPrice);
   }
 
   async remove(id: number) {

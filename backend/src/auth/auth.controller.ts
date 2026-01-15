@@ -9,6 +9,7 @@ import {
   Patch,
   Delete,
 } from '@nestjs/common';
+import { SkipThrottle, Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import type {
   RegisterDto,
@@ -26,12 +27,14 @@ export class AuthController {
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
+  @Throttle({ default: { limit: 3, ttl: 3600000 } })
   async register(@Body() registerDto: RegisterDto) {
     return this.authService.register(registerDto);
   }
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   async login(@Body() loginDto: LoginDto): Promise<Login200Response> {
     const { email, password } = loginDto;
 
@@ -39,17 +42,14 @@ export class AuthController {
     const { access_token } = await this.authService.generateJwt(user);
 
     return {
-      user: {
-        ...user,
-        created_at: user.created_at.toISOString(),
-        updated_at: user.updated_at.toISOString(),
-      },
+      user,
       access_token,
     };
   }
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
+  @SkipThrottle()
   async getProfile(@CurrentUser() user: UserDto): Promise<UserDto> {
     return user;
   }
@@ -60,16 +60,7 @@ export class AuthController {
     @CurrentUser() user: UserDto,
     @Body() updateProfileDto: UpdateProfileDto,
   ): Promise<UserDto> {
-    const updatedUser = await this.authService.updateProfile(
-      user.id!,
-      updateProfileDto,
-    );
-
-    return {
-      ...updatedUser,
-      created_at: updatedUser.created_at.toISOString(),
-      updated_at: updatedUser.updated_at.toISOString(),
-    };
+    return this.authService.updateProfile(user.id!, updateProfileDto);
   }
 
   @Delete('me')

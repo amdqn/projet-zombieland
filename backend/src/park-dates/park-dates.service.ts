@@ -9,6 +9,7 @@ import type {
   ParkDateDto,
 } from '../generated';
 import { PrismaService } from '../prisma/prisma.service';
+import { ParkDateMapper } from './mappers/park-date.mapper';
 
 @Injectable()
 export class ParkDatesService {
@@ -28,13 +29,7 @@ export class ParkDatesService {
       orderBy: { jour: 'asc' },
     });
 
-    return dates.map((date) => ({
-      ...date,
-      jour: date.jour.toISOString().split('T')[0],
-      open_hour: date.open_hour ? date.open_hour.toISOString().split('T')[1].split('.')[0] : null,
-      close_hour: date.close_hour ? date.close_hour.toISOString().split('T')[1].split('.')[0] : null,
-      created_at: date.created_at.toISOString(),
-    }));
+    return ParkDateMapper.toDtoArray(dates);
   }
 
   async findOne(id: number): Promise<ParkDateDto> {
@@ -46,13 +41,7 @@ export class ParkDatesService {
       throw new NotFoundException(`ParkDate avec l'ID ${id} introuvable`);
     }
 
-    return {
-      ...parkDate,
-      jour: parkDate.jour.toISOString().split('T')[0],
-      open_hour: parkDate.open_hour ? parkDate.open_hour.toISOString().split('T')[1].split('.')[0] : null,
-      close_hour: parkDate.close_hour ? parkDate.close_hour.toISOString().split('T')[1].split('.')[0] : null,
-      created_at: parkDate.created_at.toISOString(),
-    };
+    return ParkDateMapper.toDto(parkDate);
   }
 
   async create(createParkDateDto: CreateParkDateDto): Promise<ParkDateDto> {
@@ -80,13 +69,7 @@ export class ParkDatesService {
       },
     });
 
-    return {
-      ...newParkDate,
-      jour: newParkDate.jour.toISOString().split('T')[0],
-      open_hour: newParkDate.open_hour ? newParkDate.open_hour.toISOString().split('T')[1].split('.')[0] : null,
-      close_hour: newParkDate.close_hour ? newParkDate.close_hour.toISOString().split('T')[1].split('.')[0] : null,
-      created_at: newParkDate.created_at.toISOString(),
-    };
+    return ParkDateMapper.toDto(newParkDate);
   }
 
   async update(
@@ -122,13 +105,7 @@ export class ParkDatesService {
       },
     });
 
-    return {
-      ...updatedParkDate,
-      jour: updatedParkDate.jour.toISOString().split('T')[0],
-      open_hour: updatedParkDate.open_hour ? updatedParkDate.open_hour.toISOString().split('T')[1].split('.')[0] : null,
-      close_hour: updatedParkDate.close_hour ? updatedParkDate.close_hour.toISOString().split('T')[1].split('.')[0] : null,
-      created_at: updatedParkDate.created_at.toISOString(),
-    };
+    return ParkDateMapper.toDto(updatedParkDate);
   }
 
   async remove(id: number): Promise<{ message: string }> {

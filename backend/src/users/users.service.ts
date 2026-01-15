@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import type { UserDto } from '../generated';
 import { PrismaService } from '../prisma/prisma.service';
+import { UserMapper } from './mappers/user.mapper';
 
 @Injectable()
 export class UsersService {
@@ -51,11 +52,7 @@ export class UsersService {
     ]);
 
     return {
-      data: users.map(({ password: _password, ...user }) => ({
-        ...user,
-        created_at: user.created_at.toISOString(),
-        updated_at: user.updated_at.toISOString(),
-      })),
+      data: UserMapper.toDtoArray(users),
       total,
       page,
       limit,
@@ -69,10 +66,6 @@ export class UsersService {
         _count: {
           select: { reservations: true },
         },
-        auditLogs: {
-          orderBy: { created_at: 'desc' },
-          take: 10, // Dernières 10 modifications
-        },
       },
     });
 
@@ -80,16 +73,10 @@ export class UsersService {
       throw new NotFoundException(`Utilisateur avec l'ID ${id} introuvable`);
     }
 
-    const { password: _password, ...userWithoutPassword } = user;
-
-    return {
-      ...userWithoutPassword,
-      created_at: user.created_at.toISOString(),
-      updated_at: user.updated_at.toISOString(),
-    };
+    return UserMapper.toDto(user);
   }
 
-  async update(id: number, updateData: { pseudo?: string; email?: string; role?: 'ADMIN' | 'CLIENT'; is_active?: boolean }, modifiedById: number) {
+  async update(id: number, updateData: { pseudo?: string; email?: string; role?: 'ADMIN' | 'CLIENT' }, modifiedById: number) {
     const user = await this.prisma.user.findUnique({
       where: { id },
     });
@@ -159,24 +146,9 @@ export class UsersService {
       });
     }
 
-    if (updateData.is_active !== undefined && updateData.is_active !== user.is_active) {
-      auditLogs.push({
-        modified_by_id: modifiedById,
-        action: updateData.is_active ? 'ACTIVATE' : 'DEACTIVATE',
-        field_name: 'is_active',
-        old_value: JSON.stringify(user.is_active),
-        new_value: JSON.stringify(updateData.is_active),
-      });
-    }
-
     const updatedUser = await this.prisma.user.update({
       where: { id },
-      data: {
-        ...updateData,
-        auditLogs: auditLogs.length > 0 ? {
-          create: auditLogs,
-        } : undefined,
-      },
+      data: updateData,
       include: {
         _count: {
           select: { reservations: true },
@@ -184,13 +156,17 @@ export class UsersService {
       },
     });
 
-    const { password: _password, ...userWithoutPassword } = updatedUser;
+    // Sauvegarder les logs d'audit si des changements ont été détectés
+    if (auditLogs.length > 0) {
+      await this.prisma.userAuditLog.createMany({
+        data: auditLogs.map(log => ({
+          ...log,
+          user_id: id,
+        })),
+      });
+    }
 
-    return {
-      ...userWithoutPassword,
-      created_at: updatedUser.created_at.toISOString(),
-      updated_at: updatedUser.updated_at.toISOString(),
-    };
+    return UserMapper.toDto(updatedUser);
   }
 
   async findUserReservations(userId: number) {
@@ -216,6 +192,16 @@ export class UsersService {
   }
 
   async getUserAuditLogs(userId: number) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException(
+        `Utilisateur avec l'ID ${userId} introuvable`,
+      );
+    }
+
     const logs = await this.prisma.userAuditLog.findMany({
       where: { user_id: userId },
       orderBy: { created_at: 'desc' },

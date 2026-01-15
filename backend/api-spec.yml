@@ -2020,6 +2020,29 @@ components:
         description:
           type: string
           example: 60 minutes pour trouver le remède et sauver l'humanité
+        image_url:
+          type: string
+          nullable: true
+          example: /activities-images/escape-game.jpg
+        thrill_level:
+          type: integer
+          nullable: true
+          minimum: 1
+          maximum: 5
+          example: 3
+        duration:
+          type: integer
+          nullable: true
+          description: Durée en minutes
+          example: 60
+        latitude:
+          type: string
+          nullable: true
+          example: "48.8550"
+        longitude:
+          type: string
+          nullable: true
+          example: "2.3500"
         category_id:
           type: integer
           example: 2

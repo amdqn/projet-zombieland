@@ -1895,6 +1895,354 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorDto'
 
+  # ===== MESSAGES =====
+  /messages:
+    post:
+      tags:
+        - Messages
+      summary: Créer un message
+      description: |-
+        Créer un nouveau message dans une conversation existante ou créer une nouvelle conversation avec un admin.
+
+        **Cas d'usage** :
+        - Avec `conversationId` : Envoyer un message dans une conversation existante
+        - Avec `recipientId` : Créer une nouvelle conversation avec un admin et envoyer le premier message
+      operationId: createMessage
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMessageDto'
+      responses:
+        '201':
+          description: Message créé avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/MessageDto'
+        '400':
+          description: Données invalides ou destinataire non admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès refusé à cette conversation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '404':
+          description: Conversation ou destinataire non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+  /messages/conversations/{conversationId}:
+    get:
+      tags:
+        - Messages
+      summary: Récupérer les messages d'une conversation
+      description: |-
+        Récupère tous les messages d'une conversation et les marque automatiquement comme lus.
+        Accessible uniquement aux participants de la conversation (user ou admin).
+      operationId: getMessagesByConversation
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: conversationId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de la conversation
+      responses:
+        '200':
+          description: Messages récupérés avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MessageDto'
+                  count:
+                    type: integer
+                    example: 5
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès refusé à cette conversation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '404':
+          description: Conversation non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+  /messages/{id}:
+    delete:
+      tags:
+        - Messages
+      summary: Supprimer un message
+      description: |-
+        Supprime un message si l'utilisateur est :
+        - L'auteur du message ET participant à la conversation
+        - OU un admin participant à la conversation
+      operationId: deleteMessage
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID du message à supprimer
+      responses:
+        '200':
+          description: Message supprimé avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Message supprimé
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Non autorisé à supprimer ce message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '404':
+          description: Message non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+  # ===== CONVERSATIONS =====
+  /conversations:
+    get:
+      tags:
+        - Conversations
+      summary: Récupérer mes conversations
+      description: |-
+        Pour CLIENT : retourne ses conversations
+        Pour ADMIN : retourne toutes les conversations où il est assigné
+      operationId: getMyConversations
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: Liste des conversations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ConversationDto'
+                  count:
+                    type: integer
+                    example: 3
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+  /conversations/{id}:
+    get:
+      tags:
+        - Conversations
+      summary: Récupérer une conversation
+      description: Récupère les détails d'une conversation avec le dernier message
+      operationId: getConversationById
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de la conversation
+      responses:
+        '200':
+          description: Détail de la conversation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/ConversationDto'
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès refusé à cette conversation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '404':
+          description: Conversation non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+  /conversations/{id}/status:
+    patch:
+      tags:
+        - Conversations
+      summary: Changer le statut d'une conversation (ADMIN)
+      description: Permet à un admin d'ouvrir ou fermer une conversation
+      operationId: updateConversationStatus
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de la conversation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateConversationStatusDto'
+      responses:
+        '200':
+          description: Statut mis à jour
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/ConversationDto'
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès refusé (non ADMIN ou pas assigné à cette conversation)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '404':
+          description: Conversation non trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
+
 # ===== COMPONENTS =====
 components:
   securitySchemes:
@@ -1929,6 +2277,13 @@ components:
         - GROUPE
         - PASS_2J
       description: Type de tarif
+
+    ConversationStatus:
+      type: string
+      enum:
+        - OPEN
+        - CLOSED
+      description: Statut d'une conversation
 
     # ===== RESPONSE DTOs (OUTPUT) =====
     UserDto:
@@ -2154,6 +2509,83 @@ components:
           type: string
           format: date-time
         updated_at:
+          type: string
+          format: date-time
+
+    ConversationDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        user_id:
+          type: integer
+          example: 5
+        admin_id:
+          type: integer
+          nullable: true
+          example: 2
+        status:
+          $ref: '#/components/schemas/ConversationStatus'
+        user:
+          $ref: '#/components/schemas/UserDto'
+        admin:
+          allOf:
+            - $ref: '#/components/schemas/UserDto'
+          nullable: true
+        messages:
+          type: array
+          description: Dernier message pour preview (optionnel)
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 42
+              content:
+                type: string
+                example: "Bonjour, j'ai une question"
+              createdAt:
+                type: string
+                format: date-time
+              isRead:
+                type: boolean
+                example: false
+        _count:
+          type: object
+          description: Nombre de messages non lus
+          properties:
+            messages:
+              type: integer
+              example: 3
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    MessageDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        conversationId:
+          type: integer
+          example: 1
+        senderId:
+          type: integer
+          example: 5
+        content:
+          type: string
+          example: "Bonjour, j'ai une question sur les horaires du parc"
+        isRead:
+          type: boolean
+          example: false
+        sender:
+          $ref: '#/components/schemas/UserDto'
+        createdAt:
           type: string
           format: date-time
 
@@ -2507,6 +2939,35 @@ components:
       properties:
         status:
           $ref: '#/components/schemas/ReservationStatus'
+
+    CreateMessageDto:
+      type: object
+      required:
+        - content
+      properties:
+        conversationId:
+          type: integer
+          nullable: true
+          example: 1
+          description: ID de la conversation existante (optionnel si recipientId fourni)
+        recipientId:
+          type: integer
+          nullable: true
+          example: 2
+          description: ID de l'admin destinataire pour créer une nouvelle conversation (optionnel si conversationId fourni)
+        content:
+          type: string
+          minLength: 1
+          example: "Bonjour, j'ai une question sur les horaires"
+          description: Contenu du message
+
+    UpdateConversationStatusDto:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          $ref: '#/components/schemas/ConversationStatus'
 
     # ===== ERROR =====
     ErrorDto:

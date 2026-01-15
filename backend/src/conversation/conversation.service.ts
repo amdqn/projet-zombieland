@@ -46,7 +46,7 @@ export class ConversationService {
       data: {
         user_id: userId,
         admin_id: adminId,
-        status: ConversationStatus.ASSIGNED,
+        status: ConversationStatus.OPEN,
       },
       include: {
         user: {
@@ -103,7 +103,7 @@ export class ConversationService {
         ? {
           OR: [
             { admin_id: userId }, // Conversations assignées
-            { status: ConversationStatus.WAITING }, // Conversations en attente
+            { status: ConversationStatus.OPEN }, // Conversations en attente
           ],
         }
         : { user_id: userId }; // Conversations du client

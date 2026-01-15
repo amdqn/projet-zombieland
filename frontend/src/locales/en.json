@@ -147,8 +147,63 @@
     "account": {
       "title": "My account",
       "profile": "Profile",
-      "reservations": "My reservations",
-      "logout": "Logout"
+      "logout": "Logout",
+      "page": {
+        "breadcrumbs": {
+          "home": "Home",
+          "account": "My account"
+        },
+        "title": "MY PROFILE",
+        "loading": "Loading profile...",
+        "errorLoading": "Unable to load profile data",
+        "error": "An error occurred:",
+        "myReservations": "My reservations",
+        "dashboard": "Dashboard",
+        "notConnected": "You do not have access to this page if you are not logged in",
+        "loginLink": "Sign in"
+      },
+      "reservations": {
+        "breadcrumbs": {
+          "home": "Home",
+          "reservations": "My reservations"
+        },
+        "title": "My reservations",
+        "description": "View and manage all your reservations at Zombieland park.",
+        "loading": "Loading reservations...",
+        "error": "Error:",
+        "errorLoading": "Loading error",
+        "errorDelete": "Error deleting reservation",
+        "noReservations": "No reservation found.",
+        "details": {
+          "title": "Reservation details",
+          "reservationNumber": "Reservation #",
+          "status": {
+            "confirmed": "Confirmed",
+            "pending": "Pending",
+            "cancelled": "Cancelled"
+          },
+          "customerInfo": "Customer information",
+          "username": "Username",
+          "email": "Email",
+          "visitInfo": "Visit information",
+          "visitDate": "Visit date",
+          "parkStatus": "Park status",
+          "parkOpen": "Open",
+          "parkClosed": "Closed",
+          "notes": "Notes",
+          "ticketsDetails": "Ticket details",
+          "quantity": "Quantity",
+          "unitPrice": "Unit price",
+          "subtotal": "Subtotal",
+          "priceId": "Price ID: #",
+          "reservationInfo": "Reservation information",
+          "totalTickets": "Total number of tickets",
+          "totalAmount": "Total amount",
+          "userFallback": "User #",
+          "notAvailable": "Not available",
+          "dateNotAvailable": "Date not available"
+        }
+      }
     },
     "breadcrumbs": {
       "home": "Home",

@@ -1,6 +1,7 @@
 import { Box, Modal, Typography, Divider, Chip, Stack } from '@mui/material';
 import { colors } from '../../../theme';
 import type { Reservation, ReservationStatus } from '../../../@types/reservation';
+import { useTranslation } from 'react-i18next';
 
 interface ReservationDetailsModalProps {
   open: boolean;
@@ -36,22 +37,22 @@ const getStatusColor = (status: ReservationStatus): string => {
   }
 };
 
-const getStatusLabel = (status: ReservationStatus): string => {
+const getStatusLabel = (status: ReservationStatus, t: (key: string) => string): string => {
   switch (status) {
     case 'CONFIRMED':
-      return 'Confirmée';
+      return t('auth.account.reservations.details.status.confirmed');
     case 'PENDING':
-      return 'En attente';
+      return t('auth.account.reservations.details.status.pending');
     case 'CANCELLED':
-      return 'Annulée';
+      return t('auth.account.reservations.details.status.cancelled');
     default:
       return status;
   }
 };
 
-const formatDate = (dateString: string): string => {
+const formatDate = (dateString: string, locale: string = 'fr-FR'): string => {
   const date = new Date(dateString);
-  return date.toLocaleDateString('fr-FR', {
+  return date.toLocaleDateString(locale, {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
@@ -59,8 +60,11 @@ const formatDate = (dateString: string): string => {
   });
 };
 
-const formatPrice = (amount: number | string): string => {
+const formatPrice = (amount: number | string, locale: string = 'fr-FR'): string => {
   const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
+  if (locale === 'en-US') {
+    return `€${numAmount.toFixed(2)}`;
+  }
   return `${numAmount.toFixed(2).replace('.', ',')} €`;
 };
 
@@ -69,13 +73,16 @@ export const ReservationDetailsModal = ({
   onClose,
   reservation,
 }: ReservationDetailsModalProps) => {
+  const { t, i18n } = useTranslation();
+  const locale = i18n.language === 'fr' ? 'fr-FR' : 'en-US';
+  
   if (!reservation) return null;
 
-  const customerName = reservation.user?.pseudo || `Utilisateur #${reservation.user_id}`;
-  const customerEmail = reservation.user?.email || 'Non disponible';
+  const customerName = reservation.user?.pseudo || `${t('auth.account.reservations.details.userFallback')}${reservation.user_id}`;
+  const customerEmail = reservation.user?.email || t('auth.account.reservations.details.notAvailable');
   const reservationDate = reservation.date?.jour
-    ? formatDate(reservation.date.jour)
-    : 'Date non disponible';
+    ? formatDate(reservation.date.jour, locale)
+    : t('auth.account.reservations.details.dateNotAvailable');
   const isOpen = reservation.date?.is_open !== undefined ? reservation.date.is_open : null;
 
   return (
@@ -92,7 +99,7 @@ export const ReservationDetailsModal = ({
             textAlign: 'center',
           }}
         >
-          Détails de la réservation
+          {t('auth.account.reservations.details.title')}
         </Typography>
 
         <Stack spacing={3}>
@@ -106,10 +113,10 @@ export const ReservationDetailsModal = ({
                 letterSpacing: '0.05em',
               }}
             >
-              Réservation #{reservation.reservation_number}
+              {t('auth.account.reservations.details.reservationNumber')}{reservation.reservation_number}
             </Typography>
             <Chip
-              label={getStatusLabel(reservation.status)}
+              label={getStatusLabel(reservation.status, t)}
               size="medium"
               sx={{
                 backgroundColor: getStatusColor(reservation.status),
@@ -136,7 +143,7 @@ export const ReservationDetailsModal = ({
                 fontWeight: 600,
               }}
             >
-              Informations client
+              {t('auth.account.reservations.details.customerInfo')}
             </Typography>
             <Stack spacing={1}>
               <Box>
@@ -148,7 +155,7 @@ export const ReservationDetailsModal = ({
                     mb: 0.5,
                   }}
                 >
-                  Nom d'utilisateur
+                  {t('auth.account.reservations.details.username')}
                 </Typography>
                 <Typography variant="body1" sx={{ color: colors.white, fontWeight: 500 }}>
                   {customerName}
@@ -163,7 +170,7 @@ export const ReservationDetailsModal = ({
                     mb: 0.5,
                   }}
                 >
-                  Email
+                  {t('auth.account.reservations.details.email')}
                 </Typography>
                 <Typography variant="body1" sx={{ color: colors.white }}>
                   {customerEmail}
@@ -187,7 +194,7 @@ export const ReservationDetailsModal = ({
                 fontWeight: 600,
               }}
             >
-              Informations de visite
+              {t('auth.account.reservations.details.visitInfo')}
             </Typography>
             <Stack spacing={1}>
               <Box>
@@ -199,7 +206,7 @@ export const ReservationDetailsModal = ({
                     mb: 0.5,
                   }}
                 >
-                  Date de visite
+                  {t('auth.account.reservations.details.visitDate')}
                 </Typography>
                 <Typography variant="body1" sx={{ color: colors.white, fontWeight: 500 }}>
                   {reservationDate}
@@ -215,10 +222,10 @@ export const ReservationDetailsModal = ({
                       mb: 0.5,
                     }}
                   >
-                    Statut du parc
+                    {t('auth.account.reservations.details.parkStatus')}
                   </Typography>
                   <Chip
-                    label={isOpen ? 'Ouvert' : 'Fermé'}
+                    label={isOpen ? t('auth.account.reservations.details.parkOpen') : t('auth.account.reservations.details.parkClosed')}
                     size="small"
                     sx={{
                       backgroundColor: isOpen ? colors.primaryGreen : colors.primaryRed,
@@ -238,7 +245,7 @@ export const ReservationDetailsModal = ({
                       mb: 0.5,
                     }}
                   >
-                    Notes
+                    {t('auth.account.reservations.details.notes')}
                   </Typography>
                   <Typography variant="body1" sx={{ color: colors.white }}>
                     {reservation.date.notes}
@@ -265,7 +272,7 @@ export const ReservationDetailsModal = ({
                     fontWeight: 600,
                   }}
                 >
-                  Détails des billets
+                  {t('auth.account.reservations.details.ticketsDetails')}
                 </Typography>
                 <Stack spacing={2}>
                   {reservation.tickets.map((ticket, index) => (
@@ -309,7 +316,7 @@ export const ReservationDetailsModal = ({
                               fontSize: '0.875rem',
                             }}
                           >
-                            Quantité
+                            {t('auth.account.reservations.details.quantity')}
                           </Typography>
                           <Typography
                             variant="body2"
@@ -329,7 +336,7 @@ export const ReservationDetailsModal = ({
                               fontSize: '0.875rem',
                             }}
                           >
-                            Prix unitaire
+                            {t('auth.account.reservations.details.unitPrice')}
                           </Typography>
                           <Typography
                             variant="body2"
@@ -337,7 +344,7 @@ export const ReservationDetailsModal = ({
                               color: colors.white,
                             }}
                           >
-                            {formatPrice(ticket.unit_price)}
+                            {formatPrice(ticket.unit_price, locale)}
                           </Typography>
                         </Box>
                         <Divider sx={{ borderColor: colors.secondaryGrey, my: 0.5 }} />
@@ -349,7 +356,7 @@ export const ReservationDetailsModal = ({
                               fontWeight: 600,
                             }}
                           >
-                            Sous-total
+                            {t('auth.account.reservations.details.subtotal')}
                           </Typography>
                           <Typography
                             variant="body2"
@@ -359,7 +366,7 @@ export const ReservationDetailsModal = ({
                               fontSize: '1rem',
                             }}
                           >
-                            {formatPrice(ticket.subtotal)}
+                            {formatPrice(ticket.subtotal, locale)}
                           </Typography>
                         </Box>
                         <Typography
@@ -370,7 +377,7 @@ export const ReservationDetailsModal = ({
                             mt: 0.5,
                           }}
                         >
-                          ID tarif: #{ticket.price_id}
+                          {t('auth.account.reservations.details.priceId')}{ticket.price_id}
                         </Typography>
                       </Stack>
                     </Box>
@@ -394,7 +401,7 @@ export const ReservationDetailsModal = ({
                 fontWeight: 600,
               }}
             >
-              Informations de réservation
+              {t('auth.account.reservations.details.reservationInfo')}
             </Typography>
             <Stack spacing={1}>
               {reservation.tickets_count && (
@@ -407,7 +414,7 @@ export const ReservationDetailsModal = ({
                       mb: 0.5,
                     }}
                   >
-                    Nombre total de billets
+                    {t('auth.account.reservations.details.totalTickets')}
                   </Typography>
                   <Typography variant="body1" sx={{ color: colors.white, fontWeight: 500 }}>
                     {reservation.tickets_count}
@@ -423,7 +430,7 @@ export const ReservationDetailsModal = ({
                     mb: 0.5,
                   }}
                 >
-                  Montant total
+                  {t('auth.account.reservations.details.totalAmount')}
                 </Typography>
                 <Typography
                   variant="h6"
@@ -433,7 +440,7 @@ export const ReservationDetailsModal = ({
                     fontSize: '1.5rem',
                   }}
                 >
-                  {formatPrice(reservation.total_amount)}
+                  {formatPrice(reservation.total_amount, locale)}
                 </Typography>
               </Box>
             </Stack>

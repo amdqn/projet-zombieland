@@ -7,8 +7,10 @@ import {ReservationDetailsModal} from "../../../components/modals";
 import type {Reservation} from "../../../@types/reservation";
 import {deleteReservation} from "../../../services/reservations.ts";
 import {ReservationCanceledModal} from "../../../components/modals/Reservations/ReservationCanceledModal.tsx";
+import {useTranslation} from "react-i18next";
 
 export default function ReservationUserList() {
+    const { t } = useTranslation();
     const [isLoading, setIsLoading] = useState<boolean>(false);
     // Utilisation d'un hook personnalisé
     const { reservations, setReservations, fetchReservations } = useReservations();
@@ -48,7 +50,7 @@ export default function ReservationUserList() {
             setReservationToDelete(null);
 
         } catch (err) {
-            const message = err instanceof Error ? err.message : 'Erreur lors de la suppression de la réservation';
+            const message = err instanceof Error ? err.message : t("auth.account.reservations.errorDelete");
             // On affiche l'erreur dans le modal
             setDeleteError(message);
         } finally {
@@ -70,7 +72,7 @@ export default function ReservationUserList() {
             try {
                 await fetchReservations();
             } catch (err) {
-                setError(err instanceof Error ? err.message : 'Erreur de chargement');
+                setError(err instanceof Error ? err.message : t("auth.account.reservations.errorLoading"));
             } finally {
                 setIsLoading(false);
             }
@@ -88,15 +90,15 @@ export default function ReservationUserList() {
             >
                 {isLoading ? (
                     <Typography variant="body1" sx={{ color: colors.white }}>
-                        Chargement des réservations...
+                        {t("auth.account.reservations.loading")}
                     </Typography>
                 ) : error ? (
                     <Typography variant="body1" sx={{ color: colors.primaryRed }}>
-                        Erreur : {error}
+                        {t("auth.account.reservations.error")} {error}
                     </Typography>
                 ) : reservations.length === 0 ? (
                     <Typography variant="body1" sx={{ color: colors.white }}>
-                        Aucune réservation trouvée.
+                        {t("auth.account.reservations.noReservations")}
                     </Typography>
                 ) : (
                     <Box

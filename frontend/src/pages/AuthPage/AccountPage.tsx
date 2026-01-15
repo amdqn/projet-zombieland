@@ -7,9 +7,11 @@ import { CustomBreadcrumbs, PrimaryButton } from "../../components/common";
 import type {User} from "../../@types/users";
 import {colors} from "../../theme";
 import UserCard from "../../components/cards/UserCard.tsx";
+import {useTranslation} from "react-i18next";
 
 export default function AccountPage() {
 
+    const { t } = useTranslation();
     const { isLogged, logout } = useContext(LoginContext);
     const [user, setUser] = useState<User | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -27,7 +29,7 @@ export default function AccountPage() {
             //setEmail(response.email || '');
 
         } catch (error) {
-            setError(`Une erreur est survenue : ${error}`)
+            setError(`${t("auth.account.page.error")} ${error}`)
         } finally {
             setIsLoading(false);
         }
@@ -54,8 +56,8 @@ export default function AccountPage() {
             <Container maxWidth="lg">
                 <CustomBreadcrumbs
                     items={[
-                        { label: 'Accueil', path: '/' },
-                        { label: 'Mon compte'}
+                        { label: t("auth.account.page.breadcrumbs.home"), path: '/' },
+                        { label: t("auth.account.page.breadcrumbs.account")}
                     ]}
                 />
 
@@ -86,7 +88,7 @@ export default function AccountPage() {
                                 mb: 2,
                             }}
                         >
-                            MON PROFIL
+                            {t("auth.account.page.title")}
                         </Typography>
 
                         {error && (
@@ -97,7 +99,7 @@ export default function AccountPage() {
 
                         {/* Loader pendant le chargement */}
                         {isLoading ? (
-                            <Typography>Chargement du profil...</Typography>
+                            <Typography>{t("auth.account.page.loading")}</Typography>
                         ) : user ? (
                             <>
                                 {/* Carte - Afficher seulement si user n'est pas null */}
@@ -105,23 +107,23 @@ export default function AccountPage() {
                                     <UserCard user={user}  onUpdate={handleUserUpdate} />
                                 </Box>
 
-                                {user.role == "CLIENT" ? <PrimaryButton onClick={() => navigate('/account/reservations')} text={"Mes réservations"} /> : ""}
-                                {user.role == "ADMIN" ? <PrimaryButton onClick={() => navigate('/admin')}  text={"Dashboard"} /> : ""}
-                                <PrimaryButton onClick={logoutAndNavigate}  text={"Se déconnecter"} />
+                                {user.role == "CLIENT" ? <PrimaryButton onClick={() => navigate('/account/reservations')} text={t("auth.account.page.myReservations")} /> : ""}
+                                {user.role == "ADMIN" ? <PrimaryButton onClick={() => navigate('/admin')}  text={t("auth.account.page.dashboard")} /> : ""}
+                                <PrimaryButton onClick={logoutAndNavigate}  text={t("auth.account.logout")} />
                             </>
                         ) : (
-                            <Typography>Impossible de charger les données du profil</Typography>
+                            <Typography>{t("auth.account.page.errorLoading")}</Typography>
                         )}
                     </Box>
                 ) : (
                     <Box sx={{ textAlign: 'center', mt: 10 }}>
                         <Typography variant="h6" sx={{ mb: 2 }}>
-                            Vous n'avez pas accès à cette page si vous n'êtes pas connecté
+                            {t("auth.account.page.notConnected")}
                         </Typography>
                         <Link
                             onClick={() => navigate('/login')}
                         >
-                            Se connecter
+                            {t("auth.account.page.loginLink")}
                         </Link>
                     </Box>
                 )}

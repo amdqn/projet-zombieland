@@ -147,8 +147,63 @@
     "account": {
       "title": "Mon compte",
       "profile": "Profil",
-      "reservations": "Mes réservations",
-      "logout": "Se déconnecter"
+      "logout": "Se déconnecter",
+      "page": {
+        "breadcrumbs": {
+          "home": "Accueil",
+          "account": "Mon compte"
+        },
+        "title": "MON PROFIL",
+        "loading": "Chargement du profil...",
+        "errorLoading": "Impossible de charger les données du profil",
+        "error": "Une erreur est survenue :",
+        "myReservations": "Mes réservations",
+        "dashboard": "Dashboard",
+        "notConnected": "Vous n'avez pas accès à cette page si vous n'êtes pas connecté",
+        "loginLink": "Se connecter"
+      },
+      "reservations": {
+        "breadcrumbs": {
+          "home": "Accueil",
+          "reservations": "Mes réservations"
+        },
+        "title": "Mes réservations",
+        "description": "Consultez et gérez toutes vos réservations au parc Zombieland.",
+        "loading": "Chargement des réservations...",
+        "error": "Erreur :",
+        "errorLoading": "Erreur de chargement",
+        "errorDelete": "Erreur lors de la suppression de la réservation",
+        "noReservations": "Aucune réservation trouvée.",
+        "details": {
+          "title": "Détails de la réservation",
+          "reservationNumber": "Réservation #",
+          "status": {
+            "confirmed": "Confirmée",
+            "pending": "En attente",
+            "cancelled": "Annulée"
+          },
+          "customerInfo": "Informations client",
+          "username": "Nom d'utilisateur",
+          "email": "Email",
+          "visitInfo": "Informations de visite",
+          "visitDate": "Date de visite",
+          "parkStatus": "Statut du parc",
+          "parkOpen": "Ouvert",
+          "parkClosed": "Fermé",
+          "notes": "Notes",
+          "ticketsDetails": "Détails des billets",
+          "quantity": "Quantité",
+          "unitPrice": "Prix unitaire",
+          "subtotal": "Sous-total",
+          "priceId": "ID tarif: #",
+          "reservationInfo": "Informations de réservation",
+          "totalTickets": "Nombre total de billets",
+          "totalAmount": "Montant total",
+          "userFallback": "Utilisateur #",
+          "notAvailable": "Non disponible",
+          "dateNotAvailable": "Date non disponible"
+        }
+      }
     },
     "breadcrumbs": {
       "home": "Accueil",

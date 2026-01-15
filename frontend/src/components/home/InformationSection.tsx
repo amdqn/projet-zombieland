@@ -4,9 +4,11 @@ import {Box, Typography} from "@mui/material";
 import AccessCard from "../cards/AccessCard.tsx";
 import getTodaySchedule from "../../functions/getTodaySchedule.ts";
 import type {ParkDate} from "../../@types/parkDate.ts";
+import { useTranslation } from "react-i18next";
 
 
 export default function InformationSection() {
+    const { t } = useTranslation();
     const [todaySchedule, setTodaySchedule] = useState<ParkDate | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -17,7 +19,7 @@ export default function InformationSection() {
                 const schedule = await getTodaySchedule();
                 setTodaySchedule(schedule);
             } catch (error) {
-                console.error("Erreur lors de la récupération des horaires:", error);
+                console.error(t("home.information.errorLoading"), error);
             }finally {
                 setIsLoading(false);
             }
@@ -40,7 +42,7 @@ export default function InformationSection() {
                 variant="h2"
                 paddingBottom={3}
             >
-                Informations générales
+                {t("home.information.title")}
             </Typography>
 
             <Box sx={{
@@ -58,13 +60,13 @@ export default function InformationSection() {
                 }}>
                     {isLoading ? (
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 200 }}>
-                            <Typography>Chargement des horaires...</Typography>
+                            <Typography>{t("home.information.loadingSchedules")}</Typography>
                         </Box>
                     ) : todaySchedule ? (
                         <SchedulesCard schedules={todaySchedule} />
                     ) : (
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 200 }}>
-                            <Typography>Aucun horaire disponible pour aujourd'hui</Typography>
+                            <Typography>{t("home.information.noSchedules")}</Typography>
                         </Box>
                     )}
                     <AccessCard />

@@ -3,6 +3,7 @@ import {PrimaryButton} from "../common/Button";
 import type {ParkDate} from "../../@types/parkDate.ts";
 import {formatDay} from "../../functions/formatDay.ts";
 import formatHour from "../../functions/formatHour.ts";
+import { useTranslation } from "react-i18next";
 
 
 
@@ -11,6 +12,7 @@ interface SchedulesCardProps {
 }
 
 export function SchedulesCard({schedules}: SchedulesCardProps) {
+    const { t } = useTranslation();
 
     return (
         <>
@@ -21,7 +23,7 @@ export function SchedulesCard({schedules}: SchedulesCardProps) {
                         textAlign: 'center'
                     }}>
                         <Typography variant="h5">
-                            Aujourd'hui, {formatDay(schedules.jour)}, le parc est{' '}
+                            {t("home.schedule.todayStatus", { day: formatDay(schedules.jour) })}{' '}
                             <Box
                                 component="span"
                                 sx={{
@@ -29,7 +31,7 @@ export function SchedulesCard({schedules}: SchedulesCardProps) {
                                     fontWeight: 'bold'
                                 }}
                             >
-                                {schedules.is_open ? "ouvert" : "fermé"}
+                                {schedules.is_open ? t("home.schedule.open") : t("home.schedule.closed")}
                             </Box>
                         </Typography>
                     </Box>
@@ -58,7 +60,7 @@ export function SchedulesCard({schedules}: SchedulesCardProps) {
                             }}>
                                 <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3}}>
                                     <Typography variant="body1">
-                                        Heure d'ouverture
+                                        {t("home.schedule.openingTime")}
                                     </Typography>
                                     <Chip
                                         label={formatHour(schedules.open_hour)}
@@ -69,7 +71,7 @@ export function SchedulesCard({schedules}: SchedulesCardProps) {
 
                                 <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3}}>
                                     <Typography variant="body1">
-                                        Heure de fermeture
+                                        {t("home.schedule.closingTime")}
                                     </Typography>
                                     <Chip
                                         label={formatHour(schedules.close_hour)}
@@ -86,7 +88,7 @@ export function SchedulesCard({schedules}: SchedulesCardProps) {
                                 minHeight: '200px',
                             }}>
                                 <Typography variant="body1">
-                                    Pas d'horaires disponibles.
+                                    {t("home.schedule.noSchedule")}
                                 </Typography>
                             </Box>
                         )
@@ -98,13 +100,13 @@ export function SchedulesCard({schedules}: SchedulesCardProps) {
                             minHeight: '200px',
                         }}>
                             <Typography variant="body1">
-                                Le parc est fermé ce jour-là.
+                                {t("home.schedule.closedToday")}
                             </Typography>
                         </Box>
                     )}
                 </CardContent>
                 <CardActions sx={{ justifyContent: 'center', paddingBottom: 5 }}>
-                    <PrimaryButton text={"Plus d'horaires"} href={"/info"} fullWidth={false}/>
+                    <PrimaryButton text={t("home.schedule.moreSchedules")} href={"/info"} fullWidth={false}/>
                 </CardActions>
             </Card>
         </>

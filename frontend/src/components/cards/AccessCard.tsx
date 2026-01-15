@@ -2,8 +2,10 @@ import {Box, Card, CardContent, Typography} from "@mui/material";
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
+import { useTranslation } from "react-i18next";
 
 export default function AccessCard() {
+    const { t } = useTranslation();
     return (
     <Card sx={{minWidth: 275, borderRadius: 5, backgroundColor: 'colors.secondaryDark', color: 'white'}}>
         <CardContent>
@@ -12,7 +14,7 @@ export default function AccessCard() {
                 textAlign: 'center'
             }}>
                 <Typography variant="h5">
-                    Accès au parc
+                    {t("home.access.title")}
                 </Typography>
             </Box>
 
@@ -27,17 +29,17 @@ export default function AccessCard() {
                     <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
                         <LocationOnIcon color="primary" />
                         <Typography variant="h6" sx={{fontWeight: 'bold'}}>
-                            ZombieLand Park
+                            {t("home.access.parkName")}
                         </Typography>
                     </Box>
                     <Typography variant="body1">
-                        13 Allée des Ombres Errantes
+                        {t("home.access.address.line1")}
                     </Typography>
                     <Typography variant="body1">
-                        Zone Industrielle Désaffectée
+                        {t("home.access.address.line2")}
                     </Typography>
                     <Typography variant="body1">
-                        75000 Paris, France
+                        {t("home.access.address.line3")}
                     </Typography>
                 </Box>
 
@@ -45,13 +47,13 @@ export default function AccessCard() {
                     <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
                         <DirectionsCarIcon />
                         <Typography variant="subtitle1">
-                            En voiture : Sortie A7 "Zone Contaminée"
+                            {t("home.access.byCar")}
                         </Typography>
                     </Box>
                     <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
                         <DirectionsBusIcon />
                         <Typography variant="subtitle1">
-                            Bus ligne 13 - Arrêt "Cimetière"
+                            {t("home.access.byBus")}
                         </Typography>
                     </Box>
                 </Box>

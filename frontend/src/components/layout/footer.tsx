@@ -5,9 +5,10 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import XIcon from "@mui/icons-material/X";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import {useNavigate} from "react-router";
+import { useTranslation } from "react-i18next";
 
 export default function Footer() {
-
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const year = new Date().getFullYear();
 
@@ -18,35 +19,35 @@ export default function Footer() {
                 {/* Premier block */}
                 <Box sx={{ display: {xs: 'none', md: 'block'} }}>
                     <Typography onClick={() => navigate("/static/mentions-legales")} sx={{ cursor: 'pointer' }}>
-                        Mentions légales
+                        {t("footer.legal.mentionsLegales")}
                     </Typography>
                     <Typography onClick={() => navigate("/static/gestion-cookies")} sx={{ cursor: 'pointer' }}>
-                        Gestion des cookies
+                        {t("footer.legal.gestionCookies")}
                     </Typography>
                     <Typography onClick={() => navigate("/static/cgv")} sx={{ cursor: 'pointer' }}>
-                        Conditions de vente
+                        {t("footer.legal.conditionsVente")}
                     </Typography>
                     <Typography onClick={() => navigate("/static/cgu")} sx={{ cursor: 'pointer' }}>
-                        CGU
+                        {t("footer.legal.cgu")}
                     </Typography>
                     <Typography onClick={() => navigate("/static/rgpd")} sx={{ cursor: 'pointer' }}>
-                        RGPD
+                        {t("footer.legal.rgpd")}
                     </Typography>
                 </Box>
 
                 {/* Liens Menus */}
                 <Box sx={{ display: {xs: 'none', md: 'flex'}, gap: 3 }}>
                     <Box onClick={() => navigate("/info")} sx={{ cursor: "pointer" }}>
-                        INFOS
+                        {t("footer.links.infos")}
                     </Box>
                     <Box onClick={() => navigate("/activities")} sx={{ cursor: "pointer" }}>
-                        ACTIVITES
+                        {t("footer.links.activities")}
                     </Box>
                     <Box onClick={() => navigate("/reservations")} sx={{ cursor: "pointer" }}>
-                        RESERVATIONS
+                        {t("footer.links.reservations")}
                     </Box>
                     <Box onClick={() => navigate("/contact")} sx={{ cursor: "pointer" }}>
-                        NOUS CONTACTER
+                        {t("footer.links.contact")}
                     </Box>
                 </Box>
 
@@ -104,7 +105,7 @@ export default function Footer() {
             {/* Block inferieur */}
             <Box sx={{display: "flex", justifyContent: "center", alignItems: "center"}}>
                 <Typography>
-                    Projet équipe O'Clock - {year}
+                    {t("footer.copyright", { year })}
                 </Typography>
             </Box>
 

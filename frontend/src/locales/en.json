@@ -36,7 +36,15 @@
       "title": "Will you survive the post-apocalyptic park? Book your stay and come face your fears at the heart of ZombieLand!",
       "parkStatus": "Today, the park is {{status}}.",
       "parkOpen": "open",
-      "parkClosed": "closed"
+      "parkClosed": "closed",
+      "videoTitle": "Will you dare to cross the gates?",
+      "reserveButton": "Book your ticket"
+    },
+    "carousel": {
+      "title": "Activities & Attractions",
+      "activityFallback": "Activity",
+      "attractionFallback": "Attraction",
+      "errorLoading": "Error loading activities and attractions:"
     },
     "experiences": {
       "title": "EXPERIENCES",
@@ -46,13 +54,41 @@
     "ticketing": {
       "title": "TICKETING",
       "prices": "Prices",
-      "reservation": "Reservation"
+      "reservation": "Reservation",
+      "errorLoading": "Unable to retrieve prices:"
+    },
+    "social": {
+      "title": "Follow us"
     },
     "information": {
-      "title": "INFORMATION",
+      "title": "General information",
       "accessibility": "Park accessibility",
       "schedule": "Schedule",
-      "contact": "Contact"
+      "contact": "Contact",
+      "loadingSchedules": "Loading schedules...",
+      "noSchedules": "No schedule available for today",
+      "errorLoading": "Error loading schedules:"
+    },
+    "schedule": {
+      "todayStatus": "Today, {{day}}, the park is",
+      "open": "open",
+      "closed": "closed",
+      "openingTime": "Opening time",
+      "closingTime": "Closing time",
+      "noSchedule": "No schedule available.",
+      "closedToday": "The park is closed today.",
+      "moreSchedules": "More schedules"
+    },
+    "access": {
+      "title": "Park access",
+      "parkName": "ZombieLand Park",
+      "address": {
+        "line1": "13 Allée des Ombres Errantes",
+        "line2": "Abandoned Industrial Zone",
+        "line3": "75000 Paris, France"
+      },
+      "byCar": "By car: Exit A7 \"Contaminated Zone\"",
+      "byBus": "Bus line 13 - Stop \"Cemetery\""
     }
   },
   "auth": {
@@ -149,6 +185,22 @@
     "schedule": "Schedule",
     "contact": "Contact",
     "map": "Park map"
+  },
+  "footer": {
+    "legal": {
+      "mentionsLegales": "Legal notices",
+      "gestionCookies": "Cookie management",
+      "conditionsVente": "Terms of sale",
+      "cgu": "Terms of use",
+      "rgpd": "GDPR"
+    },
+    "links": {
+      "infos": "INFO",
+      "activities": "ACTIVITIES",
+      "reservations": "RESERVATIONS",
+      "contact": "CONTACT US"
+    },
+    "copyright": "O'Clock team project - {{year}}"
   },
   "validation": {
     "required": "This field is required",

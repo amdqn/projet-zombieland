@@ -36,7 +36,15 @@
       "title": "Survivrez-vous au parc post-apocalyptique ? Réservez votre séjour et venez affronter vos peurs au cœur de ZombieLand !",
       "parkStatus": "Aujourd'hui, le parc est {{status}}.",
       "parkOpen": "ouvert",
-      "parkClosed": "fermé"
+      "parkClosed": "fermé",
+      "videoTitle": "Oserez-vous franchir les portes ?",
+      "reserveButton": "Réserve ton billet"
+    },
+    "carousel": {
+      "title": "Activités & Attractions",
+      "activityFallback": "Activité",
+      "attractionFallback": "Attraction",
+      "errorLoading": "Erreur lors de la récupération des activités et attractions:"
     },
     "experiences": {
       "title": "EXPERIENCES",
@@ -46,13 +54,41 @@
     "ticketing": {
       "title": "BILLETTERIE",
       "prices": "Tarifs",
-      "reservation": "Réservation"
+      "reservation": "Réservation",
+      "errorLoading": "Impossible de récupérer les tarifs:"
+    },
+    "social": {
+      "title": "Suivez-nous"
     },
     "information": {
-      "title": "INFORMATIONS",
+      "title": "Informations générales",
       "accessibility": "Accessibilité du parc",
       "schedule": "Horaires",
-      "contact": "Contact"
+      "contact": "Contact",
+      "loadingSchedules": "Chargement des horaires...",
+      "noSchedules": "Aucun horaire disponible pour aujourd'hui",
+      "errorLoading": "Erreur lors de la récupération des horaires:"
+    },
+    "schedule": {
+      "todayStatus": "Aujourd'hui, {{day}}, le parc est",
+      "open": "ouvert",
+      "closed": "fermé",
+      "openingTime": "Heure d'ouverture",
+      "closingTime": "Heure de fermeture",
+      "noSchedule": "Pas d'horaires disponibles.",
+      "closedToday": "Le parc est fermé ce jour-là.",
+      "moreSchedules": "Plus d'horaires"
+    },
+    "access": {
+      "title": "Accès au parc",
+      "parkName": "ZombieLand Park",
+      "address": {
+        "line1": "13 Allée des Ombres Errantes",
+        "line2": "Zone Industrielle Désaffectée",
+        "line3": "75000 Paris, France"
+      },
+      "byCar": "En voiture : Sortie A7 \"Zone Contaminée\"",
+      "byBus": "Bus ligne 13 - Arrêt \"Cimetière\""
     }
   },
   "auth": {
@@ -149,6 +185,22 @@
     "schedule": "Horaires",
     "contact": "Contact",
     "map": "Plan du parc"
+  },
+  "footer": {
+    "legal": {
+      "mentionsLegales": "Mentions légales",
+      "gestionCookies": "Gestion des cookies",
+      "conditionsVente": "Conditions de vente",
+      "cgu": "CGU",
+      "rgpd": "RGPD"
+    },
+    "links": {
+      "infos": "INFOS",
+      "activities": "ACTIVITES",
+      "reservations": "RESERVATIONS",
+      "contact": "NOUS CONTACTER"
+    },
+    "copyright": "Projet équipe O'Clock - {{year}}"
   },
   "validation": {
     "required": "Ce champ est obligatoire",

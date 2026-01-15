@@ -6,6 +6,7 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import ChatIcon from '@mui/icons-material/Chat';
 import SocialCard from "../cards/SocialCard.tsx";
+import { useTranslation } from "react-i18next";
 
 const socialNetworks = [
     {
@@ -41,6 +42,7 @@ const socialNetworks = [
 ]
 
 export default function SocialNetwork() {
+    const { t } = useTranslation();
     return (
         <Box sx={{
             p: { xs: 2, md: 3 },
@@ -53,7 +55,7 @@ export default function SocialNetwork() {
                 width: { xs: '100%', md: '50%' },
             }}>
                 <Typography variant="h2">
-                    Suivez-nous
+                    {t("home.social.title")}
                 </Typography>
             </Box>
 

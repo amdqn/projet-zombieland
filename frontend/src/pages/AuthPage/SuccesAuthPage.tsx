@@ -1,9 +1,11 @@
 import {Box, Typography, Link} from "@mui/material";
 import {useNavigate} from "react-router";
+import {useTranslation} from "react-i18next";
 
 export default function SuccesAuthPage() {
 
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     return (
         <Box
@@ -23,7 +25,7 @@ export default function SuccesAuthPage() {
                     textAlign: 'center',
                 }}
             >
-                Création de compte réussis !
+                {t("auth.success.title")}
             </Typography>
 
             <Link
@@ -37,7 +39,7 @@ export default function SuccesAuthPage() {
                     }
                 }}
             >
-                Se connecter
+                {t("auth.success.loginLink")}
             </Link>
         </Box>
     )

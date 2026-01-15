@@ -4,9 +4,11 @@ import {CustomBreadcrumbs, Input, PrimaryButton} from "../../components/common";
 import {type FormEvent, useState} from "react";
 import {register} from "../../services/auth.ts";
 import {useNavigate} from "react-router-dom";
+import {useTranslation} from "react-i18next";
 
 export default function RegisterPage() {
 
+    const { t } = useTranslation();
     const [isLoading, setIsLoading] = useState(false);
     const [registerError, setRegisterError] = useState("");
 
@@ -32,33 +34,33 @@ export default function RegisterPage() {
 
     // validation email
     const validateEmail = (email: string): string => {
-        if (!email) return "L'email est requis";
+        if (!email) return t("auth.register.emailRequired");
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) return "Email invalide";
+        if (!emailRegex.test(email)) return t("auth.register.emailInvalid");
         return "";
     };
 
     // validation mot de passe
     const validatePassword = (password: string): string => {
-        if (!password) return "Le mot de passe est requis";
-        if (password.length < 6) return "Le mot de passe doit contenir au moins 6 caractères";
+        if (!password) return t("auth.register.passwordRequired");
+        if (password.length < 6) return t("auth.register.passwordMinLength");
         return "";
     };
 
     // validation second mot de passe
     const validateConfirmPassword = (confirmPassword: string): string => {
-        if (!confirmPassword) return "La confirmation du mot de passe est requise";
-        if (confirmPassword !== password) return "Les mots de passe ne correspondent pas";
+        if (!confirmPassword) return t("auth.register.confirmPasswordRequired");
+        if (confirmPassword !== password) return t("auth.register.passwordsDontMatch");
         return "";
     }
 
     // validation nouveau pseudo
     const validateNewPseudo = (newPseudo: string): string => {
-        if(!newPseudo) return "Le pseudo est requis";
-        if (newPseudo.length < 3) return "Le pseudo doit contenir au moins 3 caractères";
-        if (newPseudo.length > 10) return "Le pseudo est trop long (max 10 caractères)";
+        if(!newPseudo) return t("auth.register.pseudoRequired");
+        if (newPseudo.length < 3) return t("auth.register.pseudoMinLength");
+        if (newPseudo.length > 10) return t("auth.register.pseudoMaxLength");
         const pseudoRegex = /^[a-zA-Z0-9]+$/;
-        if (!pseudoRegex.test(newPseudo)) return "Le pseudo ne peut contenir que des lettres et des chiffres";
+        if (!pseudoRegex.test(newPseudo)) return t("auth.register.pseudoInvalid");
         return "";
     }
 
@@ -112,7 +114,7 @@ export default function RegisterPage() {
 
             // Afficher le message d'erreur du backend
             const errorMessage = error.response?.data?.message ||
-                "Erreur lors de l'inscription. Email déjà utilisé ?";
+                t("auth.register.registrationError");
 
             setRegisterError(errorMessage);
         } finally {
@@ -126,9 +128,9 @@ export default function RegisterPage() {
                 {/* Breadcrumbs */}
                 <CustomBreadcrumbs
                     items={[
-                        { label: 'Accueil', path: '/' },
-                        { label: 'Se connecter', path: '/login'},
-                        { label: "S'inscrire"},
+                        { label: t("auth.breadcrumbs.home"), path: '/' },
+                        { label: t("auth.breadcrumbs.login"), path: '/login'},
+                        { label: t("auth.breadcrumbs.register")},
                     ]}
                 />
 
@@ -161,7 +163,7 @@ export default function RegisterPage() {
                             mb: 2,
                         }}
                     >
-                        INSCRIPTION
+                        {t("auth.register.title")}
                     </Typography>
 
                     {/* Message d'erreur global */}
@@ -174,9 +176,9 @@ export default function RegisterPage() {
                     <Box sx={{ width: '100%'}}>
                         {/* Champ Email */}
                         <Input
-                            label="Email"
+                            label={t("auth.register.email")}
                             type="email"
-                            placeholder="votre@email.com"
+                            placeholder={t("auth.register.emailPlaceholder")}
                             value={email}
                             onChange={(e) => {
                                 setEmail(e.target.value);
@@ -195,9 +197,9 @@ export default function RegisterPage() {
 
                         {/* Champ Pseudo */}
                         <Input
-                            label="Pseudo"
+                            label={t("auth.register.pseudo")}
                             type="text"
-                            placeholder="Votre pseudo"
+                            placeholder={t("auth.register.pseudoPlaceholder")}
                             value={newPseudo}
                             onChange={(e) => {
                                 setNewPseudo(e.target.value);
@@ -216,9 +218,9 @@ export default function RegisterPage() {
 
                         {/* Champ Mot de passe */}
                         <Input
-                            label="Mot de passe"
+                            label={t("auth.register.password")}
                             type="password"
-                            placeholder="Votre mot de passe"
+                            placeholder={t("auth.register.passwordPlaceholder")}
                             value={password}
                             onChange={(e) => {
                                 setPassword(e.target.value);
@@ -240,9 +242,9 @@ export default function RegisterPage() {
 
                         {/* Champ confirmation de Mot de passe */}
                         <Input
-                            label="Confirmation du mot de passe"
+                            label={t("auth.register.confirmPassword")}
                             type="password"
-                            placeholder="Confirmer votre mot de passe"
+                            placeholder={t("auth.register.confirmPasswordPlaceholder")}
                             value={confirmPassword}
                             onChange={(e) => {
                                 setConfirmPassword(e.target.value);
@@ -263,22 +265,25 @@ export default function RegisterPage() {
                         <PrimaryButton
                             type="submit"
                             disabled={!isFormValid() || isLoading}
-                            text={isLoading ? "Inscription en cours..." : "S'inscrire"}
+                            text={isLoading ? t("auth.register.registerButtonLoading") : t("auth.register.registerButton")}
                         />
                     </Box>
 
                     {/* Lien vers connexion */}
                     <Box sx={{ textAlign: 'center', mt: 2 }}>
                         <Typography variant="body1">
-                            Déjà un compte ?{' '}
+                            {t("auth.register.alreadyAccount")}{' '}
                             <Link
-                                onClick={() => navigate('/login')   }
-                                  style={{
-                                      fontWeight: 'bold',
-                                      color: colors.primaryGreen,
-                                      textDecoration: 'none'
-                                  }}>
-                                Se connecter
+                                onClick={() => navigate('/login')}
+                                sx={{
+                                    fontWeight: 'bold',
+                                    color: colors.primaryGreen,
+                                    textDecoration: 'none',
+                                    '&:hover': {
+                                        textDecoration: 'underline'
+                                    }
+                                }}>
+                                {t("auth.register.loginLink")}
                             </Link>
                         </Typography>
                     </Box>

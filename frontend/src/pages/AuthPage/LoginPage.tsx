@@ -5,6 +5,7 @@ import {LoginContext} from "../../context/UserLoginContext.tsx";
 import {useContext, useState} from "react";
 import {login} from "../../services/auth.ts";
 import {useNavigate, useLocation} from "react-router-dom";
+import {useTranslation} from "react-i18next";
 import {getValidateEmail} from "../../functions/validateEmail.ts";
 import {getValidatePassword} from "../../functions/validatePassword.ts";
 
@@ -14,6 +15,7 @@ export default function LoginPage() {
     const { setIsLogged, isLogged, setRole, setPseudo, setEmail, setToken, logout} = useContext(LoginContext)
     const [isLoading, setIsLoading] = useState(false);
     const [loginError, setLoginError] = useState("");
+    const { t } = useTranslation();
 
     // champs du formulaire
     const [emailInput, setEmailInput] = useState('');
@@ -29,10 +31,10 @@ export default function LoginPage() {
     const redirectMessage = (location.state as { message?: string } | null)?.message;
 
     // validation email
-    const validateEmail = getValidateEmail(emailInput)
+    const validateEmail = getValidateEmail(emailInput, t);
 
     // validation mot de passe
-    const validatePassword = getValidatePassword(password)
+    const validatePassword = getValidatePassword(password, t);
 
     // validation formulaire
     const isFormValid = () => {
@@ -82,7 +84,7 @@ export default function LoginPage() {
         } catch (error: any) {
 
             const errorMessage = error.response?.data?.message ||
-                "Email ou mot de passe incorrect";
+                t("auth.login.incorrectCredentials");
 
             setLoginError(errorMessage);
         } finally {
@@ -102,8 +104,8 @@ export default function LoginPage() {
                 {/* Breadcrumbs */}
                 <CustomBreadcrumbs
                     items={[
-                        { label: 'Accueil', path: '/' },
-                        { label: 'Se connecter'},
+                        { label: t("auth.breadcrumbs.home"), path: '/' },
+                        { label: t("auth.breadcrumbs.login")},
                     ]}
                 />
 
@@ -135,12 +137,12 @@ export default function LoginPage() {
                                 mb: 2,
                             }}
                         >
-                            Vous êtes déjà connecté
+                            {t("auth.login.alreadyConnected")}
                         </Typography>
 
                         {/* Boutons vu quand connecté */}
                         <PrimaryButton
-                            text="Se déconnecter"
+                            text={t("auth.login.logout")}
                             onClick={logoutAndNavigate}
                             fullWidth
                         />
@@ -156,7 +158,7 @@ export default function LoginPage() {
                                 }
                             }}
                         >
-                            Aller à l'accueil
+                            {t("auth.login.goToHome")}
                         </Link>
 
                         <Link
@@ -170,7 +172,7 @@ export default function LoginPage() {
                                 }
                             }}
                         >
-                            Accéder à votre compte
+                            {t("auth.login.accessAccount")}
                         </Link>
                     </Box>
                 ) : (
@@ -203,13 +205,13 @@ export default function LoginPage() {
                                 mb: 2,
                             }}
                         >
-                            CONNEXION
+                            {t("auth.login.title")}
                         </Typography>
 
                         {/* Message d'erreur global */}
                         {redirectMessage && (
                             <Alert severity="info" sx={{ mb: 2, width: '100%' }}>
-                                {redirectMessage}
+                                {t("auth.login.pleaseLogin")}
                             </Alert>
                         )}
                         {loginError && (
@@ -221,19 +223,19 @@ export default function LoginPage() {
                         <Box sx={{ width: '100%'}}>
                             {/* Champ Email */}
                             <Input
-                                label="Email"
+                                label={t("auth.login.email")}
                                 type="email"
-                                placeholder="votre@email.com"
+                                placeholder={t("auth.login.emailPlaceholder")}
                                 value={emailInput}
                                 onChange={(e) => {
                                     setEmailInput(e.target.value);
                                     if (touched.email) {
-                                        setEmailError(getValidateEmail(e.target.value));
+                                        setEmailError(getValidateEmail(e.target.value, t));
                                     }
                                 }}
                                 onBlur={() => {
                                     setTouched({ ...touched, email: true });
-                                    setEmailError(getValidateEmail(emailInput));
+                                    setEmailError(getValidateEmail(emailInput, t));
                                 }}
                                 error={touched.email && !!emailError}
                                 helperText={touched.email ? emailError : ''}
@@ -242,19 +244,19 @@ export default function LoginPage() {
 
                             {/* Champ Mot de passe */}
                             <Input
-                                label="Mot de passe"
+                                label={t("auth.login.password")}
                                 type="password"
-                                placeholder="Votre mot de passe"
+                                placeholder={t("auth.login.passwordPlaceholder")}
                                 value={password}
                                 onChange={(e) => {
                                     setPassword(e.target.value);
                                     if (touched.password) {
-                                        setPasswordError(getValidatePassword(e.target.value));
+                                        setPasswordError(getValidatePassword(e.target.value, t));
                                     }
                                 }}
                                 onBlur={() => {
                                     setTouched({ ...touched, password: true });
-                                    setPasswordError(getValidatePassword(password))
+                                    setPasswordError(getValidatePassword(password, t))
                                 }}
                                 error={touched.password && !!passwordError}
                                 helperText={touched.password ? passwordError : ''}
@@ -265,14 +267,14 @@ export default function LoginPage() {
                             <PrimaryButton
                                 type="submit"
                                 disabled={!isFormValid() || isLoading}
-                                text={isLoading ? "Connexion en cours..." : "Se connecter"}
+                                text={isLoading ? t("auth.login.loginButtonLoading") : t("auth.login.loginButton")}
                             />
                         </Box>
 
                         {/* Lien vers inscription */}
                         <Box sx={{ textAlign: 'center', mt: 2 }}>
                             <Typography variant="body1">
-                                Pas encore de compte ?{' '}
+                                {t("auth.login.noAccount")}{' '}
                                 <Link
                                     onClick={() => navigate('/register')}
                                     underline="none"
@@ -284,7 +286,7 @@ export default function LoginPage() {
                                         }
                                     }}
                                 >
-                                    S'inscrire
+                                    {t("auth.login.registerLink")}
                                 </Link>
                             </Typography>
                         </Box>

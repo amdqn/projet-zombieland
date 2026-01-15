@@ -93,30 +93,67 @@
   },
   "auth": {
     "login": {
-      "title": "Login",
+      "title": "LOGIN",
       "email": "Email",
       "password": "Password",
+      "emailPlaceholder": "your@email.com",
+      "passwordPlaceholder": "Your password",
       "forgotPassword": "Forgot password?",
       "noAccount": "No account yet?",
-      "registerHere": "Register here",
-      "loginButton": "Sign in"
+      "registerLink": "Sign up",
+      "loginButton": "Sign in",
+      "loginButtonLoading": "Logging in...",
+      "alreadyConnected": "You are already logged in",
+      "logout": "Logout",
+      "goToHome": "Go to home",
+      "accessAccount": "Access your account",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Invalid email",
+      "passwordRequired": "Password is required",
+      "passwordMinLength": "Password must contain at least 6 characters",
+      "incorrectCredentials": "Incorrect email or password",
+      "pleaseLogin": "Please log in to access the reservation."
     },
     "register": {
-      "title": "Register",
-      "firstName": "First name",
-      "lastName": "Last name",
+      "title": "REGISTER",
+      "pseudo": "Username",
+      "pseudoPlaceholder": "Your username",
       "email": "Email",
+      "emailPlaceholder": "your@email.com",
       "password": "Password",
+      "passwordPlaceholder": "Your password",
       "confirmPassword": "Confirm password",
+      "confirmPasswordPlaceholder": "Confirm your password",
       "alreadyAccount": "Already have an account?",
-      "loginHere": "Login here",
-      "registerButton": "Sign up"
+      "loginLink": "Sign in",
+      "registerButton": "Sign up",
+      "registerButtonLoading": "Registering...",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Invalid email",
+      "passwordRequired": "Password is required",
+      "passwordMinLength": "Password must contain at least 6 characters",
+      "confirmPasswordRequired": "Password confirmation is required",
+      "passwordsDontMatch": "Passwords do not match",
+      "pseudoRequired": "Username is required",
+      "pseudoMinLength": "Username must contain at least 3 characters",
+      "pseudoMaxLength": "Username is too long (max 10 characters)",
+      "pseudoInvalid": "Username can only contain letters and numbers",
+      "registrationError": "Registration error. Email already in use?"
+    },
+    "success": {
+      "title": "Account created successfully!",
+      "loginLink": "Sign in"
     },
     "account": {
       "title": "My account",
       "profile": "Profile",
       "reservations": "My reservations",
       "logout": "Logout"
+    },
+    "breadcrumbs": {
+      "home": "Home",
+      "login": "Login",
+      "register": "Register"
     }
   },
   "activities": {

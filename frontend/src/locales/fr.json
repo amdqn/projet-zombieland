@@ -93,30 +93,67 @@
   },
   "auth": {
     "login": {
-      "title": "Connexion",
+      "title": "CONNEXION",
       "email": "Email",
       "password": "Mot de passe",
+      "emailPlaceholder": "votre@email.com",
+      "passwordPlaceholder": "Votre mot de passe",
       "forgotPassword": "Mot de passe oublié ?",
       "noAccount": "Pas encore de compte ?",
-      "registerHere": "Inscrivez-vous ici",
-      "loginButton": "Se connecter"
+      "registerLink": "S'inscrire",
+      "loginButton": "Se connecter",
+      "loginButtonLoading": "Connexion en cours...",
+      "alreadyConnected": "Vous êtes déjà connecté",
+      "logout": "Se déconnecter",
+      "goToHome": "Aller à l'accueil",
+      "accessAccount": "Accéder à votre compte",
+      "emailRequired": "L'email est requis",
+      "emailInvalid": "Email invalide",
+      "passwordRequired": "Le mot de passe est requis",
+      "passwordMinLength": "Le mot de passe doit contenir au moins 6 caractères",
+      "incorrectCredentials": "Email ou mot de passe incorrect",
+      "pleaseLogin": "Veuillez vous connecter pour accéder à la réservation."
     },
     "register": {
-      "title": "Inscription",
-      "firstName": "Prénom",
-      "lastName": "Nom",
+      "title": "INSCRIPTION",
+      "pseudo": "Pseudo",
+      "pseudoPlaceholder": "Votre pseudo",
       "email": "Email",
+      "emailPlaceholder": "votre@email.com",
       "password": "Mot de passe",
-      "confirmPassword": "Confirmer le mot de passe",
+      "passwordPlaceholder": "Votre mot de passe",
+      "confirmPassword": "Confirmation du mot de passe",
+      "confirmPasswordPlaceholder": "Confirmer votre mot de passe",
       "alreadyAccount": "Déjà un compte ?",
-      "loginHere": "Connectez-vous ici",
-      "registerButton": "S'inscrire"
+      "loginLink": "Se connecter",
+      "registerButton": "S'inscrire",
+      "registerButtonLoading": "Inscription en cours...",
+      "emailRequired": "L'email est requis",
+      "emailInvalid": "Email invalide",
+      "passwordRequired": "Le mot de passe est requis",
+      "passwordMinLength": "Le mot de passe doit contenir au moins 6 caractères",
+      "confirmPasswordRequired": "La confirmation du mot de passe est requise",
+      "passwordsDontMatch": "Les mots de passe ne correspondent pas",
+      "pseudoRequired": "Le pseudo est requis",
+      "pseudoMinLength": "Le pseudo doit contenir au moins 3 caractères",
+      "pseudoMaxLength": "Le pseudo est trop long (max 10 caractères)",
+      "pseudoInvalid": "Le pseudo ne peut contenir que des lettres et des chiffres",
+      "registrationError": "Erreur lors de l'inscription. Email déjà utilisé ?"
+    },
+    "success": {
+      "title": "Création de compte réussis !",
+      "loginLink": "Se connecter"
     },
     "account": {
       "title": "Mon compte",
       "profile": "Profil",
       "reservations": "Mes réservations",
       "logout": "Se déconnecter"
+    },
+    "breadcrumbs": {
+      "home": "Accueil",
+      "login": "Se connecter",
+      "register": "S'inscrire"
     }
   },
   "activities": {

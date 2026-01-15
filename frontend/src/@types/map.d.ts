@@ -3,7 +3,7 @@ import type { Activity } from './activity';
 import type { PointOfInterest } from './pointOfInterest';
 import type { Category } from './categorie';
 
-export type MapPointType = 'attraction' | 'activity' | 'poi';
+export type MapPointType = 'attraction' | 'activity' | 'poi' | 'restaurant';
 
 export interface MapPoint {
     id: number;
@@ -18,6 +18,7 @@ export interface MapPoint {
     category?: Category;
     icon?: string;
     poi_type?: 'toilets' | 'shop' | 'entrance' | 'exit';
+    wait_time?: number;
 }
 
 export interface MapFilters {

@@ -18,4 +18,5 @@ export interface Attraction {
     images?: Array<{ id: number; url: string; alt_text?: string }>;
     activities?: Array<{ id: number; name: string }>;
     related_attractions?: Array<Attraction>;
+    wait_time?: number;
 }

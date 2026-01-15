@@ -11,6 +11,16 @@ import { AttractionMapper } from './mappers/attraction.mapper';
 export class AttractionsService {
   constructor(private readonly prisma: PrismaService) {}
 
+  /**
+   * Génère un temps d'attente simulé basé sur le thrill_level
+   */
+  private generateWaitTime(thrillLevel: number | null): number {
+    const thrill = thrillLevel ?? 3;
+    const minWait = 5 + (thrill - 1) * 5;
+    const maxWait = Math.floor(25 + (thrill - 1) * 8.75);
+    return Math.floor(Math.random() * (maxWait - minWait + 1)) + minWait;
+  }
+
   async findAll(filters?: { search?: string; categoryId?: number }) {
     const where: any = {};
 
@@ -48,9 +58,10 @@ export class AttractionsService {
       },
     });
 
-    // Convertir les dates en ISO string
+    // Convertir les dates en ISO string et ajouter wait_time simulé
     return attractions.map((attraction) => ({
       ...AttractionMapper.toDto(attraction),
+      wait_time: this.generateWaitTime(attraction.thrill_level),
       category: {
         ...attraction.category,
         created_at: attraction.category.created_at.toISOString(),
@@ -100,9 +111,10 @@ export class AttractionsService {
       throw new NotFoundException(`Attraction avec l'ID ${id} non trouvée`);
     }
 
-    // Convertir les dates en ISO string
+    // Convertir les dates en ISO string et ajouter wait_time simulé
     return {
       ...AttractionMapper.toDto(attraction),
+      wait_time: this.generateWaitTime(attraction.thrill_level),
       category: {
         ...attraction.category,
         created_at: attraction.category.created_at.toISOString(),

@@ -8,6 +8,7 @@ import type { MapData, MapPoint } from '../../@types/map';
 import type { Attraction } from '../../@types/attraction';
 import type { Activity } from '../../@types/activity';
 import type { PointOfInterest } from '../../@types/pointOfInterest';
+import { WaitTime } from '../common/WaitTime/WaitTime';
 
 // Fix des icônes Leaflet par défaut
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -35,10 +36,11 @@ export function ParkMap({ data, loading, error, selectedTypes, selectedCategorie
 
     const points: MapPoint[] = [];
 
-    // Ajouter les attractions
+    // Ajouter les attractions (hors restauration)
     if (selectedTypes.includes('attraction')) {
       data.attractions
         .filter((a: Attraction) => a.latitude && a.longitude)
+        .filter((a: Attraction) => a.category?.name !== 'Restauration') // Exclure la restauration
         .filter((a: Attraction) =>
           selectedCategories.length === 0 || selectedCategories.includes(a.category_id)
         )
@@ -60,6 +62,32 @@ export function ParkMap({ data, loading, error, selectedTypes, selectedCategorie
             thrill_level: attraction.thrill_level,
             duration: attraction.duration,
             category: attraction.category,
+            wait_time: attraction.wait_time,
+          });
+        });
+    }
+
+    // Ajouter les restaurants (attractions de catégorie Restauration)
+    if (selectedTypes.includes('restaurant')) {
+      data.attractions
+        .filter((a: Attraction) => a.latitude && a.longitude)
+        .filter((a: Attraction) => a.category?.name === 'Restauration') // Uniquement la restauration
+        .filter((a: Attraction) => {
+          if (!searchQuery) return true;
+          const query = searchQuery.toLowerCase();
+          return a.name.toLowerCase().includes(query) ||
+                 a.description?.toLowerCase().includes(query);
+        })
+        .forEach((restaurant: Attraction) => {
+          points.push({
+            id: restaurant.id,
+            name: restaurant.name,
+            latitude: Number(restaurant.latitude),
+            longitude: Number(restaurant.longitude),
+            type: 'restaurant',
+            description: restaurant.description,
+            image_url: restaurant.image_url,
+            category: restaurant.category,
           });
         });
     }
@@ -89,6 +117,7 @@ export function ParkMap({ data, loading, error, selectedTypes, selectedCategorie
             thrill_level: activity.thrill_level,
             duration: activity.duration,
             category: activity.category,
+            wait_time: activity.wait_time,
           });
         });
     }
@@ -125,13 +154,17 @@ export function ParkMap({ data, loading, error, selectedTypes, selectedCategorie
       color = colors.primaryGreen;
       // Icône activité / cible
       svgContent = '<circle cx="12" cy="12" r="10" fill="none" stroke="white" stroke-width="2"/><circle cx="12" cy="12" r="6" fill="none" stroke="white" stroke-width="1.5"/><circle cx="12" cy="12" r="2" fill="white"/>';
+    } else if (point.type === 'restaurant') {
+      color = colors.warning; // Orange pour la restauration
+      // Icône fourchette/couteau (restaurant)
+      svgContent = '<path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z" fill="white"/>';
     } else if (point.type === 'poi') {
       if (point.poi_type === 'toilets') {
         color = colors.white;
         // Icône WC
         svgContent = '<path d="M5.5 22v-7.5H4V9c0-1.1.9-2 2-2h3c1.1 0 2 .9 2 2v5.5H9.5V22h-4zM18 22v-6h3l-2.54-7.63C18.18 7.55 17.42 7 16.56 7h-.12c-.86 0-1.63.55-1.9 1.37L12 16h3v6h3zM7.5 6c1.11 0 2-.89 2-2s-.89-2-2-2-2 .89-2 2 .89 2 2 2zm9 0c1.11 0 2-.89 2-2s-.89-2-2-2-2 .89-2 2 .89 2 2 2z" fill="' + (colors.secondaryDark) + '"/>';
       } else if (point.poi_type === 'shop') {
-        color = colors.primaryGreen;
+        color = '#29B6F6'; // Bleu clair pour les boutiques
         // Icône boutique
         svgContent = '<path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4V8h16v11z" fill="white"/>';
       } else {
@@ -270,6 +303,11 @@ export function ParkMap({ data, loading, error, selectedTypes, selectedCategorie
                 {point.duration && (
                   <Box sx={{ fontSize: 12, display: 'flex', alignItems: 'center', gap: 0.5 }}>
                     <Box component="span" sx={{ fontWeight: 'bold' }}>Durée:</Box> {point.duration} min
+                  </Box>
+                )}
+                {point.wait_time && point.type !== 'poi' && (
+                  <Box sx={{ mt: 1 }}>
+                    <WaitTime minutes={point.wait_time} variant="inline" />
                   </Box>
                 )}
               </Box>

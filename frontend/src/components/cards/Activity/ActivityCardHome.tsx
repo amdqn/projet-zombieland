@@ -2,6 +2,7 @@ import {Card, CardContent, Chip, Typography, Box} from "@mui/material";
 import {colors} from "../../../theme";
 import {Link} from "react-router-dom";
 import {styled} from "@mui/material/styles";
+import {WaitTime} from "../../common/WaitTime/WaitTime";
 
 interface ActivityCardHomeProps {
     id: number;
@@ -9,6 +10,7 @@ interface ActivityCardHomeProps {
     category: string;
     image?: string;
     type?: 'activity' | 'attraction'; // Type pour déterminer le chemin
+    waitTime?: number;
 }
 
 const StyledActivityCard = styled(Card)(({ theme }) => ({
@@ -39,7 +41,7 @@ const StyledActivityCard = styled(Card)(({ theme }) => ({
     },
 }));
 
-export default function ActivityCardHome({id, name, category, image, type = 'activity'}: ActivityCardHomeProps) {
+export default function ActivityCardHome({id, name, category, image, type = 'activity', waitTime}: ActivityCardHomeProps) {
     const path = type === 'attraction' ? `/attractions/${id}` : `/activities/${id}`;
     
     return (
@@ -62,6 +64,13 @@ export default function ActivityCardHome({id, name, category, image, type = 'act
                             transition: 'filter 0.3s ease',
                         }}
                     />
+                )}
+
+                {/* Temps d'attente en overlay */}
+                {waitTime !== undefined && (
+                    <Box sx={{ position: 'absolute', top: 8, right: 8, zIndex: 2 }}>
+                        <WaitTime minutes={waitTime} variant="chip" />
+                    </Box>
                 )}
 
                 {/* Contenu par-dessus */}

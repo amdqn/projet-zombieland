@@ -42,15 +42,52 @@ export class MessageService {
     }
     // CAS 2 : Nouvelle conversation
     else if (recipientId) {
+      // Vérifier qu'on n'essaie pas de s'envoyer un message à soi-même
       if (recipientId === userId) {
-        throw new BadRequestException('Vous ne pouvez pas vous envoyer un message');
+        throw new BadRequestException('Vous ne pouvez pas vous envoyer un message à vous-même');
+      }
+
+      // Récupérer l'utilisateur actuel et le destinataire
+      const [currentUser, recipient] = await Promise.all([
+        this.prisma.user.findUnique({
+          where: { id: userId },
+          select: { role: true },
+        }),
+        this.prisma.user.findUnique({
+          where: { id: recipientId },
+          select: { role: true },
+        }),
+      ]);
+
+      // Vérifier que le destinataire existe
+      if (!recipient) {
+        throw new NotFoundException('Destinataire non trouvé');
+      }
+
+      // RÈGLE 1 : Les admins ne peuvent pas créer de nouvelles conversations
+      if (currentUser?.role === 'ADMIN') {
+        throw new ForbiddenException(
+            'Les administrateurs ne peuvent pas créer de nouvelles conversations. ' +
+            'Veuillez répondre aux conversations existantes.'
+        );
+      }
+
+      // RÈGLE 2 : Les clients ne peuvent envoyer qu'aux admins
+      if (recipient.role !== 'ADMIN') {
+        throw new BadRequestException(
+            'Vous ne pouvez envoyer des messages qu\'aux administrateurs'
+        );
       }
 
       // Créer ou récupérer la conversation via ConversationService
       const conversation = await this.conversationService.create(userId, recipientId);
       finalConversationId = conversation.id;
-    } else {
-      throw new BadRequestException('conversationId ou recipientId requis');
+    }
+    // CAS 3 : Ni conversationId ni recipientId
+    else {
+      throw new BadRequestException(
+          'Vous devez fournir soit conversationId soit recipientId'
+      );
     }
 
     // Créer le message

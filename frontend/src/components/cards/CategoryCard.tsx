@@ -5,6 +5,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { colors } from '../../theme';
 import type { Category } from '../../@types/categorie';
+import { useTranslation } from 'react-i18next';
 
 const StyledCategoryCard = styled(Card)(({ theme }) => ({
   backgroundColor: colors.secondaryDark,
@@ -39,6 +40,9 @@ interface CategoryCardProps {
 }
 
 export const CategoryCard = ({ category, onEdit, onDelete, onClick }: CategoryCardProps) => {
+  const { t, i18n } = useTranslation();
+  const locale = i18n.language === 'fr' ? 'fr-FR' : 'en-US';
+  
   const handleEdit = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (onEdit) {
@@ -97,7 +101,7 @@ export const CategoryCard = ({ category, onEdit, onDelete, onClick }: CategoryCa
 
         <Stack direction="row" spacing={1} sx={{ mb: 2, flexWrap: 'wrap', gap: 1 }}>
           <Chip
-            label={`${activitiesCount} activité${activitiesCount > 1 ? 's' : ''}`}
+            label={activitiesCount > 1 ? t('admin.categories.card.activitiesPlural', { count: activitiesCount }) : t('admin.categories.card.activities', { count: activitiesCount })}
             size="small"
             sx={{
               backgroundColor: activitiesCount > 0 ? colors.primaryGreen : colors.secondaryGrey,
@@ -107,7 +111,7 @@ export const CategoryCard = ({ category, onEdit, onDelete, onClick }: CategoryCa
             }}
           />
           <Chip
-            label={`${attractionsCount} attraction${attractionsCount > 1 ? 's' : ''}`}
+            label={attractionsCount > 1 ? t('admin.categories.card.attractionsPlural', { count: attractionsCount }) : t('admin.categories.card.attractions', { count: attractionsCount })}
             size="small"
             sx={{
               backgroundColor: attractionsCount > 0 ? colors.primaryGold : colors.secondaryGrey,
@@ -118,7 +122,7 @@ export const CategoryCard = ({ category, onEdit, onDelete, onClick }: CategoryCa
           />
           {totalUsage === 0 && (
             <Chip
-              label="Non utilisée"
+              label={t('admin.categories.card.notUsed')}
               size="small"
               sx={{
                 backgroundColor: colors.secondaryDarkAlt,
@@ -137,7 +141,7 @@ export const CategoryCard = ({ category, onEdit, onDelete, onClick }: CategoryCa
               fontSize: '0.7rem',
             }}
           >
-            Créée le {new Date(category.created_at).toLocaleDateString('fr-FR')}
+            {t('admin.categories.card.createdOn')} {new Date(category.created_at).toLocaleDateString(locale)}
           </Typography>
         </Box>
 

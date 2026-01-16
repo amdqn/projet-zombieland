@@ -43,13 +43,26 @@ import { getUsers, updateUser, deleteUser, getUserReservations, type UserFilters
 import { UpdateUserModal } from '../../../components/modals/Users/UpdateUserModal';
 import { UserDetailsModal } from '../../../components/modals/Users/UserDetailsModal';
 import { DeleteUserModal } from '../../../components/modals/Users/DeleteUserModal';
+import { useTranslation } from 'react-i18next';
 
 export const UserList = () => {
+  const { t, i18n } = useTranslation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const getRoleLabel = (role: string) => {
+    switch (role) {
+      case 'ADMIN':
+        return t('admin.users.admin');
+      case 'CLIENT':
+        return t('admin.users.client');
+      default:
+        return role;
+    }
+  };
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
@@ -87,7 +100,7 @@ export const UserList = () => {
         setTotal(response.total);
         setTotalPages(Math.ceil(response.total / limit));
       } catch (err) {
-        const message = err instanceof Error ? err.message : 'Erreur lors de la récupération des utilisateurs';
+        const message = err instanceof Error ? err.message : t('admin.users.errorLoading');
         setError(message);
       } finally {
         setIsLoading(false);
@@ -124,7 +137,7 @@ export const UserList = () => {
       setSelectedUser({ ...user, reservations } as any);
       setDetailsModalOpen(true);
     } catch (err) {
-      toast.error('Erreur lors du chargement des détails');
+      toast.error(t('admin.users.errorDetails'));
       console.error(err);
     }
   };
@@ -136,7 +149,7 @@ export const UserList = () => {
     setDeleteError(null);
     try {
       await deleteUser(userToDelete.id);
-      toast.success('Utilisateur supprimé avec succès !');
+      toast.success(t('admin.users.successDelete'));
       setUsers(users.filter((u) => u.id !== userToDelete.id));
       setDeleteDialogOpen(false);
       setUserToDelete(null);
@@ -145,7 +158,7 @@ export const UserList = () => {
         setPage(page - 1);
       }
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Erreur lors de la suppression de l'utilisateur";
+      const message = err instanceof Error ? err.message : t('admin.users.errorDelete');
       setDeleteError(message);
     } finally {
       setIsDeleting(false);
@@ -173,7 +186,7 @@ export const UserList = () => {
       setTotal(response.total);
       setTotalPages(Math.ceil(response.total / limit));
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erreur lors de la récupération des utilisateurs';
+      const message = err instanceof Error ? err.message : t('admin.users.errorLoading');
       setError(message);
     }
   };
@@ -181,13 +194,13 @@ export const UserList = () => {
   const handleToggleActive = async (user: User) => {
     // Empêcher l'activation/désactivation des admins
     if (user.role === 'ADMIN') {
-      toast.error('Impossible de modifier le statut d\'un administrateur');
+      toast.error(t('admin.users.errorToggleStatus'));
       return;
     }
 
     try {
       await updateUser(user.id, { is_active: !user.is_active });
-      toast.success(`Compte ${!user.is_active ? 'activé' : 'désactivé'} avec succès !`);
+      toast.success(t('admin.users.successToggle', { status: !user.is_active ? t('admin.users.activated') : t('admin.users.deactivated') }));
       // Rafraîchir la liste
       const filters: UserFilters = {
         search: search || undefined,
@@ -198,7 +211,7 @@ export const UserList = () => {
       setTotal(response.total);
       setTotalPages(Math.ceil(response.total / limit));
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erreur lors de la modification du statut';
+      const message = err instanceof Error ? err.message : t('admin.users.errorUpdateStatus');
       toast.error(message);
     }
   };
@@ -260,7 +273,7 @@ export const UserList = () => {
               color: colors.white,
             }}
           >
-            Gestion des utilisateurs
+            {t('admin.users.title')}
           </Typography>
           <Typography
             variant="body2"
@@ -269,7 +282,7 @@ export const UserList = () => {
               mb: 2,
             }}
           >
-            Gérez tous les utilisateurs du parc Zombieland. Total : {total} utilisateur{total > 1 ? 's' : ''}
+            {t('admin.users.description', { total })}
           </Typography>
         </Box>
       </Box>
@@ -279,7 +292,7 @@ export const UserList = () => {
         <TextField
           fullWidth
           variant="outlined"
-          placeholder="Rechercher par nom, email..."
+          placeholder={t('admin.users.searchPlaceholder')}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           onKeyPress={(e) => {
@@ -318,10 +331,10 @@ export const UserList = () => {
         <Grid container spacing={2} sx={{ mb: 2 }}>
           <Grid size={{ xs: 12, sm: 6, md: 6 }}>
             <FormControl fullWidth sx={{ minWidth: '200px' }}>
-              <InputLabel sx={{ color: colors.secondaryGrey }}>Rôle</InputLabel>
+              <InputLabel sx={{ color: colors.secondaryGrey }}>{t('admin.users.filterRole')}</InputLabel>
               <Select
                 value={roleFilter}
-                label="Rôle"
+                label={t('admin.users.filterRole')}
                 onChange={(e) => {
                   setRoleFilter(e.target.value as 'ADMIN' | 'CLIENT' | '');
                   setPage(1);
@@ -363,9 +376,9 @@ export const UserList = () => {
                   },
                 }}
               >
-                <MenuItem value="">Tous</MenuItem>
-                <MenuItem value="ADMIN">Administrateur</MenuItem>
-                <MenuItem value="CLIENT">Client</MenuItem>
+                <MenuItem value="">{t('admin.users.all')}</MenuItem>
+                <MenuItem value="ADMIN">{t('admin.users.admin')}</MenuItem>
+                <MenuItem value="CLIENT">{t('admin.users.client')}</MenuItem>
               </Select>
             </FormControl>
           </Grid>
@@ -390,7 +403,7 @@ export const UserList = () => {
                 },
               }}
             >
-              Réinitialiser
+              {t('admin.users.resetFilters')}
             </Button>
           </Grid>
         </Grid>
@@ -399,10 +412,10 @@ export const UserList = () => {
       {/* Filtre de tri */}
       <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
         <FormControl sx={{ minWidth: '250px' }}>
-          <InputLabel sx={{ color: colors.secondaryGrey }}>Trier par</InputLabel>
+          <InputLabel sx={{ color: colors.secondaryGrey }}>{t('admin.users.sortBy')}</InputLabel>
           <Select
             value={sortBy}
-            label="Trier par"
+            label={t('admin.users.sortBy')}
             onChange={(e) => setSortBy(e.target.value)}
             sx={{
               backgroundColor: colors.secondaryDark,
@@ -441,14 +454,14 @@ export const UserList = () => {
               },
             }}
           >
-            <MenuItem value="created_desc">Date d'inscription (récent)</MenuItem>
-            <MenuItem value="created_asc">Date d'inscription (ancien)</MenuItem>
-            <MenuItem value="name_asc">Nom (A-Z)</MenuItem>
-            <MenuItem value="name_desc">Nom (Z-A)</MenuItem>
-            <MenuItem value="email_asc">Email (A-Z)</MenuItem>
-            <MenuItem value="email_desc">Email (Z-A)</MenuItem>
-            <MenuItem value="role_asc">Rôle (A-Z)</MenuItem>
-            <MenuItem value="role_desc">Rôle (Z-A)</MenuItem>
+            <MenuItem value="created_desc">{t('admin.users.sortOptions.createdDesc')}</MenuItem>
+            <MenuItem value="created_asc">{t('admin.users.sortOptions.createdAsc')}</MenuItem>
+            <MenuItem value="name_asc">{t('admin.users.sortOptions.nameAsc')}</MenuItem>
+            <MenuItem value="name_desc">{t('admin.users.sortOptions.nameDesc')}</MenuItem>
+            <MenuItem value="email_asc">{t('admin.users.sortOptions.emailAsc')}</MenuItem>
+            <MenuItem value="email_desc">{t('admin.users.sortOptions.emailDesc')}</MenuItem>
+            <MenuItem value="role_asc">{t('admin.users.sortOptions.roleAsc')}</MenuItem>
+            <MenuItem value="role_desc">{t('admin.users.sortOptions.roleDesc')}</MenuItem>
           </Select>
         </FormControl>
       </Box>
@@ -477,7 +490,7 @@ export const UserList = () => {
           >
             <CircularProgress sx={{ color: colors.primaryGreen }} size={60} />
             <Typography variant="body1" sx={{ color: colors.white }}>
-              Chargement des utilisateurs...
+              {t('admin.users.loading')}
             </Typography>
           </Box>
         ) : error ? (
@@ -490,7 +503,7 @@ export const UserList = () => {
             }}
           >
             <Typography variant="body1" sx={{ color: colors.primaryRed }}>
-              Erreur : {error}
+              {t('admin.users.errorLoading')}: {error}
             </Typography>
           </Box>
         ) : sortedUsers.length === 0 ? (
@@ -503,7 +516,7 @@ export const UserList = () => {
             }}
           >
             <Typography variant="body1" sx={{ color: colors.white }}>
-              Aucun utilisateur trouvé.
+              {t('admin.users.noUsers')}
             </Typography>
           </Box>
         ) : (
@@ -546,7 +559,7 @@ export const UserList = () => {
                             </Typography>
                           </Box>
                           <Chip
-                            label={user.role}
+                            label={getRoleLabel(user.role)}
                             size="small"
                             sx={{
                               backgroundColor: user.role === 'ADMIN' ? colors.primaryRed : colors.primaryGreen,
@@ -561,10 +574,10 @@ export const UserList = () => {
                         <Stack spacing={1.5}>
                           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <Typography variant="body2" sx={{ color: colors.secondaryGrey }}>
-                              Statut:
+                              {t('admin.users.mobile.status')}
                             </Typography>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                              <Tooltip title={user.role === 'ADMIN' ? 'Impossible de modifier le statut d\'un administrateur' : (user.is_active !== false ? 'Compte actif' : 'Compte désactivé')}>
+                              <Tooltip title={user.role === 'ADMIN' ? t('admin.users.errorToggleStatus') : (user.is_active !== false ? t('admin.users.active') : t('admin.users.inactive'))}>
                                 <Switch
                                   checked={user.is_active !== false}
                                   onChange={() => handleToggleActive(user)}
@@ -581,7 +594,7 @@ export const UserList = () => {
                                 />
                               </Tooltip>
                               <Chip
-                                label={user.is_active !== false ? 'Actif' : 'Inactif'}
+                                label={user.is_active !== false ? t('admin.users.active') : t('admin.users.inactive')}
                                 size="small"
                                 sx={{
                                   backgroundColor: user.is_active !== false ? colors.primaryGreen : colors.primaryRed,
@@ -595,10 +608,10 @@ export const UserList = () => {
 
                           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                             <Typography variant="body2" sx={{ color: colors.secondaryGrey }}>
-                              Date d'inscription:
+                              {t('admin.users.mobile.registrationDate')}
                             </Typography>
                             <Typography variant="body2" sx={{ color: colors.white }}>
-                              {new Date(user.created_at).toLocaleDateString('fr-FR', {
+                              {new Date(user.created_at).toLocaleDateString(i18n.language === 'fr' ? 'fr-FR' : 'en-US', {
                                 day: '2-digit',
                                 month: '2-digit',
                                 year: '2-digit',
@@ -608,7 +621,7 @@ export const UserList = () => {
 
                           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                             <Typography variant="body2" sx={{ color: colors.secondaryGrey }}>
-                              Réservations:
+                              {t('admin.users.mobile.reservations')}
                             </Typography>
                             <Typography variant="body2" sx={{ color: colors.white, fontWeight: 600 }}>
                               {user._count?.reservations || 0}
@@ -666,13 +679,13 @@ export const UserList = () => {
                   <Table>
                     <TableHead>
                       <TableRow>
-                        <TableCell sx={{ color: colors.white, fontWeight: 600 }}>Nom</TableCell>
-                        <TableCell sx={{ color: colors.white, fontWeight: 600 }}>Email</TableCell>
-                        <TableCell sx={{ color: colors.white, fontWeight: 600 }}>Rôle</TableCell>
-                        <TableCell sx={{ color: colors.white, fontWeight: 600 }}>Statut</TableCell>
-                        <TableCell sx={{ color: colors.white, fontWeight: 600 }}>Date d'inscription</TableCell>
-                        <TableCell sx={{ color: colors.white, fontWeight: 600 }}>Réservations</TableCell>
-                        <TableCell sx={{ color: colors.white, fontWeight: 600 }} align="right">Actions</TableCell>
+                        <TableCell sx={{ color: colors.white, fontWeight: 600 }}>{t('admin.users.table.name')}</TableCell>
+                        <TableCell sx={{ color: colors.white, fontWeight: 600 }}>{t('admin.users.table.email')}</TableCell>
+                        <TableCell sx={{ color: colors.white, fontWeight: 600 }}>{t('admin.users.table.role')}</TableCell>
+                        <TableCell sx={{ color: colors.white, fontWeight: 600 }}>{t('admin.users.table.status')}</TableCell>
+                        <TableCell sx={{ color: colors.white, fontWeight: 600 }}>{t('admin.users.table.registrationDate')}</TableCell>
+                        <TableCell sx={{ color: colors.white, fontWeight: 600 }}>{t('admin.users.table.reservations')}</TableCell>
+                        <TableCell sx={{ color: colors.white, fontWeight: 600 }} align="right">{t('admin.users.table.actions')}</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -689,7 +702,7 @@ export const UserList = () => {
                           <TableCell sx={{ color: colors.white }}>{user.email}</TableCell>
                           <TableCell>
                             <Chip
-                              label={user.role}
+                              label={getRoleLabel(user.role)}
                               size="small"
                               sx={{
                                 backgroundColor: user.role === 'ADMIN' ? colors.primaryRed : colors.primaryGreen,
@@ -700,7 +713,7 @@ export const UserList = () => {
                           </TableCell>
                           <TableCell>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                              <Tooltip title={user.role === 'ADMIN' ? 'Impossible de modifier le statut d\'un administrateur' : (user.is_active !== false ? 'Compte actif' : 'Compte désactivé')}>
+                              <Tooltip title={user.role === 'ADMIN' ? t('admin.users.errorToggleStatus') : (user.is_active !== false ? t('admin.users.active') : t('admin.users.inactive'))}>
                                 <Switch
                                   checked={user.is_active !== false}
                                   onChange={() => handleToggleActive(user)}
@@ -717,7 +730,7 @@ export const UserList = () => {
                                 />
                               </Tooltip>
                               <Chip
-                                label={user.is_active !== false ? 'Actif' : 'Inactif'}
+                                label={user.is_active !== false ? t('admin.users.active') : t('admin.users.inactive')}
                                 size="small"
                                 sx={{
                                   backgroundColor: user.is_active !== false ? colors.primaryGreen : colors.primaryRed,
@@ -729,7 +742,7 @@ export const UserList = () => {
                             </Box>
                           </TableCell>
                           <TableCell sx={{ color: colors.white }}>
-                            {new Date(user.created_at).toLocaleDateString('fr-FR', {
+                            {new Date(user.created_at).toLocaleDateString(i18n.language === 'fr' ? 'fr-FR' : 'en-US', {
                               day: 'numeric',
                               month: 'long',
                               year: 'numeric',

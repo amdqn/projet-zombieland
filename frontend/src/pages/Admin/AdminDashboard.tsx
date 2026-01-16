@@ -9,8 +9,10 @@ import { AttractionList } from './AttractionManagement.tsx/AttractionList';
 import {PriceList} from "./PriceManagement/PriceList.tsx";
 import { CategoryList } from './CategoryManagement/CategoryList';
 import { UserList } from './UserManagement/UserList';
+import { useTranslation } from 'react-i18next';
 
 export const AdminDashboard = () => {
+  const { t } = useTranslation();
   const [tabValue, setTabValue] = useState<number>(0);
 
   const heroImages = [
@@ -21,12 +23,12 @@ export const AdminDashboard = () => {
   ].slice(0, 5);
 
   const tabs = [
-    { label: 'Réservations', component: <ReservationList /> },
-    { label: 'Activités', component: <ActivityList /> },
-    { label: 'Attractions', component: <AttractionList /> },
-    { label: 'Tarifs', component: <PriceList /> },
-    { label: 'Utilisateurs', component: <UserList /> },
-    { label: 'Catégories', component: <CategoryList /> },
+    { label: t('admin.dashboard.tabs.reservations'), component: <ReservationList /> },
+    { label: t('admin.dashboard.tabs.activities'), component: <ActivityList /> },
+    { label: t('admin.dashboard.tabs.attractions'), component: <AttractionList /> },
+    { label: t('admin.dashboard.tabs.prices'), component: <PriceList /> },
+    { label: t('admin.dashboard.tabs.users'), component: <UserList /> },
+    { label: t('admin.dashboard.tabs.categories'), component: <CategoryList /> },
   ];
 
   return (
@@ -36,8 +38,8 @@ export const AdminDashboard = () => {
           <Box sx={{ pt: { xs: 2, md: 2 }, mb: { xs: 1, md: 1 } }}>
             <CustomBreadcrumbs
               items={[
-                { label: 'Accueil', path: '/', showOnMobile: true },
-                { label: 'Administration', showOnMobile: true },
+                { label: t('admin.dashboard.breadcrumbs.home'), path: '/', showOnMobile: true },
+                { label: t('admin.dashboard.breadcrumbs.admin'), showOnMobile: true },
               ]}
             />
           </Box>
@@ -100,7 +102,7 @@ export const AdminDashboard = () => {
               letterSpacing: '2px',
             }}
           >
-            Administration
+            {t('admin.dashboard.title')}
           </Typography>
 
           <Typography
@@ -112,7 +114,7 @@ export const AdminDashboard = () => {
               mb: { xs: 1.5, md: 3 },
             }}
           >
-            Gérez les réservations, utilisateurs et activités du parc Zombieland.
+            {t('admin.dashboard.description')}
           </Typography>
         </Box>
       </HeroSection>

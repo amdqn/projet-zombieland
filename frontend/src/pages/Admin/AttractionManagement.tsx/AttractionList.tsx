@@ -28,8 +28,10 @@ import { CreateAttractionModal } from '../../../components/modals/Attractions/Cr
 import { UpdateAttractionModal } from '../../../components/modals/Attractions/UpdateAttractionModal.tsx';
 import { AttractionDetailsModal } from '../../../components/modals/Attractions/AttractionDetailsModal.tsx';
 import { DeleteAttractionModal } from '../../../components/modals/Attractions/DeleteAttractionModal.tsx';
+import { useTranslation } from 'react-i18next';
 
 export const AttractionList = () => {
+  const { t } = useTranslation();
   const [attractions, setAttractions] = useState<Attraction[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -108,7 +110,7 @@ export const AttractionList = () => {
 
         setAttractions(sorted);
       } catch (err) {
-        const message = err instanceof Error ? err.message : 'Erreur lors de la récupération des attractions';
+        const message = err instanceof Error ? err.message : t('admin.attractions.errorLoading');
         setError(message);
       } finally {
         setIsLoading(false);
@@ -154,12 +156,12 @@ export const AttractionList = () => {
     setDeleteSuccess(null);
     try {
       await deleteAttraction(attractionToDelete.id);
-      toast.success('Attraction supprimée avec succès !');
+      toast.success(t('admin.attractions.successDelete'));
       setAttractions(attractions.filter((a) => a.id !== attractionToDelete.id));
       setDeleteDialogOpen(false);
       setAttractionToDelete(null);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erreur lors de la suppression de l\'attraction';
+      const message = err instanceof Error ? err.message : t('admin.attractions.errorDelete');
       setDeleteError(message);
     } finally {
       setIsDeleting(false);
@@ -190,7 +192,7 @@ export const AttractionList = () => {
       }
       setAttractions(filtered);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erreur lors de la récupération des attractions';
+      const message = err instanceof Error ? err.message : t('admin.attractions.errorLoading');
       setError(message);
     }
   };
@@ -213,7 +215,7 @@ export const AttractionList = () => {
       }
       setAttractions(filtered);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erreur lors de la récupération des attractions';
+      const message = err instanceof Error ? err.message : t('admin.attractions.errorLoading');
       setError(message);
     }
   };
@@ -249,7 +251,7 @@ export const AttractionList = () => {
               color: colors.white,
             }}
           >
-            Gestion des attractions
+            {t('admin.attractions.title')}
           </Typography>
           <Typography
             variant="body2"
@@ -258,7 +260,7 @@ export const AttractionList = () => {
               mb: 2,
             }}
           >
-            Créez, modifiez et gérez toutes les attractions du parc Zombieland. Total : {attractions.length} attraction{attractions.length > 1 ? 's' : ''}
+            {t('admin.attractions.description', { count: attractions.length })}
           </Typography>
         </Box>
         <Button
@@ -276,7 +278,7 @@ export const AttractionList = () => {
             textTransform: 'uppercase',
           }}
         >
-          Nouvelle attraction
+          {t('admin.attractions.createButton')}
         </Button>
       </Box>
 
@@ -285,7 +287,7 @@ export const AttractionList = () => {
         <TextField
           fullWidth
           variant="outlined"
-          placeholder="Rechercher une attraction..."
+          placeholder={t('admin.attractions.searchPlaceholder')}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           onKeyPress={(e) => {
@@ -324,10 +326,10 @@ export const AttractionList = () => {
         <Grid container spacing={2} sx={{ mb: 2 }}>
           <Grid size={{ xs: 12, sm: 6, md: 4 }}>
             <FormControl fullWidth sx={{ minWidth: '200px' }}>
-              <InputLabel sx={{ color: colors.secondaryGrey }}>Catégorie</InputLabel>
+              <InputLabel sx={{ color: colors.secondaryGrey }}>{t('admin.attractions.filterCategory')}</InputLabel>
               <Select
                 value={categoryFilter}
-                label="Catégorie"
+                label={t('admin.attractions.filterCategory')}
                 onChange={(e) => setCategoryFilter(e.target.value as number | '')}
                 sx={{
                   backgroundColor: colors.secondaryDark,
@@ -366,7 +368,7 @@ export const AttractionList = () => {
                   },
                 }}
               >
-                <MenuItem value="">Toutes</MenuItem>
+                <MenuItem value="">{t('admin.attractions.allCategories')}</MenuItem>
                 {categories.map((category) => (
                   <MenuItem key={category.id} value={category.id}>
                     {category.name}
@@ -378,10 +380,10 @@ export const AttractionList = () => {
 
           <Grid size={{ xs: 12, sm: 6, md: 4 }}>
             <FormControl fullWidth sx={{ minWidth: '200px' }}>
-              <InputLabel sx={{ color: colors.secondaryGrey }}>Statut</InputLabel>
+              <InputLabel sx={{ color: colors.secondaryGrey }}>{t('admin.attractions.filterPublished')}</InputLabel>
               <Select
                 value={publishedFilter}
-                label="Statut"
+                label={t('admin.attractions.filterPublished')}
                 onChange={(e) => setPublishedFilter(e.target.value)}
                 sx={{
                   backgroundColor: colors.secondaryDark,
@@ -420,9 +422,9 @@ export const AttractionList = () => {
                   },
                 }}
               >
-                <MenuItem value="">Tous</MenuItem>
-                <MenuItem value="published">Publiées</MenuItem>
-                <MenuItem value="draft">Brouillons</MenuItem>
+                <MenuItem value="">{t('admin.attractions.allStatus')}</MenuItem>
+                <MenuItem value="published">{t('admin.attractions.published')}</MenuItem>
+                <MenuItem value="draft">{t('admin.attractions.draft')}</MenuItem>
               </Select>
             </FormControl>
           </Grid>
@@ -447,7 +449,7 @@ export const AttractionList = () => {
                 },
               }}
             >
-              Réinitialiser
+              {t('admin.attractions.resetFilters')}
             </Button>
           </Grid>
         </Grid>
@@ -456,10 +458,10 @@ export const AttractionList = () => {
       {/* Filtre de tri */}
       <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
         <FormControl sx={{ minWidth: '250px' }}>
-          <InputLabel sx={{ color: colors.secondaryGrey }}>Trier par</InputLabel>
+          <InputLabel sx={{ color: colors.secondaryGrey }}>{t('admin.attractions.sortBy')}</InputLabel>
           <Select
             value={sortBy}
-            label="Trier par"
+            label={t('admin.attractions.sortBy')}
             onChange={(e) => setSortBy(e.target.value)}
             sx={{
               backgroundColor: colors.secondaryDark,
@@ -498,12 +500,12 @@ export const AttractionList = () => {
               },
             }}
           >
-            <MenuItem value="created_desc">Date création (récent)</MenuItem>
-            <MenuItem value="created_asc">Date création (ancien)</MenuItem>
-            <MenuItem value="updated_desc">Dernière modification (récent)</MenuItem>
-            <MenuItem value="updated_asc">Dernière modification (ancien)</MenuItem>
-            <MenuItem value="name_asc">Nom (A-Z)</MenuItem>
-            <MenuItem value="name_desc">Nom (Z-A)</MenuItem>
+            <MenuItem value="created_desc">{t('admin.attractions.sortOptions.createdDesc')}</MenuItem>
+            <MenuItem value="created_asc">{t('admin.attractions.sortOptions.createdAsc')}</MenuItem>
+            <MenuItem value="updated_desc">{t('admin.attractions.sortOptions.updatedDesc')}</MenuItem>
+            <MenuItem value="updated_asc">{t('admin.attractions.sortOptions.updatedAsc')}</MenuItem>
+            <MenuItem value="name_asc">{t('admin.attractions.sortOptions.nameAsc')}</MenuItem>
+            <MenuItem value="name_desc">{t('admin.attractions.sortOptions.nameDesc')}</MenuItem>
           </Select>
         </FormControl>
       </Box>
@@ -532,7 +534,7 @@ export const AttractionList = () => {
           >
             <CircularProgress sx={{ color: colors.primaryGreen }} size={60} />
             <Typography variant="body1" sx={{ color: colors.white }}>
-              Chargement des attractions...
+              {t('admin.attractions.loading')}
             </Typography>
           </Box>
         ) : error ? (
@@ -545,7 +547,7 @@ export const AttractionList = () => {
             }}
           >
             <Typography variant="body1" sx={{ color: colors.primaryRed }}>
-              Erreur : {error}
+              {t('admin.attractions.errorLoading')}: {error}
             </Typography>
           </Box>
         ) : attractions.length === 0 ? (
@@ -558,7 +560,7 @@ export const AttractionList = () => {
             }}
           >
             <Typography variant="body1" sx={{ color: colors.white }}>
-              Aucune attraction trouvée.
+              {t('admin.attractions.noAttractions')}
             </Typography>
           </Box>
         ) : (

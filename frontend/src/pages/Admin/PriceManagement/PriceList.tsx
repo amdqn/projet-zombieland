@@ -21,8 +21,10 @@ import { UpdatePriceModal } from "../../../components/modals/Prices/UpdatePriceM
 import { DeletePriceModal } from "../../../components/modals/Prices/DeletePriceModal.tsx";
 import { CreatePriceModal } from "../../../components/modals/Prices/CreatePriceModal.tsx";
 import PriceAdminCard from "../../../components/cards/Prices/PricesAdminCard.tsx";
+import { useTranslation } from 'react-i18next';
 
 export const PriceList = () => {
+    const { t } = useTranslation();
     const [prices, setPrices] = useState<Price[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -72,7 +74,7 @@ export const PriceList = () => {
                 setTotalPages(response.pagination.totalPages);
                 setTotal(response.pagination.total);
             } catch (err) {
-                const message = err instanceof Error ? err.message : 'Erreur lors de la récupération des prix';
+                const message = err instanceof Error ? err.message : t('admin.prices.errorLoading');
                 setError(message);
             } finally {
                 setIsLoading(false);
@@ -118,7 +120,7 @@ export const PriceList = () => {
             setPriceToDelete(null);
             setRefreshTrigger((prev) => prev + 1);
         } catch (err) {
-            const message = err instanceof Error ? err.message : 'Erreur lors de la suppression du prix';
+            const message = err instanceof Error ? err.message : t('admin.prices.errorDelete');
             setDeleteError(message);
         } finally {
             setIsDeleting(false);
@@ -168,7 +170,7 @@ export const PriceList = () => {
                         mb: 2,
                     }}
                 >
-                    Liste des tarifs
+                    {t('admin.prices.title')}
                 </Typography>
                 <Typography
                     variant="body2"
@@ -177,7 +179,7 @@ export const PriceList = () => {
                         mb: 2,
                     }}
                 >
-                    Créez, modifiez et gérez tous les tarifs du parc Zombieland. Total : {total} tarifs
+                    {t('admin.prices.description', { total })}
                 </Typography>
 
                 <Button
@@ -196,7 +198,7 @@ export const PriceList = () => {
                         mb: 3,
                     }}
                 >
-                    Nouveau tarif
+                    {t('admin.prices.createButton')}
                 </Button>
 
                 {/* Barre de recherche */}
@@ -205,10 +207,10 @@ export const PriceList = () => {
                     <Grid container spacing={2} sx={{ mb: 2 }}>
                         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                             <FormControl fullWidth sx={{ minWidth: '200px' }}>
-                                <InputLabel sx={{ color: colors.secondaryGrey }}>Type de prix</InputLabel>
+                                <InputLabel sx={{ color: colors.secondaryGrey }}>{t('admin.prices.filterType')}</InputLabel>
                                 <Select
                                     value={priceType}
-                                    label="Type de prix"
+                                    label={t('admin.prices.filterType')}
                                     onChange={(e) => {
                                         setPriceType(e.target.value);
                                         setPage(1);
@@ -250,20 +252,20 @@ export const PriceList = () => {
                                         },
                                     }}
                                 >
-                                    <MenuItem value="">Tous</MenuItem>
-                                    <MenuItem value="ETUDIANT">Tarif étudiant</MenuItem>
-                                    <MenuItem value="GROUPE">Tarif groupe</MenuItem>
-                                    <MenuItem value="PASS_2J">Tarif pass 2 jours</MenuItem>
+                                    <MenuItem value="">{t('admin.prices.all')}</MenuItem>
+                                    <MenuItem value="ETUDIANT">{t('admin.prices.student')}</MenuItem>
+                                    <MenuItem value="GROUPE">{t('admin.prices.group')}</MenuItem>
+                                    <MenuItem value="PASS_2J">{t('admin.prices.pass2d')}</MenuItem>
                                 </Select>
                             </FormControl>
                         </Grid>
 
                         <Grid size={{ xs: 12, sm: 6, md: 6}}>
                             <FormControl fullWidth sx={{ minWidth: '200px' }}>
-                                <InputLabel sx={{ color: colors.secondaryGrey }}>Trier par</InputLabel>
+                                <InputLabel sx={{ color: colors.secondaryGrey }}>{t('admin.prices.sortBy')}</InputLabel>
                                 <Select
                                     value={sortBy}
-                                    label="Trier par"
+                                    label={t('admin.prices.sortBy')}
                                     onChange={(e) => {
                                         setSortBy(e.target.value);
                                         setPage(1);
@@ -305,12 +307,12 @@ export const PriceList = () => {
                                         },
                                     }}
                                 >
-                                    <MenuItem value="created_desc">Date création (récent)</MenuItem>
-                                    <MenuItem value="created_asc">Date création (ancien)</MenuItem>
-                                    <MenuItem value="updated_desc">Date modification (récent)</MenuItem>
-                                    <MenuItem value="updated_asc">Date modification (ancien)</MenuItem>
-                                    <MenuItem value="amount_desc">Montant (décroissant)</MenuItem>
-                                    <MenuItem value="amount_asc">Montant (croissant)</MenuItem>
+                                    <MenuItem value="created_desc">{t('admin.prices.sortOptions.createdDesc')}</MenuItem>
+                                    <MenuItem value="created_asc">{t('admin.prices.sortOptions.createdAsc')}</MenuItem>
+                                    <MenuItem value="updated_desc">{t('admin.prices.sortOptions.updatedDesc')}</MenuItem>
+                                    <MenuItem value="updated_asc">{t('admin.prices.sortOptions.updatedAsc')}</MenuItem>
+                                    <MenuItem value="amount_desc">{t('admin.prices.sortOptions.amountDesc')}</MenuItem>
+                                    <MenuItem value="amount_asc">{t('admin.prices.sortOptions.amountAsc')}</MenuItem>
                                 </Select>
                             </FormControl>
                         </Grid>
@@ -330,7 +332,7 @@ export const PriceList = () => {
                                     },
                                 }}
                             >
-                                Réinitialiser
+                                {t('admin.prices.resetFilters')}
                             </Button>
                         </Grid>
                     </Grid>
@@ -360,7 +362,7 @@ export const PriceList = () => {
                     >
                         <CircularProgress sx={{ color: colors.primaryRed }} size={60} />
                         <Typography variant="body1" sx={{ color: colors.white }}>
-                            Chargement des tarifs...
+                            {t('admin.prices.loading')}
                         </Typography>
                     </Box>
                 ) : error ? (
@@ -373,7 +375,7 @@ export const PriceList = () => {
                         }}
                     >
                         <Typography variant="body1" sx={{ color: colors.primaryRed }}>
-                            Erreur : {error}
+                            {t('admin.prices.errorLoading')}: {error}
                         </Typography>
                     </Box>
                 ) : prices.length === 0 ? (
@@ -386,7 +388,7 @@ export const PriceList = () => {
                         }}
                     >
                         <Typography variant="body1" sx={{ color: colors.white }}>
-                            Aucun tarif trouvé.
+                            {t('admin.prices.noPrices')}
                         </Typography>
                     </Box>
                 ) : (

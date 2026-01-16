@@ -25,8 +25,10 @@ import { ReservationCard } from '../../../components/cards/ReservationCard';
 import { UpdateReservationModal } from '../../../components/modals/Reservations/UpdateReservationModal.tsx';
 import { ReservationDetailsModal } from '../../../components/modals/Reservations/ReservationDetailsModal.tsx';
 import {ReservationCanceledModal} from "../../../components/modals/Reservations/ReservationCanceledModal.tsx";
+import { useTranslation } from 'react-i18next';
 
 export const ReservationList = () => {
+    const { t } = useTranslation();
     const [reservations, setReservations] = useState<Reservation[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -77,7 +79,7 @@ export const ReservationList = () => {
                 setTotalPages(response.pagination.totalPages);
                 setTotal(response.pagination.total);
             } catch (err) {
-                const message = err instanceof Error ? err.message : 'Erreur lors de la récupération des réservations';
+                const message = err instanceof Error ? err.message : t('admin.reservations.errorLoading');
                 setError(message);
             } finally {
                 setIsLoading(false);
@@ -118,12 +120,12 @@ export const ReservationList = () => {
         setDeleteError(null);
         try {
             await deleteReservation(reservationToDelete.id);
-            toast.success('Réservation annulée avec succès !');
+            toast.success(t('admin.reservations.successDelete'));
             setReservations(reservations.filter((r) => r.id !== reservationToDelete.id));
             setDeleteDialogOpen(false);
             setReservationToDelete(null);
         } catch (err) {
-            const message = err instanceof Error ? err.message : 'Erreur lors de la suppression de la réservation';
+            const message = err instanceof Error ? err.message : t('admin.reservations.errorDelete');
             setDeleteError(message);
         } finally {
             setIsDeleting(false);
@@ -177,7 +179,7 @@ export const ReservationList = () => {
                         mb: 2,
                     }}
                 >
-                    Liste des réservations
+                    {t('admin.reservations.title')}
                 </Typography>
                 <Typography
                     variant="body2"
@@ -186,7 +188,7 @@ export const ReservationList = () => {
                         mb: 2,
                     }}
                 >
-                    Gérez toutes les réservations du parc Zombieland. Total : {total} réservation(s)
+                    {t('admin.reservations.description', { total })}
                 </Typography>
 
                 {/* Barre de recherche */}
@@ -194,7 +196,7 @@ export const ReservationList = () => {
                     <TextField
                         fullWidth
                         variant="outlined"
-                        placeholder="Rechercher par numéro de réservation, utilisateur, statut..."
+                        placeholder={t('admin.reservations.searchPlaceholder')}
                         value={searchInput}
                         onChange={(e) => setSearchInput(e.target.value)}
                         onKeyPress={(e) => {
@@ -233,10 +235,10 @@ export const ReservationList = () => {
                     <Grid container spacing={2} sx={{ mb: 2 }}>
                         <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                             <FormControl fullWidth sx={{ minWidth: '200px' }}>
-                                <InputLabel sx={{ color: colors.secondaryGrey }}>Statut</InputLabel>
+                                <InputLabel sx={{ color: colors.secondaryGrey }}>{t('admin.reservations.filterStatus')}</InputLabel>
                                 <Select
                                     value={statusFilter}
-                                    label="Statut"
+                                    label={t('admin.reservations.filterStatus')}
                                     onChange={(e) => {
                                         setStatusFilter(e.target.value);
                                         setPage(1);
@@ -278,10 +280,10 @@ export const ReservationList = () => {
                                         },
                                     }}
                                 >
-                                    <MenuItem value="">Tous</MenuItem>
-                                    <MenuItem value="PENDING">En attente</MenuItem>
-                                    <MenuItem value="CONFIRMED">Confirmée</MenuItem>
-                                    <MenuItem value="CANCELLED">Annulée</MenuItem>
+                                    <MenuItem value="">{t('admin.reservations.all')}</MenuItem>
+                                    <MenuItem value="PENDING">{t('admin.reservations.pending')}</MenuItem>
+                                    <MenuItem value="CONFIRMED">{t('admin.reservations.confirmed')}</MenuItem>
+                                    <MenuItem value="CANCELLED">{t('admin.reservations.cancelled')}</MenuItem>
                                 </Select>
                             </FormControl>
                         </Grid>
@@ -290,7 +292,7 @@ export const ReservationList = () => {
                             <TextField
                                 fullWidth
                                 type="date"
-                                label="Date de visite (de)"
+                                label={t('admin.reservations.filterDateFrom')}
                                 value={dateFromFilter}
                                 onChange={(e) => {
                                     setDateFromFilter(e.target.value);
@@ -319,7 +321,7 @@ export const ReservationList = () => {
                             <TextField
                                 fullWidth
                                 type="date"
-                                label="Date de visite (à)"
+                                label={t('admin.reservations.filterDateTo')}
                                 value={dateToFilter}
                                 onChange={(e) => {
                                     setDateToFilter(e.target.value);
@@ -359,7 +361,7 @@ export const ReservationList = () => {
                                     },
                                 }}
                             >
-                                Réinitialiser
+                                {t('admin.reservations.resetFilters')}
                             </Button>
                         </Grid>
                     </Grid>
@@ -369,10 +371,10 @@ export const ReservationList = () => {
             {/* Filtre de tri */}
             <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
                 <FormControl sx={{ minWidth: '250px' }}>
-                    <InputLabel sx={{ color: colors.secondaryGrey }}>Trier par</InputLabel>
+                    <InputLabel sx={{ color: colors.secondaryGrey }}>{t('admin.reservations.sortBy')}</InputLabel>
                     <Select
                         value={sortBy}
-                        label="Trier par"
+                        label={t('admin.reservations.sortBy')}
                         onChange={(e) => {
                             setSortBy(e.target.value);
                             setPage(1);
@@ -414,14 +416,14 @@ export const ReservationList = () => {
                             },
                         }}
                     >
-                        <MenuItem value="created_desc">Date création (récent)</MenuItem>
-                        <MenuItem value="created_asc">Date création (ancien)</MenuItem>
-                        <MenuItem value="date_desc">Date visite (récent)</MenuItem>
-                        <MenuItem value="date_asc">Date visite (ancien)</MenuItem>
-                        <MenuItem value="amount_desc">Montant (décroissant)</MenuItem>
-                        <MenuItem value="amount_asc">Montant (croissant)</MenuItem>
-                        <MenuItem value="status">Statut</MenuItem>
-                        <MenuItem value="number">Numéro</MenuItem>
+                        <MenuItem value="created_desc">{t('admin.reservations.sortOptions.createdDesc')}</MenuItem>
+                        <MenuItem value="created_asc">{t('admin.reservations.sortOptions.createdAsc')}</MenuItem>
+                        <MenuItem value="date_desc">{t('admin.reservations.sortOptions.dateDesc')}</MenuItem>
+                        <MenuItem value="date_asc">{t('admin.reservations.sortOptions.dateAsc')}</MenuItem>
+                        <MenuItem value="amount_desc">{t('admin.reservations.sortOptions.amountDesc')}</MenuItem>
+                        <MenuItem value="amount_asc">{t('admin.reservations.sortOptions.amountAsc')}</MenuItem>
+                        <MenuItem value="status">{t('admin.reservations.sortOptions.status')}</MenuItem>
+                        <MenuItem value="number">{t('admin.reservations.sortOptions.number')}</MenuItem>
                     </Select>
                 </FormControl>
             </Box>
@@ -449,7 +451,7 @@ export const ReservationList = () => {
                     >
                         <CircularProgress sx={{ color: colors.primaryRed }} size={60} />
                         <Typography variant="body1" sx={{ color: colors.white }}>
-                            Chargement des réservations...
+                            {t('admin.reservations.loading')}
                         </Typography>
                     </Box>
                 ) : error ? (
@@ -462,7 +464,7 @@ export const ReservationList = () => {
                         }}
                     >
                         <Typography variant="body1" sx={{ color: colors.primaryRed }}>
-                            Erreur : {error}
+                            {t('admin.reservations.errorLoading')}: {error}
                         </Typography>
                     </Box>
                 ) : reservations.length === 0 ? (
@@ -475,7 +477,7 @@ export const ReservationList = () => {
                         }}
                     >
                         <Typography variant="body1" sx={{ color: colors.white }}>
-                            Aucune réservation trouvée.
+                            {t('admin.reservations.noReservations')}
                         </Typography>
                     </Box>
                 ) : (

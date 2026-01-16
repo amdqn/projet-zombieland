@@ -11,12 +11,14 @@ import {
   HttpStatus,
   UseGuards,
   ParseIntPipe,
+  Headers,
 } from '@nestjs/common';
 import { AttractionsService } from './attractions.service';
 import type { CreateAttractionDto, UpdateAttractionDto } from 'src/generated';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { getLanguageFromRequest } from '../common/translations.util';
 
 @Controller('attractions')
 export class AttractionsController {
@@ -27,8 +29,11 @@ export class AttractionsController {
   async findAll(
     @Query('search') search?: string,
     @Query('categoryId') categoryId?: string,
+    @Query('lang') lang?: string,
+    @Headers('accept-language') acceptLanguage?: string,
   ) {
     const filters: any = {};
+    const language = getLanguageFromRequest(acceptLanguage, lang);
 
     if (search) {
       filters.search = search;
@@ -38,13 +43,18 @@ export class AttractionsController {
       filters.categoryId = parseInt(categoryId, 10);
     }
 
-    return this.attractionsService.findAll(filters);
+    return this.attractionsService.findAll(filters, language);
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  async findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.attractionsService.findOne(id);
+  async findOne(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('lang') lang?: string,
+    @Headers('accept-language') acceptLanguage?: string,
+  ) {
+    const language = getLanguageFromRequest(acceptLanguage, lang);
+    return this.attractionsService.findOne(id, language);
   }
 
   @Post()

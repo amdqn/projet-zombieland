@@ -60,35 +60,39 @@ model UserAuditLog {
 }
 
 model Category {
-  id          Int          @id @default(autoincrement())
-  name        String       @unique
-  description String
-  attractions Attraction[]
-  activities  Activity[]
-  created_at  DateTime     @default(now())
-  updated_at  DateTime     @updatedAt
+  id             Int          @id @default(autoincrement())
+  name           String       @unique // Version française (pour rétrocompatibilité)
+  name_en        String? // Version anglaise
+  description    String // Version française (pour rétrocompatibilité)
+  description_en String? // Version anglaise
+  attractions    Attraction[]
+  activities     Activity[]
+  created_at     DateTime     @default(now())
+  updated_at     DateTime     @updatedAt
 
   @@map("categories")
 }
 
 model Attraction {
-  id           Int                 @id @default(autoincrement())
-  name         String
-  description  String
-  image_url    String?
-  thrill_level Int?
-  duration     Int?
-  latitude     Decimal?          @db.Decimal(10, 8)
-  longitude    Decimal?          @db.Decimal(11, 8)
-  category_id  Int
-  is_published Boolean             @default(true)
-  category     Category            @relation(fields: [category_id], references: [id], onDelete: Cascade)
-  images       AttractionImage[]
-  activities   Activity[]
-  relatedFrom AttractionRelation[] @relation("AttractionFrom")
-  relatedTo    AttractionRelation[] @relation("AttractionTo")
-  created_at   DateTime            @default(now())
-  updated_at   DateTime            @updatedAt
+  id             Int                  @id @default(autoincrement())
+  name           String // Version française (pour rétrocompatibilité)
+  name_en        String? // Version anglaise
+  description    String // Version française (pour rétrocompatibilité)
+  description_en String? // Version anglaise
+  image_url      String?
+  thrill_level   Int?
+  duration       Int?
+  latitude       Decimal?             @db.Decimal(10, 8)
+  longitude      Decimal?             @db.Decimal(11, 8)
+  category_id    Int
+  is_published   Boolean              @default(true)
+  category       Category             @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  images         AttractionImage[]
+  activities     Activity[]
+  relatedFrom    AttractionRelation[] @relation("AttractionFrom")
+  relatedTo      AttractionRelation[] @relation("AttractionTo")
+  created_at     DateTime             @default(now())
+  updated_at     DateTime             @updatedAt
 
   @@map("attractions")
 }
@@ -97,7 +101,8 @@ model AttractionImage {
   id            Int        @id @default(autoincrement())
   attraction_id Int
   url           String
-  alt_text      String?
+  alt_text      String? // Version française (pour rétrocompatibilité)
+  alt_text_en   String? // Version anglaise
   attraction    Attraction @relation(fields: [attraction_id], references: [id], onDelete: Cascade)
   created_at    DateTime   @default(now())
 
@@ -105,25 +110,27 @@ model AttractionImage {
 }
 
 model Activity {
-  id            Int         @id @default(autoincrement())
-  name          String
-  description   String
-  image_url     String?
-  thrill_level  Int?
-  duration      Int?
-  latitude      Decimal?    @db.Decimal(10, 8)
-  longitude     Decimal?    @db.Decimal(11, 8)
-  category_id   Int
-  attraction_id Int?
-  category      Category    @relation(fields: [category_id], references: [id], onDelete: Cascade)
-  attraction    Attraction? @relation(fields: [attraction_id], references: [id], onDelete: SetNull)
-  created_at    DateTime    @default(now())
-  updated_at    DateTime    @updatedAt
-  min_age       Int?
-  accessibility String?
-  is_published  Boolean     @default(true)
-  relatedFrom   ActivityRelation[] @relation("ActivityFrom")
-  relatedTo     ActivityRelation[] @relation("ActivityTo")
+  id             Int                @id @default(autoincrement())
+  name           String // Version française (pour rétrocompatibilité)
+  name_en        String? // Version anglaise
+  description    String // Version française (pour rétrocompatibilité)
+  description_en String? // Version anglaise
+  image_url      String?
+  thrill_level   Int?
+  duration       Int?
+  latitude       Decimal?           @db.Decimal(10, 8)
+  longitude      Decimal?           @db.Decimal(11, 8)
+  category_id    Int
+  attraction_id  Int?
+  category       Category           @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  attraction     Attraction?        @relation(fields: [attraction_id], references: [id], onDelete: SetNull)
+  created_at     DateTime           @default(now())
+  updated_at     DateTime           @updatedAt
+  min_age        Int?
+  accessibility  String?
+  is_published   Boolean            @default(true)
+  relatedFrom    ActivityRelation[] @relation("ActivityFrom")
+  relatedTo      ActivityRelation[] @relation("ActivityTo")
 
   @@map("activities")
 }
@@ -166,8 +173,9 @@ model ParkDate {
 }
 
 model Price {
-  id            Int      @id @default(autoincrement())
-  label         String
+  id            Int       @id @default(autoincrement())
+  label         String // Version française (pour rétrocompatibilité)
+  label_en      String? // Version anglaise
   type          PriceType
   amount        Decimal  @db.Decimal(10, 2)
   duration_days Int      @default(1)
@@ -194,15 +202,17 @@ model Reservation {
 }
 
 model PointOfInterest {
-  id          Int      @id @default(autoincrement())
-  name        String
-  type        String   // "toilets", "shop", "entrance", "exit"
-  description String?
-  icon        String?
-  latitude    Decimal  @db.Decimal(10, 8)
-  longitude   Decimal  @db.Decimal(11, 8)
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  id             Int      @id @default(autoincrement())
+  name           String // Version française (pour rétrocompatibilité)
+  name_en        String? // Version anglaise
+  type           String // "toilets", "shop", "entrance", "exit"
+  description    String? // Version française (pour rétrocompatibilité)
+  description_en String? // Version anglaise
+  icon           String?
+  latitude       Decimal  @db.Decimal(10, 8)
+  longitude      Decimal  @db.Decimal(11, 8)
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
 
   @@map("points_of_interest")
 }

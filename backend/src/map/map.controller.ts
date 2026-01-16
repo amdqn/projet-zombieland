@@ -1,6 +1,7 @@
-import { Controller, Get, Param, Query, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Param, Query, ParseIntPipe, Headers } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { MapService } from './map.service';
+import { getLanguageFromRequest } from '../common/translations.util';
 
 @ApiTags('map')
 @Controller('map')
@@ -13,8 +14,12 @@ export class MapController {
     status: 200,
     description: 'Liste de tous les points avec coordonnées GPS',
   })
-  async getAllMapPoints() {
-    return this.mapService.getAllMapPoints();
+  async getAllMapPoints(
+    @Query('lang') lang?: string,
+    @Headers('accept-language') acceptLanguage?: string,
+  ) {
+    const language = getLanguageFromRequest(acceptLanguage, lang);
+    return this.mapService.getAllMapPoints(language);
   }
 
   @Get('bounds')

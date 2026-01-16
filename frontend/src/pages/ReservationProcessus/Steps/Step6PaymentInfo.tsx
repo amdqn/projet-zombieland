@@ -5,8 +5,10 @@ import { useState, useEffect } from "react";
 import { InformationCard } from "../../../components/cards";
 import LockIcon from "@mui/icons-material/Lock";
 import { useReservationStore } from "../../../stores/reservationStore";
+import { useTranslation } from 'react-i18next';
 
 export const Step6PaymentInfo = () => {
+  const { t } = useTranslation();
   const { paymentInfo, setPaymentInfo, total } = useReservationStore();
   const [cardNumber, setCardNumber] = useState(paymentInfo?.cardNumber || "");
   const [month, setMonth] = useState(paymentInfo?.month || "");
@@ -30,44 +32,44 @@ export const Step6PaymentInfo = () => {
   // Fonctions de validation
   const validateCardNumber = (value: string) => {
     if (!value.trim()) {
-      return "Le numéro de carte est obligatoire";
+      return t('reservation.step6.validation.cardNumberRequired');
     }
     const cleanValue = value.replace(/\s/g, "");
     if (!/^\d{16}$/.test(cleanValue)) {
-      return "Numéro de carte invalide (16 chiffres)";
+      return t('reservation.step6.validation.cardNumberInvalid');
     }
     return "";
   };
 
   const validateMonth = (value: string) => {
     if (!value.trim()) {
-      return "Le mois est obligatoire";
+      return t('reservation.step6.validation.monthRequired');
     }
     const monthNum = parseInt(value);
     if (!/^\d{2}$/.test(value) || monthNum < 1 || monthNum > 12) {
-      return "Mois invalide (01-12)";
+      return t('reservation.step6.validation.monthInvalid');
     }
     return "";
   };
 
   const validateYear = (value: string) => {
     if (!value.trim()) {
-      return "L'année est obligatoire";
+      return t('reservation.step6.validation.yearRequired');
     }
     const currentYear = new Date().getFullYear();
     const yearNum = parseInt(value);
     if (!/^\d{4}$/.test(value) || yearNum < currentYear) {
-      return "Année invalide";
+      return t('reservation.step6.validation.yearInvalid');
     }
     return "";
   };
 
   const validateCvv = (value: string) => {
     if (!value.trim()) {
-      return "Le CVV est obligatoire";
+      return t('reservation.step6.validation.cvvRequired');
     }
     if (!/^\d{3}$/.test(value)) {
-      return "CVV invalide (3 chiffres)";
+      return t('reservation.step6.validation.cvvInvalid');
     }
     return "";
   };
@@ -90,7 +92,7 @@ export const Step6PaymentInfo = () => {
             color: colors.primaryRed,
           }}
         >
-          PAIEMENT
+          {t('reservation.step6.title')}
         </Typography>
         <Typography
           variant="body1"
@@ -99,15 +101,15 @@ export const Step6PaymentInfo = () => {
             fontSize: { xs: "0.9rem", md: "1rem" },
           }}
         >
-          Comment souhaitez-vous payer ?
+          {t('reservation.step6.subtitle')}
         </Typography>
       </Box>
 
       <Box sx={{ mt: 4, mb: 4, width: "100%" }}>
         <Input
-          label="Numéro de carte"
+          label={t('reservation.step6.cardNumber')}
           type="text"
-          placeholder="1234 5678 9123 4567"
+          placeholder={t('reservation.step6.cardNumberPlaceholder')}
           value={cardNumber}
           onChange={(e) => {
             setCardNumber(e.target.value);
@@ -133,9 +135,9 @@ export const Step6PaymentInfo = () => {
         >
           <Box sx={{ flex: 1 }}>
             <Input
-              label="Mois"
+              label={t('reservation.step6.month')}
               type="text"
-              placeholder="MM"
+              placeholder={t('reservation.step6.monthPlaceholder')}
               value={month}
               onChange={(e) => {
                 setMonth(e.target.value);
@@ -154,9 +156,9 @@ export const Step6PaymentInfo = () => {
           </Box>
           <Box sx={{ flex: 1 }}>
             <Input
-              label="Année"
+              label={t('reservation.step6.year')}
               type="text"
-              placeholder="AAAA"
+              placeholder={t('reservation.step6.yearPlaceholder')}
               value={year}
               onChange={(e) => {
                 setYear(e.target.value);
@@ -175,9 +177,9 @@ export const Step6PaymentInfo = () => {
           </Box>
           <Box sx={{ flex: 1 }}>
             <Input
-              label="CVV"
+              label={t('reservation.step6.cvv')}
               type="text"
-              placeholder="123"
+              placeholder={t('reservation.step6.cvvPlaceholder')}
               value={cvv}
               onChange={(e) => {
                 setCvv(e.target.value);
@@ -219,7 +221,7 @@ export const Step6PaymentInfo = () => {
                   mb: 1,
                 }}
               >
-                PAIEMENT 100% SÉCURISÉ
+                {t('reservation.step6.securePayment')}
               </Typography>
               <Typography
                 sx={{
@@ -228,7 +230,7 @@ export const Step6PaymentInfo = () => {
                   color: colors.white,
                 }}
               >
-                Vos données sont entièrement protégées et chiffrées
+                {t('reservation.step6.securePaymentText')}
               </Typography>
             </Box>
           </Box>

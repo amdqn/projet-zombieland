@@ -5,16 +5,24 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import type { CreateActivityDto, UpdateActivityDto } from 'src/generated';
+import {
+  transformTranslatableFields,
+  transformTranslatableArray,
+  type Language,
+} from '../common/translations.util';
 
 @Injectable()
 export class ActivitiesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll(filters?: {
-    search?: string;
-    categoryId?: number;
-    attractionId?: number;
-  }) {
+  async findAll(
+    filters?: {
+      search?: string;
+      categoryId?: number;
+      attractionId?: number;
+    },
+    lang: Language = 'fr',
+  ) {
     const where: any = {};
 
     // Filtre par recherche (nom ou description)
@@ -55,36 +63,27 @@ export class ActivitiesService {
       },
     });
 
-    return activities.map((activity: any) => ({
-      ...activity,
-      created_at: activity.created_at.toISOString(),
-      updated_at: activity.updated_at.toISOString(),
-      category: {
-        ...activity.category,
-        created_at: activity.category.created_at.toISOString(),
-        updated_at: activity.category.updated_at.toISOString(),
-      },
-      attraction: activity.attraction
-        ? {
-            ...activity.attraction,
-            created_at: activity.attraction.created_at.toISOString(),
-            updated_at: activity.attraction.updated_at.toISOString(),
-          }
-        : null,
-      related_activities: activity.relatedFrom ? activity.relatedFrom.map((rel: any) => ({
-        ...rel.related_activity,
-        created_at: rel.related_activity.created_at.toISOString(),
-        updated_at: rel.related_activity.updated_at.toISOString(),
-        category: {
-          ...rel.related_activity.category,
-          created_at: rel.related_activity.category.created_at.toISOString(),
-          updated_at: rel.related_activity.category.updated_at.toISOString(),
-        },
-      })) : [],
-    }));
+    return activities.map((activity: any) => {
+      const transformedActivity = transformTranslatableFields(activity, lang);
+      return {
+        ...transformedActivity,
+        created_at: activity.created_at.toISOString(),
+        updated_at: activity.updated_at.toISOString(),
+        category: transformTranslatableFields(activity.category, lang),
+        attraction: activity.attraction
+          ? transformTranslatableFields(activity.attraction, lang)
+          : null,
+        related_activities: activity.relatedFrom
+          ? transformTranslatableArray(
+              activity.relatedFrom.map((rel: any) => rel.related_activity),
+              lang,
+            )
+          : [],
+      };
+    });
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, lang: Language = 'fr') {
     if (!id || id <= 0) {
       throw new BadRequestException('ID invalide');
     }
@@ -110,34 +109,23 @@ export class ActivitiesService {
       throw new NotFoundException(`Activité avec l'ID ${id} non trouvée`);
     }
 
-    // Convertir les dates en ISO string
+    // Convertir les dates en ISO string et appliquer les traductions
     const activityWithRelations = activity as any;
+    const transformedActivity = transformTranslatableFields(
+      activityWithRelations,
+      lang,
+    );
     return {
-      ...activityWithRelations,
+      ...transformedActivity,
       created_at: activityWithRelations.created_at.toISOString(),
       updated_at: activityWithRelations.updated_at.toISOString(),
-      category: {
-        ...activityWithRelations.category,
-        created_at: activityWithRelations.category.created_at.toISOString(),
-        updated_at: activityWithRelations.category.updated_at.toISOString(),
-      },
+      category: transformTranslatableFields(activityWithRelations.category, lang),
       attraction: activityWithRelations.attraction
-        ? {
-            ...activityWithRelations.attraction,
-            created_at: activityWithRelations.attraction.created_at.toISOString(),
-            updated_at: activityWithRelations.attraction.updated_at.toISOString(),
-          }
+        ? transformTranslatableFields(activityWithRelations.attraction, lang)
         : null,
-      related_activities: (activityWithRelations.relatedFrom || []).map((rel: any) => ({
-        ...rel.related_activity,
-        created_at: rel.related_activity.created_at.toISOString(),
-        updated_at: rel.related_activity.updated_at.toISOString(),
-        category: {
-          ...rel.related_activity.category,
-          created_at: rel.related_activity.category.created_at.toISOString(),
-          updated_at: rel.related_activity.category.updated_at.toISOString(),
-        },
-      })),
+      related_activities: (activityWithRelations.relatedFrom || []).map(
+        (rel: any) => transformTranslatableFields(rel.related_activity, lang),
+      ),
     };
   }
 

@@ -2,6 +2,7 @@ import { Box, Card, CardContent, Chip, Stack, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { colors } from '../../../theme';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const StyledActivityCard = styled(Card)(({ theme }) => ({
   backgroundColor: colors.secondaryDark,
@@ -51,6 +52,7 @@ export const ActivityCardPublic = ({
   isAttraction = false,
   isRestaurant = false,
 }: ActivityCardPublicProps) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleCardClick = () => {
@@ -124,7 +126,7 @@ export const ActivityCardPublic = ({
         <Stack direction="row" spacing={1} sx={{ mb: 2, flexWrap: 'wrap', gap: 1 }}>
           {thrill !== undefined && !isRestaurant && (
             <Chip
-              label={`Frisson: ${thrill}/5`}
+              label={`${t('cards.thrill')}: ${thrill}/5`}
               size="small"
               sx={{
                 backgroundColor: colors.secondaryDarkAlt,

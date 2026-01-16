@@ -6,19 +6,22 @@ import { Step1SelectTicket, Step2SelectDate, Step3Summary, Step4CustomerInfo, St
 import { colors } from '../../theme/theme';
 import { useReservationStore } from '../../stores/reservationStore';
 import { createReservation } from '../../services/reservations';
-
-const steps = [
-  'Choix des billets',
-  'Quelle date ?',
-  'Récapitulatif',
-  'Vos informations',
-  'Adresse',
-  'Paiement',
-  'Réservation confirmée'
-];
+import { useTranslation } from 'react-i18next';
 
 export const ReservationProcessusPage = () => {
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const steps = [
+    t('reservation.process.steps.selectTicket'),
+    t('reservation.process.steps.selectDate'),
+    t('reservation.process.steps.summary'),
+    t('reservation.process.steps.customerInfo'),
+    t('reservation.process.steps.address'),
+    t('reservation.process.steps.payment'),
+    t('reservation.process.steps.confirmation')
+  ];
+
   const stepFromUrl = parseInt(searchParams.get('step') || '0', 10);
   const [activeStep, setActiveStep] = useState(
     stepFromUrl >= 0 && stepFromUrl < steps.length ? stepFromUrl : 0
@@ -26,7 +29,7 @@ export const ReservationProcessusPage = () => {
   const [step1View, setStep1View] = useState<'list' | 'quantity'>('list');
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
-  
+
   // Utilisation du store Zustand
   const {
     tickets,
@@ -69,19 +72,19 @@ export const ReservationProcessusPage = () => {
   // Fonction pour créer la réservation quand on clique sur "PAYER" à l'étape 5
   const handlePayment = async () => {
     if (tickets.length === 0) {
-      setPaymentError('Aucun billet sélectionné');
+      setPaymentError(t('reservation.process.errors.noTicketSelected'));
       return;
     }
 
     if (!dateId) {
-      setPaymentError('Veuillez sélectionner une date de visite');
+      setPaymentError(t('reservation.process.errors.noDateSelected'));
       return;
     }
 
     // Vérifier que l'utilisateur est connecté (token présent et valide)
     const token = localStorage.getItem('token');
     if (!token) {
-      setPaymentError('Vous devez être connecté pour finaliser votre réservation.');
+      setPaymentError(t('reservation.process.errors.mustBeLoggedIn'));
       window.location.href = '/login?redirect=/reservation?step=5';
       return;
     }
@@ -92,7 +95,7 @@ export const ReservationProcessusPage = () => {
       const exp = payload.exp * 1000; // Convertir en millisecondes
       const now = Date.now();
       if (exp < now) {
-        setPaymentError('Votre session a expiré. Veuillez vous reconnecter.');
+        setPaymentError(t('reservation.process.errors.sessionExpired'));
         localStorage.removeItem('token');
         localStorage.removeItem('role');
         localStorage.removeItem('pseudo');
@@ -133,24 +136,24 @@ export const ReservationProcessusPage = () => {
       setSearchParams({ step: newStep.toString() }, { replace: true });
       
     } catch (error) {
-      let errorMessage = 'Une erreur est survenue lors du paiement. Veuillez réessayer.';
-      
+      let errorMessage = t('reservation.process.errors.paymentError');
+
       if (error instanceof Error) {
         // Si c'est une erreur 401 (Unauthorized), suggérer de se reconnecter
         if (error.message.includes('Unauthorized') || error.message.includes('401') || error.message.includes('expired')) {
-          errorMessage = 'Votre session a expiré. Veuillez vous reconnecter pour finaliser votre réservation.';
+          errorMessage = t('reservation.process.errors.sessionExpired');
           // Nettoyer le token expiré et rediriger vers login
           localStorage.removeItem('token');
           localStorage.removeItem('role');
           localStorage.removeItem('pseudo');
           setTimeout(() => {
             window.location.href = '/login?redirect=/reservation?step=5';
-          }, 2000); 
+          }, 2000);
         } else {
           errorMessage = error.message;
         }
       }
-      
+
       setPaymentError(errorMessage);
     } finally {
       setIsProcessingPayment(false);
@@ -274,8 +277,8 @@ export const ReservationProcessusPage = () => {
         {/* Breadcrumbs */}
         <CustomBreadcrumbs
           items={[
-            { label: 'Accueil', path: '/' },
-            { label: 'Réservation' },
+            { label: t('navigation.home'), path: '/' },
+            { label: t('reservation.process.title') },
           ]}
         />
 
@@ -294,7 +297,7 @@ export const ReservationProcessusPage = () => {
               mb: 2,
             }}
           >
-            ÉTAPE {activeStep + 1} SUR {steps.length}
+            {t('reservation.process.stepIndicator', { current: activeStep + 1, total: steps.length })}
           </Typography>
 
           {/* Barre de progression */}
@@ -362,7 +365,7 @@ export const ReservationProcessusPage = () => {
             <Box sx={{ width: { xs: '100%', md: activeStep === 0 ? '0%' : '50%' } }}>
               {activeStep > 0 && (
                 <BackButton
-                  text={activeStep === 6 ? "TÉLÉCHARGER BILLETS (PDF)" : "Retour"}
+                  text={activeStep === 6 ? t('reservation.process.buttons.downloadTickets') : t('reservation.process.buttons.back')}
                   onClick={activeStep === 6 ? () => alert('Téléchargement du PDF à implémenter') : handleBack}
                 />
               )}
@@ -372,16 +375,16 @@ export const ReservationProcessusPage = () => {
               <PrimaryButton
                 text={
                   activeStep === 6
-                    ? "RETOUR À L'ACCUEIL →"
+                    ? t('reservation.process.buttons.backToHome')
                     : activeStep === 5
                     ? isProcessingPayment
-                      ? 'TRAITEMENT EN COURS...'
-                      : `PAYER ${total.toFixed(2).replace('.', ',')} € →`
+                      ? t('reservation.process.buttons.processing')
+                      : `${t('reservation.process.buttons.pay')} ${total.toFixed(2).replace('.', ',')} € →`
                     : activeStep === steps.length - 1
-                    ? 'Confirmer'
-                    : 'CONTINUER →'
+                    ? t('reservation.process.buttons.confirm')
+                    : t('reservation.process.buttons.continue')
                 }
-                onClick={activeStep === 6 
+                onClick={activeStep === 6
                   ? () => {
                       reset();
                       // replace pour éviter de revenir sur l'étape 6 avec le bouton retour navigateur

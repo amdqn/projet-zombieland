@@ -782,6 +782,217 @@
     "french": "Français",
     "english": "English"
   },
+  "buttons": {
+    "reserve": "BOOK",
+    "reserveNow": "BOOK NOW"
+  },
+  "cards": {
+    "thrill": "Thrill"
+  },
+  "priceTypes": {
+    "ETUDIANT": "Student Ticket",
+    "ADULTE": "Adult Ticket",
+    "GROUPE": "Group Ticket",
+    "PASS_2J": "2-Day Pass"
+  },
+  "reservation": {
+    "process": {
+      "title": "Reservation",
+      "stepIndicator": "STEP {{current}} OF {{total}}",
+      "steps": {
+        "selectTicket": "Select tickets",
+        "selectDate": "Which date?",
+        "summary": "Summary",
+        "customerInfo": "Your information",
+        "address": "Address",
+        "payment": "Payment",
+        "confirmation": "Booking confirmed"
+      },
+      "buttons": {
+        "back": "← BACK",
+        "continue": "CONTINUE →",
+        "confirm": "Confirm",
+        "pay": "PAY",
+        "processing": "PROCESSING...",
+        "downloadTickets": "DOWNLOAD TICKETS (PDF)",
+        "backToHome": "BACK TO HOME →"
+      },
+      "errors": {
+        "noTicketSelected": "No ticket selected",
+        "noDateSelected": "Please select a visit date",
+        "mustBeLoggedIn": "You must be logged in to complete your reservation.",
+        "sessionExpired": "Your session has expired. Please log in again.",
+        "paymentError": "An error occurred during payment. Please try again.",
+        "loadingError": "Error loading dates:"
+      }
+    },
+    "step1": {
+      "title": "WHICH TYPE OF TICKET?",
+      "subtitle": "Choose your entry type",
+      "quantityTitle": "HOW MANY TICKETS?",
+      "quantitySubtitle": "Select the number of people",
+      "quantitySelected": "Quantity selected: {{quantity}}",
+      "quantityLabel": "Quantity × {{quantity}}",
+      "day": "day",
+      "days": "days",
+      "total": "TOTAL"
+    },
+    "step2": {
+      "title": "WHICH DATE?",
+      "subtitle": "Choose your visit day",
+      "selectedDate": "SELECTED DATE"
+    },
+    "step3": {
+      "title": "SUMMARY",
+      "subtitle": "Check your order before continuing",
+      "loading": "Loading tickets...",
+      "ticketType": "Ticket type",
+      "quantity": "Number of tickets",
+      "unitPrice": "Unit price",
+      "visitDate": "Visit date",
+      "noTickets": "No tickets selected",
+      "day": "day",
+      "days": "days",
+      "total": "TOTAL",
+      "acceptTerms": "I accept the Terms and Conditions of Sale",
+      "readTerms": "Read full T&Cs",
+      "freeCancellation": "FREE CANCELLATION",
+      "cancellationText": "You can cancel up to 10 days before the visit date"
+    },
+    "step4": {
+      "title": "YOUR INFORMATION",
+      "subtitle": "For booking confirmation.",
+      "firstName": "First name",
+      "firstNamePlaceholder": "Your first name",
+      "lastName": "Last name",
+      "lastNamePlaceholder": "Your last name",
+      "email": "Email",
+      "emailPlaceholder": "your@email.com",
+      "phone": "Phone",
+      "phonePlaceholder": "+33 6 12 34 56 78",
+      "emailConfirmation": "EMAIL CONFIRMATION",
+      "emailConfirmationText": "Your tickets will be sent to the provided email address",
+      "validation": {
+        "firstNameRequired": "First name is required",
+        "lastNameRequired": "Last name is required",
+        "emailRequired": "Email is required",
+        "emailInvalid": "Invalid email",
+        "phoneRequired": "Phone is required",
+        "phoneInvalid": "Invalid phone number"
+      }
+    },
+    "step5": {
+      "title": "ADDRESS",
+      "subtitle": "Billing address",
+      "address": "Address",
+      "addressPlaceholder": "Your address",
+      "city": "City",
+      "cityPlaceholder": "Your city",
+      "postalCode": "Postal code",
+      "postalCodePlaceholder": "Your postal code",
+      "country": "Country",
+      "countryPlaceholder": "Select a country",
+      "validation": {
+        "addressRequired": "Address is required",
+        "cityRequired": "City is required",
+        "postalCodeRequired": "Postal code is required",
+        "postalCodeInvalid": "Invalid postal code (5 digits)",
+        "countryRequired": "Country is required"
+      }
+    },
+    "step6": {
+      "title": "PAYMENT",
+      "subtitle": "How would you like to pay?",
+      "cardNumber": "Card number",
+      "cardNumberPlaceholder": "1234 5678 9123 4567",
+      "month": "Month",
+      "monthPlaceholder": "MM",
+      "year": "Year",
+      "yearPlaceholder": "YYYY",
+      "cvv": "CVV",
+      "cvvPlaceholder": "123",
+      "securePayment": "100% SECURE PAYMENT",
+      "securePaymentText": "Your data is fully protected and encrypted",
+      "validation": {
+        "cardNumberRequired": "Card number is required",
+        "cardNumberInvalid": "Invalid card number (16 digits)",
+        "monthRequired": "Month is required",
+        "monthInvalid": "Invalid month (01-12)",
+        "yearRequired": "Year is required",
+        "yearInvalid": "Invalid year",
+        "cvvRequired": "CVV is required",
+        "cvvInvalid": "Invalid CVV (3 digits)"
+      }
+    },
+    "step7": {
+      "title": "BOOKING CONFIRMED",
+      "subtitle": "Your payment was successful",
+      "orderNumber": "Order number",
+      "orderNumberNotAvailable": "Number not available",
+      "day": "day",
+      "days": "days",
+      "quantityLabel": "Quantity × {{quantity}}",
+      "months": {
+        "jan": "Jan",
+        "feb": "Feb",
+        "mar": "Mar",
+        "apr": "Apr",
+        "may": "May",
+        "jun": "Jun",
+        "jul": "Jul",
+        "aug": "Aug",
+        "sep": "Sep",
+        "oct": "Oct",
+        "nov": "Nov",
+        "dec": "Dec"
+      }
+    }
+  },
+  "activityDetail": {
+    "breadcrumbs": {
+      "home": "Home",
+      "restaurants": "Restaurants",
+      "attractions": "Attractions",
+      "activities": "Activities",
+      "detail": "Detail"
+    },
+    "errors": {
+      "missingId": "Activity ID missing",
+      "attractionNotFound": "Attraction not found",
+      "activityNotFound": "Activity not found",
+      "cannotLoad": "Cannot load the page",
+      "notFound": "Page not found"
+    },
+    "sections": {
+      "ourEstablishment": "OUR ESTABLISHMENT",
+      "theExperience": "THE EXPERIENCE",
+      "duration": "DURATION",
+      "thrillLevel": "THRILL LEVEL",
+      "thrill": "THRILL",
+      "accessibility": "PMR ACCESSIBILITY",
+      "accessiblePMR": "PMR accessible",
+      "minutes": "minutes",
+      "min": "min"
+    },
+    "descriptions": {
+      "defaultActivity": "Dive into a fully immersive experience where horror comes to life. Stunning special effects, professional actors and an oppressive atmosphere await you. Screams, smells of decay, chain rattling... everything is designed to create a waking nightmare.",
+      "defaultRestaurant": "Discover unique themed cuisine in a post-apocalyptic atmosphere. Our establishment offers delicious and original dishes to regain your strength between attractions. Fast and friendly service in an immersive setting.",
+      "sensitiveWarning": "Not recommended for sensitive souls and those under {{minAge}} years old.",
+      "freeAccess": "Free access without reservation. Payment on site."
+    },
+    "similar": {
+      "otherRestaurants": "OTHER RESTAURANTS",
+      "similarAttractions": "SIMILAR ATTRACTIONS",
+      "similarActivities": "SIMILAR ACTIVITIES",
+      "others": "OTHERS",
+      "similar": "SIMILAR"
+    },
+    "defaultCategory": {
+      "attraction": "Attraction",
+      "activity": "Activity",
+      "restaurant": "Restaurants"
+    }
+  },
   "static": {
     "lastUpdate": "Last update",
     "cookies": {

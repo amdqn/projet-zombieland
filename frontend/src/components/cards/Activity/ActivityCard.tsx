@@ -6,6 +6,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { colors } from '../../../theme';
 import type { Activity } from '../../../@types/activity';
 import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE } from '../../../utils/imageUtils.ts';
+import { useTranslation } from 'react-i18next';
 
 const StyledActivityCard = styled(Card)(({ theme }) => ({
   backgroundColor: colors.secondaryDark,
@@ -40,6 +41,7 @@ interface ActivityCardProps {
 }
 
 export const ActivityCard = ({ activity, onEdit, onDelete, onClick }: ActivityCardProps) => {
+  const { t } = useTranslation();
   const image = resolveImageUrl(activity.image_url, DEFAULT_ACTIVITY_IMAGE);
 
   const handleEdit = (e: React.MouseEvent) => {
@@ -137,7 +139,7 @@ export const ActivityCard = ({ activity, onEdit, onDelete, onClick }: ActivityCa
         <Stack direction="row" spacing={1} sx={{ mb: 2, flexWrap: 'wrap', gap: 1 }}>
           {activity.thrill_level && (
             <Chip
-              label={`Frisson: ${activity.thrill_level}/5`}
+              label={`${t('cards.thrill')}: ${activity.thrill_level}/5`}
               size="small"
               sx={{
                 backgroundColor: colors.secondaryDarkAlt,

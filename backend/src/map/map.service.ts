@@ -1,5 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import {
+  transformTranslatableFields,
+  transformTranslatableArray,
+  type Language,
+} from '../common/translations.util';
 
 @Injectable()
 export class MapService {
@@ -8,7 +13,7 @@ export class MapService {
   /**
    * Récupère tous les points de la carte (attractions, activités, POI)
    */
-  async getAllMapPoints() {
+  async getAllMapPoints(lang: Language = 'fr') {
     const [attractions, activities, pois] = await Promise.all([
       // Attractions avec leurs catégories
       this.prisma.attraction.findMany({
@@ -49,9 +54,15 @@ export class MapService {
     ]);
 
     return {
-      attractions,
-      activities,
-      pois,
+      attractions: attractions.map((attraction) => ({
+        ...transformTranslatableFields(attraction, lang),
+        category: transformTranslatableFields(attraction.category, lang),
+      })),
+      activities: activities.map((activity) => ({
+        ...transformTranslatableFields(activity, lang),
+        category: transformTranslatableFields(activity.category, lang),
+      })),
+      pois: transformTranslatableArray(pois, lang),
     };
   }
 

@@ -7,8 +7,11 @@ import { useReservationStore } from "../../../stores/reservationStore";
 import { getPrices } from "../../../services/prices";
 import type { Price } from "../../../@types/price";
 import {useReservations} from "../../../hooks/useUserReservation.ts";
+import { useTranslation } from 'react-i18next';
+import { formatPriceName } from '../../../utils/translatePrice';
 
 export const Step7OrderConfirmed = () => {
+  const { t } = useTranslation();
   const { tickets, total, date, createdReservations, customerInfo } = useReservationStore();
   const [prices, setPrices] = useState<Price[]>([]);
 
@@ -48,7 +51,12 @@ export const Step7OrderConfirmed = () => {
     if (!dateString) return '';
     const date = new Date(dateString);
     const day = date.getDate();
-    const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
+    const months = [
+      t('reservation.step7.months.jan'), t('reservation.step7.months.feb'), t('reservation.step7.months.mar'),
+      t('reservation.step7.months.apr'), t('reservation.step7.months.may'), t('reservation.step7.months.jun'),
+      t('reservation.step7.months.jul'), t('reservation.step7.months.aug'), t('reservation.step7.months.sep'),
+      t('reservation.step7.months.oct'), t('reservation.step7.months.nov'), t('reservation.step7.months.dec')
+    ];
     const monthName = months[date.getMonth()];
     const year = date.getFullYear();
     return `${day} ${monthName} ${year}`;
@@ -79,7 +87,7 @@ export const Step7OrderConfirmed = () => {
             color: colors.primaryRed,
           }}
         >
-          RÉSERVATION CONFIRMÉE</Typography>
+          {t('reservation.step7.title')}</Typography>
         <Typography
           variant="body1"
           sx={{
@@ -87,7 +95,7 @@ export const Step7OrderConfirmed = () => {
             fontSize: { xs: '0.9rem', md: '1rem' },
           }}
         >
-          Votre paiement a été effectué avec succès</Typography>
+          {t('reservation.step7.subtitle')}</Typography>
     </Box>
 
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 4 }}>
@@ -103,7 +111,7 @@ export const Step7OrderConfirmed = () => {
                       textTransform: 'uppercase',
                     }}
                 >
-                    Numéro de commande
+                    {t('reservation.step7.orderNumber')}
                 </Typography>
                 {mainReservationNumber ? (
                   <Typography
@@ -124,7 +132,7 @@ export const Step7OrderConfirmed = () => {
                         color: colors.secondaryGrey,
                       }}
                   >
-                      Numéro non disponible
+                      {t('reservation.step7.orderNumberNotAvailable')}
                   </Typography>
                 )}
             </Box>
@@ -155,7 +163,7 @@ export const Step7OrderConfirmed = () => {
                         color: colors.white,
                       }}
                     >
-                      {price.type} - {price.duration_days} jour{price.duration_days > 1 ? 's' : ''}
+                      {formatPriceName(price.type, price.duration_days, t)}
                     </Typography>
                     <Typography
                       sx={{
@@ -186,7 +194,7 @@ export const Step7OrderConfirmed = () => {
                         color: colors.white,
                       }}
                     >
-                      Quantité × {item.quantity}
+                      {t('reservation.step7.quantityLabel', { quantity: item.quantity })}
                     </Typography>
                     <Typography
                       sx={{

@@ -13,6 +13,7 @@ import { colors } from '../../theme/theme';
 import { HeroSection } from '../../components/hero/HeroSection';
 import { CustomBreadcrumbs } from '../../components/common/Breadcrumbs/CustomBreadcrumbs';
 import { MetricBox } from '../../components/cards/MetricBox';
+import { useTranslation } from 'react-i18next';
 import { ThrillLevel } from '../../components/common/ThrillLevel/ThrillLevel';
 import { ReservationButton } from '../../components/common/Button/ReservationButton';
 import { ActivityCarousel } from '../../components/carousel/ActivityCarousel';
@@ -23,6 +24,7 @@ import type { Attraction } from '../../@types/attraction';
 import { resolveImageUrl } from '../../utils/imageUtils';
 
 export const ActivityDetail = () => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -43,7 +45,7 @@ export const ActivityDetail = () => {
   useEffect(() => {
     const fetchActivity = async () => {
       if (!id) {
-        setError("ID d'activité manquant");
+        setError(t('activityDetail.errors.missingId'));
         setLoading(false);
         return;
       }
@@ -72,7 +74,7 @@ export const ActivityDetail = () => {
               setRelatedAttractions([]);
             }
           } else {
-            setError("Attraction non trouvée");
+            setError(t('activityDetail.errors.attractionNotFound'));
           }
         } else {
           const data = await getActivityById(parseInt(id));
@@ -87,11 +89,11 @@ export const ActivityDetail = () => {
               setRelatedActivities([]);
             }
           } else {
-            setError("Activité non trouvée");
+            setError(t('activityDetail.errors.activityNotFound'));
           }
         }
       } catch (err) {
-        const message = err instanceof Error ? err.message : "Impossible de charger la fiche";
+        const message = err instanceof Error ? err.message : t('activityDetail.errors.cannotLoad');
         setError(message);
       } finally {
         setLoading(false);
@@ -121,7 +123,7 @@ export const ActivityDetail = () => {
       <Box sx={{ backgroundColor: colors.secondaryDark, minHeight: '100vh', pt: 4 }}>
         <Container>
           <Typography variant="h4" sx={{ color: colors.white }}>
-            {error || "Fiche non trouvée"}
+            {error || t('activityDetail.errors.notFound')}
           </Typography>
         </Container>
       </Box>
@@ -134,7 +136,7 @@ export const ActivityDetail = () => {
     : 3;
   const durationMinutes = 'duration' in entity ? entity.duration : 45;
   const minAge = 12;
-  const accessibility = "Accessible PMR";
+  const accessibility = t('activityDetail.sections.accessiblePMR');
   const defaultHeroImages = [
     '/activities-images/abandoned-lab.jpg',
     '/activities-images/zombie.jpg',
@@ -219,10 +221,10 @@ export const ActivityDetail = () => {
   const isRestaurant = location.pathname.includes('/restaurants/') || entityCategory === 'Restauration';
 
   const breadcrumbItems = [
-    { label: 'Accueil', path: '/', showOnMobile: true },
-    { label: isRestaurant ? 'Restauration' : isAttraction ? 'Attractions' : 'Activités', path: isAttraction ? '/attractions' : '/activities', showOnMobile: false },
-    { label: entityCategory || (isAttraction ? 'Attraction' : 'Activité'), showOnMobile: false },
-    { label: isMobile ? 'Détail' : entityName, showOnMobile: true },
+    { label: t('activityDetail.breadcrumbs.home'), path: '/', showOnMobile: true },
+    { label: isRestaurant ? t('activityDetail.breadcrumbs.restaurants') : isAttraction ? t('activityDetail.breadcrumbs.attractions') : t('activityDetail.breadcrumbs.activities'), path: isAttraction ? '/attractions' : '/activities', showOnMobile: false },
+    { label: entityCategory || (isAttraction ? t('activityDetail.defaultCategory.attraction') : t('activityDetail.defaultCategory.activity')), showOnMobile: false },
+    { label: isMobile ? t('activityDetail.breadcrumbs.detail') : entityName, showOnMobile: true },
   ];
 
   const handleReservationClick = () => {
@@ -311,7 +313,7 @@ export const ActivityDetail = () => {
                   fontSize: { xs: '1.6rem', md: '2.5rem' },
                 }}
               >
-                {isRestaurant ? 'NOTRE ÉTABLISSEMENT' : 'L\'EXPÉRIENCE'}
+                {isRestaurant ? t('activityDetail.sections.ourEstablishment') : t('activityDetail.sections.theExperience')}
               </Typography>
               <Typography
                 variant="body1"
@@ -331,10 +333,7 @@ export const ActivityDetail = () => {
                     lineHeight: { xs: 1.7, md: 1.8 },
                   }}
                 >
-                  Plongez dans une expérience immersive totale où l'horreur prend vie.
-                  Effets spéciaux saisissants, acteurs professionnels et atmosphère
-                  oppressante vous attendent. Cris, odeurs de putréfaction, bruits de
-                  chaînes... tout est conçu pour créer un cauchemar éveillé.
+                  {t('activityDetail.descriptions.defaultActivity')}
                 </Typography>
               )}
               {isRestaurant && (
@@ -345,9 +344,7 @@ export const ActivityDetail = () => {
                     lineHeight: { xs: 1.7, md: 1.8 },
                   }}
                 >
-                  Découvrez une cuisine thématique unique dans une ambiance post-apocalyptique.
-                  Notre établissement vous propose des plats savoureux et originaux pour reprendre
-                  des forces entre deux attractions. Service rapide et convivial dans un décor immersif.
+                  {t('activityDetail.descriptions.defaultRestaurant')}
                 </Typography>
               )}
 
@@ -374,7 +371,7 @@ export const ActivityDetail = () => {
                     ⚠
                   </Box>
                   <Typography variant="body2">
-                    Déconseillé aux âmes sensibles et aux moins de {minAge} ans.
+                    {t('activityDetail.descriptions.sensitiveWarning', { minAge })}
                   </Typography>
                 </Box>
               )}
@@ -401,7 +398,7 @@ export const ActivityDetail = () => {
                     ℹ
                   </Box>
                   <Typography variant="body2">
-                    Accès libre sans réservation. Paiement sur place.
+                    {t('activityDetail.descriptions.freeAccess')}
                   </Typography>
                 </Box>
               )}
@@ -419,20 +416,20 @@ export const ActivityDetail = () => {
           <Box sx={{ flex: { xs: '1 1 100%', md: '1 1 33%' } }}>
             <Stack spacing={2}>
               {!isRestaurant && (
-                <MetricBox title="DURÉE">
+                <MetricBox title={t('activityDetail.sections.duration')}>
                   <Typography
                     className="metric-value"
                     sx={{
                       fontSize: { xs: '1.4rem', md: '2rem' },
                     }}
                   >
-                    {durationMinutes} {!isMobile ? 'minutes' : 'min'}
+                    {durationMinutes} {!isMobile ? t('activityDetail.sections.minutes') : t('activityDetail.sections.min')}
                   </Typography>
                 </MetricBox>
               )}
 
               {!isRestaurant && (
-                <MetricBox title={!isMobile ? 'NIVEAU DE FRISSON' : 'FRISSON'}>
+                <MetricBox title={!isMobile ? t('activityDetail.sections.thrillLevel') : t('activityDetail.sections.thrill')}>
                   <ThrillLevel level={thrillLevel} />
                   <Typography
                     className="metric-value"
@@ -445,7 +442,7 @@ export const ActivityDetail = () => {
                 </MetricBox>
               )}
 
-              <MetricBox title="ACCESSIBILITÉ PMR">
+              <MetricBox title={t('activityDetail.sections.accessibility')}>
                 <Typography
                   sx={{
                     color: '#FFFFFF',
@@ -477,10 +474,10 @@ export const ActivityDetail = () => {
               }}
             >
               <Box component="span" sx={{ display: { xs: 'none', md: 'inline' } }}>
-                {isRestaurant ? 'AUTRES RESTAURANTS' : isAttraction ? 'ATTRACTIONS SIMILAIRES' : 'ACTIVITÉS SIMILAIRES'}
+                {isRestaurant ? t('activityDetail.similar.otherRestaurants') : isAttraction ? t('activityDetail.similar.similarAttractions') : t('activityDetail.similar.similarActivities')}
               </Box>
               <Box component="span" sx={{ display: { xs: 'inline', md: 'none' } }}>
-                {isRestaurant ? 'AUTRES' : 'SIMILAIRES'}
+                {isRestaurant ? t('activityDetail.similar.others') : t('activityDetail.similar.similar')}
               </Box>
             </Typography>
             <ActivityCarousel activities={carouselItems} />

@@ -782,6 +782,217 @@
     "french": "Français",
     "english": "English"
   },
+  "buttons": {
+    "reserve": "RÉSERVER",
+    "reserveNow": "RÉSERVER MAINTENANT"
+  },
+  "cards": {
+    "thrill": "Frisson"
+  },
+  "priceTypes": {
+    "ETUDIANT": "Billet Étudiant",
+    "ADULTE": "Billet Adulte",
+    "GROUPE": "Billet Groupe",
+    "PASS_2J": "Pass 2 jours"
+  },
+  "reservation": {
+    "process": {
+      "title": "Réservation",
+      "stepIndicator": "ÉTAPE {{current}} SUR {{total}}",
+      "steps": {
+        "selectTicket": "Choix des billets",
+        "selectDate": "Quelle date ?",
+        "summary": "Récapitulatif",
+        "customerInfo": "Vos informations",
+        "address": "Adresse",
+        "payment": "Paiement",
+        "confirmation": "Réservation confirmée"
+      },
+      "buttons": {
+        "back": "← RETOUR",
+        "continue": "CONTINUER →",
+        "confirm": "Confirmer",
+        "pay": "PAYER",
+        "processing": "TRAITEMENT EN COURS...",
+        "downloadTickets": "TÉLÉCHARGER BILLETS (PDF)",
+        "backToHome": "RETOUR À L'ACCUEIL →"
+      },
+      "errors": {
+        "noTicketSelected": "Aucun billet sélectionné",
+        "noDateSelected": "Veuillez sélectionner une date de visite",
+        "mustBeLoggedIn": "Vous devez être connecté pour finaliser votre réservation.",
+        "sessionExpired": "Votre session a expiré. Veuillez vous reconnecter.",
+        "paymentError": "Une erreur est survenue lors du paiement. Veuillez réessayer.",
+        "loadingError": "Erreur lors de la récupération des dates:"
+      }
+    },
+    "step1": {
+      "title": "QUEL TYPE DE BILLET ?",
+      "subtitle": "Choisissez votre type d'entrée",
+      "quantityTitle": "COMBIEN DE BILLETS ?",
+      "quantitySubtitle": "Sélectionnez le nombre de personnes",
+      "quantitySelected": "Quantité sélectionnée : {{quantity}}",
+      "quantityLabel": "Quantité × {{quantity}}",
+      "day": "jour",
+      "days": "jours",
+      "total": "TOTAL"
+    },
+    "step2": {
+      "title": "QUELLE DATE ?",
+      "subtitle": "Choisissez votre jour de visite",
+      "selectedDate": "DATE SÉLECTIONNÉE"
+    },
+    "step3": {
+      "title": "RÉCAPITULATIF",
+      "subtitle": "Vérifiez votre commande avant de continuer",
+      "loading": "Chargement des billets...",
+      "ticketType": "Type de billet",
+      "quantity": "Nombre de billets",
+      "unitPrice": "Prix unitaire",
+      "visitDate": "Date de visite",
+      "noTickets": "Aucun billet sélectionné",
+      "day": "jour",
+      "days": "jours",
+      "total": "TOTAL",
+      "acceptTerms": "J'accepte les Conditions Générales de Vente",
+      "readTerms": "Lire les CGV complètes",
+      "freeCancellation": "ANNULATION GRATUITE",
+      "cancellationText": "Vous pouvez annuler jusqu'à 10 jours avant la date de visite"
+    },
+    "step4": {
+      "title": "VOS INFORMATIONS",
+      "subtitle": "Pour la confirmation de réservation.",
+      "firstName": "Prénom",
+      "firstNamePlaceholder": "Votre prénom",
+      "lastName": "Nom",
+      "lastNamePlaceholder": "Votre nom",
+      "email": "Email",
+      "emailPlaceholder": "votre@email.com",
+      "phone": "Téléphone",
+      "phonePlaceholder": "+33 6 12 34 56 78",
+      "emailConfirmation": "CONFIRMATION PAR EMAIL",
+      "emailConfirmationText": "Vos billets seront envoyés à l'adresse email fournie",
+      "validation": {
+        "firstNameRequired": "Le prénom est obligatoire",
+        "lastNameRequired": "Le nom est obligatoire",
+        "emailRequired": "L'email est obligatoire",
+        "emailInvalid": "Email invalide",
+        "phoneRequired": "Le téléphone est obligatoire",
+        "phoneInvalid": "Numéro de téléphone invalide"
+      }
+    },
+    "step5": {
+      "title": "ADRESSE",
+      "subtitle": "Adresse de facturation",
+      "address": "Adresse",
+      "addressPlaceholder": "Votre adresse",
+      "city": "Ville",
+      "cityPlaceholder": "Votre ville",
+      "postalCode": "Code postal",
+      "postalCodePlaceholder": "Votre code postal",
+      "country": "Pays",
+      "countryPlaceholder": "Sélectionnez un pays",
+      "validation": {
+        "addressRequired": "L'adresse est obligatoire",
+        "cityRequired": "La ville est obligatoire",
+        "postalCodeRequired": "Le code postal est obligatoire",
+        "postalCodeInvalid": "Code postal invalide (5 chiffres)",
+        "countryRequired": "Le pays est obligatoire"
+      }
+    },
+    "step6": {
+      "title": "PAIEMENT",
+      "subtitle": "Comment souhaitez-vous payer ?",
+      "cardNumber": "Numéro de carte",
+      "cardNumberPlaceholder": "1234 5678 9123 4567",
+      "month": "Mois",
+      "monthPlaceholder": "MM",
+      "year": "Année",
+      "yearPlaceholder": "AAAA",
+      "cvv": "CVV",
+      "cvvPlaceholder": "123",
+      "securePayment": "PAIEMENT 100% SÉCURISÉ",
+      "securePaymentText": "Vos données sont entièrement protégées et chiffrées",
+      "validation": {
+        "cardNumberRequired": "Le numéro de carte est obligatoire",
+        "cardNumberInvalid": "Numéro de carte invalide (16 chiffres)",
+        "monthRequired": "Le mois est obligatoire",
+        "monthInvalid": "Mois invalide (01-12)",
+        "yearRequired": "L'année est obligatoire",
+        "yearInvalid": "Année invalide",
+        "cvvRequired": "Le CVV est obligatoire",
+        "cvvInvalid": "CVV invalide (3 chiffres)"
+      }
+    },
+    "step7": {
+      "title": "RÉSERVATION CONFIRMÉE",
+      "subtitle": "Votre paiement a été effectué avec succès",
+      "orderNumber": "Numéro de commande",
+      "orderNumberNotAvailable": "Numéro non disponible",
+      "day": "jour",
+      "days": "jours",
+      "quantityLabel": "Quantité × {{quantity}}",
+      "months": {
+        "jan": "Jan",
+        "feb": "Fév",
+        "mar": "Mar",
+        "apr": "Avr",
+        "may": "Mai",
+        "jun": "Juin",
+        "jul": "Juil",
+        "aug": "Aoû",
+        "sep": "Sep",
+        "oct": "Oct",
+        "nov": "Nov",
+        "dec": "Déc"
+      }
+    }
+  },
+  "activityDetail": {
+    "breadcrumbs": {
+      "home": "Accueil",
+      "restaurants": "Restauration",
+      "attractions": "Attractions",
+      "activities": "Activités",
+      "detail": "Détail"
+    },
+    "errors": {
+      "missingId": "ID d'activité manquant",
+      "attractionNotFound": "Attraction non trouvée",
+      "activityNotFound": "Activité non trouvée",
+      "cannotLoad": "Impossible de charger la fiche",
+      "notFound": "Fiche non trouvée"
+    },
+    "sections": {
+      "ourEstablishment": "NOTRE ÉTABLISSEMENT",
+      "theExperience": "L'EXPÉRIENCE",
+      "duration": "DURÉE",
+      "thrillLevel": "NIVEAU DE FRISSON",
+      "thrill": "FRISSON",
+      "accessibility": "ACCESSIBILITÉ PMR",
+      "accessiblePMR": "Accessible PMR",
+      "minutes": "minutes",
+      "min": "min"
+    },
+    "descriptions": {
+      "defaultActivity": "Plongez dans une expérience immersive totale où l'horreur prend vie. Effets spéciaux saisissants, acteurs professionnels et atmosphère oppressante vous attendent. Cris, odeurs de putréfaction, bruits de chaînes... tout est conçu pour créer un cauchemar éveillé.",
+      "defaultRestaurant": "Découvrez une cuisine thématique unique dans une ambiance post-apocalyptique. Notre établissement vous propose des plats savoureux et originaux pour reprendre des forces entre deux attractions. Service rapide et convivial dans un décor immersif.",
+      "sensitiveWarning": "Déconseillé aux âmes sensibles et aux moins de {{minAge}} ans.",
+      "freeAccess": "Accès libre sans réservation. Paiement sur place."
+    },
+    "similar": {
+      "otherRestaurants": "AUTRES RESTAURANTS",
+      "similarAttractions": "ATTRACTIONS SIMILAIRES",
+      "similarActivities": "ACTIVITÉS SIMILAIRES",
+      "others": "AUTRES",
+      "similar": "SIMILAIRES"
+    },
+    "defaultCategory": {
+      "attraction": "Attraction",
+      "activity": "Activité",
+      "restaurant": "Restauration"
+    }
+  },
   "static": {
     "lastUpdate": "Dernière mise à jour",
     "cookies": {

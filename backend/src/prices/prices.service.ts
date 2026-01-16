@@ -6,6 +6,10 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import type { CreatePriceDto, UpdatePriceDto } from 'src/generated';
 import {Prisma, PriceType} from "@prisma/client";
+import {
+  transformTranslatableFields,
+  type Language,
+} from '../common/translations.util';
 
 @Injectable()
 export class PricesService {
@@ -15,9 +19,10 @@ export class PricesService {
    * Helper DRY : Formate la réponse d'un tarif
    * Convertit les dates en ISO et amount (Decimal) en number
    */
-  private formatPriceResponse(price: any) {
+  private formatPriceResponse(price: any, lang: Language = 'fr') {
+    const transformed = transformTranslatableFields(price, lang);
     return {
-      ...price,
+      ...transformed,
       amount: parseFloat(price.amount.toString()),
       created_at: price.created_at.toISOString(),
       updated_at: price.updated_at.toISOString(),
@@ -31,7 +36,8 @@ export class PricesService {
         sortBy?: string;
         amount?: number;
         priceType?: string;
-      }
+      },
+      lang: Language = 'fr',
   ) {
 
     const page = options?.page || 1;
@@ -79,7 +85,7 @@ export class PricesService {
     const totalPages = Math.ceil(total / limit);
 
     return {
-      data: prices.map((price) => this.formatPriceResponse(price)),
+      data: prices.map((price) => this.formatPriceResponse(price, lang)),
       pagination: {
         total,
         page,
@@ -89,7 +95,7 @@ export class PricesService {
     };
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, lang: Language = 'fr') {
     const price = await this.prisma.price.findUnique({
       where: { id },
     });
@@ -98,7 +104,7 @@ export class PricesService {
       throw new NotFoundException(`Tarif avec l'ID ${id} non trouvé`);
     }
 
-    return this.formatPriceResponse(price);
+    return this.formatPriceResponse(price, lang);
   }
 
   async create(createPriceDto: CreatePriceDto) {

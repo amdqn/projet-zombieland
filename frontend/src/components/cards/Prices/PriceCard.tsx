@@ -4,21 +4,16 @@ import {theme} from "../../../theme";
 import {motion} from "framer-motion";
 import {useNavigate} from "react-router";
 import type {Price} from "../../../@types/price";
+import { useTranslation } from 'react-i18next';
+import { formatPriceName } from '../../../utils/translatePrice';
 
 interface PriceCardProps {
     price: Price;
 }
 
 export default function PriceCard({price}: PriceCardProps) {
-
+    const { t } = useTranslation();
     const navigate = useNavigate();
-
-    const formatPriceTitle = (price: Price) => {
-        if (price.type === "PASS_2J") {
-            return "PASS 2 JOURS";
-        }
-        return `${price.type} - ${price.duration_days} JOUR${price.duration_days > 1 ? 'S' : ''}`;
-    }
 
     return (
         <>
@@ -43,7 +38,7 @@ export default function PriceCard({price}: PriceCardProps) {
             >
                 <CardContent sx={{paddingLeft: 5}}>
                     <Typography variant={"h4"}>
-                        {formatPriceTitle(price)}
+                        {formatPriceName(price.type, price.duration_days, t)}
                     </Typography>
                     <Typography variant="subtitle1" component="div">
                         {price.label}

@@ -15,13 +15,25 @@ const axiosInstance = axios.create({
     headers: { 'Content-Type': 'application/json' },
 });
 
-// Intercepteur pour ajouter le token à chaque requête
+// Intercepteur pour ajouter le token et la langue à chaque requête
 axiosInstance.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
+        
+        // Ajouter la langue depuis localStorage ou utiliser 'fr' par défaut
+        const language = localStorage.getItem('i18nextLng') || 'fr';
+        const lang = language.split('-')[0]; // 'fr-FR' -> 'fr'
+        config.headers['Accept-Language'] = lang;
+        
+        // Ajouter aussi dans les query params pour compatibilité
+        if (!config.params) {
+            config.params = {};
+        }
+        config.params.lang = lang;
+        
         return config;
     },
     (error) => {

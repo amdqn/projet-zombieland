@@ -5,12 +5,20 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import type { CreateAttractionDto, UpdateAttractionDto } from 'src/generated';
+import {
+  transformTranslatableFields,
+  transformTranslatableArray,
+  type Language,
+} from '../common/translations.util';
 
 @Injectable()
 export class AttractionsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll(filters?: { search?: string; categoryId?: number }) {
+  async findAll(
+    filters?: { search?: string; categoryId?: number },
+    lang: Language = 'fr',
+  ) {
     const where: any = {};
 
     // Filtre par recherche (nom ou description)
@@ -47,34 +55,34 @@ export class AttractionsService {
       },
     });
 
-    // Convertir les dates en ISO string
-    return attractions.map((attraction) => ({
-      ...attraction,
-      created_at: attraction.created_at.toISOString(),
-      updated_at: attraction.updated_at.toISOString(),
-      category: {
-        ...attraction.category,
-        created_at: attraction.category.created_at.toISOString(),
-        updated_at: attraction.category.updated_at.toISOString(),
-      },
-      images: attraction.images.map((image) => ({
-        ...image,
-        created_at: image.created_at.toISOString(),
-      })),
-      activities: attraction.activities.map((activity) => ({
-        ...activity,
-        created_at: activity.created_at.toISOString(),
-        updated_at: activity.updated_at.toISOString(),
-      })),
-      related_attractions: attraction.relatedFrom ? attraction.relatedFrom.map((rel: any) => ({
-        ...rel.related_attraction,
-        created_at: rel.related_attraction.created_at.toISOString(),
-        updated_at: rel.related_attraction.updated_at.toISOString(),
-      })) : [],
-    }));
+    // Convertir les dates en ISO string et appliquer les traductions
+    return attractions.map((attraction) => {
+      const transformedAttraction = transformTranslatableFields(attraction, lang);
+      return {
+        ...transformedAttraction,
+        created_at: attraction.created_at.toISOString(),
+        updated_at: attraction.updated_at.toISOString(),
+        category: transformTranslatableFields(attraction.category, lang),
+        images: attraction.images.map((image) => ({
+          ...transformTranslatableFields(image, lang),
+          created_at: image.created_at.toISOString(),
+        })),
+        activities: attraction.activities.map((activity) => ({
+          ...transformTranslatableFields(activity, lang),
+          created_at: activity.created_at.toISOString(),
+          updated_at: activity.updated_at.toISOString(),
+        })),
+        related_attractions: attraction.relatedFrom
+          ? transformTranslatableArray(
+              attraction.relatedFrom.map((rel: any) => rel.related_attraction),
+              lang,
+            )
+          : [],
+      };
+    });
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, lang: Language = 'fr') {
     if (!id || id <= 0) {
       throw new BadRequestException('ID invalide');
     }
@@ -101,30 +109,26 @@ export class AttractionsService {
       throw new NotFoundException(`Attraction avec l'ID ${id} non trouvée`);
     }
 
-    // Convertir les dates en ISO string
+    // Convertir les dates en ISO string et appliquer les traductions
+    const transformedAttraction = transformTranslatableFields(attraction, lang);
     return {
-      ...attraction,
+      ...transformedAttraction,
       created_at: attraction.created_at.toISOString(),
       updated_at: attraction.updated_at.toISOString(),
-      category: {
-        ...attraction.category,
-        created_at: attraction.category.created_at.toISOString(),
-        updated_at: attraction.category.updated_at.toISOString(),
-      },
+      category: transformTranslatableFields(attraction.category, lang),
       images: attraction.images.map((image) => ({
-        ...image,
+        ...transformTranslatableFields(image, lang),
         created_at: image.created_at.toISOString(),
       })),
       activities: attraction.activities.map((activity) => ({
-        ...activity,
+        ...transformTranslatableFields(activity, lang),
         created_at: activity.created_at.toISOString(),
         updated_at: activity.updated_at.toISOString(),
       })),
-      related_attractions: (attraction.relatedFrom || []).map((rel: any) => ({
-        ...rel.related_attraction,
-        created_at: rel.related_attraction.created_at.toISOString(),
-        updated_at: rel.related_attraction.updated_at.toISOString(),
-      })),
+      related_attractions: transformTranslatableArray(
+        (attraction.relatedFrom || []).map((rel: any) => rel.related_attraction),
+        lang,
+      ),
     };
   }
 

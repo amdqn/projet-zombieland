@@ -21,4 +21,5 @@ export interface Activity {
     category?: Category;
     attraction?: Attraction | null;
     related_activities?: Activity[];
+    wait_time?: number;
 }

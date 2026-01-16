@@ -74,7 +74,8 @@ export const Activities = () => {
         const durationMinutes = activity.duration ?? 45;
         const duration = `${durationMinutes} min`;
         const categoryLabel = activity.category?.name ?? 'Activité';
-        return { ...activity, image, thrill, duration, categoryLabel };
+        const waitTime = activity.wait_time;
+        return { ...activity, image, thrill, duration, categoryLabel, waitTime };
       });
 
     const queryLower = searchQuery.toLowerCase().trim();
@@ -99,7 +100,8 @@ export const Activities = () => {
         const durationMinutes = attraction.duration ?? 45;
         const duration = `${durationMinutes} min`;
         const categoryLabel = attraction.category?.name ?? 'Attraction';
-        return { ...attraction, image, thrill, duration, categoryLabel };
+        const waitTime = attraction.wait_time;
+        return { ...attraction, image, thrill, duration, categoryLabel, waitTime };
       });
 
     const queryLower = searchQuery.toLowerCase().trim();
@@ -510,6 +512,7 @@ export const Activities = () => {
                   description={item.description}
                   isAttraction={tabValue === 1}
                   isRestaurant={tabValue === 2}
+                  waitTime={item.wait_time}
                 />
               </Box>
             ))}

@@ -15,6 +15,7 @@ import { CustomBreadcrumbs } from '../../components/common/Breadcrumbs/CustomBre
 import { MetricBox } from '../../components/cards/MetricBox';
 import { ThrillLevel } from '../../components/common/ThrillLevel/ThrillLevel';
 import { ReservationButton } from '../../components/common/Button/ReservationButton';
+import { WaitTime } from '../../components/common/WaitTime/WaitTime';
 import { ActivityCarousel } from '../../components/carousel/ActivityCarousel';
 import { getActivityById, getActivities } from '../../services/activities';
 import { getAttractionById, getAttractions } from '../../services/attractions';
@@ -442,6 +443,12 @@ export const ActivityDetail = () => {
                   >
                     {thrillLevel}/5
                   </Typography>
+                </MetricBox>
+              )}
+
+              {!isRestaurant && entity.wait_time !== undefined && (
+                <MetricBox title="TEMPS D'ATTENTE">
+                  <WaitTime minutes={entity.wait_time} variant="full" showLabel />
                 </MetricBox>
               )}
 

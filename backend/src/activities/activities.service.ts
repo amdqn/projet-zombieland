@@ -11,6 +11,16 @@ import { ActivityMapper } from './mappers/activity.mapper';
 export class ActivitiesService {
   constructor(private readonly prisma: PrismaService) {}
 
+  /**
+   * Génère un temps d'attente simulé basé sur le thrill_level
+   */
+  private generateWaitTime(thrillLevel: number | null): number {
+    const thrill = thrillLevel ?? 3;
+    const minWait = 5 + (thrill - 1) * 5;
+    const maxWait = Math.floor(25 + (thrill - 1) * 8.75);
+    return Math.floor(Math.random() * (maxWait - minWait + 1)) + minWait;
+  }
+
   async findAll(filters?: {
     search?: string;
     categoryId?: number;
@@ -58,6 +68,7 @@ export class ActivitiesService {
 
     return activities.map((activity: any) => ({
       ...ActivityMapper.toDto(activity),
+      wait_time: this.generateWaitTime(activity.thrill_level),
       category: {
         ...activity.category,
         created_at: activity.category.created_at.toISOString(),
@@ -109,10 +120,11 @@ export class ActivitiesService {
       throw new NotFoundException(`Activité avec l'ID ${id} non trouvée`);
     }
 
-    // Convertir les dates en ISO string avec mapper
+    // Convertir les dates en ISO string avec mapper et ajouter wait_time simulé
     const activityWithRelations = activity as any;
     return {
       ...ActivityMapper.toDto(activity),
+      wait_time: this.generateWaitTime(activityWithRelations.thrill_level),
       category: {
         ...activityWithRelations.category,
         created_at: activityWithRelations.category.created_at.toISOString(),

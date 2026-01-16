@@ -31,7 +31,7 @@ export function InformationPage() {
   const [prices, setPrices] = useState<Price[]>([]);
 
   // Filtres
-  const [selectedTypes, setSelectedTypes] = useState<string[]>(['attraction', 'activity', 'poi']);
+  const [selectedTypes, setSelectedTypes] = useState<string[]>(['attraction', 'activity', 'restaurant', 'poi']);
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -405,6 +405,28 @@ export function InformationPage() {
                 sx={{
                   width: 36,
                   height: 36,
+                  bgcolor: colors.warning,
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: `3px solid ${colors.white}`,
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.6)',
+                }}
+              >
+                <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z" fill="white"/>
+                </svg>
+              </Box>
+              <Typography sx={{ color: colors.white, fontSize: 14 }}>
+                Restauration
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flex: { xs: '1 1 100%', sm: '1 1 45%', md: '1 1 22%' } }}>
+              <Box
+                sx={{
+                  width: 36,
+                  height: 36,
                   bgcolor: colors.white,
                   borderRadius: '50%',
                   display: 'flex',
@@ -427,7 +449,7 @@ export function InformationPage() {
                 sx={{
                   width: 36,
                   height: 36,
-                  bgcolor: colors.primaryGreen,
+                  bgcolor: '#29B6F6',
                   borderRadius: '50%',
                   display: 'flex',
                   alignItems: 'center',

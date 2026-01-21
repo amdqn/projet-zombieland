@@ -8,9 +8,9 @@ export const getAllConvesations = async () => {
 };
 
 // Récupérer une conversation via l'id
-export const getOneConversation = async (id: number): Promise<Conversation> => {
-    const response = await axiosInstance.get<Conversation>(`/conversations/${id}`)
-    return response.data;
+export const getOneConversation = async (id: number) => {
+    const response = await axiosInstance.get(`/conversations/${id}`)
+    return response.data.data;
 }
 
 // Gérer le status d'une conversation

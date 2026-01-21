@@ -100,14 +100,17 @@ export class ConversationService {
           select: { id: true, pseudo: true, role: true, email: true },
         },
         messages: {
-          orderBy: { created_at: 'desc' },
-          take: 1, // Dernier message pour preview
-          select: {
-            id: true,
-            content: true,
-            created_at: true,
-            is_read: true,
-          },
+          orderBy: { created_at: 'asc' },
+          include: {
+            sender: {
+              select: {
+                id: true,
+                pseudo: true,
+                role: true,
+                email: true,
+              }
+            }
+          }
         },
       },
     });
@@ -144,8 +147,7 @@ export class ConversationService {
           select: {id: true, pseudo: true, role: true, email: true},
         },
         messages: {
-          orderBy: {created_at: 'desc'},
-          take: 1, // Dernier message
+          orderBy: {created_at: 'asc'},
           select: {
             id: true,
             content: true,
@@ -164,7 +166,7 @@ export class ConversationService {
           },
         },
       },
-      orderBy: {updated_at: 'desc'},
+      orderBy: {updated_at: 'asc'},
     });
   }
 

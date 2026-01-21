@@ -1,8 +1,14 @@
+import type {Role} from "./users";
 
 export interface Message {
     id: number;
     conversation_id: number;
-    sender_id: number;
+    sender: {
+        id: number;
+        pseudo: string;
+        role: Role;
+        email: string;
+    };
     content: string;
     is_read: boolean;
     created_at: string;

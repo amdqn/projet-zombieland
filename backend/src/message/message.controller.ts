@@ -33,7 +33,11 @@ export class MessageController {
       @CurrentUser() user: any,
   ) {
     const message = await this.messageService.create(createMessageDto, user.id);
-    return { success: true, data: message };
+    return {
+      success: true,
+      data: message,
+      message: 'Message envoyé avec succès !'
+    };
   }
 
   // Récupérer les messages d'une conversation
@@ -43,18 +47,15 @@ export class MessageController {
       @Param('conversationId', ParseIntPipe) conversationId: number,
       @CurrentUser() user: any,
   ) {
-    // Vérifier l'accès
-    const hasAccess = await this.conversationService.userHasAccess(
-        user.id,
+    const messages = await this.messageService.findAllByConversationId(
         conversationId,
+        user.id
     );
 
-    if (!hasAccess) {
-      throw new ForbiddenException('Accès refusé');
-    }
-
-    const messages = await this.messageService.findAllByConversationId(conversationId);
-    await this.messageService.markAsRead(conversationId, user.id);
+    await this.messageService.markAsRead(
+        conversationId,
+        user.id
+    );
 
     return {
       success: true,

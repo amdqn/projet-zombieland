@@ -1902,11 +1902,23 @@ paths:
         - Messages
       summary: Créer un message
       description: |-
-        Créer un nouveau message dans une conversation existante ou créer une nouvelle conversation avec un admin.
-
-        **Cas d'usage** :
-        - Avec `conversationId` : Envoyer un message dans une conversation existante
-        - Avec `recipientId` : Créer une nouvelle conversation avec un admin et envoyer le premier message
+        Créer un nouveau message dans une conversation existante OU créer une nouvelle conversation avec un admin.
+        
+        **Deux cas d'usage** :
+        
+        1. **Message dans conversation existante** :
+           - Fournir `conversationId`
+           - Le champ `object` est ignoré
+        
+        2. **Nouvelle conversation avec premier message** :
+           - Fournir `recipientId` (doit être un admin)
+           - Fournir `object` (obligatoire pour nouvelle conversation)
+           - La conversation sera créée automatiquement
+        
+        **Règles métier** :
+        - Un client ne peut créer une conversation qu'avec un admin
+        - Un admin ne peut pas créer de nouvelle conversation (seulement répondre)
+        - Une seule conversation ouverte possible entre un client et un admin
       operationId: createMessage
       security:
         - bearerAuth: [ ]
@@ -2541,6 +2553,9 @@ components:
         id:
           type: integer
           example: 1
+        object:
+          type: string
+          example: Objet de la conversation
         user_id:
           type: integer
           example: 5
@@ -2983,6 +2998,13 @@ components:
           minLength: 1
           example: "Bonjour, j'ai une question sur les horaires"
           description: Contenu du message
+        object:
+          type: string
+          nullable: true
+          minLength: 1
+          maxLength: 255
+          example: "Objet du message"
+          description: Objet de la conversation (REQUIS uniquement si recipientId est fourni pour créer une nouvelle conversation)
 
     UpdateConversationStatusDto:
       type: object

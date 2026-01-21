@@ -22,7 +22,7 @@ export class MessageService {
    * @param userId - ID de l'expéditeur
    */
   async create(createMessageDto: CreateMessageDto, userId: number) {
-    const { conversationId, recipientId, content } = createMessageDto;
+    const { conversationId, recipientId, content, object } = createMessageDto;
 
     let finalConversationId: number;
 
@@ -47,40 +47,16 @@ export class MessageService {
         throw new BadRequestException('Vous ne pouvez pas vous envoyer un message à vous-même');
       }
 
-      // Récupérer l'utilisateur actuel et le destinataire
-      const [currentUser, recipient] = await Promise.all([
-        this.prisma.user.findUnique({
-          where: { id: userId },
-          select: { role: true },
-        }),
-        this.prisma.user.findUnique({
-          where: { id: recipientId },
-          select: { role: true },
-        }),
-      ]);
-
-      // Vérifier que le destinataire existe
-      if (!recipient) {
-        throw new NotFoundException('Destinataire non trouvé');
-      }
-
-      // RÈGLE 1 : Les admins ne peuvent pas créer de nouvelles conversations
-      if (currentUser?.role === 'ADMIN') {
-        throw new ForbiddenException(
-            'Les administrateurs ne peuvent pas créer de nouvelles conversations. ' +
-            'Veuillez répondre aux conversations existantes.'
-        );
-      }
-
-      // RÈGLE 2 : Les clients ne peuvent envoyer qu'aux admins
-      if (recipient.role !== 'ADMIN') {
-        throw new BadRequestException(
-            'Vous ne pouvez envoyer des messages qu\'aux administrateurs'
-        );
+      if(!object || object.trim().length === '') {
+        throw new BadRequestException('L\'objet de la conversation est requis pour créer une nouvelle conversation');
       }
 
       // Créer ou récupérer la conversation via ConversationService
-      const conversation = await this.conversationService.create(userId, recipientId);
+      const conversation = await this.conversationService.create(
+          userId,
+          recipientId,
+          object
+      );
       finalConversationId = conversation.id;
     }
     // CAS 3 : Ni conversationId ni recipientId
@@ -107,6 +83,26 @@ export class MessageService {
             email: true,
           },
         },
+        conversation: {
+          select: {
+            id: true,
+            object: true,
+            status: true,
+            user: {
+              select: {
+                id: true,
+                pseudo: true,
+                role: true,
+              },
+            },
+            admin: {
+              select: {
+                id: true,
+                pseudo: true,
+              }
+            }
+          },
+        },
       },
     });
 
@@ -119,7 +115,17 @@ export class MessageService {
   /**
    * Récupérer tous les messages d'une conversation
    */
-  async findAllByConversationId(conversationId: number) {
+  async findAllByConversationId(conversationId: number, userId: number) {
+    // Vérifie l'accès
+    const hasAccess = await this.conversationService.userHasAccess(
+        userId,
+        conversationId,
+    )
+
+    if (!hasAccess) {
+      throw new ForbiddenException('Vous ne faites pas partie de cette conversation');
+    }
+
     return this.prisma.message.findMany({
       where: {conversation_id : conversationId},
       orderBy: {created_at: 'asc'},

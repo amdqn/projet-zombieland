@@ -10,12 +10,26 @@ export class ConversationService {
    * Créer une nouvelle conversation entre un user et un admin
    * @param userId - ID de l'utilisateur (CLIENT)
    * @param adminId - ID de l'admin
+   * @param object - Objet de la conversation
    */
-  async create(userId: number, adminId: number) {
+  async create(userId: number, adminId: number, object: string) {
     // Vérifier que l'admin existe et est bien un ADMIN
-    const admin = await this.prisma.user.findUnique({
-      where: { id: adminId },
-    });
+    if (userId === adminId) {
+      throw new BadRequestException(
+          'Vous ne pouvez pas créer une conversation avec vous-même. '
+      );
+    }
+
+    const [user, admin] = await Promise.all([
+        this.prisma.user.findUnique({
+          where: { id: userId },
+          select: { id: true, role: true, pseudo: true },
+        }),
+        this.prisma.user.findUnique({
+          where: { id: adminId },
+          select: { id: true, role: true, pseudo: true },
+        })
+    ])
 
     if (!admin) {
       throw new NotFoundException('Admin non trouvé');
@@ -25,6 +39,10 @@ export class ConversationService {
       throw new BadRequestException('Le destinataire doit être un administrateur');
     }
 
+    if (!user){
+      throw new NotFoundException('Utilisateur non trouvé');
+    }
+
     // Vérifier qu'une conversation active n'existe pas déjà
     const existingConversation = await this.prisma.conversation.findFirst({
       where: {
@@ -32,6 +50,14 @@ export class ConversationService {
         admin_id: adminId,
         status: {
           not: ConversationStatus.Closed,
+        },
+      },
+      include: {
+        user: {
+          select: {id: true, pseudo: true, role: true, email: true},
+        },
+        admin: {
+          select: {id: true, pseudo: true, role: true, email: true},
         },
       },
     });
@@ -46,6 +72,7 @@ export class ConversationService {
         user_id: userId,
         admin_id: adminId,
         status: ConversationStatus.Open,
+        object: object,
       },
       include: {
         user: {

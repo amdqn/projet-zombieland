@@ -213,6 +213,7 @@ model PointOfInterest {
 
 model Conversation {
   id       Int                @id @default(autoincrement())
+  object   String
   user_id  Int
   admin_id Int? // Nullable car peut être non assigné au début
   status   ConversationStatus @default(OPEN)

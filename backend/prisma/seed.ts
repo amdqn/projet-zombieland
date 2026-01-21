@@ -632,6 +632,7 @@ async function main() {
       user_id: users[1].id, // Jean
       admin_id: users[0].id, // Admin
       status: 'OPEN',
+      object: 'Demande d ouverture'
     },
   });
 
@@ -674,6 +675,7 @@ async function main() {
       user_id: users[2].id, // Marie
       admin_id: users[0].id, // Admin
       status: 'CLOSED',
+      object: 'Objet perdu'
     },
   });
 
@@ -723,6 +725,7 @@ async function main() {
       user_id: users[3].id, // Paul
       admin_id: users[0].id, // Admin
       status: 'OPEN',
+      object: 'Renseignement sur les prix'
     },
   });
 
@@ -758,6 +761,7 @@ async function main() {
       user_id: users[1].id, // Jean (deuxième conversation)
       admin_id: users[0].id, // Admin
       status: 'OPEN',
+      object: 'Attractions'
     },
   });
 
@@ -800,6 +804,7 @@ async function main() {
       user_id: users[2].id, // Marie (deuxième conversation)
       admin_id: users[0].id, // Admin
       status: 'OPEN',
+      object: 'Accessibilité PMR'
     },
   });
 

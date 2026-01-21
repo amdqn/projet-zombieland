@@ -41,7 +41,7 @@ export class MessageService {
       finalConversationId = conversationId;
     }
     // CAS 2 : Nouvelle conversation
-    else if (recipientId) {
+    else if (recipientId !== undefined || !conversationId) {
       // Vérifier qu'on n'essaie pas de s'envoyer un message à soi-même
       if (recipientId === userId) {
         throw new BadRequestException('Vous ne pouvez pas vous envoyer un message à vous-même');
@@ -54,7 +54,7 @@ export class MessageService {
       // Créer ou récupérer la conversation via ConversationService
       const conversation = await this.conversationService.create(
           userId,
-          recipientId,
+          recipientId ?? null,
           object
       );
       finalConversationId = conversation.id;

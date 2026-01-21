@@ -1911,7 +1911,7 @@ paths:
            - Le champ `object` est ignoré
         
         2. **Nouvelle conversation avec premier message** :
-           - Fournir `recipientId` (doit être un admin)
+           - `recipientId` est automatiquement assigné (doit être un admin) 
            - Fournir `object` (obligatoire pour nouvelle conversation)
            - La conversation sera créée automatiquement
         
@@ -2992,7 +2992,7 @@ components:
           type: integer
           nullable: true
           example: 2
-          description: ID de l'admin destinataire pour créer une nouvelle conversation (optionnel si conversationId fourni)
+          description: Automatiquement assigné en backend (optionnel si conversationId fourni)
         content:
           type: string
           minLength: 1

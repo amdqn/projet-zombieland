@@ -1,11 +1,14 @@
 import {colors} from "../../theme";
 import {HeroSection} from "../../components/hero";
-import {Box, Container, LinearProgress, Stack, Typography} from "@mui/material";
+import {Box, Button, Container, LinearProgress, Stack, Typography} from "@mui/material";
 import {CustomBreadcrumbs} from "../../components/common";
 import {getAllConvesations} from "../../services/conversations.ts";
 import {useEffect, useState} from "react";
 import type {Conversation} from "../../@types/messaging";
 import ConversationCard from "../../components/cards/Messaging/ConversationCard.tsx";
+import AddIcon from "@mui/icons-material/Add";
+import {CreateMessageModal} from "../../components/modals/Message/CreateMessageModal.tsx";
+import {getFirstAdmin} from "../../services/users.ts";
 
 export default function MessagingList() {
 
@@ -19,6 +22,8 @@ export default function MessagingList() {
     const [conversations, setConversations] = useState<Conversation[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const [createModalOpen, setCreateModalOpen] = useState(false);
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
 
     const fetchConversations = async () => {
         setLoading(true);
@@ -32,6 +37,15 @@ export default function MessagingList() {
             setLoading(false);
         }
     }
+
+    const handleCreate = () => {
+        setCreateModalOpen(true);
+    }
+
+    const handleCreateSuccess = () => {
+        setCreateModalOpen(false);
+        setRefreshTrigger((prev) => prev + 1); // Rafraîchir la liste
+    };
 
     useEffect(() => {
         fetchConversations();
@@ -94,6 +108,24 @@ export default function MessagingList() {
                     pr: { xs: 2, sm: 4, md: '60px', lg: '90px' },
                 }}
             >
+                <Button
+                    variant="contained"
+                    startIcon={<AddIcon />}
+                    onClick={handleCreate}
+                    sx={{
+                        backgroundColor: colors.primaryGreen,
+                        color: colors.secondaryDark,
+                        '&:hover': {
+                            backgroundColor: colors.primaryGreen,
+                            opacity: 0.9,
+                        },
+                        fontWeight: 600,
+                        textTransform: 'uppercase',
+                        mb: 3,
+                    }}
+                >
+                    Nouveau message
+                </Button>
                 <Box
                     sx={{
                         backgroundColor: colors.secondaryDarkAlt,
@@ -124,6 +156,12 @@ export default function MessagingList() {
 
                 </Box>
             </Container>
+            {/* Modal de création de prix */}
+            <CreateMessageModal
+                open={createModalOpen}
+                onClose={() => setCreateModalOpen(false)}
+                onCreateSuccess={handleCreateSuccess}
+            />
         </Box>
     )
 }

@@ -7,12 +7,32 @@ export class ConversationService {
   constructor(private prisma: PrismaService) {}
 
   /**
+   * Trouver un admin disponible (round-robin ou premier trouvé)
+   */
+  private async findAvailableAdmin(): Promise<number> {
+    // Option 1 : Prendre le premier admin trouvé
+    const admin = await this.prisma.user.findFirst({
+      where: {role: 'ADMIN'},
+      select: {id: true},
+    });
+
+    if (!admin) {
+      throw new NotFoundException('Aucun administrateur disponible');
+    }
+
+    return admin.id;
+  }
+
+  /**
    * Créer une nouvelle conversation entre un user et un admin
    * @param userId - ID de l'utilisateur (CLIENT)
-   * @param adminId - ID de l'admin
+   * @param adminId - ID de l'admin - Si adminId n'est pas fourni, un admin sera assigné automatiquement
    * @param object - Objet de la conversation
    */
-  async create(userId: number, adminId: number, object: string) {
+  async create(userId: number, adminId: number | null, object: string) {
+    // Si pas d'adminId fourni, trouver un admin automatiquement
+    const finalAdminId = adminId ?? await this.findAvailableAdmin();
+
     // Vérifier que l'admin existe et est bien un ADMIN
     if (userId === adminId) {
       throw new BadRequestException(

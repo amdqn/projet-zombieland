@@ -25,4 +25,10 @@ export interface Conversation {
     messages: Message[];
 }
 
+export interface CreateMessageParams {
+    conversationId?: number;
+    content: string;
+    object?: string;
+}
+
 export type ConversationStatus = 'OPEN' | 'CLOSED';

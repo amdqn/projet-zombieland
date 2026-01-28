@@ -46,7 +46,7 @@ export class ConversationService {
           select: { id: true, role: true, pseudo: true },
         }),
         this.prisma.user.findUnique({
-          where: { id: adminId },
+          where: { id: finalAdminId },
           select: { id: true, role: true, pseudo: true },
         })
     ])
@@ -90,7 +90,7 @@ export class ConversationService {
     return this.prisma.conversation.create({
       data: {
         user_id: userId,
-        admin_id: adminId,
+        admin_id: finalAdminId,
         status: ConversationStatus.Open,
         object: object,
       },

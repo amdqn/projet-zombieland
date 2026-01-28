@@ -9,7 +9,7 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
-  ParseIntPipe, ForbiddenException,
+  ParseIntPipe, ForbiddenException, Patch,
 } from '@nestjs/common';
 import { MessageService } from './message.service';
 import { ConversationService } from '../conversation/conversation.service';
@@ -41,7 +41,7 @@ export class MessageController {
   }
 
   // Récupérer les messages d'une conversation
-  @Get('conversations/:conversationId')
+/*  @Get('conversations/:conversationId')
   @HttpCode(HttpStatus.OK)
   async getMessages(
       @Param('conversationId', ParseIntPipe) conversationId: number,
@@ -62,6 +62,16 @@ export class MessageController {
       data: messages,
       count: messages.length,
     };
+  }*/
+
+  // Mettre a jour le message
+  @Patch(':id/read')
+  @HttpCode(HttpStatus.OK)
+  async maskAsRead(
+      @Param('id', ParseIntPipe) messageId: number,
+      @CurrentUser() user: any,
+  ) {
+    return this.messageService.markMessageAsRead(messageId, user.id);
   }
 
   // Supprimer un message

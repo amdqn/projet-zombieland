@@ -11,7 +11,7 @@ import {getValidatePassword} from "../../functions/validatePassword.ts";
 export default function LoginPage() {
 
     // On récupère le context
-    const { setIsLogged, isLogged, setRole, setPseudo, setEmail, setToken, logout} = useContext(LoginContext)
+    const { setIsLogged, isLogged, setRole, setPseudo, setEmail, setToken, logout, setUserId} = useContext(LoginContext)
     const [isLoading, setIsLoading] = useState(false);
     const [loginError, setLoginError] = useState("");
 
@@ -62,6 +62,7 @@ export default function LoginPage() {
 
             // Stocker dans le context
             setIsLogged(true);
+            setUserId(data.user.id);
             setRole(data.user.role)
             setPseudo(data.user.pseudo)
             setEmail(data.user.email)
@@ -72,6 +73,7 @@ export default function LoginPage() {
             localStorage.setItem("role", data.user.role)
             localStorage.setItem("pseudo", data.user.pseudo)
             localStorage.setItem("email", data.user.email)
+            localStorage.setItem("userId", data.user.id.toString())
 
             // Redirection selon le rôle ou retour à la page précédente
             //const from = (location.state as { from?: string } | null)?.from;

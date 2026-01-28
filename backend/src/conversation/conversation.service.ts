@@ -173,6 +173,14 @@ export class ConversationService {
             content: true,
             created_at: true,
             is_read: true,
+            sender: {
+              select: {
+                id: true,
+                pseudo: true,
+                role: true,
+                email: true,
+              },
+            }
           },
         },
         _count: {

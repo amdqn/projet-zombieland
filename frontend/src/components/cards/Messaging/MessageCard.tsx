@@ -1,5 +1,5 @@
 import type {Message} from "../../../@types/messaging";
-import {Box, Typography} from "@mui/material";
+import {Box, Chip, Typography} from "@mui/material";
 import {colors} from "../../../theme";
 
 interface MessageCardProps {
@@ -18,13 +18,30 @@ export default function MessageCard({message, isOwn}: MessageCardProps) {
                 p: 2,
             }}
         >
-            {/* Votre contenu de message */}
+            {/* Contenu de message */}
             <Typography variant="body2" sx={{ color: 'white' }}>
                 {message.content}
             </Typography>
             <Typography variant="caption" sx={{ color: colors.secondaryGrey, mt: 1 }}>
                 {message.sender.pseudo} - {new Date(message.created_at).toLocaleString('fr-FR')}
             </Typography>
+            {!message.is_read && (
+                <Chip
+                    label="Non lu"
+                    size="small"
+                    sx={{
+                        backgroundColor: colors.primaryRed,
+                        color: colors.white,
+                        fontSize: '0.7rem',
+                        height: '20px',
+                        fontWeight: 600,
+                        '& .MuiChip-label': {
+                            px: 1,
+                        },
+                    }}
+                />
+            )}
+
         </Box>
     )
 }

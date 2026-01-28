@@ -136,16 +136,35 @@ export class MessageService {
   /**
    * Marquer les messages comme lus
    */
-  async markAsRead(conversationId: number, userId: number) {
-    await this.prisma.message.updateMany({
-      where: {
-        conversation_id: conversationId,
-        sender_id: { not: userId },
-        is_read: false,
-      },
-      data: {
-        is_read: true,
-      },
+  async markMessageAsRead(messageId: number, userId: number) {
+    // Récupérer le message pour vérifier
+    const message = await this.prisma.message.findUnique({
+      where: { id: messageId },
+      include: { conversation: true },
+    });
+
+    if (!message) {
+      throw new NotFoundException('Message non trouvé');
+    }
+
+    // Vérifier que l'utilisateur est participant de la conversation
+    const isParticipant =
+        message.conversation.user_id === userId ||
+        message.conversation.admin_id === userId;
+
+    if (!isParticipant) {
+      throw new ForbiddenException('Accès refusé à cette conversation');
+    }
+
+    // Vérifier que l'utilisateur n'est PAS l'expéditeur
+    if (message.sender_id === userId) {
+      throw new BadRequestException('Vous ne pouvez pas marquer vos propres messages comme lus');
+    }
+
+    // Marquer le message comme lu
+    await this.prisma.message.update({
+      where: { id: messageId },
+      data: { is_read: true },
     });
   }
 

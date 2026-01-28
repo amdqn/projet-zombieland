@@ -1972,27 +1972,40 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorDto'
 
-  /messages/conversations/{conversationId}:
-    get:
+  /messages/{id}/read:
+    patch:
       tags:
         - Messages
-      summary: Récupérer les messages d'une conversation
+      summary: Marquer un message comme lu/non lu
       description: |-
-        Récupère tous les messages d'une conversation et les marque automatiquement comme lus.
-        Accessible uniquement aux participants de la conversation (user ou admin).
-      operationId: getMessagesByConversation
+        Permet de modifier le statut de lecture (is_read) d'un message spécifique.
+        Accessible uniquement au destinataire du message (pas à l'expéditeur).
+      operationId: updateMessageReadStatus
       security:
         - bearerAuth: [ ]
       parameters:
-        - name: conversationId
+        - name: id
           in: path
           required: true
           schema:
             type: integer
-          description: ID de la conversation
+          description: ID du message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - isRead
+              properties:
+                isRead:
+                  type: boolean
+                  example: true
+                  description: Nouveau statut de lecture du message
       responses:
         '200':
-          description: Messages récupérés avec succès
+          description: Statut de lecture mis à jour avec succès
           content:
             application/json:
               schema:
@@ -2001,13 +2014,17 @@ paths:
                   success:
                     type: boolean
                     example: true
+                  message:
+                    type: string
+                    example: "Statut de lecture mis à jour"
                   data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/MessageDto'
-                  count:
-                    type: integer
-                    example: 5
+                    $ref: '#/components/schemas/MessageDto'
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
         '401':
           description: Non authentifié
           content:
@@ -2015,13 +2032,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorDto'
         '403':
-          description: Accès refusé à cette conversation
+          description: Non autorisé (vous ne pouvez marquer comme lu que les messages qui vous sont destinés)
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDto'
         '404':
-          description: Conversation non trouvée
+          description: Message non trouvé
           content:
             application/json:
               schema:
@@ -2253,7 +2270,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDto'
-
 
 # ===== COMPONENTS =====
 components:

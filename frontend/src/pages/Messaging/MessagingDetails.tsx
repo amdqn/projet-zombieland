@@ -1,6 +1,6 @@
 import {useParams} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
-import type {Conversation} from "../../@types/messaging";
+import type {Conversation, Message} from "../../@types/messaging";
 import {getOneConversation, updateConversationStatus} from "../../services/conversations.ts";
 import {colors} from "../../theme";
 import {Alert, Box, Button, Chip, Container, LinearProgress, Stack, TextField, Typography} from "@mui/material";
@@ -9,7 +9,7 @@ import MessageCard from "../../components/cards/Messaging/MessageCard.tsx";
 import {LoginContext} from "../../context/UserLoginContext.tsx";
 import {styled} from "@mui/material/styles";
 import SendIcon from '@mui/icons-material/Send';
-import {createMessage} from "../../services/messages.ts";
+import {createMessage, markMessageAsRead} from "../../services/messages.ts";
 import {toast} from "react-toastify";
 
 const BoxMessageStyle = styled(Box)(({ theme }) => ({
@@ -47,7 +47,7 @@ export default function MessagingDetails() {
     const [error, setError] = useState<string | null>(null);
     const [sendError, setSendError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-    const { role } = useContext(LoginContext)
+    const { role, userId } = useContext(LoginContext)
     const [newMessage, setNewMessage] = useState<string>("");
     const [sending, setSending] = useState<boolean>(false);
     const [updateError, setUpdateError] = useState<string | null>(null);
@@ -59,8 +59,23 @@ export default function MessagingDetails() {
             const response = await getOneConversation(id);
             console.log(response);
             setConversation(response);
+
+            // Marquer tous les messages comme lu
+            const unreadMessages = response.messages.filter(
+                (msg: Message) => !msg.is_read && msg.sender.id !== userId
+            );
+
+            if(unreadMessages.length > 0) {
+                // Marquer chaque message non lu en parallèle
+                await Promise.all(unreadMessages.map(
+                    unreadMessages.map((msg: Message) =>
+                        markMessageAsRead(msg.id).catch(err =>
+                            console.error(`Impossible de marquer le message ${msg.id} comme lu : ${err}`))
+                    )
+                ));
+            }
         } catch (error) {
-            setError(`Une erreur est survenue : ${error}`)
+            setError(`Une erreur est survenue : ${error}`);
         } finally {
             setLoading(false);
         }
@@ -188,9 +203,12 @@ export default function MessagingDetails() {
                                 >
                                     Clôturer la conversation
                                 </Button>
+
                             )}
                         </Box>
                     )}
+
+                    { updateError && <Alert severity="error">{updateError}</Alert>}
 
                     <Container
                         maxWidth={false}

@@ -31,6 +31,7 @@ export default function MessagingList() {
         try{
             const response = await getAllConvesations()
             setConversations(response);
+            console.log(response);
         } catch (error){
             setError("Erreur lors de la récupération des conversations : " + error);
         } finally {
@@ -151,8 +152,8 @@ export default function MessagingList() {
                     <Stack spacing={2}>
                         {conversations.map((conversation) => (
                             <ConversationCard
-                                conversation={conversation}
                                 key={conversation.id}
+                                conversation={conversation}
                             />
                         ))}
                     </Stack>

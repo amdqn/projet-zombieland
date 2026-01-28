@@ -35,3 +35,12 @@ export const createMessage = async ({
         throw error;
     }
 };
+
+export const markMessageAsRead = async (messageId: number) => {
+    await axiosInstance.patch(`/messages/${messageId}/read`);
+}
+
+export const deleteMessage = async (messageId: number) => {
+    const response = await axiosInstance.delete(`/messages/${messageId}`);
+    return response.data;
+}

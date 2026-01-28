@@ -1,10 +1,13 @@
 import type {Conversation} from "../../../@types/messaging";
-import {Box, Card, CardContent, Chip, IconButton, Stack, Typography} from "@mui/material";
+import {Badge, Box, Card, CardContent, Chip, IconButton, Stack, Typography} from "@mui/material";
 import {colors} from "../../../theme";
 import {styled} from "@mui/material/styles";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import {formatDay} from "../../../functions/formatDay.ts";
 import {useNavigate} from "react-router";
+import MailIcon from "@mui/icons-material/Mail";
+import {useContext} from "react";
+import {LoginContext} from "../../../context/UserLoginContext.tsx";
 
 
 const StyledConversationCard = styled(Card)(({ theme }) => ({
@@ -39,10 +42,53 @@ interface ConversationCardProps {
 export default function ConversationCard({conversation}: ConversationCardProps) {
 
     const navigate = useNavigate()
+    const {userId} = useContext(LoginContext)
 
     const handleCardClick = () => {
         navigate(`/messagerie/${conversation.id}`)
     };
+
+    /*const unreadCount = conversation.messages?.filter(
+        (message) =>
+            !message.is_read &&
+            message.sender?.id &&
+            message.sender.id !== userId
+    ).length || 0;*/
+
+    const unreadCount = (() => {
+        console.log('=== DEBUG CONVERSATION ===');
+        console.log('Conversation ID:', conversation.id);
+        console.log('Total messages:', conversation.messages?.length);
+        console.log('User ID (moi):', userId);
+
+        const filtered = conversation.messages?.filter((message) => {
+            console.log('---');
+            console.log('Message ID:', message.id);
+            console.log('is_read:', message.is_read);
+            console.log('sender:', message.sender);
+            console.log('sender.id:', message.sender?.id);
+            console.log('userId:', userId);
+
+            const isUnread = !message.is_read;
+            const hasSender = message.sender?.id;
+            const isNotMyMessage = message.sender?.id !== userId; // ✅ CORRECTION ICI
+
+            console.log('isUnread:', isUnread);
+            console.log('hasSender:', hasSender);
+            console.log('isNotMyMessage (devrait être true pour compter):', isNotMyMessage);
+
+            const shouldCount = isUnread && hasSender && isNotMyMessage;
+            console.log('shouldCount:', shouldCount);
+
+            return shouldCount;
+        }) || [];
+
+        console.log('Messages filtrés (non lus reçus):', filtered);
+        console.log('Nombre total de messages non lus:', filtered.length);
+        console.log('=========================');
+
+        return filtered.length;
+    })();
 
     return (
         <>
@@ -87,6 +133,20 @@ export default function ConversationCard({conversation}: ConversationCardProps) 
                                 >
                                     <VisibilityIcon />
                                 </IconButton>
+                                <Badge
+                                    badgeContent={unreadCount}
+                                    color="error"
+                                    invisible={unreadCount === 0}
+                                    sx={{
+                                        '& .MuiBadge-badge': {
+                                            backgroundColor: colors.primaryRed,
+                                            color: colors.white,
+                                            fontWeight: 700,
+                                        }
+                                    }}
+                                >
+                                    <MailIcon sx={{ color: colors.primaryGreen }} />
+                                </Badge>
                             </Box>
                         </Box>
 

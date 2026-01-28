@@ -3,11 +3,12 @@ import {HeroSection} from "../../components/hero";
 import {Box, Button, Container, LinearProgress, Stack, Typography} from "@mui/material";
 import {CustomBreadcrumbs} from "../../components/common";
 import {getAllConvesations} from "../../services/conversations.ts";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import type {Conversation} from "../../@types/messaging";
 import ConversationCard from "../../components/cards/Messaging/ConversationCard.tsx";
 import AddIcon from "@mui/icons-material/Add";
 import {CreateMessageModal} from "../../components/modals/Message/CreateMessageModal.tsx";
+import {LoginContext} from "../../context/UserLoginContext.tsx";
 
 export default function MessagingList() {
 
@@ -23,12 +24,12 @@ export default function MessagingList() {
     const [error, setError] = useState<string | null>(null);
     const [createModalOpen, setCreateModalOpen] = useState(false);
     const [refreshTrigger, setRefreshTrigger] = useState(0);
+    const {role} = useContext(LoginContext);
 
     const fetchConversations = async () => {
         setLoading(true);
         try{
             const response = await getAllConvesations()
-            console.log(response);
             setConversations(response);
         } catch (error){
             setError("Erreur lors de la récupération des conversations : " + error);
@@ -48,7 +49,7 @@ export default function MessagingList() {
 
     useEffect(() => {
         fetchConversations();
-    }, [])
+    }, [refreshTrigger])
 
     return(
         <Box sx={{ backgroundColor: colors.secondaryDark, minHeight: '100vh', color: colors.white }}>
@@ -107,24 +108,27 @@ export default function MessagingList() {
                     pr: { xs: 2, sm: 4, md: '60px', lg: '90px' },
                 }}
             >
-                <Button
-                    variant="contained"
-                    startIcon={<AddIcon />}
-                    onClick={handleCreate}
-                    sx={{
-                        backgroundColor: colors.primaryGreen,
-                        color: colors.secondaryDark,
-                        '&:hover': {
+                { role === 'CLIENT' && (
+                    <Button
+                        variant="contained"
+                        startIcon={<AddIcon />}
+                        onClick={handleCreate}
+                        sx={{
                             backgroundColor: colors.primaryGreen,
-                            opacity: 0.9,
-                        },
-                        fontWeight: 600,
-                        textTransform: 'uppercase',
-                        mb: 3,
-                    }}
-                >
-                    Nouveau message
-                </Button>
+                            color: colors.secondaryDark,
+                            '&:hover': {
+                                backgroundColor: colors.primaryGreen,
+                                opacity: 0.9,
+                            },
+                            fontWeight: 600,
+                            textTransform: 'uppercase',
+                            mb: 3,
+                        }}
+                    >
+                        Nouveau message
+                    </Button>
+                )}
+
                 <Box
                     sx={{
                         backgroundColor: colors.secondaryDarkAlt,
@@ -155,7 +159,7 @@ export default function MessagingList() {
 
                 </Box>
             </Container>
-            {/* Modal de création de prix */}
+            {/* Modal de création de conversation */}
             <CreateMessageModal
                 open={createModalOpen}
                 onClose={() => setCreateModalOpen(false)}

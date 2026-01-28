@@ -15,7 +15,7 @@ export const getOneConversation = async (id: number) => {
 
 // Gérer le status d'une conversation
 export const updateConversationStatus = async (id: number, status: string): Promise<Conversation> => {
-    const response = await axiosInstance.patch<Conversation>(`/conversations/${id}`, {status})
+    const response = await axiosInstance.patch<Conversation>(`/conversations/${id}/status`, {status})
     // On affichera le message du backend
     return response.data;
 }

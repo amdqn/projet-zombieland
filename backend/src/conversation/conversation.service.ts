@@ -141,7 +141,7 @@ export class ConversationService {
 
     return conversation;
   }
-
+  // TODO ajouter une règle pour que si le statut est cloturé de la conv, on ne puisse plus créer de message
   /**
    * Récupérer toutes les conversations d'un utilisateur
    * @param userId - ID de l'utilisateur
@@ -186,7 +186,7 @@ export class ConversationService {
           },
         },
       },
-      orderBy: {updated_at: 'asc'},
+      orderBy: {updated_at: 'desc'},
     });
   }
 

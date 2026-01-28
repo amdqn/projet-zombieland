@@ -1,15 +1,16 @@
 import {useParams} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
 import type {Conversation} from "../../@types/messaging";
-import {getOneConversation} from "../../services/conversations.ts";
+import {getOneConversation, updateConversationStatus} from "../../services/conversations.ts";
 import {colors} from "../../theme";
-import {Alert, Box, Button, Container, LinearProgress, Stack, TextField, Typography} from "@mui/material";
+import {Alert, Box, Button, Chip, Container, LinearProgress, Stack, TextField, Typography} from "@mui/material";
 import {CustomBreadcrumbs} from "../../components/common";
 import MessageCard from "../../components/cards/Messaging/MessageCard.tsx";
 import {LoginContext} from "../../context/UserLoginContext.tsx";
 import {styled} from "@mui/material/styles";
 import SendIcon from '@mui/icons-material/Send';
 import {createMessage} from "../../services/messages.ts";
+import {toast} from "react-toastify";
 
 const BoxMessageStyle = styled(Box)(({ theme }) => ({
     backgroundColor: colors.secondaryDarkAlt,
@@ -49,6 +50,8 @@ export default function MessagingDetails() {
     const { role } = useContext(LoginContext)
     const [newMessage, setNewMessage] = useState<string>("");
     const [sending, setSending] = useState<boolean>(false);
+    const [updateError, setUpdateError] = useState<string | null>(null);
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
 
     const fetchConversation = async (id: number) => {
         setLoading(true);
@@ -90,9 +93,21 @@ export default function MessagingDetails() {
         }
     }
 
+    const handleCloture = async () => {
+        if (!conversation) return;
+        try {
+            await updateConversationStatus(conversation.id, "CLOSED");
+            toast.success("La conversation est bien clôturée.")
+            setRefreshTrigger(prev => prev + 1);
+        } catch (error) {
+            setUpdateError(`Une erreur est survenue : ${error}`)
+        }
+
+    }
+
     useEffect(() => {
         fetchConversation(Number(id));
-    }, [id])
+    }, [id, refreshTrigger]);
 
     return (
         <>
@@ -118,23 +133,63 @@ export default function MessagingDetails() {
                     )}
 
                     {conversation && (
-                        <Typography
-                            variant="h1"
-                            sx={{
-                                fontSize: { xs: '1.8rem', md: '4rem' },
-                                color: colors.white,
-                                textShadow: `
-                              0 0 20px rgba(198, 38, 40, 0.8),
-                              0 0 40px rgba(58, 239, 48, 0.4),
-                              3px 3px 0 ${colors.primaryRed}
-                            `,
-                                marginBottom: { xs: '8px', md: '12px' },
-                                lineHeight: 1,
-                                letterSpacing: '2px',
-                            }}
-                        >
-                            Objet : {conversation.object}
-                        </Typography>
+                        <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            gap: 2,
+                            flexWrap: 'wrap'
+                        }}>
+                            <Box>
+                                <Typography
+                                    variant="h1"
+                                    sx={{
+                                        fontSize: { xs: '1.8rem', md: '4rem' },
+                                        color: colors.white,
+                                        textShadow: `
+                                      0 0 20px rgba(198, 38, 40, 0.8),
+                                      0 0 40px rgba(58, 239, 48, 0.4),
+                                      3px 3px 0 ${colors.primaryRed}
+                                    `,
+                                        marginBottom: { xs: '8px', md: '12px' },
+                                        lineHeight: 1,
+                                        letterSpacing: '2px',
+                                    }}
+                                >
+                                    Objet : {conversation.object}
+                                </Typography>
+                                <Chip
+                                    label={conversation.status === 'OPEN' ? 'EN COURS' : 'CLOTURER'}
+                                    size="medium"
+                                    sx={{
+                                        backgroundColor: conversation.status === 'OPEN' ? colors.primaryGreen : colors.primaryRed,
+                                        color: colors.white,
+                                        fontWeight: 700,
+                                        letterSpacing: '0.03em',
+                                        minWidth: '100px',
+                                    }}
+                                />
+                            </Box>
+
+                            {role == 'ADMIN' && conversation.status == 'OPEN' && (
+                                <Button
+                                    variant="contained"
+                                    onClick={handleCloture}
+                                    sx={{
+                                        backgroundColor: colors.primaryRed,
+                                        color: colors.white,
+                                        fontSize: { xs: '1rem', md: '1rem' },
+                                        padding: { xs: '0.6rem 2rem', md: '1rem 3rem' },
+                                        '&:hover': {
+                                            backgroundColor: colors.primaryRed,
+                                            opacity: 0.9,
+                                        },
+                                    }}
+                                >
+                                    Clôturer la conversation
+                                </Button>
+                            )}
+                        </Box>
                     )}
 
                     <Container
@@ -189,11 +244,12 @@ export default function MessagingDetails() {
                             <TextField
                                 multiline
                                 rows={2}
-                                placeholder="Écrivez votre message..."
+                                placeholder={conversation?.status == 'OPEN' ? "Écrivez votre message..." : "Vous ne pouvez plus rédiger de message car la conversation est clôturée."}
                                 variant="outlined"
                                 value={newMessage}
                                 onChange={(e) => setNewMessage(e.target.value)}
                                 fullWidth
+                                disabled={conversation?.status !== 'OPEN'}
                                 sx={{
                                     '& .MuiOutlinedInput-root': {
                                         backgroundColor: colors.secondaryDark,
@@ -210,23 +266,26 @@ export default function MessagingDetails() {
                                     },
                                 }}
                             />
-                            <Button
-                                variant="contained"
-                                endIcon={<SendIcon />}
-                                onClick={handleSubmit}
-                                disabled={!newMessage.trim() || sending}
-                                sx={{
-                                    backgroundColor: colors.primaryGreen,
-                                    color: colors.white,
-                                    '&:hover': {
-                                        backgroundColor: colors.primaryRed,
-                                    },
-                                    minWidth: '120px',
-                                    whiteSpace: 'nowrap',
-                                }}
-                            >
-                                {sending ? 'Envoi...' : 'Envoyer'}
-                            </Button>
+                            { conversation?.status === 'OPEN' && (
+                                <Button
+                                    variant="contained"
+                                    endIcon={<SendIcon />}
+                                    onClick={handleSubmit}
+                                    disabled={!newMessage.trim() || sending}
+                                    sx={{
+                                        backgroundColor: colors.primaryGreen,
+                                        color: colors.white,
+                                        '&:hover': {
+                                            backgroundColor: colors.primaryRed,
+                                        },
+                                        minWidth: '120px',
+                                        whiteSpace: 'nowrap',
+                                    }}
+                                >
+                                    {sending ? 'Envoi...' : 'Envoyer'}
+                                </Button>
+                            )}
+
                         </Stack>
                     </Container>
                 </Container>

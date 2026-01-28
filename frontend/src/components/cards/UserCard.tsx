@@ -2,10 +2,11 @@ import {Box, Card, CardActions, CardContent, Typography, Button} from "@mui/mate
 import type {User} from "../../@types/users";
 import {formatDay} from "../../functions/formatDay.ts";
 import {PrimaryButton} from "../common";
-import {useState} from "react";
+import {useContext, useState} from "react";
 import UpdateProfilModal from "../modals/Profil/UpdateProfilModal.tsx";
 import { DeleteAccountModal } from "../modals/Profil/DeleteAccountModal.tsx";
 import { colors } from "../../theme";
+import {LoginContext} from "../../context/UserLoginContext.tsx";
 
 interface UserCardProps {
     user: User;
@@ -17,6 +18,7 @@ export default function UserCard({user, onUpdate} : UserCardProps) {
     const [open, setOpen] = useState(false);
     const [modalType, setModalType] = useState<"email" | "password">("email");
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const { role } = useContext(LoginContext)
 
     const handleOpenEmail = () => {
         setModalType('email');
@@ -121,23 +123,26 @@ export default function UserCard({user, onUpdate} : UserCardProps) {
             >
                 <PrimaryButton text={"Modifier l'email"} onClick={handleOpenEmail} fullWidth/>
                 <PrimaryButton text={"Modifier le mot de passe"} onClick={handleOpenPassword} fullWidth/>
-                <Button
-                    variant="contained"
-                    onClick={handleOpenDelete}
-                    fullWidth
-                    sx={{
-                        backgroundColor: colors.primaryRed,
-                        color: colors.white,
-                        fontSize: { xs: '1.2rem', md: '1.2rem' },
-                        padding: { xs: '0.6rem 2rem', md: '1rem 3rem' },
-                        '&:hover': {
+                { role === 'CLIENT' && (
+                    <Button
+                        variant="contained"
+                        onClick={handleOpenDelete}
+                        fullWidth
+                        sx={{
                             backgroundColor: colors.primaryRed,
-                            opacity: 0.9,
-                        },
-                    }}
-                >
-                    Supprimer le compte
-                </Button>
+                            color: colors.white,
+                            fontSize: { xs: '1.2rem', md: '1.2rem' },
+                            padding: { xs: '0.6rem 2rem', md: '1rem 3rem' },
+                            '&:hover': {
+                                backgroundColor: colors.primaryRed,
+                                opacity: 0.9,
+                            },
+                        }}
+                    >
+                        Supprimer le compte
+                    </Button>
+                )}
+
             </CardActions>
             <UpdateProfilModal
                 open={open}

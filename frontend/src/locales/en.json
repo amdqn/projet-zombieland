@@ -1380,6 +1380,7 @@
         "delete": "Delete permanently",
         "deleting": "Deleting...",
         "error": "Error deleting account",
+        "errorWithReservations": "Unable to delete your account: {{count}} reservation(s) associated. Please cancel or delete your reservations first.",
         "success": "Your account has been successfully deleted"
       }
     },

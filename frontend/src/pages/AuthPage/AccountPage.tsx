@@ -106,9 +106,9 @@ export default function AccountPage() {
                                 <Box paddingBottom={5}>
                                     <UserCard user={user}  onUpdate={handleUserUpdate} />
                                 </Box>
-
-                                {user.role == "CLIENT" ? <PrimaryButton onClick={() => navigate('/account/reservations')} text={t("auth.account.page.myReservations")} /> : ""}
-                                {user.role == "ADMIN" ? <PrimaryButton onClick={() => navigate('/admin')}  text={t("auth.account.page.dashboard")} /> : ""}
+                                <PrimaryButton onClick={() => navigate('/messagerie')} text={"Ma messagerie"} />
+                                {user.role == "CLIENT" ? <PrimaryButton onClick={() => navigate('/client')} text={"Mes réservations"} /> : ""}
+                                {user.role == "ADMIN" ? <PrimaryButton onClick={() => navigate('/admin')}  text={"Dashboard"} /> : ""}
                                 <PrimaryButton onClick={logoutAndNavigate}  text={t("auth.account.logout")} />
                             </>
                         ) : (

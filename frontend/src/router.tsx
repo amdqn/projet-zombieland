@@ -17,6 +17,8 @@ import { colors } from './theme';
 import {UserDashboard} from "./pages/UserPage/UserDashboard.tsx";
 import { InformationPage } from './pages/InformationPage';
 import StaticPage from "./pages/StaticPage/StaticPage.tsx";
+import MessagingList from "./pages/Messaging/MessagingList.tsx";
+import MessagingDetails from "./pages/Messaging/MessagingDetails.tsx";
 
 const ProtectedRoute = ({ children }: { children: ReactElement }) => {
   const { isLogged, isLoading } = useContext(LoginContext);
@@ -135,7 +137,7 @@ export const router = createBrowserRouter([
         element: <AccountPage />, // Compte utilisateur
       },
       {
-        path: 'account/reservations',
+        path: 'client',
         element: (
             <ProtectedRoute>
               <UserDashboard/>
@@ -169,6 +171,22 @@ export const router = createBrowserRouter([
       {
         path: 'static/:pageType',
         element: <StaticPage />, // Page statique (Gestion cookie, ML, RGPD, CGU, CGV...)
+      },
+      {
+        path: 'messagerie',
+        element: (
+            <ProtectedRoute>
+              <MessagingList />
+            </ProtectedRoute>
+        )
+      },
+      {
+        path: 'messagerie/:id',
+        element: (
+            <ProtectedRoute>
+              <MessagingDetails />
+            </ProtectedRoute>
+        ),
       },
     ],
   },

@@ -49,9 +49,22 @@ export const DeleteAccountModal = ({
       toast.success(t('modals.profile.deleteAccount.success'));
       logout();
       navigate('/');
-    } catch (err) {
-      const message = err instanceof Error ? err.message : t('modals.profile.deleteAccount.error');
-      setError(message);
+    } catch (err: any) {
+      if (err.response?.status === 400) {
+        const backendMessage = err.response.data.message;
+
+        // Extraire le nombre de réservations du message backend
+        const match = backendMessage.match(/(\d+)/);
+
+        if (match) {
+          const count = parseInt(match[0]);
+          const translatedMessage = t('modals.profile.deleteAccount.errorWithReservations', { count });
+          setError(translatedMessage);
+        } else {
+          // Utiliser le message générique si on ne peut pas extraire le nombre
+          setError(t('modals.profile.deleteAccount.error'));
+        }
+      }
     } finally {
       setIsDeleting(false);
     }

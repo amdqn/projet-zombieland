@@ -194,6 +194,38 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorDto'
 
+    delete:
+      tags:
+        - Auth
+      summary: Supprimer son propre compte
+      description: Permet à l'utilisateur connecté de supprimer définitivement son compte
+      operationId: deleteOwnAccount
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: Compte supprimé avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Compte supprimé avec succès"
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '500':
+          description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
   # ===== USERS =====
   /users:
     get:
@@ -1902,11 +1934,23 @@ paths:
         - Messages
       summary: Créer un message
       description: |-
-        Créer un nouveau message dans une conversation existante ou créer une nouvelle conversation avec un admin.
-
-        **Cas d'usage** :
-        - Avec `conversationId` : Envoyer un message dans une conversation existante
-        - Avec `recipientId` : Créer une nouvelle conversation avec un admin et envoyer le premier message
+        Créer un nouveau message dans une conversation existante OU créer une nouvelle conversation avec un admin.
+        
+        **Deux cas d'usage** :
+        
+        1. **Message dans conversation existante** :
+           - Fournir `conversationId`
+           - Le champ `object` est ignoré
+        
+        2. **Nouvelle conversation avec premier message** :
+           - `recipientId` est automatiquement assigné (doit être un admin) 
+           - Fournir `object` (obligatoire pour nouvelle conversation)
+           - La conversation sera créée automatiquement
+        
+        **Règles métier** :
+        - Un client ne peut créer une conversation qu'avec un admin
+        - Un admin ne peut pas créer de nouvelle conversation (seulement répondre)
+        - Une seule conversation ouverte possible entre un client et un admin
       operationId: createMessage
       security:
         - bearerAuth: [ ]
@@ -1960,77 +2004,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorDto'
 
-  /messages/conversations/{conversationId}:
-    get:
+  /messages/{id}/read:
+    patch:
       tags:
         - Messages
-      summary: Récupérer les messages d'une conversation
+      summary: Marquer un message comme lu/non lu
       description: |-
-        Récupère tous les messages d'une conversation et les marque automatiquement comme lus.
-        Accessible uniquement aux participants de la conversation (user ou admin).
-      operationId: getMessagesByConversation
-      security:
-        - bearerAuth: [ ]
-      parameters:
-        - name: conversationId
-          in: path
-          required: true
-          schema:
-            type: integer
-          description: ID de la conversation
-      responses:
-        '200':
-          description: Messages récupérés avec succès
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/MessageDto'
-                  count:
-                    type: integer
-                    example: 5
-        '401':
-          description: Non authentifié
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorDto'
-        '403':
-          description: Accès refusé à cette conversation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorDto'
-        '404':
-          description: Conversation non trouvée
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorDto'
-        '500':
-          description: Erreur serveur
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorDto'
-
-  /messages/{id}:
-    delete:
-      tags:
-        - Messages
-      summary: Supprimer un message
-      description: |-
-        Supprime un message si l'utilisateur est :
-        - L'auteur du message ET participant à la conversation
-        - OU un admin participant à la conversation
-      operationId: deleteMessage
+        Permet de modifier le statut de lecture (is_read) d'un message spécifique.
+        Accessible uniquement au destinataire du message (pas à l'expéditeur).
+      operationId: updateMessageReadStatus
       security:
         - bearerAuth: [ ]
       parameters:
@@ -2039,10 +2021,23 @@ paths:
           required: true
           schema:
             type: integer
-          description: ID du message à supprimer
+          description: ID du message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - is_read
+              properties:
+                isRead:
+                  type: boolean
+                  example: true
+                  description: Nouveau statut de lecture du message
       responses:
         '200':
-          description: Message supprimé avec succès
+          description: Statut de lecture mis à jour avec succès
           content:
             application/json:
               schema:
@@ -2053,7 +2048,15 @@ paths:
                     example: true
                   message:
                     type: string
-                    example: Message supprimé
+                    example: "Statut de lecture mis à jour"
+                  data:
+                    $ref: '#/components/schemas/MessageDto'
+        '400':
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
         '401':
           description: Non authentifié
           content:
@@ -2061,7 +2064,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorDto'
         '403':
-          description: Non autorisé à supprimer ce message
+          description: Non autorisé (vous ne pouvez marquer comme lu que les messages qui vous sont destinés)
           content:
             application/json:
               schema:
@@ -2078,6 +2081,65 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDto'
+
+  /messages/{id}/archive/:
+    patch:
+      tags:
+        - Messages
+      summary: Archiver un message (soft delete)
+      description: Marque un message comme supprimé en remplaçant son contenu par "Message supprimé". Seul l'auteur du message ou un admin peut effectuer cette action.
+      operationId: archiveMessage
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          description: ID du message à archiver
+          required: true
+          schema:
+            type: integer
+            example: 42
+      responses:
+        '200':
+          description: Message archivé avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Message supprimé avec succès"
+                  data:
+                    $ref: '#/components/schemas/MessageDto'
+        '400':
+          description: Requête invalide
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '401':
+          description: Non authentifié
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '403':
+          description: Accès refusé - Vous ne pouvez supprimer que vos propres messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+        '404':
+          description: Message introuvable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDto'
+
 
   # ===== CONVERSATIONS =====
   /conversations:
@@ -2241,7 +2303,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDto'
-
 
 # ===== COMPONENTS =====
 components:
@@ -2541,6 +2602,9 @@ components:
         id:
           type: integer
           example: 1
+        object:
+          type: string
+          example: Objet de la conversation
         user_id:
           type: integer
           example: 5
@@ -2594,23 +2658,26 @@ components:
         id:
           type: integer
           example: 1
-        conversationId:
+        conversation_id:
           type: integer
           example: 1
-        senderId:
+        sender_id:
           type: integer
           example: 5
         content:
           type: string
           example: "Bonjour, j'ai une question sur les horaires du parc"
-        isRead:
+        is_read:
           type: boolean
           example: false
         sender:
           $ref: '#/components/schemas/UserDto'
-        createdAt:
+        created_at:
           type: string
           format: date-time
+        is_deleted:
+          type: boolean
+          example: false
 
     # ===== REQUEST DTOs (INPUT) =====
     RegisterDto:
@@ -3017,21 +3084,28 @@ components:
       required:
         - content
       properties:
-        conversationId:
+        conversation_id:
           type: integer
           nullable: true
           example: 1
           description: ID de la conversation existante (optionnel si recipientId fourni)
-        recipientId:
+        recipient_id:
           type: integer
           nullable: true
           example: 2
-          description: ID de l'admin destinataire pour créer une nouvelle conversation (optionnel si conversationId fourni)
+          description: Automatiquement assigné en backend (optionnel si conversationId fourni)
         content:
           type: string
           minLength: 1
           example: "Bonjour, j'ai une question sur les horaires"
           description: Contenu du message
+        object:
+          type: string
+          nullable: true
+          minLength: 1
+          maxLength: 255
+          example: "Objet du message"
+          description: Objet de la conversation (REQUIS uniquement si recipientId est fourni pour créer une nouvelle conversation)
 
     UpdateConversationStatusDto:
       type: object

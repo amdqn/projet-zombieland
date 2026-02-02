@@ -21,73 +21,45 @@ export class MessageService {
    * @param createMessageDto - Données du message
    * @param userId - ID de l'expéditeur
    */
+  // message.service.ts - Modifier la méthode create
+
   async create(createMessageDto: CreateMessageDto, userId: number) {
-    const { conversationId, recipientId, content } = createMessageDto;
+    const { conversation_id, recipient_id, content, object } = createMessageDto;
 
     let finalConversationId: number;
 
     // CAS 1 : Conversation existante
-    if (conversationId) {
-      // Vérifier l'accès via ConversationService
+    if (conversation_id) {
       const hasAccess = await this.conversationService.userHasAccess(
           userId,
-          conversationId,
+          conversation_id,
       );
 
       if (!hasAccess) {
         throw new ForbiddenException('Vous ne faites pas partie de cette conversation');
       }
 
-      finalConversationId = conversationId;
+      const openConversation = await this.conversationService.findOne(conversation_id);
+      if(openConversation.status !== 'OPEN'){
+        throw new ForbiddenException('Vous ne pouvez pas créer de nouveau message sur une conversation clôturée.');
+      }
+
+      finalConversationId = conversation_id;
     }
-    // CAS 2 : Nouvelle conversation
-    else if (recipientId) {
-      // Vérifier qu'on n'essaie pas de s'envoyer un message à soi-même
-      if (recipientId === userId) {
-        throw new BadRequestException('Vous ne pouvez pas vous envoyer un message à vous-même');
-      }
-
-      // Récupérer l'utilisateur actuel et le destinataire
-      const [currentUser, recipient] = await Promise.all([
-        this.prisma.user.findUnique({
-          where: { id: userId },
-          select: { role: true },
-        }),
-        this.prisma.user.findUnique({
-          where: { id: recipientId },
-          select: { role: true },
-        }),
-      ]);
-
-      // Vérifier que le destinataire existe
-      if (!recipient) {
-        throw new NotFoundException('Destinataire non trouvé');
-      }
-
-      // RÈGLE 1 : Les admins ne peuvent pas créer de nouvelles conversations
-      if (currentUser?.role === 'ADMIN') {
-        throw new ForbiddenException(
-            'Les administrateurs ne peuvent pas créer de nouvelles conversations. ' +
-            'Veuillez répondre aux conversations existantes.'
-        );
-      }
-
-      // RÈGLE 2 : Les clients ne peuvent envoyer qu'aux admins
-      if (recipient.role !== 'ADMIN') {
-        throw new BadRequestException(
-            'Vous ne pouvez envoyer des messages qu\'aux administrateurs'
-        );
-      }
-
-      // Créer ou récupérer la conversation via ConversationService
-      const conversation = await this.conversationService.create(userId, recipientId);
-      finalConversationId = conversation.id;
-    }
-    // CAS 3 : Ni conversationId ni recipientId
+    // CAS 2 : Nouvelle conversation (avec ou sans recipientId)
     else {
-      throw new BadRequestException(
-          'Vous devez fournir soit conversationId soit recipientId'
+      if (!object || object.trim().length === 0) {
+        throw new BadRequestException('L\'objet de la conversation est requis pour créer une nouvelle conversation');
+      }
+
+      // Créer ou récupérer la conversation
+      // Si recipientId est null/undefined, un admin sera assigné automatiquement
+      const conversation = await this.conversationService.create(
+          userId,
+          recipient_id ?? null, // null si non fourni = auto-assignation
+          object
       );
+      finalConversationId = conversation.id;
     }
 
     // Créer le message
@@ -107,6 +79,26 @@ export class MessageService {
             email: true,
           },
         },
+        conversation: {
+          select: {
+            id: true,
+            object: true,
+            status: true,
+            user: {
+              select: {
+                id: true,
+                pseudo: true,
+                role: true,
+              },
+            },
+            admin: {
+              select: {
+                id: true,
+                pseudo: true,
+              }
+            }
+          },
+        },
       },
     });
 
@@ -119,7 +111,17 @@ export class MessageService {
   /**
    * Récupérer tous les messages d'une conversation
    */
-  async findAllByConversationId(conversationId: number) {
+  async findAllByConversationId(conversationId: number, userId: number) {
+    // Vérifie l'accès
+    const hasAccess = await this.conversationService.userHasAccess(
+        userId,
+        conversationId,
+    )
+
+    if (!hasAccess) {
+      throw new ForbiddenException('Vous ne faites pas partie de cette conversation');
+    }
+
     return this.prisma.message.findMany({
       where: {conversation_id : conversationId},
       orderBy: {created_at: 'asc'},
@@ -139,23 +141,85 @@ export class MessageService {
   /**
    * Marquer les messages comme lus
    */
-  async markAsRead(conversationId: number, userId: number) {
-    await this.prisma.message.updateMany({
-      where: {
-        conversation_id: conversationId,
-        sender_id: { not: userId },
-        is_read: false,
-      },
+  async markMessageAsRead(messageId: number, userId: number) {
+    // Récupérer le message pour vérifier
+    const message = await this.prisma.message.findUnique({
+      where: { id: messageId },
+      include: { conversation: true },
+    });
+
+    if (!message) {
+      throw new NotFoundException('Message non trouvé');
+    }
+
+    // Vérifier que l'utilisateur est participant de la conversation
+    const isParticipant =
+        message.conversation.user_id === userId ||
+        message.conversation.admin_id === userId;
+
+    if (!isParticipant) {
+      throw new ForbiddenException('Accès refusé à cette conversation');
+    }
+
+    // Vérifier que l'utilisateur n'est PAS l'expéditeur
+    if (message.sender_id === userId) {
+      throw new BadRequestException('Vous ne pouvez pas marquer vos propres messages comme lus');
+    }
+
+    // Marquer le message comme lu
+    await this.prisma.message.update({
+      where: { id: messageId },
+      data: { is_read: true },
+    });
+  }
+
+  /**
+   * Archiver un message
+   */
+  async archive(id: number, userId: number) {
+    const message = await this.prisma.message.findUnique({
+      where: {id},
+      include: {
+        conversation: true,
+        sender: true,
+      }
+    });
+
+    if (!message) {
+      throw new NotFoundException(`Message ${id} introuvable`);
+    }
+
+    if(message.sender_id !== userId){
+      throw new ForbiddenException('Vous ne pouvez supprimer que vos propres messages');
+    }
+
+    if (message.conversation.status !== 'OPEN') {
+      throw new BadRequestException('Impossible de supprimer un message d\'une conversation clôturée');
+    }
+
+    if (message.is_deleted) {
+      throw new BadRequestException('Ce message est déjà supprimé');
+    }
+
+    const updatedMessage = await this.prisma.message.update({
+      where: { id },
       data: {
-        is_read: true,
+        content: 'Message supprimé',
+        is_deleted: true,
       },
     });
+
+    return {
+      success: true,
+      message: 'Message supprimé avec succès',
+      data: updatedMessage,
+    };
   }
 
   /**
    * Supprimer un message
    */
-  async remove(id: number, userId: number) {
+  /*async remove(id: number, userId: number) {
     const message = await this.prisma.message.findUnique({
       where: { id },
       include: {
@@ -200,5 +264,5 @@ export class MessageService {
       success: true,
       message: 'Message supprimé',
     };
-  }
+  }*/
 }

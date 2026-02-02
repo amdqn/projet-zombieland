@@ -9,14 +9,16 @@ interface LoginProviderProps {
 interface ILoginUSer {
     isLogged: boolean;
     setIsLogged: Dispatch<SetStateAction<boolean>>;
+    userId: number | null;
+    setUserId: Dispatch<SetStateAction<number | null>>;
     role: "CLIENT" | "ADMIN" | null;
     setRole: Dispatch<SetStateAction<"CLIENT" | "ADMIN" | null>>;
     pseudo: string,
-    setPseudo: React.Dispatch<React.SetStateAction<string>>;
+    setPseudo: Dispatch<SetStateAction<string>>;
     email: string;
-    setEmail: React.Dispatch<React.SetStateAction<string>>;
+    setEmail: Dispatch<SetStateAction<string>>;
     token: string | null;
-    setToken: React.Dispatch<React.SetStateAction<string | null>>;
+    setToken: Dispatch<SetStateAction<string | null>>;
     logout: () => void;
     isLoading: boolean;
 }
@@ -35,6 +37,8 @@ const isTokenExpired = (token: string): boolean => {
 export const LoginContext = createContext<ILoginUSer>({
     isLogged: false,
     setIsLogged: () => {},
+    userId: null,
+    setUserId: () => {},
     role: null,
     setRole: () => {},
     pseudo: "",
@@ -62,12 +66,22 @@ export function LoginProvider({ children }: LoginProviderProps) {
                 localStorage.removeItem("role");
                 localStorage.removeItem("pseudo");
                 localStorage.removeItem("email");
+                localStorage.removeItem("userId");
                 return false;
             }
             return true;
         }
         return false;
     });
+    const [userId, setUserId] = useState<number | null>(() =>{
+        const savedToken = localStorage.getItem("token");
+        const savedUserId = localStorage.getItem("userId");
+        if (savedToken && isTokenExpired(savedToken)) {
+            return null;
+        }
+        return savedUserId ? parseInt(savedUserId, 10) : null;
+    })
+
     const [role, setRole] = useState<"CLIENT" | "ADMIN" | null>(() => {
         const savedToken = localStorage.getItem("token");
         if (savedToken && isTokenExpired(savedToken)) {
@@ -119,11 +133,13 @@ export function LoginProvider({ children }: LoginProviderProps) {
 
     const logout = () => {
         setIsLogged(false);
+        setUserId(null);
         setRole(null);
         setPseudo("");
         setEmail("");
         setToken(null);
         localStorage.removeItem("token");
+        localStorage.removeItem("userId");
         localStorage.removeItem("role");
         localStorage.removeItem("pseudo");
         localStorage.removeItem("email");
@@ -133,6 +149,8 @@ export function LoginProvider({ children }: LoginProviderProps) {
         <LoginContext.Provider value={{
             isLogged,
             setIsLogged,
+            userId,
+            setUserId,
             role,
             setRole,
             pseudo,

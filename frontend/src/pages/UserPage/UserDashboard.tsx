@@ -23,6 +23,7 @@ export const UserDashboard = () => {
                         <CustomBreadcrumbs
                             items={[
                                 { label: t("auth.account.reservations.breadcrumbs.home"), path: '/', showOnMobile: true },
+                                { label: 'Mon compte', path: '/account',showOnMobile: true },
                                 { label: t("auth.account.reservations.breadcrumbs.reservations"), showOnMobile: true },
                             ]}
                         />
@@ -34,10 +35,10 @@ export const UserDashboard = () => {
                             fontSize: { xs: '1.8rem', md: '4rem' },
                             color: colors.white,
                             textShadow: `
-              0 0 20px rgba(198, 38, 40, 0.8),
-              0 0 40px rgba(58, 239, 48, 0.4),
-              3px 3px 0 ${colors.primaryRed}
-            `,
+                              0 0 20px rgba(198, 38, 40, 0.8),
+                              0 0 40px rgba(58, 239, 48, 0.4),
+                              3px 3px 0 ${colors.primaryRed}
+                            `,
                             marginBottom: { xs: '8px', md: '12px' },
                             lineHeight: 1,
                             letterSpacing: '2px',
@@ -80,7 +81,6 @@ export const UserDashboard = () => {
                         minHeight: '400px',
                     }}
                 >
-                    {/* Voir pour modifier et remettre les tabs si ajout des réservations restaurants etc */}
                     <ReservationUserList />
                 </Box>
             </Container>

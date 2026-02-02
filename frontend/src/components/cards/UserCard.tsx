@@ -2,11 +2,12 @@ import {Box, Card, CardActions, CardContent, Typography, Button} from "@mui/mate
 import type {User} from "../../@types/users";
 import {formatDay} from "../../functions/formatDay.ts";
 import {PrimaryButton} from "../common";
-import {useState} from "react";
+import {useContext, useState} from "react";
 import UpdateProfilModal from "../modals/Profil/UpdateProfilModal.tsx";
 import { DeleteAccountModal } from "../modals/Profil/DeleteAccountModal.tsx";
 import { colors } from "../../theme";
 import {useTranslation} from "react-i18next";
+import {LoginContext} from "../../context/UserLoginContext.tsx";
 
 interface UserCardProps {
     user: User;
@@ -19,6 +20,7 @@ export default function UserCard({user, onUpdate} : UserCardProps) {
     const [open, setOpen] = useState(false);
     const [modalType, setModalType] = useState<"email" | "password">("email");
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const { role } = useContext(LoginContext)
 
     const handleOpenEmail = () => {
         setModalType('email');
@@ -123,23 +125,26 @@ export default function UserCard({user, onUpdate} : UserCardProps) {
             >
                 <PrimaryButton text={t("auth.account.userCard.editEmail")} onClick={handleOpenEmail} fullWidth/>
                 <PrimaryButton text={t("auth.account.userCard.editPassword")} onClick={handleOpenPassword} fullWidth/>
-                <Button
-                    variant="contained"
-                    onClick={handleOpenDelete}
-                    fullWidth
-                    sx={{
-                        backgroundColor: colors.primaryRed,
-                        color: colors.white,
-                        fontSize: { xs: '1.2rem', md: '1.2rem' },
-                        padding: { xs: '0.6rem 2rem', md: '1rem 3rem' },
-                        '&:hover': {
+                { role === 'CLIENT' && (
+                    <Button
+                        variant="contained"
+                        onClick={handleOpenDelete}
+                        fullWidth
+                        sx={{
                             backgroundColor: colors.primaryRed,
-                            opacity: 0.9,
-                        },
-                    }}
-                >
-                    {t("auth.account.userCard.deleteAccount")}
-                </Button>
+                            color: colors.white,
+                            fontSize: { xs: '1.2rem', md: '1.2rem' },
+                            padding: { xs: '0.6rem 2rem', md: '1rem 3rem' },
+                            '&:hover': {
+                                backgroundColor: colors.primaryRed,
+                                opacity: 0.9,
+                            },
+                        }}
+                    >
+                        {t("auth.account.userCard.deleteAccount")}
+                    </Button>
+                )}
+
             </CardActions>
             <UpdateProfilModal
                 open={open}

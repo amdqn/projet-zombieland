@@ -1380,6 +1380,7 @@
         "delete": "Supprimer définitivement",
         "deleting": "Suppression...",
         "error": "Erreur lors de la suppression du compte",
+        "errorWithReservations": "Impossible de supprimer votre compte : {{count}} réservation(s) associée(s). Veuillez d'abord annuler ou supprimer vos réservations.",
         "success": "Votre compte a été supprimé avec succès"
       }
     },

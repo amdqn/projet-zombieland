@@ -40,6 +40,7 @@ export const AdminDashboard = () => {
               items={[
                 { label: t('admin.dashboard.breadcrumbs.home'), path: '/', showOnMobile: true },
                 { label: t('admin.dashboard.breadcrumbs.admin'), showOnMobile: true },
+                { label: 'Administration', showOnMobile: true },
               ]}
             />
           </Box>

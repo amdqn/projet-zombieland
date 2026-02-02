@@ -69,6 +69,6 @@ export class ConversationController {
         updateStatusDto.status,
         user.id,
     );
-    return { success: true, data: conversation };
+    return { success: true, data: conversation, message: 'Mise à jour effectuée avec succès !' };
   }
 }

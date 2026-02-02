@@ -9,7 +9,7 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
-  ParseIntPipe, ForbiddenException,
+  ParseIntPipe, ForbiddenException, Patch,
 } from '@nestjs/common';
 import { MessageService } from './message.service';
 import { ConversationService } from '../conversation/conversation.service';
@@ -33,43 +33,66 @@ export class MessageController {
       @CurrentUser() user: any,
   ) {
     const message = await this.messageService.create(createMessageDto, user.id);
-    return { success: true, data: message };
+    return {
+      success: true,
+      data: message,
+      message: 'Message envoyé avec succès !'
+    };
   }
 
   // Récupérer les messages d'une conversation
-  @Get('conversations/:conversationId')
+/*  @Get('conversations/:conversationId')
   @HttpCode(HttpStatus.OK)
   async getMessages(
       @Param('conversationId', ParseIntPipe) conversationId: number,
       @CurrentUser() user: any,
   ) {
-    // Vérifier l'accès
-    const hasAccess = await this.conversationService.userHasAccess(
-        user.id,
+    const messages = await this.messageService.findAllByConversationId(
         conversationId,
+        user.id
     );
 
-    if (!hasAccess) {
-      throw new ForbiddenException('Accès refusé');
-    }
-
-    const messages = await this.messageService.findAllByConversationId(conversationId);
-    await this.messageService.markAsRead(conversationId, user.id);
+    await this.messageService.markAsRead(
+        conversationId,
+        user.id
+    );
 
     return {
       success: true,
       data: messages,
       count: messages.length,
     };
-  }
+  }*/
 
-  // Supprimer un message
-  @Delete(':id')
+  // Mettre a jour le message
+  @Patch(':id/read')
   @HttpCode(HttpStatus.OK)
-  async remove(
-      @Param('id', ParseIntPipe) id: number,
+  async maskAsRead(
+      @Param('id', ParseIntPipe) messageId: number,
       @CurrentUser() user: any,
   ) {
-    return this.messageService.remove(id, user.id);
+    return this.messageService.markMessageAsRead(messageId, user.id);
   }
+
+  // Archiver un message
+  @Patch(':id/archive')
+  @HttpCode(HttpStatus.OK)
+  async archive(
+      @Param('id', ParseIntPipe) messageId: number,
+      @CurrentUser() user: any,
+  ) {
+    return this.messageService.archive(messageId, user.id);
+  }
+
+
+
+  // Supprimer un message
+  // @Delete(':id')
+  // @HttpCode(HttpStatus.OK)
+  // async remove(
+  //     @Param('id', ParseIntPipe) id: number,
+  //     @CurrentUser() user: any,
+  // ) {
+  //   return this.messageService.remove(id, user.id);
+  // }
 }

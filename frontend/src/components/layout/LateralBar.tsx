@@ -7,10 +7,13 @@ import XIcon from '@mui/icons-material/X';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import { useTranslation } from "react-i18next";
 import { colors } from "../../theme";
+import {useNavigate} from "react-router";
 
 export default function LateralBar() {
     const { i18n } = useTranslation();
     const currentLang = i18n.language?.split('-')[0] || 'fr';
+    const navigate = useNavigate();
+
     return (
         <AppBar
             position="fixed"
@@ -92,22 +95,25 @@ export default function LateralBar() {
 
             {/* Icones des réseaux sociaux */}
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 2}}>
-                <IconButton sx={{ color: 'white' }}>
+                <IconButton sx={{ color: 'white' }} onClick={() => window.open('https://youtube.com/', '_blank', 'noopener,noreferrer')}>
                     <YouTubeIcon />
                 </IconButton>
-                <IconButton sx={{ color: 'white' }}>
+                <IconButton sx={{ color: 'white' }} onClick={() => window.open('https://facebook.com/', '_blank', 'noopener,noreferrer')}>
                     <FacebookIcon />
                 </IconButton>
-                <IconButton sx={{ color: 'white' }}>
+                <IconButton sx={{ color: 'white' }} onClick={() => window.open('https://x.com/', '_blank', 'noopener,noreferrer')}>
                     <XIcon />
                 </IconButton>
-                <IconButton sx={{ color: 'white' }}>
+                <IconButton sx={{ color: 'white' }} onClick={() => window.open('https://instagram.com/', '_blank', 'noopener,noreferrer')}>
                     <InstagramIcon />
                 </IconButton>
             </Box>
 
             {/* Icone contact */}
-            <IconButton sx={{ color: 'white' }}>
+            <IconButton
+                sx={{ color: 'white' }}
+                onClick={() => navigate("/info#contact")}
+            >
                 <EmailIcon />
             </IconButton>
 

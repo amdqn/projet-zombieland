@@ -74,13 +74,25 @@ export class MessageController {
     return this.messageService.markMessageAsRead(messageId, user.id);
   }
 
-  // Supprimer un message
-  @Delete(':id')
+  // Archiver un message
+  @Patch(':id/archive')
   @HttpCode(HttpStatus.OK)
-  async remove(
-      @Param('id', ParseIntPipe) id: number,
+  async archive(
+      @Param('id', ParseIntPipe) messageId: number,
       @CurrentUser() user: any,
   ) {
-    return this.messageService.remove(id, user.id);
+    return this.messageService.archive(messageId, user.id);
   }
+
+
+
+  // Supprimer un message
+  // @Delete(':id')
+  // @HttpCode(HttpStatus.OK)
+  // async remove(
+  //     @Param('id', ParseIntPipe) id: number,
+  //     @CurrentUser() user: any,
+  // ) {
+  //   return this.messageService.remove(id, user.id);
+  // }
 }

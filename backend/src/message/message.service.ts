@@ -169,9 +169,52 @@ export class MessageService {
   }
 
   /**
+   * Archiver un message
+   */
+  async archive(id: number, userId: number) {
+    const message = await this.prisma.message.findUnique({
+      where: {id},
+      include: {
+        conversation: true,
+        sender: true,
+      }
+    });
+
+    if (!message) {
+      throw new NotFoundException(`Message ${id} introuvable`);
+    }
+
+    if(message.sender_id !== userId){
+      throw new ForbiddenException('Vous ne pouvez supprimer que vos propres messages');
+    }
+
+    if (message.conversation.status !== 'OPEN') {
+      throw new BadRequestException('Impossible de supprimer un message d\'une conversation clôturée');
+    }
+
+    if (message.is_deleted) {
+      throw new BadRequestException('Ce message est déjà supprimé');
+    }
+
+    const updatedMessage = await this.prisma.message.update({
+      where: { id },
+      data: {
+        content: 'Message supprimé',
+        is_deleted: true,
+      },
+    });
+
+    return {
+      success: true,
+      message: 'Message supprimé avec succès',
+      data: updatedMessage,
+    };
+  }
+
+  /**
    * Supprimer un message
    */
-  async remove(id: number, userId: number) {
+  /*async remove(id: number, userId: number) {
     const message = await this.prisma.message.findUnique({
       where: { id },
       include: {
@@ -216,5 +259,5 @@ export class MessageService {
       success: true,
       message: 'Message supprimé',
     };
-  }
+  }*/
 }

@@ -3,15 +3,27 @@ import {useContext, useEffect, useState} from "react";
 import type {Conversation, Message} from "../../@types/messaging";
 import {getOneConversation, updateConversationStatus} from "../../services/conversations.ts";
 import {colors} from "../../theme";
-import {Alert, Box, Button, Chip, Container, LinearProgress, Stack, TextField, Typography} from "@mui/material";
+import {
+    Alert,
+    Box,
+    Button,
+    Chip,
+    Container,
+    IconButton,
+    LinearProgress,
+    Stack,
+    TextField,
+    Typography
+} from "@mui/material";
 import {CustomBreadcrumbs} from "../../components/common";
 import MessageCard from "../../components/cards/Messaging/MessageCard.tsx";
 import {LoginContext} from "../../context/UserLoginContext.tsx";
 import {styled} from "@mui/material/styles";
 import SendIcon from '@mui/icons-material/Send';
-import {createMessage, markMessageAsRead} from "../../services/messages.ts";
+import {createMessage, deleteMessage, markMessageAsRead} from "../../services/messages.ts";
 import {toast} from "react-toastify";
 import * as React from "react";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const BoxMessageStyle = styled(Box)(({ theme }) => ({
     backgroundColor: colors.secondaryDarkAlt,
@@ -54,6 +66,8 @@ export default function MessagingDetails() {
     const [updateError, setUpdateError] = useState<string | null>(null);
     const [readingError, setReadingError] = useState<string | null>(null);
     const [refreshTrigger, setRefreshTrigger] = useState(0);
+    const [successDelete, setSuccessDelete] = useState<string | null>(null);
+    const [deleteError, setDeleteError] = useState<string | null>(null);
 
     const fetchConversation = async (id: number) => {
         setLoading(true);
@@ -119,7 +133,17 @@ export default function MessagingDetails() {
         } catch (error) {
             setUpdateError(`Une erreur est survenue : ${error}`)
         }
+    }
 
+    const handleDeleteMessage = async (messageId: number) => {
+        if (!messageId || !conversation) return;
+        try {
+            const res = await deleteMessage(messageId)
+            setSuccessDelete(res.message)
+            setDeleteError(null)
+        } catch (error) {
+            setDeleteError("Une erreur est survenue lors de la suppression du message : " + error + ".")
+        }
     }
 
     useEffect(() => {
@@ -245,12 +269,36 @@ export default function MessagingDetails() {
                                                     justifyContent: isOwnMessage ? 'flex-end' : 'flex-start',
                                                 }}
                                             >
+                                                {isOwnMessage && (
+                                                    <IconButton
+                                                        onClick={() => handleDeleteMessage(message.id)}
+                                                        size="small"
+                                                        sx={{
+                                                            color: colors.primaryRed,
+                                                            '&:hover': {
+                                                                backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                                                            },
+                                                        }}
+                                                    >
+                                                        <DeleteIcon fontSize="small" />
+                                                    </IconButton>
+                                                )}
                                                 <MessageCard message={message} isOwn={isOwnMessage} readingError={readingError}/>
                                             </Box>
                                         );
                                     })}
                                 </Stack>
                             </BoxMessageStyle>
+                        )}
+                        {deleteError && (
+                            <Alert severity="error" sx={{ mt: 2 }}>
+                                {deleteError}
+                            </Alert>
+                        )}
+                        {successDelete && (
+                            <Alert severity="success" sx={{ mt: 2 }}>
+                                {successDelete}
+                            </Alert>
                         )}
 
                         {/* Répondre au message */}

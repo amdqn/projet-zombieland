@@ -94,7 +94,7 @@ export const DeleteAccountModal = ({
             Toutes vos données personnelles seront définitivement supprimées conformément au RGPD.
           </Typography>
           <Typography variant="body2" sx={{ mt: 1 }}>
-            Si vous avez des réservations en cours, elles seront également supprimées.
+            Si vous avez des réservations ainsi que des conversations en cours, elles seront également supprimées.
           </Typography>
         </Alert>
 

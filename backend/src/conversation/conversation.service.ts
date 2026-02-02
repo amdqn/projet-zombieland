@@ -151,11 +151,11 @@ export class ConversationService {
     const where = userRole === 'ADMIN'
         ? {
           OR: [
-            { admin_id: userId }, // Conversations assignées
-            { status: ConversationStatus.Open }, // Conversations en attente
+            { admin_id: userId },
+            { status: ConversationStatus.Open },
           ],
         }
-        : { user_id: userId }; // Conversations du client
+        : { user_id: userId };
 
     return this.prisma.conversation.findMany({
       where,

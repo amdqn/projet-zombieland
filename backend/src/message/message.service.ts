@@ -39,6 +39,11 @@ export class MessageService {
         throw new ForbiddenException('Vous ne faites pas partie de cette conversation');
       }
 
+      const openConversation = await this.conversationService.findOne(conversationId);
+      if(openConversation.status !== 'OPEN'){
+        throw new ForbiddenException('Vous ne pouvez pas créer de nouveau message sur une conversation clôturée.');
+      }
+
       finalConversationId = conversationId;
     }
     // CAS 2 : Nouvelle conversation (avec ou sans recipientId)

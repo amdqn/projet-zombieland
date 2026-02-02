@@ -63,11 +63,8 @@ export default function MessagingDetails() {
     const { role, userId } = useContext(LoginContext)
     const [newMessage, setNewMessage] = useState<string>("");
     const [sending, setSending] = useState<boolean>(false);
-    const [updateError, setUpdateError] = useState<string | null>(null);
     const [readingError, setReadingError] = useState<string | null>(null);
     const [refreshTrigger, setRefreshTrigger] = useState(0);
-    const [successDelete, setSuccessDelete] = useState<string | null>(null);
-    const [deleteError, setDeleteError] = useState<string | null>(null);
 
     const fetchConversation = async (id: number) => {
         setLoading(true);
@@ -131,7 +128,7 @@ export default function MessagingDetails() {
             toast.success("La conversation est bien clôturée.")
             setRefreshTrigger(prev => prev + 1);
         } catch (error) {
-            setUpdateError(`Une erreur est survenue : ${error}`)
+            toast.error(`Une erreur est survenue : ${error}`)
         }
     }
 
@@ -139,20 +136,10 @@ export default function MessagingDetails() {
         if (!messageId || !conversation) return;
         try {
             const res = await softDeleteMessage(messageId)
-            setSuccessDelete(res.message)
-            setDeleteError(null)
+            toast.success(res.message)
             setRefreshTrigger(prev => prev + 1);
-            // Masquer l'alerte après 3 secondes
-            setTimeout(() => {
-                setSuccessDelete(null);
-            }, 3000);
         } catch (error) {
-            setDeleteError("Une erreur est survenue lors de la suppression du message : " + error + ".")
-            setSuccessDelete(null)
-            // Masquer l'alerte après 3 secondes
-            setTimeout(() => {
-                setDeleteError(null);
-            }, 3000);
+            toast.error("Une erreur est survenue lors de la suppression du message : " + error + ".")
         }
     }
 
@@ -186,65 +173,86 @@ export default function MessagingDetails() {
                     {conversation && (
                         <Box sx={{
                             display: 'flex',
-                            justifyContent: 'space-between',
+                            flexDirection: 'column',
                             alignItems: 'center',
-                            gap: 2,
-                            flexWrap: 'wrap'
+                            gap: 3,
+                            textAlign: 'center',
+                            py: { xs: 2, md: 3 },
                         }}>
-                            <Box>
+                            <Chip
+                                label={conversation.status === 'OPEN' ? 'EN COURS' : 'CLÔTURÉE'}
+                                size="medium"
+                                sx={{
+                                    backgroundColor: conversation.status === 'OPEN' ? colors.primaryGreen : colors.primaryRed,
+                                    color: colors.white,
+                                    fontWeight: 700,
+                                    fontSize: { xs: '0.875rem', md: '1rem' },
+                                    letterSpacing: '0.05em',
+                                    minWidth: '120px',
+                                    height: { xs: '32px', md: '36px' },
+                                    boxShadow: conversation.status === 'OPEN'
+                                        ? '0 0 20px rgba(58, 239, 48, 0.4)'
+                                        : '0 0 20px rgba(198, 38, 40, 0.4)',
+                                    transition: 'all 0.3s ease',
+                                }}
+                            />
+
+                            <Box sx={{
+                                maxWidth: { xs: '100%', md: '80%' },
+                                px: 2,
+                            }}>
                                 <Typography
                                     variant="h1"
                                     sx={{
-                                        fontSize: { xs: '1.8rem', md: '4rem' },
+                                        fontSize: { xs: '1.8rem', sm: '2.5rem', md: '3.5rem' },
                                         color: colors.white,
                                         textShadow: `
-                                      0 0 20px rgba(198, 38, 40, 0.8),
-                                      0 0 40px rgba(58, 239, 48, 0.4),
-                                      3px 3px 0 ${colors.primaryRed}
-                                    `,
-                                        marginBottom: { xs: '8px', md: '12px' },
-                                        lineHeight: 1,
+                      0 0 20px rgba(198, 38, 40, 0.8),
+                      0 0 40px rgba(58, 239, 48, 0.4),
+                      3px 3px 0 ${colors.primaryRed}
+                    `,
+                                        lineHeight: 1.2,
                                         letterSpacing: '2px',
+                                        wordBreak: 'break-word',
+                                        fontWeight: 700,
+                                        mb: 0,
                                     }}
                                 >
-                                    Objet : {conversation.object}
+                                    {conversation.object}
                                 </Typography>
-                                <Chip
-                                    label={conversation.status === 'OPEN' ? 'EN COURS' : 'CLOTURER'}
-                                    size="medium"
-                                    sx={{
-                                        backgroundColor: conversation.status === 'OPEN' ? colors.primaryGreen : colors.primaryRed,
-                                        color: colors.white,
-                                        fontWeight: 700,
-                                        letterSpacing: '0.03em',
-                                        minWidth: '100px',
-                                    }}
-                                />
                             </Box>
 
-                            {role == 'ADMIN' && conversation.status == 'OPEN' && (
+                            {role === 'ADMIN' && conversation.status === 'OPEN' && (
                                 <Button
                                     variant="contained"
                                     onClick={handleCloture}
                                     sx={{
                                         backgroundColor: colors.primaryRed,
                                         color: colors.white,
-                                        fontSize: { xs: '1rem', md: '1rem' },
-                                        padding: { xs: '0.6rem 2rem', md: '1rem 3rem' },
+                                        fontSize: { xs: '0.9rem', md: '1rem' },
+                                        fontWeight: 600,
+                                        padding: { xs: '0.7rem 2.5rem', md: '1rem 3.5rem' },
+                                        borderRadius: '8px',
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '0.5px',
+                                        boxShadow: '0 4px 15px rgba(198, 38, 40, 0.4)',
+                                        transition: 'all 0.3s ease',
                                         '&:hover': {
                                             backgroundColor: colors.primaryRed,
                                             opacity: 0.9,
+                                            transform: 'translateY(-2px)',
+                                            boxShadow: '0 6px 20px rgba(198, 38, 40, 0.6)',
+                                        },
+                                        '&:active': {
+                                            transform: 'translateY(0)',
                                         },
                                     }}
                                 >
                                     Clôturer la conversation
                                 </Button>
-
                             )}
                         </Box>
                     )}
-
-                    { updateError && <Alert severity="error">{updateError}</Alert>}
 
                     <Container
                         maxWidth={false}
@@ -279,7 +287,7 @@ export default function MessagingDetails() {
                                                     justifyContent: isOwnMessage ? 'flex-end' : 'flex-start',
                                                 }}
                                             >
-                                                {isOwnMessage && !message.is_deleted && (
+                                                {isOwnMessage && !message.is_deleted && conversation.status === 'OPEN' && (
                                                     <IconButton
                                                         onClick={() => handleSoftDeleteMessage(message.id)}
                                                         size="small"
@@ -300,17 +308,6 @@ export default function MessagingDetails() {
                                 </Stack>
                             </BoxMessageStyle>
                         )}
-                        {deleteError && (
-                            <Alert severity="error" sx={{ mt: 2 }}>
-                                {deleteError}
-                            </Alert>
-                        )}
-                        {successDelete && (
-                            <Alert severity="success" sx={{ mt: 2 }}>
-                                {successDelete}
-                            </Alert>
-                        )}
-
                         {/* Répondre au message */}
                         {sendError && (
                             <Alert severity="error" sx={{ mt: 2 }}>

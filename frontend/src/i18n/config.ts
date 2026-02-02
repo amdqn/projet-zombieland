@@ -27,8 +27,6 @@ i18n
       order: ['localStorage', 'navigator'],
       caches: ['localStorage'],
       lookupLocalStorage: 'i18nextLng',
-      // Si aucune langue n'est trouvée, utiliser 'fr'
-      checkWhitelist: true,
     },
   });
 

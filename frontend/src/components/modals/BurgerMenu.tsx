@@ -31,6 +31,13 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
 
     const navigate = useNavigate();
 
+    const navigateActivitiesTab = (hash: string) => {
+        onClose();
+        setTimeout(() => {
+            navigate(`/activities${hash}`);
+        }, 300);
+    };
+
     const navigateLoginPage = () => {
         navigate('/login');
         setTimeout(onClose, 50);
@@ -42,14 +49,41 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
         setTimeout(onClose, 50);
     }
 
-    const navigateActivitiesPage = () => {
-        navigate('/activities');
-        setTimeout(onClose, 50);
+    const navigateActivitiesPage = () => navigateActivitiesTab('#activities')
+    const navigateAttractionsPage = () => navigateActivitiesTab('#attractions')
+    const navigateRestaurantPage = () => navigateActivitiesTab('#restaurants')
+
+    const navigateInfoPagePrices = () => {
+        onClose();
+        setTimeout(() => {
+            navigate('/info#prices');
+        }, 300);
     }
 
     const navigateReservationPage = () => {
         navigate('/reservations');
         setTimeout(onClose, 50);
+    }
+
+    const navigateInfoPageAccessibility = () => {
+        onClose();
+        setTimeout(() => {
+            navigate('/info#accessibility');
+        }, 300);
+    }
+
+    const navigateInfoPageSchedules = () => {
+        onClose();
+        setTimeout(() => {
+            navigate('/info#schedules');
+        }, 300);
+    }
+
+    const navigateInfoPageContact = () => {
+        onClose();
+        setTimeout(() => {
+            navigate('/info#contact');
+        }, 300);
     }
 
     const navigateInfoPage = () => {
@@ -182,8 +216,11 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                         <Button sx={{ color: "white" }} onClick={navigateActivitiesPage}>
                             {t("home.experiences.activities")}
                         </Button>
-                        <Button sx={{ color: "white" }} onClick={navigateActivitiesPage}>
+                        <Button sx={{ color: "white" }} onClick={navigateAttractionsPage}>
                             {t("home.experiences.attractions")}
+                        </Button>
+                        <Button sx={{ color: "white" }} onClick={navigateRestaurantPage}>
+                            {t("home.experiences.restaurants")}
                         </Button>
                     </Box>
 
@@ -195,7 +232,7 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                         <Typography variant="h3" color="white" sx={{ mb: 2, fontWeight: 'bold' }}>
                             {t("home.ticketing.title")}
                         </Typography>
-                        <Button sx={{ color: "white" }} onClick={navigateReservationPage}>
+                        <Button sx={{ color: "white" }} onClick={navigateInfoPagePrices}>
                             {t("home.ticketing.prices")}
                         </Button>
                         <Button sx={{ color: "white" }} onClick={navigateReservationPage}>
@@ -211,13 +248,13 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                         <Typography variant="h3" color="white" sx={{ mb: 2, fontWeight: 'bold' }}>
                             {t("home.information.title")}
                         </Typography>
-                        <Button sx={{ color: "white" }} onClick={navigateInfoPage}>
+                        <Button sx={{ color: "white" }} onClick={navigateInfoPageAccessibility}>
                             {t("home.information.accessibility")}
                         </Button>
-                        <Button sx={{ color: "white" }} onClick={navigateInfoPage}>
+                        <Button sx={{ color: "white" }} onClick={navigateInfoPageSchedules}>
                             {t("home.information.schedule")}
                         </Button>
-                        <Button sx={{ color: "white" }} onClick={navigateInfoPage}>
+                        <Button sx={{ color: "white" }} onClick={navigateInfoPageContact}>
                             {t("home.information.contact")}
                         </Button>
                     </Box>

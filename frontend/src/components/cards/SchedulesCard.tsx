@@ -106,7 +106,7 @@ export function SchedulesCard({schedules}: SchedulesCardProps) {
                     )}
                 </CardContent>
                 <CardActions sx={{ justifyContent: 'center', paddingBottom: 5 }}>
-                    <PrimaryButton text={t("home.schedule.moreSchedules")} href={"/info"} fullWidth={false}/>
+                    <PrimaryButton text={t("home.schedule.moreSchedules")} href={"/info#schedules"} fullWidth={false}/>
                 </CardActions>
             </Card>
         </>

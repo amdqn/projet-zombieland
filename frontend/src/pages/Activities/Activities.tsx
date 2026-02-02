@@ -22,6 +22,8 @@ import type { Activity } from '../../@types/activity';
 import type { Attraction } from '../../@types/attraction';
 import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE, DEFAULT_RESTAURANT_IMAGE } from '../../utils/imageUtils';
 import { useTranslation } from 'react-i18next';
+import {useLocation} from "react-router-dom";
+import {useNavigate} from "react-router";
 
 const ALL_CATEGORIES_KEY = '__ALL__';
 
@@ -35,6 +37,41 @@ export const Activities = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>(ALL_CATEGORIES_KEY);
   const [minThrill, setMinThrill] = useState<number>(0);
   const [searchQuery, setSearchQuery] = useState<string>('');
+
+  // gestion des anchors
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Mapper les ancres vers les indices de tabs
+  const hashToTabIndex: Record<string, number> = {
+        '#activities': 0,
+        '#attractions': 1,
+        '#restaurants': 2,
+  };
+
+  const tabIndexToHash: Record<number, string> = {
+        0: '#activities',
+        1: '#attractions',
+        2: '#restaurants',
+  };
+
+  // Synchroniser le tab avec l'ancre URL au chargement
+  useEffect(() => {
+      if (location.hash) {
+          const tabIndex = hashToTabIndex[location.hash];
+          if (tabIndex !== undefined) {
+              setTabValue(tabIndex);
+          }
+      }
+  }, [location.hash]);
+
+    // Gérer le changement de tab
+  const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
+      setTabValue(newValue);
+      // Mettre à jour l'URL avec l'ancre correspondante
+      const hash = tabIndexToHash[newValue];
+      navigate(`${location.pathname}${hash}`, { replace: true });
+    };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -187,7 +224,7 @@ export const Activities = () => {
 
           <Tabs
             value={tabValue}
-            onChange={(_, newValue) => setTabValue(newValue)}
+            onChange={handleTabChange}
             sx={{
               mb: { xs: 1.5, md: 3 },
               '& .MuiTabs-indicator': {

@@ -46,8 +46,11 @@ export default function Footer() {
                     <Box onClick={() => navigate("/reservations")} sx={{ cursor: "pointer" }}>
                         {t("footer.links.reservations")}
                     </Box>
-                    <Box onClick={() => navigate("/contact")} sx={{ cursor: "pointer" }}>
+                    <Box onClick={() => navigate("/info#contact")} sx={{ cursor: "pointer" }}>
                         {t("footer.links.contact")}
+                    </Box>
+                    <Box onClick={() => navigate("/info#faq")} sx={{ cursor: "pointer" }}>
+                        FAQ
                     </Box>
                 </Box>
 

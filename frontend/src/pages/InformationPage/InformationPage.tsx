@@ -74,6 +74,19 @@ export function InformationPage() {
     fetchData();
   }, [i18n.language]);
 
+  // useEffect 2 : Gérer le scroll vers les ancres
+  useEffect(() => {
+      if (location.hash) {
+          // Attendre que le DOM soit bien chargé
+          setTimeout(() => {
+              const element = document.querySelector(location.hash);
+              if (element) {
+                  element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
+          }, 100);
+      }
+  }, [location]);
+
   return (
     <Box sx={{ backgroundColor: colors.secondaryDark, minHeight: '100vh', color: colors.white }}>
       {/* Hero Section */}
@@ -208,7 +221,7 @@ export function InformationPage() {
         }}
       >
         {/* Section À propos */}
-        <Box sx={{ mb: 6 }}>
+        <Box sx={{ mb: 6 }} id="about" component={"section"}>
           <Typography
             variant="h2"
             sx={{
@@ -233,7 +246,7 @@ export function InformationPage() {
         </Box>
 
         {/* Section Carte Interactive */}
-        <Box sx={{ mb: 6 }}>
+        <Box sx={{ mb: 6 }} id={"map"} component={"section"}>
           <Typography
             variant="h3"
             sx={{
@@ -468,7 +481,7 @@ export function InformationPage() {
         </Box>
 
         {/* Section Horaires de la semaine */}
-        <Box sx={{ mb: 6 }}>
+        <Box sx={{ mb: 6 }} id="schedules" component="section">
           <Typography
             variant="h3"
             sx={{
@@ -532,7 +545,7 @@ export function InformationPage() {
         </Box>
 
         {/* Section Tarifs */}
-        <Box sx={{ mb: 6 }}>
+        <Box sx={{ mb: 6 }} id={'prices'} component="section">
           <Typography
             variant="h3"
             sx={{
@@ -618,7 +631,7 @@ export function InformationPage() {
         </Box>
 
         {/* Section Contact */}
-        <Box sx={{ mb: 6 }}>
+        <Box sx={{ mb: 6 }} id={'contact'} component="section">
           <Typography
             variant="h3"
             sx={{
@@ -728,7 +741,7 @@ export function InformationPage() {
         </Box>
 
         {/* Section Plan d'accès */}
-        <Box sx={{ mb: 6 }}>
+        <Box sx={{ mb: 6 }} id={'accessibility'} component="section">
           <Typography
             variant="h3"
             sx={{
@@ -852,7 +865,7 @@ export function InformationPage() {
         </Box>
 
         {/* Section FAQ */}
-        <Box sx={{ mb: 6 }}>
+        <Box sx={{ mb: 6 }} id={'faq'} component="section">
           <Typography
             variant="h3"
             sx={{

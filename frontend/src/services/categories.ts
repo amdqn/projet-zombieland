@@ -5,11 +5,15 @@ import type { Category } from '../@types/categorie';
 export interface CreateCategoryDto {
   name: string;
   description: string;
+  name_en?: string | null;
+  description_en?: string | null;
 }
 
 export interface UpdateCategoryDto {
   name?: string;
   description?: string;
+  name_en?: string | null;
+  description_en?: string | null;
 }
 
 export const getCategories = async (): Promise<Category[]> => {

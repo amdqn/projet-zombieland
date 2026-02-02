@@ -18,8 +18,10 @@ import type { Category } from '../../@types/categorie';
 import type { WeatherCondition } from '../../components/home/weather/types/weatherTypes';
 import type { ParkDate } from '../../@types/parkDate';
 import type { Price } from '../../@types/price';
+import { useTranslation } from 'react-i18next';
 
 export function InformationPage() {
+  const { t, i18n } = useTranslation();
   const [mapData, setMapData] = useState<MapData | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -62,7 +64,7 @@ export function InformationPage() {
         setPrices(Array.isArray(pricesData) ? pricesData : []);
       } catch (err) {
         const message =
-          err instanceof Error ? err.message : 'Impossible de charger les données de la carte.';
+          err instanceof Error ? err.message : t('info.page.map.error');
         setError(message);
       } finally {
         setLoading(false);
@@ -70,7 +72,7 @@ export function InformationPage() {
     };
 
     fetchData();
-  }, []);
+  }, [i18n.language]);
 
   return (
     <Box sx={{ backgroundColor: colors.secondaryDark, minHeight: '100vh', color: colors.white }}>
@@ -78,8 +80,8 @@ export function InformationPage() {
       <HeroSection images={heroImages}>
         <CustomBreadcrumbs
           items={[
-            { label: 'Accueil', path: '/', showOnMobile: true },
-            { label: 'Informations', showOnMobile: true },
+            { label: t('info.page.breadcrumbs.home'), path: '/', showOnMobile: true },
+            { label: t('info.page.breadcrumbs.info'), showOnMobile: true },
           ]}
         />
 
@@ -99,7 +101,7 @@ export function InformationPage() {
             letterSpacing: '2px',
           }}
         >
-          Informations du Parc
+          {t('info.page.hero.title')}
         </Typography>
 
         <Typography
@@ -112,7 +114,7 @@ export function InformationPage() {
             mb: 3,
           }}
         >
-          Découvrez toutes les informations pratiques et explorez la carte interactive de Zombieland.
+          {t('info.page.hero.description')}
         </Typography>
 
         {/* Horaires et Météo */}
@@ -146,13 +148,13 @@ export function InformationPage() {
               <Typography variant="body2" sx={{ fontSize: { xs: '0.85rem', md: '0.95rem' } }}>
                 {schedule.is_open ? (
                   <>
-                    Ouvert aujourd'hui
+                    {t('info.page.schedule.openToday')}
                     {schedule.open_hour && schedule.close_hour && (
                       <> : {schedule.open_hour.slice(0, 5)} - {schedule.close_hour.slice(0, 5)}</>
                     )}
                   </>
                 ) : (
-                  'Fermé aujourd\'hui'
+                  t('info.page.schedule.closedToday')
                 )}
               </Typography>
             </Box>
@@ -216,7 +218,7 @@ export function InformationPage() {
               fontSize: { xs: 24, md: 32 },
             }}
           >
-            À propos de Zombieland
+            {t('info.page.about.title')}
           </Typography>
           <Typography
             variant="body1"
@@ -226,11 +228,8 @@ export function InformationPage() {
               lineHeight: 1.8,
               mb: 2,
             }}
-          >
-            Bienvenue à <strong>Zombieland</strong>, le parc d'attractions le plus terrifiant et immersif d'Europe !
-            Plongez dans un monde post-apocalyptique où vous devrez survivre aux hordes de zombies tout en profitant
-            d'attractions à sensations fortes, de spectacles époustouflants et d'expériences immersives inoubliables.
-          </Typography>
+            dangerouslySetInnerHTML={{ __html: t('info.page.about.description') }}
+          />
         </Box>
 
         {/* Section Carte Interactive */}
@@ -244,7 +243,7 @@ export function InformationPage() {
               fontSize: { xs: 20, md: 28 },
             }}
           >
-            Carte Interactive du Parc
+            {t('info.page.map.title')}
           </Typography>
           <Typography
             variant="body2"
@@ -254,8 +253,7 @@ export function InformationPage() {
               mb: 4,
             }}
           >
-            Explorez la carte pour découvrir toutes les attractions, activités et services disponibles dans le parc.
-            Utilisez les filtres pour affiner votre recherche !
+            {t('info.page.map.description')}
           </Typography>
 
           {loading && (
@@ -337,7 +335,7 @@ export function InformationPage() {
               fontWeight: 'bold',
             }}
           >
-            Légende de la Carte
+            {t('info.page.map.legend.title')}
           </Typography>
           <Box
             sx={{
@@ -373,7 +371,7 @@ export function InformationPage() {
                 </svg>
               </Box>
               <Typography sx={{ color: colors.white, fontSize: 14 }}>
-                Attractions
+                {t('info.page.map.legend.attractions')}
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flex: { xs: '1 1 100%', sm: '1 1 45%', md: '1 1 22%' } }}>
@@ -397,7 +395,7 @@ export function InformationPage() {
                 </svg>
               </Box>
               <Typography sx={{ color: colors.white, fontSize: 14 }}>
-                Activités
+                {t('info.page.map.legend.activities')}
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flex: { xs: '1 1 100%', sm: '1 1 45%', md: '1 1 22%' } }}>
@@ -441,7 +439,7 @@ export function InformationPage() {
                 </svg>
               </Box>
               <Typography sx={{ color: colors.white, fontSize: 14 }}>
-                Toilettes
+                {t('info.page.map.legend.toilets')}
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flex: { xs: '1 1 100%', sm: '1 1 45%', md: '1 1 22%' } }}>
@@ -463,7 +461,7 @@ export function InformationPage() {
                 </svg>
               </Box>
               <Typography sx={{ color: colors.white, fontSize: 14 }}>
-                Boutiques
+                {t('info.page.map.legend.shops')}
               </Typography>
             </Box>
           </Box>
@@ -480,7 +478,7 @@ export function InformationPage() {
               fontSize: { xs: 20, md: 28 },
             }}
           >
-            Horaires d'Ouverture
+            {t('info.page.hours.title')}
           </Typography>
           <Box
             sx={{
@@ -490,13 +488,13 @@ export function InformationPage() {
             }}
           >
             {[
-              { day: 'Lundi', hours: 'Fermé', closed: true },
-              { day: 'Mardi', hours: 'Fermé', closed: true },
-              { day: 'Mercredi', hours: '10h00 - 22h00', closed: false },
-              { day: 'Jeudi', hours: '10h00 - 22h00', closed: false },
-              { day: 'Vendredi', hours: '10h00 - 23h00', closed: false },
-              { day: 'Samedi', hours: '09h00 - 00h00', closed: false },
-              { day: 'Dimanche', hours: '09h00 - 22h00', closed: false },
+              { day: t('info.page.hours.days.monday'), hours: t('info.page.hours.closed'), closed: true },
+              { day: t('info.page.hours.days.tuesday'), hours: t('info.page.hours.closed'), closed: true },
+              { day: t('info.page.hours.days.wednesday'), hours: '10h00 - 22h00', closed: false },
+              { day: t('info.page.hours.days.thursday'), hours: '10h00 - 22h00', closed: false },
+              { day: t('info.page.hours.days.friday'), hours: '10h00 - 23h00', closed: false },
+              { day: t('info.page.hours.days.saturday'), hours: '09h00 - 00h00', closed: false },
+              { day: t('info.page.hours.days.sunday'), hours: '09h00 - 22h00', closed: false },
             ].map((item) => (
               <Box
                 key={item.day}
@@ -544,7 +542,7 @@ export function InformationPage() {
               fontSize: { xs: 20, md: 28 },
             }}
           >
-            Nos Tarifs
+            {t('info.page.prices.title')}
           </Typography>
           <Box
             sx={{
@@ -591,7 +589,9 @@ export function InformationPage() {
                     lineHeight: 1,
                   }}
                 >
-                  {price.amount}€
+                  {i18n.language === 'fr' 
+                    ? `${price.amount.toFixed(2).replace('.', ',')} €` 
+                    : `€${price.amount.toFixed(2)}`}
                 </Typography>
                 <Typography
                   sx={{
@@ -600,7 +600,7 @@ export function InformationPage() {
                     textAlign: 'center',
                   }}
                 >
-                  {price.duration_days === 1 ? 'Billet 1 jour' : `Pass ${price.duration_days} jours`}
+                  {price.duration_days === 1 ? t('info.page.prices.oneDay') : t('info.page.prices.passDays', { days: price.duration_days })}
                 </Typography>
               </Box>
             ))}
@@ -613,7 +613,7 @@ export function InformationPage() {
               textAlign: 'center',
             }}
           >
-            * Tarifs susceptibles d'évoluer selon les périodes. Réservation en ligne recommandée.
+            {t('info.page.prices.note')}
           </Typography>
         </Box>
 
@@ -628,7 +628,7 @@ export function InformationPage() {
               fontSize: { xs: 20, md: 28 },
             }}
           >
-            Nous Contacter
+            {t('info.page.contact.title')}
           </Typography>
           <Box
             sx={{
@@ -649,12 +649,12 @@ export function InformationPage() {
                 variant="h6"
                 sx={{ color: colors.primaryRed, mb: 3, fontWeight: 'bold', fontSize: 18 }}
               >
-                Coordonnées
+                {t('info.page.contact.coordinates.title')}
               </Typography>
               <Stack spacing={2.5}>
                 <Box>
                   <Typography sx={{ color: colors.primaryGreen, fontSize: 14, mb: 0.5, fontWeight: 600 }}>
-                    Téléphone
+                    {t('info.page.contact.coordinates.phone')}
                   </Typography>
                   <Typography sx={{ color: colors.white, fontSize: 16 }}>
                     01 23 45 67 89
@@ -662,7 +662,7 @@ export function InformationPage() {
                 </Box>
                 <Box>
                   <Typography sx={{ color: colors.primaryGreen, fontSize: 14, mb: 0.5, fontWeight: 600 }}>
-                    Email
+                    {t('info.page.contact.coordinates.email')}
                   </Typography>
                   <Typography sx={{ color: colors.white, fontSize: 16 }}>
                     contact@zombieland.fr
@@ -670,21 +670,15 @@ export function InformationPage() {
                 </Box>
                 <Box>
                   <Typography sx={{ color: colors.primaryGreen, fontSize: 14, mb: 0.5, fontWeight: 600 }}>
-                    Service client
+                    {t('info.page.contact.coordinates.customerService')}
                   </Typography>
-                  <Typography sx={{ color: colors.white, fontSize: 14 }}>
-                    Du mercredi au dimanche<br />
-                    De 9h30 à 21h00
-                  </Typography>
+                  <Typography sx={{ color: colors.white, fontSize: 14 }} dangerouslySetInnerHTML={{ __html: t('info.page.contact.coordinates.customerServiceHours') }} />
                 </Box>
                 <Box>
                   <Typography sx={{ color: colors.primaryGreen, fontSize: 14, mb: 0.5, fontWeight: 600 }}>
-                    Réseaux sociaux
+                    {t('info.page.contact.coordinates.socialMedia')}
                   </Typography>
-                  <Typography sx={{ color: colors.white, fontSize: 14 }}>
-                    Facebook • Instagram • Twitter<br />
-                    @zombielandparis
-                  </Typography>
+                  <Typography sx={{ color: colors.white, fontSize: 14 }} dangerouslySetInnerHTML={{ __html: t('info.page.contact.coordinates.socialMediaHandle') }} />
                 </Box>
               </Stack>
             </Box>
@@ -701,18 +695,18 @@ export function InformationPage() {
                 variant="h6"
                 sx={{ color: colors.primaryRed, mb: 3, fontWeight: 'bold', fontSize: 18 }}
               >
-                Besoin d'aide ?
+                {t('info.page.contact.help.title')}
               </Typography>
               <Typography sx={{ color: colors.white, fontSize: 14, lineHeight: 1.8, mb: 3 }}>
-                Notre équipe est à votre disposition pour répondre à toutes vos questions concernant :
+                {t('info.page.contact.help.description')}
               </Typography>
               <Stack spacing={1.5}>
                 {[
-                  'Réservations et modifications',
-                  'Groupes et événements privés',
-                  'Accessibilité PMR',
-                  'Consignes et objets perdus',
-                  'Anniversaires et animations',
+                  t('info.page.contact.help.items.reservations'),
+                  t('info.page.contact.help.items.groups'),
+                  t('info.page.contact.help.items.accessibility'),
+                  t('info.page.contact.help.items.lockers'),
+                  t('info.page.contact.help.items.birthdays'),
                 ].map((item) => (
                   <Box key={item} sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                     <Box
@@ -744,7 +738,7 @@ export function InformationPage() {
               fontSize: { xs: 20, md: 28 },
             }}
           >
-            Plan d'Accès
+            {t('info.page.access.title')}
           </Typography>
           <Box
             sx={{
@@ -765,46 +759,34 @@ export function InformationPage() {
                 variant="h6"
                 sx={{ color: colors.primaryRed, mb: 3, fontWeight: 'bold', fontSize: 18 }}
               >
-                Adresse
+                {t('info.page.access.address.title')}
               </Typography>
-              <Typography sx={{ color: colors.white, fontSize: 16, mb: 3, lineHeight: 1.8 }}>
-                123 Avenue de l'Apocalypse<br />
-                75000 Paris, France
-              </Typography>
+              <Typography sx={{ color: colors.white, fontSize: 16, mb: 3, lineHeight: 1.8 }} dangerouslySetInnerHTML={{ __html: t('info.page.access.address.street') }} />
 
               <Typography
                 variant="h6"
                 sx={{ color: colors.primaryRed, mb: 2, mt: 4, fontWeight: 'bold', fontSize: 18 }}
               >
-                En Transports en Commun
+                {t('info.page.access.publicTransport.title')}
               </Typography>
               <Stack spacing={2}>
                 <Box>
                   <Typography sx={{ color: colors.primaryGreen, fontSize: 14, fontWeight: 600 }}>
-                    Métro
+                    {t('info.page.access.publicTransport.metro.label')}
                   </Typography>
-                  <Typography sx={{ color: colors.white, fontSize: 14 }}>
-                    Ligne 7 - Station "Zombieland"<br />
-                    Sortie 2 - Direction Parc
-                  </Typography>
+                  <Typography sx={{ color: colors.white, fontSize: 14 }} dangerouslySetInnerHTML={{ __html: t('info.page.access.publicTransport.metro.info') }} />
                 </Box>
                 <Box>
                   <Typography sx={{ color: colors.primaryGreen, fontSize: 14, fontWeight: 600 }}>
-                    RER
+                    {t('info.page.access.publicTransport.rer.label')}
                   </Typography>
-                  <Typography sx={{ color: colors.white, fontSize: 14 }}>
-                    RER B - Arrêt "Parc Zombieland"<br />
-                    À 5 min à pied
-                  </Typography>
+                  <Typography sx={{ color: colors.white, fontSize: 14 }} dangerouslySetInnerHTML={{ __html: t('info.page.access.publicTransport.rer.info') }} />
                 </Box>
                 <Box>
                   <Typography sx={{ color: colors.primaryGreen, fontSize: 14, fontWeight: 600 }}>
-                    Bus
+                    {t('info.page.access.publicTransport.bus.label')}
                   </Typography>
-                  <Typography sx={{ color: colors.white, fontSize: 14 }}>
-                    Lignes 38, 47, 91<br />
-                    Arrêt "Zombieland Entrée Principale"
-                  </Typography>
+                  <Typography sx={{ color: colors.white, fontSize: 14 }} dangerouslySetInnerHTML={{ __html: t('info.page.access.publicTransport.bus.info') }} />
                 </Box>
               </Stack>
             </Box>
@@ -821,38 +803,26 @@ export function InformationPage() {
                 variant="h6"
                 sx={{ color: colors.primaryRed, mb: 3, fontWeight: 'bold', fontSize: 18 }}
               >
-                En Voiture
+                {t('info.page.access.car.title')}
               </Typography>
               <Stack spacing={2.5}>
                 <Box>
                   <Typography sx={{ color: colors.primaryGreen, fontSize: 14, fontWeight: 600, mb: 1 }}>
-                    Depuis Paris Centre
+                    {t('info.page.access.car.fromCenter.label')}
                   </Typography>
-                  <Typography sx={{ color: colors.white, fontSize: 14, lineHeight: 1.6 }}>
-                    Prendre le Périphérique direction Porte de la Chapelle<br />
-                    Sortie 23 "Zombieland"<br />
-                    Suivre les panneaux verts
-                  </Typography>
+                  <Typography sx={{ color: colors.white, fontSize: 14, lineHeight: 1.6 }} dangerouslySetInnerHTML={{ __html: t('info.page.access.car.fromCenter.info') }} />
                 </Box>
                 <Box>
                   <Typography sx={{ color: colors.primaryGreen, fontSize: 14, fontWeight: 600, mb: 1 }}>
-                    Depuis l'Autoroute A1
+                    {t('info.page.access.car.fromA1.label')}
                   </Typography>
-                  <Typography sx={{ color: colors.white, fontSize: 14, lineHeight: 1.6 }}>
-                    Sortie 7 "Paris Nord - Zombieland"<br />
-                    Direction centre-ville pendant 3km<br />
-                    Le parc sera sur votre gauche
-                  </Typography>
+                  <Typography sx={{ color: colors.white, fontSize: 14, lineHeight: 1.6 }} dangerouslySetInnerHTML={{ __html: t('info.page.access.car.fromA1.info') }} />
                 </Box>
                 <Box>
                   <Typography sx={{ color: colors.primaryGreen, fontSize: 14, fontWeight: 600, mb: 1 }}>
-                    Parking
+                    {t('info.page.access.car.parking.label')}
                   </Typography>
-                  <Typography sx={{ color: colors.white, fontSize: 14, lineHeight: 1.6 }}>
-                    3 parkings gratuits disponibles<br />
-                    2000 places<br />
-                    Accessible PMR
-                  </Typography>
+                  <Typography sx={{ color: colors.white, fontSize: 14, lineHeight: 1.6 }} dangerouslySetInnerHTML={{ __html: t('info.page.access.car.parking.info') }} />
                 </Box>
               </Stack>
             </Box>
@@ -876,7 +846,7 @@ export function InformationPage() {
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Localisation Zombieland"
+              title={t('info.page.access.mapTitle')}
             />
           </Box>
         </Box>
@@ -892,41 +862,41 @@ export function InformationPage() {
               fontSize: { xs: 20, md: 28 },
             }}
           >
-            Questions Fréquentes
+            {t('info.page.faq.title')}
           </Typography>
           <Stack spacing={2}>
             {[
               {
-                q: 'Le parc est-il accessible aux personnes à mobilité réduite ?',
-                a: 'Oui, toutes nos attractions et services sont accessibles PMR. Des fauteuils roulants sont disponibles gratuitement à l\'entrée sur demande.',
+                q: t('info.page.faq.items.accessibility.question'),
+                a: t('info.page.faq.items.accessibility.answer'),
               },
               {
-                q: 'Y a-t-il un âge minimum pour visiter le parc ?',
-                a: 'Le parc est ouvert à tous les âges, mais certaines attractions sont déconseillées aux moins de 12 ans en raison de leur intensité. Consultez les panneaux à l\'entrée de chaque attraction.',
+                q: t('info.page.faq.items.age.question'),
+                a: t('info.page.faq.items.age.answer'),
               },
               {
-                q: 'Puis-je apporter ma propre nourriture ?',
-                a: 'Les pique-niques sont autorisés dans les zones dédiées. Cependant, nous vous invitons à découvrir nos restaurants thématiques pour une expérience complète.',
+                q: t('info.page.faq.items.food.question'),
+                a: t('info.page.faq.items.food.answer'),
               },
               {
-                q: 'Les animaux sont-ils acceptés ?',
-                a: 'Seuls les chiens guides et d\'assistance sont autorisés dans l\'enceinte du parc pour des raisons de sécurité et d\'hygiène.',
+                q: t('info.page.faq.items.animals.question'),
+                a: t('info.page.faq.items.animals.answer'),
               },
               {
-                q: 'Que se passe-t-il en cas de mauvais temps ?',
-                a: 'Le parc reste ouvert par tous les temps. En cas de conditions météorologiques extrêmes, certaines attractions extérieures peuvent être temporairement fermées pour votre sécurité.',
+                q: t('info.page.faq.items.weather.question'),
+                a: t('info.page.faq.items.weather.answer'),
               },
               {
-                q: 'Puis-je annuler ou modifier ma réservation ?',
-                a: 'Les réservations sont modifiables jusqu\'à 48h avant la date prévue. Les annulations sont remboursées à 100% jusqu\'à 7 jours avant, et à 50% jusqu\'à 48h avant.',
+                q: t('info.page.faq.items.cancellation.question'),
+                a: t('info.page.faq.items.cancellation.answer'),
               },
               {
-                q: 'Y a-t-il des casiers pour ranger mes affaires ?',
-                a: 'Oui, des consignes sécurisées sont disponibles à l\'entrée du parc pour 3€ la journée. Les objets de valeur peuvent être déposés gratuitement au vestiaire principal.',
+                q: t('info.page.faq.items.lockers.question'),
+                a: t('info.page.faq.items.lockers.answer'),
               },
               {
-                q: 'Le parc propose-t-il des événements spéciaux ?',
-                a: 'Oui ! Consultez notre calendrier en ligne pour découvrir nos soirées Halloween, événements de Noël, et animations spéciales tout au long de l\'année.',
+                q: t('info.page.faq.items.events.question'),
+                a: t('info.page.faq.items.events.answer'),
               },
             ].map((faq, index) => (
               <Box

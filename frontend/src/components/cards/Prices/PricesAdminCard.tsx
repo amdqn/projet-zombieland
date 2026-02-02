@@ -5,6 +5,7 @@ import {colors} from "../../../theme";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {styled} from "@mui/material/styles";
+import { useTranslation } from 'react-i18next';
 
 
 const StyledPriceCard = styled(Card)(({ theme }) => ({
@@ -40,6 +41,8 @@ interface PriceCardProps {
 }
 
 export default function PriceAdminCard({price, onEdit, onClick, onDelete}: PriceCardProps) {
+    const { t, i18n } = useTranslation();
+    const locale = i18n.language === 'fr' ? 'fr-FR' : 'en-US';
 
     const handleEdit = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -63,9 +66,17 @@ export default function PriceAdminCard({price, onEdit, onClick, onDelete}: Price
 
     const formatPriceTitle = (price: Price) => {
         if (price.type === "PASS_2J") {
-            return "PASS 2 JOURS";
+            return t('admin.prices.card.pass2d');
         }
-        return `${price.type}`;
+        // Traduire les autres types si nécessaire
+        switch (price.type) {
+            case "ETUDIANT":
+                return t('admin.prices.student');
+            case "GROUPE":
+                return t('admin.prices.group');
+            default:
+                return price.type;
+        }
     }
 
     return (
@@ -107,7 +118,7 @@ export default function PriceAdminCard({price, onEdit, onClick, onDelete}: Price
                                                     color: colors.secondaryGrey,
                                                 },
                                             }}
-                                            aria-label="Modifier le tarif"
+                                            aria-label={t('admin.prices.card.editLabel')}
                                         >
                                             <EditIcon fontSize="small" />
                                         </IconButton>
@@ -125,7 +136,7 @@ export default function PriceAdminCard({price, onEdit, onClick, onDelete}: Price
                                                     color: colors.secondaryGrey,
                                                 },
                                             }}
-                                            aria-label="Supprimer le tarif"
+                                            aria-label={t('admin.prices.card.deleteLabel')}
                                         >
                                             <DeleteIcon fontSize="small" />
                                         </IconButton>
@@ -151,7 +162,7 @@ export default function PriceAdminCard({price, onEdit, onClick, onDelete}: Price
                                         mb: 0.5,
                                     }}
                                 >
-                                    Type de tarif
+                                    {t('admin.prices.card.priceType')}
                                 </Typography>
                                 <Typography variant="body1" sx={{ color: colors.white, fontWeight: 600 }}>
                                     {formatPriceTitle(price)}
@@ -170,7 +181,7 @@ export default function PriceAdminCard({price, onEdit, onClick, onDelete}: Price
                                     mb: 0.5,
                                 }}
                             >
-                                Nombre de jour
+                                {t('admin.prices.card.daysCount')}
                             </Typography>
                             <Typography variant="body1" sx={{ color: colors.white }}>
                                 {price.duration_days}
@@ -188,7 +199,7 @@ export default function PriceAdminCard({price, onEdit, onClick, onDelete}: Price
                                     mb: 0.5,
                                 }}
                             >
-                                Montant
+                                {t('admin.prices.card.amount')}
                             </Typography>
                             <Typography
                                 variant="h6"
@@ -198,7 +209,7 @@ export default function PriceAdminCard({price, onEdit, onClick, onDelete}: Price
                                     fontSize: '1.5rem',
                                 }}
                             >
-                                {price.amount} €
+                                {locale === 'en-US' ? `€${price.amount.toFixed(2)}` : `${price.amount.toFixed(2).replace('.', ',')} €`}
                             </Typography>
                         </Box>
                     </Stack>

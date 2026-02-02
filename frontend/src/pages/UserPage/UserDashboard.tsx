@@ -4,8 +4,10 @@ import { colors } from "../../theme";
 import { CustomBreadcrumbs } from "../../components/common";
 import { HeroSection } from "../../components/hero/HeroSection";
 import { Typography } from "@mui/material";
+import {useTranslation} from "react-i18next";
 
 export const UserDashboard = () => {
+    const { t } = useTranslation();
     const heroImages = [
         '/activities-images/post-apocalyptic-street.jpg',
         '/activities-images/zombie.jpg',
@@ -20,9 +22,9 @@ export const UserDashboard = () => {
                     <Box sx={{ pt: { xs: 2, md: 2 }, mb: { xs: 1, md: 1 } }}>
                         <CustomBreadcrumbs
                             items={[
-                                { label: 'Accueil', path: '/', showOnMobile: true },
+                                { label: t("auth.account.reservations.breadcrumbs.home"), path: '/', showOnMobile: true },
                                 { label: 'Mon compte', path: '/account',showOnMobile: true },
-                                { label: 'Mes réservations', showOnMobile: true },
+                                { label: t("auth.account.reservations.breadcrumbs.reservations"), showOnMobile: true },
                             ]}
                         />
                     </Box>
@@ -42,7 +44,7 @@ export const UserDashboard = () => {
                             letterSpacing: '2px',
                         }}
                     >
-                        Mes réservations
+                        {t("auth.account.reservations.title")}
                     </Typography>
 
                     <Typography
@@ -54,7 +56,7 @@ export const UserDashboard = () => {
                             mb: { xs: 1.5, md: 3 },
                         }}
                     >
-                        Consultez et gérez toutes vos réservations au parc Zombieland.
+                        {t("auth.account.reservations.description")}
                     </Typography>
                 </Box>
             </HeroSection>

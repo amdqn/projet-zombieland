@@ -1,5 +1,6 @@
 import { Alert, Box, Modal, Typography, TextField, Button, CircularProgress, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { updateUser, type UpdateUserDto } from '../../../services/users';
 import { colors } from '../../../theme';
@@ -32,6 +33,7 @@ export const UpdateUserModal = ({
   user,
   onUpdateSuccess,
 }: UpdateUserModalProps) => {
+  const { t } = useTranslation();
   const [pseudo, setPseudo] = useState('');
   const [email, setEmail] = useState('');
   const [role, setRole] = useState<'ADMIN' | 'CLIENT'>('CLIENT');
@@ -59,18 +61,18 @@ export const UpdateUserModal = ({
     if (!user) return;
 
     if (!pseudo || !email) {
-      setError('Le nom et l\'email sont requis');
+      setError(t('admin.users.nameAndEmailRequired'));
       return;
     }
 
     if (pseudo.length < 3) {
-      setError('Le nom doit contenir au moins 3 caractères');
+      setError(t('admin.users.nameMinLength'));
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setError('L\'email n\'est pas valide');
+      setError(t('admin.users.emailInvalid'));
       return;
     }
 
@@ -85,11 +87,11 @@ export const UpdateUserModal = ({
       };
 
       await updateUser(user.id, dto);
-      toast.success('Utilisateur mis à jour avec succès !');
+      toast.success(t('admin.users.successUpdate'));
       onUpdateSuccess();
       handleClose();
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erreur lors de la modification de l\'utilisateur';
+      const message = err instanceof Error ? err.message : t('admin.users.errorUpdate');
       setError(message);
     } finally {
       setIsLoading(false);
@@ -110,7 +112,7 @@ export const UpdateUserModal = ({
             textAlign: 'center',
           }}
         >
-          Modifier l'utilisateur
+          {t('admin.users.edit')}
         </Typography>
 
         {error && (
@@ -121,7 +123,7 @@ export const UpdateUserModal = ({
 
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
           <TextField
-            label="Nom d'utilisateur"
+            label={t('admin.users.username')}
             variant="outlined"
             fullWidth
             required
@@ -140,7 +142,7 @@ export const UpdateUserModal = ({
           />
 
           <TextField
-            label="Email"
+            label={t('admin.users.email')}
             variant="outlined"
             fullWidth
             required
@@ -160,10 +162,10 @@ export const UpdateUserModal = ({
           />
 
           <FormControl fullWidth>
-            <InputLabel sx={{ color: colors.secondaryGrey }}>Rôle</InputLabel>
+            <InputLabel sx={{ color: colors.secondaryGrey }}>{t('admin.users.role')}</InputLabel>
             <Select
               value={role}
-              label="Rôle"
+              label={t('admin.users.role')}
               onChange={(e) => setRole(e.target.value as 'ADMIN' | 'CLIENT')}
               sx={{
                 backgroundColor: colors.secondaryDark,
@@ -198,14 +200,14 @@ export const UpdateUserModal = ({
                 },
               }}
             >
-              <MenuItem value="CLIENT">Client</MenuItem>
-              <MenuItem value="ADMIN">Administrateur</MenuItem>
+              <MenuItem value="CLIENT">{t('admin.users.client')}</MenuItem>
+              <MenuItem value="ADMIN">{t('admin.users.admin')}</MenuItem>
             </Select>
           </FormControl>
 
           {role !== user.role && (
             <Alert severity="warning" sx={{ mb: 2 }}>
-              Vous êtes sur le point de modifier le rôle de cet utilisateur. Cette action nécessite une confirmation.
+              {t('admin.users.roleChangeWarning')}
             </Alert>
           )}
 
@@ -223,7 +225,7 @@ export const UpdateUserModal = ({
               }}
               variant="outlined"
             >
-              Annuler
+              {t('common.cancel')}
             </Button>
             <Button
               onClick={handleSubmit}
@@ -243,7 +245,7 @@ export const UpdateUserModal = ({
                 },
               }}
             >
-              {isLoading ? <CircularProgress size={24} sx={{ color: colors.secondaryDark }} /> : 'Mettre à jour'}
+              {isLoading ? <CircularProgress size={24} sx={{ color: colors.secondaryDark }} /> : t('admin.users.update')}
             </Button>
           </Box>
         </Box>

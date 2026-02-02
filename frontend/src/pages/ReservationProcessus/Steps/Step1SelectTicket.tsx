@@ -8,6 +8,8 @@ import { InformationCard } from '../../../components/cards';
 import { colors } from '../../../theme/theme';
 import { useReservationStore } from '../../../stores/reservationStore';
 import { getPrices } from '../../../services/prices';
+import { useTranslation } from 'react-i18next';
+import { formatPriceName } from '../../../utils/translatePrice';
 import type { Price } from '../../../@types/price';
 
 interface Step1SelectTicketProps {
@@ -15,6 +17,7 @@ interface Step1SelectTicketProps {
 }
 
 export const Step1SelectTicket = ({ onViewChange }: Step1SelectTicketProps) => {
+  const { t, i18n } = useTranslation();
   const { tickets, setTickets } = useReservationStore();
   const [prices, setPrices] = useState<Price[]>([]);
   const priceMap = new Map(prices.map((p) => [p.id, p]));
@@ -33,7 +36,7 @@ export const Step1SelectTicket = ({ onViewChange }: Step1SelectTicketProps) => {
       setPrices(prices);
     };
     fetchPrices();
-  }, []);
+  }, [i18n.language]);
 
   // Synchroniser selectedTickets avec le store quand tickets change
   useEffect(() => {
@@ -123,7 +126,7 @@ export const Step1SelectTicket = ({ onViewChange }: Step1SelectTicketProps) => {
             color: colors.primaryRed,
           }}
         >
-          QUEL TYPE DE BILLET ?
+          {t('reservation.step1.title')}
         </Typography>
         <Typography
           variant="body1"
@@ -132,7 +135,7 @@ export const Step1SelectTicket = ({ onViewChange }: Step1SelectTicketProps) => {
             fontSize: { xs: '0.9rem', md: '1rem' },
           }}
         >
-          Choisissez votre type d'entrée
+          {t('reservation.step1.subtitle')}
         </Typography>
       </Box>
 
@@ -204,7 +207,7 @@ export const Step1SelectTicket = ({ onViewChange }: Step1SelectTicketProps) => {
                           mb: 1,
                         }}
                       >
-                      {price.type} - {price.duration_days} jour{price.duration_days > 1 ? 's' : ''}
+                      {formatPriceName(price.type, price.duration_days, t)}
                       </Typography>
                       <Typography
                         variant="body2"
@@ -249,7 +252,7 @@ export const Step1SelectTicket = ({ onViewChange }: Step1SelectTicketProps) => {
                           fontSize: '0.9rem',
                         }}
                       >
-                        Quantité sélectionnée : {quantity}
+                        {t('reservation.step1.quantitySelected', { quantity })}
                       </Typography>
 
                       {/* Icône Edit */}
@@ -317,7 +320,7 @@ export const Step1SelectTicket = ({ onViewChange }: Step1SelectTicketProps) => {
               color: colors.primaryRed,
             }}
           >
-            COMBIEN DE BILLETS ?
+            {t('reservation.step1.quantityTitle')}
           </Typography>
           <Typography
             variant="body1"
@@ -326,7 +329,7 @@ export const Step1SelectTicket = ({ onViewChange }: Step1SelectTicketProps) => {
               fontSize: { xs: '0.9rem', md: '1rem' },
             }}
           >
-            Sélectionnez le nombre de personnes
+            {t('reservation.step1.quantitySubtitle')}
           </Typography>
         </Box>
 
@@ -470,7 +473,7 @@ export const Step1SelectTicket = ({ onViewChange }: Step1SelectTicketProps) => {
                         color: colors.white,
                       }}
                     >
-                      Quantité × {tempQuantity}
+                      {t('reservation.step1.quantityLabel', { quantity: tempQuantity })}
                     </Typography>
                     <Typography
                       sx={{
@@ -500,7 +503,7 @@ export const Step1SelectTicket = ({ onViewChange }: Step1SelectTicketProps) => {
                         textTransform: 'uppercase',
                       }}
                     >
-                      TOTAL
+                      {t('reservation.step1.total')}
                     </Typography>
                     <Typography
                       sx={{
@@ -560,7 +563,7 @@ export const Step1SelectTicket = ({ onViewChange }: Step1SelectTicketProps) => {
                 },
               }}
             >
-              ← RETOUR
+              {t('reservation.process.buttons.back')}
             </Button>
 
             <Button
@@ -580,7 +583,7 @@ export const Step1SelectTicket = ({ onViewChange }: Step1SelectTicketProps) => {
                 width: { xs: '100%', md: 'auto' },
               }}
             >
-              CONTINUER →
+              {t('reservation.process.buttons.continue')}
             </Button>
           </Box>
         </Box>

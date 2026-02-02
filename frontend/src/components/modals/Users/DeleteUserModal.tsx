@@ -1,5 +1,6 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography, Box } from '@mui/material';
 import WarningIcon from '@mui/icons-material/Warning';
+import { useTranslation } from 'react-i18next';
 import { colors } from '../../../theme';
 import type { User } from '../../../@types/users';
 
@@ -20,6 +21,7 @@ export const DeleteUserModal = ({
   isDeleting,
   error,
 }: DeleteUserModalProps) => {
+  const { t } = useTranslation();
   const hasReservations = (userToDelete?._count?.reservations || 0) > 0;
 
   return (
@@ -35,7 +37,7 @@ export const DeleteUserModal = ({
       }}
     >
       <DialogTitle sx={{ color: colors.primaryRed, fontWeight: 600 }}>
-        Supprimer l'utilisateur
+        {t('admin.users.delete')}
       </DialogTitle>
       <DialogContent>
         {error && (
@@ -59,17 +61,17 @@ export const DeleteUserModal = ({
               }}
             >
               <Typography sx={{ fontWeight: 600, mb: 1 }}>
-                Cet utilisateur ne peut pas être supprimé
+                {t('admin.users.cannotDeleteUser')}
               </Typography>
               <Typography variant="body2">
-                Il a {userToDelete?._count?.reservations || 0} réservation{userToDelete?._count?.reservations !== 1 ? 's' : ''} associée{userToDelete?._count?.reservations !== 1 ? 's' : ''}.
+                {t('admin.users.reservationsAssociated', { count: userToDelete?._count?.reservations || 0 })}
               </Typography>
               <Typography variant="body2" sx={{ mt: 1 }}>
-                Veuillez d'abord supprimer ou transférer les réservations associées.
+                {t('admin.users.deleteOrTransferFirst')}
               </Typography>
             </Alert>
             <Typography sx={{ color: colors.secondaryGrey }}>
-              Utilisateur : <strong style={{ color: colors.white }}>{userToDelete?.pseudo}</strong>
+              {t('admin.users.userLabel')}: <strong style={{ color: colors.white }}>{userToDelete?.pseudo}</strong>
             </Typography>
           </Box>
         )}
@@ -77,7 +79,7 @@ export const DeleteUserModal = ({
         {!hasReservations && (
           <>
             <Typography sx={{ color: colors.white, mb: 2 }}>
-              Êtes-vous sûr de vouloir supprimer définitivement l'utilisateur{' '}
+              {t('admin.users.confirmDeleteUser')}{' '}
               <strong style={{ color: colors.primaryGreen }}>
                 {userToDelete?.pseudo}
               </strong>
@@ -92,14 +94,14 @@ export const DeleteUserModal = ({
               }}
             >
               <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>
-                Attention : Cette action est irréversible et conforme au RGPD
+                {t('admin.users.irreversibleAction')}
               </Typography>
               <Typography variant="body2">
-                Toutes les données personnelles de cet utilisateur seront définitivement supprimées.
+                {t('admin.users.personalDataDeleted')}
               </Typography>
             </Alert>
             <Typography variant="body2" sx={{ color: colors.secondaryGrey }}>
-              Email : {userToDelete?.email}
+              {t('admin.users.email')}: {userToDelete?.email}
             </Typography>
           </>
         )}
@@ -116,7 +118,7 @@ export const DeleteUserModal = ({
             },
           }}
         >
-          {hasReservations ? 'Fermer' : 'Annuler'}
+          {hasReservations ? t('common.close') : t('common.cancel')}
         </Button>
         {!hasReservations && (
           <Button
@@ -131,7 +133,7 @@ export const DeleteUserModal = ({
               },
             }}
           >
-            {isDeleting ? 'Suppression...' : 'Supprimer définitivement'}
+            {isDeleting ? t('admin.users.deleting') : t('admin.users.deletePermanently')}
           </Button>
         )}
       </DialogActions>

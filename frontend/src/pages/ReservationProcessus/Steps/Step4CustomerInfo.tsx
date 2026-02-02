@@ -6,8 +6,10 @@ import { useState, useEffect, useContext } from "react";
 import { Input } from "../../../components/common";
 import { useReservationStore } from "../../../stores/reservationStore";
 import { LoginContext } from "../../../context/UserLoginContext";
+import { useTranslation } from 'react-i18next';
 
 export const Step4CustomerInfo = () => {
+  const { t } = useTranslation();
   const { customerInfo, setCustomerInfo } = useReservationStore();
   const { email: loginEmail } = useContext(LoginContext);
   const [firstName, setFirstName] = useState(customerInfo?.firstName || '');
@@ -64,37 +66,37 @@ export const Step4CustomerInfo = () => {
   // Fonctions de validation
   const validateFirstName = (value: string) => {
     if (!value.trim()) {
-      return 'Le prénom est obligatoire';
+      return t('reservation.step4.validation.firstNameRequired');
     }
     return '';
   };
 
   const validateLastName = (value: string) => {
     if (!value.trim()) {
-      return 'Le nom est obligatoire';
+      return t('reservation.step4.validation.lastNameRequired');
     }
     return '';
   };
 
   const validateEmail = (value: string) => {
     if (!value.trim()) {
-      return 'L\'email est obligatoire';
+      return t('reservation.step4.validation.emailRequired');
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(value)) {
-      return 'Email invalide';
+      return t('reservation.step4.validation.emailInvalid');
     }
     return '';
   };
 
   const validatePhone = (value: string) => {
     if (!value.trim()) {
-      return 'Le téléphone est obligatoire';
+      return t('reservation.step4.validation.phoneRequired');
     }
     const phoneRegex = /^(\+33|0)[1-9](\d{2}){4}$/;
     const cleanPhone = value.replace(/\s/g, '');
     if (!phoneRegex.test(cleanPhone)) {
-      return 'Numéro de téléphone invalide';
+      return t('reservation.step4.validation.phoneInvalid');
     }
     return '';
   };
@@ -110,7 +112,7 @@ export const Step4CustomerInfo = () => {
             color: colors.primaryRed,
           }}
         >
-          VOS INFORMATIONS
+          {t('reservation.step4.title')}
         </Typography>
         <Typography
           variant="body1"
@@ -119,7 +121,7 @@ export const Step4CustomerInfo = () => {
             fontSize: { xs: "0.9rem", md: "1rem" },
           }}
         >
-          Pour la confirmation de réservation.
+          {t('reservation.step4.subtitle')}
         </Typography>
       </Box>
 
@@ -128,9 +130,9 @@ export const Step4CustomerInfo = () => {
         <Box sx={{ display: 'flex', gap: 2, mb: 2, flexDirection: { xs: 'column', sm: 'row' } }}>
           <Box sx={{ flex: 1 }}>
             <Input
-              label="Prénom"
+              label={t('reservation.step4.firstName')}
               type="text"
-              placeholder="Votre prénom"
+              placeholder={t('reservation.step4.firstNamePlaceholder')}
               value={firstName}
               onChange={(e) => {
                 setFirstName(e.target.value);
@@ -149,9 +151,9 @@ export const Step4CustomerInfo = () => {
           </Box>
           <Box sx={{ flex: 1 }}>
             <Input
-              label="Nom"
+              label={t('reservation.step4.lastName')}
               type="text"
-              placeholder="Votre nom"
+              placeholder={t('reservation.step4.lastNamePlaceholder')}
               value={lastName}
               onChange={(e) => {
                 setLastName(e.target.value);
@@ -171,9 +173,9 @@ export const Step4CustomerInfo = () => {
         </Box>
 
         <Input
-          label="Email"
+          label={t('reservation.step4.email')}
           type="email"
-          placeholder="votre@email.com"
+          placeholder={t('reservation.step4.emailPlaceholder')}
           value={email}
           onChange={(e) => {
             setEmail(e.target.value);
@@ -191,9 +193,9 @@ export const Step4CustomerInfo = () => {
         />
 
         <Input
-          label="Téléphone"
+          label={t('reservation.step4.phone')}
           type="tel"
-          placeholder="+33 6 12 34 56 78"
+          placeholder={t('reservation.step4.phonePlaceholder')}
           value={phone}
           onChange={(e) => {
             setPhone(e.target.value);
@@ -232,7 +234,7 @@ export const Step4CustomerInfo = () => {
                 mb: 1,
               }}
             >
-              CONFIRMATION PAR EMAIL
+              {t('reservation.step4.emailConfirmation')}
             </Typography>
             <Typography
               sx={{
@@ -241,7 +243,7 @@ export const Step4CustomerInfo = () => {
                 color: colors.white,
               }}
             >
-              Vos billets seront envoyés à l'adresse email fournie
+              {t('reservation.step4.emailConfirmationText')}
             </Typography>
           </Box>
         </Box>

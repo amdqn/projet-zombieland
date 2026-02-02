@@ -28,8 +28,10 @@ import { CreateActivityModal } from '../../../components/modals/Activity/CreateA
 import { UpdateActivityModal } from '../../../components/modals/Activity/UpdateActivityModal.tsx';
 import { ActivityDetailsModal } from '../../../components/modals/Activity/ActivityDetailsModal.tsx';
 import { DeleteActivityModal } from '../../../components/modals/Activity/DeleteActivityModal.tsx';
+import { useTranslation } from 'react-i18next';
 
 export const ActivityList = () => {
+  const { t } = useTranslation();
   const [activities, setActivities] = useState<Activity[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -108,7 +110,7 @@ export const ActivityList = () => {
 
         setActivities(sorted);
       } catch (err) {
-        const message = err instanceof Error ? err.message : 'Erreur lors de la récupération des activités';
+        const message = err instanceof Error ? err.message : t('admin.activities.errorLoading');
         setError(message);
       } finally {
         setIsLoading(false);
@@ -154,12 +156,12 @@ export const ActivityList = () => {
     setDeleteSuccess(null);
     try {
       await deleteActivity(activityToDelete.id);
-      toast.success('Activité supprimée avec succès !');
+      toast.success(t('admin.activities.successDelete'));
       setActivities(activities.filter((a) => a.id !== activityToDelete.id));
       setDeleteDialogOpen(false);
       setActivityToDelete(null);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erreur lors de la suppression de l\'activité';
+      const message = err instanceof Error ? err.message : t('admin.activities.errorDelete');
       setDeleteError(message);
     } finally {
       setIsDeleting(false);
@@ -249,7 +251,7 @@ export const ActivityList = () => {
               color: colors.white,
             }}
           >
-            Gestion des activités
+            {t('admin.activities.title')}
           </Typography>
           <Typography
             variant="body2"
@@ -258,7 +260,7 @@ export const ActivityList = () => {
               mb: 2,
             }}
           >
-            Créez, modifiez et gérez toutes les activités du parc Zombieland. Total : {activities.length} activité{activities.length > 1 ? 's' : ''}
+            {t('admin.activities.description', { count: activities.length })}
           </Typography>
         </Box>
         <Button
@@ -276,7 +278,7 @@ export const ActivityList = () => {
             textTransform: 'uppercase',
           }}
         >
-          Nouvelle activité
+          {t('admin.activities.createButton')}
         </Button>
       </Box>
 
@@ -285,7 +287,7 @@ export const ActivityList = () => {
         <TextField
           fullWidth
           variant="outlined"
-          placeholder="Rechercher une activité..."
+          placeholder={t('admin.activities.searchPlaceholder')}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           onKeyPress={(e) => {
@@ -324,10 +326,10 @@ export const ActivityList = () => {
         <Grid container spacing={2} sx={{ mb: 2 }}>
           <Grid size={{ xs: 12, sm: 6, md: 4 }}>
             <FormControl fullWidth sx={{ minWidth: '200px' }}>
-              <InputLabel sx={{ color: colors.secondaryGrey }}>Catégorie</InputLabel>
+              <InputLabel sx={{ color: colors.secondaryGrey }}>{t('admin.activities.filterCategory')}</InputLabel>
               <Select
                 value={categoryFilter}
-                label="Catégorie"
+                label={t('admin.activities.filterCategory')}
                 onChange={(e) => setCategoryFilter(e.target.value as number | '')}
                 sx={{
                   backgroundColor: colors.secondaryDark,
@@ -366,7 +368,7 @@ export const ActivityList = () => {
                   },
                 }}
               >
-                <MenuItem value="">Toutes</MenuItem>
+                <MenuItem value="">{t('admin.activities.allCategories')}</MenuItem>
                 {categories.map((category) => (
                   <MenuItem key={category.id} value={category.id}>
                     {category.name}
@@ -378,10 +380,10 @@ export const ActivityList = () => {
 
           <Grid size={{ xs: 12, sm: 6, md: 4 }}>
             <FormControl fullWidth sx={{ minWidth: '200px' }}>
-              <InputLabel sx={{ color: colors.secondaryGrey }}>Statut</InputLabel>
+              <InputLabel sx={{ color: colors.secondaryGrey }}>{t('admin.activities.filterPublished')}</InputLabel>
               <Select
                 value={publishedFilter}
-                label="Statut"
+                label={t('admin.activities.filterPublished')}
                 onChange={(e) => setPublishedFilter(e.target.value)}
                 sx={{
                   backgroundColor: colors.secondaryDark,
@@ -420,9 +422,9 @@ export const ActivityList = () => {
                   },
                 }}
               >
-                <MenuItem value="">Tous</MenuItem>
-                <MenuItem value="published">Publiées</MenuItem>
-                <MenuItem value="draft">Brouillons</MenuItem>
+                <MenuItem value="">{t('admin.activities.allStatus')}</MenuItem>
+                <MenuItem value="published">{t('admin.activities.published')}</MenuItem>
+                <MenuItem value="draft">{t('admin.activities.draft')}</MenuItem>
               </Select>
             </FormControl>
           </Grid>
@@ -447,7 +449,7 @@ export const ActivityList = () => {
                 },
               }}
             >
-              Réinitialiser
+              {t('admin.activities.resetFilters')}
             </Button>
           </Grid>
         </Grid>
@@ -456,10 +458,10 @@ export const ActivityList = () => {
       {/* Filtre de tri */}
       <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
         <FormControl sx={{ minWidth: '250px' }}>
-          <InputLabel sx={{ color: colors.secondaryGrey }}>Trier par</InputLabel>
+          <InputLabel sx={{ color: colors.secondaryGrey }}>{t('admin.activities.sortBy')}</InputLabel>
           <Select
             value={sortBy}
-            label="Trier par"
+            label={t('admin.activities.sortBy')}
             onChange={(e) => setSortBy(e.target.value)}
             sx={{
               backgroundColor: colors.secondaryDark,
@@ -498,12 +500,12 @@ export const ActivityList = () => {
               },
             }}
           >
-            <MenuItem value="created_desc">Date création (récent)</MenuItem>
-            <MenuItem value="created_asc">Date création (ancien)</MenuItem>
-            <MenuItem value="updated_desc">Dernière modification (récent)</MenuItem>
-            <MenuItem value="updated_asc">Dernière modification (ancien)</MenuItem>
-            <MenuItem value="name_asc">Nom (A-Z)</MenuItem>
-            <MenuItem value="name_desc">Nom (Z-A)</MenuItem>
+            <MenuItem value="created_desc">{t('admin.activities.sortOptions.createdDesc')}</MenuItem>
+            <MenuItem value="created_asc">{t('admin.activities.sortOptions.createdAsc')}</MenuItem>
+            <MenuItem value="updated_desc">{t('admin.activities.sortOptions.updatedDesc')}</MenuItem>
+            <MenuItem value="updated_asc">{t('admin.activities.sortOptions.updatedAsc')}</MenuItem>
+            <MenuItem value="name_asc">{t('admin.activities.sortOptions.nameAsc')}</MenuItem>
+            <MenuItem value="name_desc">{t('admin.activities.sortOptions.nameDesc')}</MenuItem>
           </Select>
         </FormControl>
       </Box>
@@ -532,7 +534,7 @@ export const ActivityList = () => {
           >
             <CircularProgress sx={{ color: colors.primaryGreen }} size={60} />
             <Typography variant="body1" sx={{ color: colors.white }}>
-              Chargement des activités...
+              {t('admin.activities.loading')}
             </Typography>
           </Box>
         ) : error ? (
@@ -545,7 +547,7 @@ export const ActivityList = () => {
             }}
           >
             <Typography variant="body1" sx={{ color: colors.primaryRed }}>
-              Erreur : {error}
+              {t('admin.activities.errorLoading')}: {error}
             </Typography>
           </Box>
         ) : activities.length === 0 ? (
@@ -558,7 +560,7 @@ export const ActivityList = () => {
             }}
           >
             <Typography variant="body1" sx={{ color: colors.white }}>
-              Aucune activité trouvée.
+              {t('admin.activities.noActivities')}
             </Typography>
           </Box>
         ) : (

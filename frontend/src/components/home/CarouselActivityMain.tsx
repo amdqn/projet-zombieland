@@ -7,8 +7,10 @@ import { getAttractions } from "../../services/attractions";
 import type { Activity } from "../../@types/activity";
 import type { Attraction } from "../../@types/attraction";
 import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE } from "../../utils/imageUtils";
+import { useTranslation } from "react-i18next";
 
 export default function CarouselActivityMain(){
+    const { t, i18n } = useTranslation();
     const [activities, setActivities] = useState<Activity[]>([]);
     const [attractions, setAttractions] = useState<Attraction[]>([]);
 
@@ -22,11 +24,11 @@ export default function CarouselActivityMain(){
                 setActivities(activitiesData);
                 setAttractions(attractionsData);
             } catch (error) {
-                console.error("Erreur lors de la récupération des activités et attractions:", error);
+                console.error(t("home.carousel.errorLoading"), error);
             }
         };
         fetchData();
-    }, []);
+    }, [i18n.language]);
 
     // Combiner en mettant les activités en premier, puis les attractions
     const cards = useMemo(() => {
@@ -40,7 +42,7 @@ export default function CarouselActivityMain(){
                         key={`activity-${activity.id}`}
                         id={activity.id}
                         name={activity.name}
-                        category={activity.category?.name || 'Activité'}
+                        category={activity.category?.name || t("home.carousel.activityFallback")}
                         image={activityImage}
                         waitTime={activity.wait_time}
                     />
@@ -57,7 +59,7 @@ export default function CarouselActivityMain(){
                         key={`attraction-${attraction.id}`}
                         id={attraction.id}
                         name={attraction.name}
-                        category={attraction.category?.name || 'Attraction'}
+                        category={attraction.category?.name || t("home.carousel.attractionFallback")}
                         image={image}
                         type="attraction"
                         waitTime={attraction.wait_time}
@@ -71,7 +73,7 @@ export default function CarouselActivityMain(){
     return(
         <Box>
             <Typography variant="h2" pb={3}>
-                Activités & Attractions
+                {t("home.carousel.title")}
             </Typography>
 
             <Carousel

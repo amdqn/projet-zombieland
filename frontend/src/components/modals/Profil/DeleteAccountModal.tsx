@@ -7,6 +7,8 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { LoginContext } from '../../../context/UserLoginContext';
+import { useTranslation } from 'react-i18next';
+import i18n from '../../../i18n/config';
 
 interface DeleteAccountModalProps {
   open: boolean;
@@ -17,6 +19,7 @@ export const DeleteAccountModal = ({
   open,
   onClose,
 }: DeleteAccountModalProps) => {
+  const { t } = useTranslation();
   const [confirmation, setConfirmation] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -32,8 +35,9 @@ export const DeleteAccountModal = ({
   };
 
   const handleConfirmDelete = async () => {
-    if (confirmation !== 'SUPPRIMER') {
-      setError('Veuillez taper "SUPPRIMER" pour confirmer');
+    const confirmationWord = i18n.language === 'fr' ? 'SUPPRIMER' : 'DELETE';
+    if (confirmation !== confirmationWord) {
+      setError(t('modals.profile.deleteAccount.confirmationError'));
       return;
     }
 
@@ -42,11 +46,11 @@ export const DeleteAccountModal = ({
 
     try {
       await deleteAccount();
-      toast.success('Votre compte a été supprimé avec succès');
+      toast.success(t('modals.profile.deleteAccount.success'));
       logout();
       navigate('/');
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Erreur lors de la suppression du compte";
+      const message = err instanceof Error ? err.message : t('modals.profile.deleteAccount.error');
       setError(message);
     } finally {
       setIsDeleting(false);
@@ -66,7 +70,7 @@ export const DeleteAccountModal = ({
       }}
     >
       <DialogTitle sx={{ color: colors.primaryRed, fontWeight: 600 }}>
-        Supprimer mon compte
+        {t('modals.profile.deleteAccount.title')}
       </DialogTitle>
       <DialogContent>
         {error && (
@@ -88,26 +92,26 @@ export const DeleteAccountModal = ({
           }}
         >
           <Typography sx={{ fontWeight: 600, mb: 1 }}>
-            Attention : Cette action est irréversible
+            {t('modals.profile.deleteAccount.warningTitle')}
           </Typography>
           <Typography variant="body2">
-            Toutes vos données personnelles seront définitivement supprimées conformément au RGPD.
+            {t('modals.profile.deleteAccount.warning1')}
           </Typography>
           <Typography variant="body2" sx={{ mt: 1 }}>
-            Si vous avez des réservations ainsi que des conversations en cours, elles seront également supprimées.
+            {t('modals.profile.deleteAccount.warning2')}
           </Typography>
         </Alert>
 
         <Typography sx={{ color: colors.white, mb: 2 }}>
-          Pour confirmer la suppression de votre compte, veuillez taper{' '}
-          <strong style={{ color: colors.primaryRed }}>SUPPRIMER</strong> dans le champ ci-dessous :
+          {t('modals.profile.deleteAccount.confirmationText')}{' '}
+          <strong style={{ color: colors.primaryRed }}>{t('modals.profile.deleteAccount.confirmationWord')}</strong> :
         </Typography>
 
         <TextField
           fullWidth
           value={confirmation}
           onChange={(e) => setConfirmation(e.target.value)}
-          placeholder="SUPPRIMER"
+          placeholder={t('modals.profile.deleteAccount.confirmationPlaceholder')}
           disabled={isDeleting}
           sx={{
             mb: 2,
@@ -132,11 +136,11 @@ export const DeleteAccountModal = ({
             },
           }}
         >
-          Annuler
+          {t('modals.profile.deleteAccount.cancel')}
         </Button>
         <Button
           onClick={handleConfirmDelete}
-          disabled={isDeleting || confirmation !== 'SUPPRIMER'}
+          disabled={isDeleting || confirmation !== (i18n.language === 'fr' ? 'SUPPRIMER' : 'DELETE')}
           variant="contained"
           sx={{
             backgroundColor: colors.primaryRed,
@@ -149,7 +153,7 @@ export const DeleteAccountModal = ({
             },
           }}
         >
-          {isDeleting ? 'Suppression...' : 'Supprimer définitivement'}
+          {isDeleting ? t('modals.profile.deleteAccount.deleting') : t('modals.profile.deleteAccount.delete')}
         </Button>
       </DialogActions>
     </Dialog>

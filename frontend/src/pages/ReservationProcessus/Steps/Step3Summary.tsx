@@ -6,8 +6,11 @@ import { InformationCard } from "../../../components/cards";
 import { useReservationStore } from "../../../stores/reservationStore";
 import { getPrices } from "../../../services/prices";
 import type { Price } from "../../../@types/price";
+import { useTranslation } from 'react-i18next';
+import { formatPriceName } from '../../../utils/translatePrice';
 
 export const Step3Summary = () => {
+  const { t, i18n } = useTranslation();
   const { tickets, total, date, acceptedTerms, setAcceptedTerms } = useReservationStore();
   const [localAcceptedTerms, setLocalAcceptedTerms] = useState(acceptedTerms);
   const [prices, setPrices] = useState<Price[]>([]);
@@ -36,7 +39,7 @@ export const Step3Summary = () => {
     };
 
     fetchPrices();
-  }, []);
+  }, [i18n.language]);
 
   const priceMap = useMemo(() => new Map(prices.map((p) => [p.id, p])), [prices]);
 
@@ -81,7 +84,7 @@ export const Step3Summary = () => {
             color: colors.primaryRed,
           }}
         >
-          RÉCAPITULATIF
+          {t('reservation.step3.title')}
         </Typography>
         <Typography
           variant="body1"
@@ -90,7 +93,7 @@ export const Step3Summary = () => {
             fontSize: { xs: '0.9rem', md: '1rem' },
           }}
         >
-          Vérifiez votre commande avant de continuer
+          {t('reservation.step3.subtitle')}
         </Typography>
       </Box>
 
@@ -108,7 +111,7 @@ export const Step3Summary = () => {
                   textAlign: 'center',
                 }}
               >
-                Chargement des billets...
+                {t('reservation.step3.loading')}
               </Typography>
             ) : priceError ? (
               <Typography
@@ -136,7 +139,7 @@ export const Step3Summary = () => {
                         color: colors.white,
                       }}
                     >
-                      Type de billet
+                      {t('reservation.step3.ticketType')}
                     </Typography>
                     <Typography
                       sx={{
@@ -145,7 +148,7 @@ export const Step3Summary = () => {
                         color: colors.white,
                       }}
                     >
-                      {ticket.type} - {ticket.duration_days} jour{ticket.duration_days > 1 ? 's' : ''}
+                      {formatPriceName(ticket.type, ticket.duration_days, t)}
                     </Typography>
                   </Box>
 
@@ -158,7 +161,7 @@ export const Step3Summary = () => {
                         color: colors.white,
                       }}
                     >
-                      Nombre de billets
+                      {t('reservation.step3.quantity')}
                     </Typography>
                     <Typography
                       sx={{
@@ -180,7 +183,7 @@ export const Step3Summary = () => {
                         color: colors.white,
                       }}
                     >
-                      Prix unitaire
+                      {t('reservation.step3.unitPrice')}
                     </Typography>
                     <Typography
                       sx={{
@@ -214,7 +217,7 @@ export const Step3Summary = () => {
                   textAlign: 'center',
                 }}
               >
-                Aucun billet sélectionné
+                {t('reservation.step3.noTickets')}
               </Typography>
             )}
 
@@ -228,7 +231,7 @@ export const Step3Summary = () => {
                     color: colors.white,
                   }}
                 >
-                  Date de visite
+                  {t('reservation.step3.visitDate')}
                 </Typography>
                 <Typography
                   sx={{
@@ -261,7 +264,7 @@ export const Step3Summary = () => {
                   textTransform: 'uppercase',
                 }}
               >
-                TOTAL
+                {t('reservation.step3.total')}
               </Typography>
               <Typography
                 sx={{
@@ -300,7 +303,7 @@ export const Step3Summary = () => {
                   mb: 1,
                 }}
               >
-                J'accepte les Conditions Générales de Vente
+                {t('reservation.step3.acceptTerms')}
               </Typography>
               <Link
                 href="/static/conditions-vente"
@@ -312,7 +315,7 @@ export const Step3Summary = () => {
                   cursor: 'pointer',
                 }}
               >
-                Lire les CGV complètes
+                {t('reservation.step3.readTerms')}
               </Link>
             </Box>
           </Box>
@@ -339,7 +342,7 @@ export const Step3Summary = () => {
                   mb: 1,
                 }}
               >
-                ANNULATION GRATUITE
+                {t('reservation.step3.freeCancellation')}
               </Typography>
               <Typography
                 sx={{
@@ -348,7 +351,7 @@ export const Step3Summary = () => {
                   color: colors.white,
                 }}
               >
-                Vous pouvez annuler jusqu'à 10 jours avant la date de visite
+                {t('reservation.step3.cancellationText')}
               </Typography>
             </Box>
           </Box>

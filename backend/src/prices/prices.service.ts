@@ -6,11 +6,22 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import type { CreatePriceDto, UpdatePriceDto } from 'src/generated';
 import {Prisma, PriceType} from "@prisma/client";
+import {
+  transformTranslatableFields,
+  type Language,
+} from '../common/translations.util';
 import { PriceMapper } from './mappers/price.mapper';
 
 @Injectable()
 export class PricesService {
   constructor(private readonly prisma: PrismaService) {}
+
+  private formatPriceResponse(price: any, lang: Language = 'fr') {
+    const transformed = transformTranslatableFields(price, lang);
+    return {
+      ...PriceMapper.toDto(transformed),
+    };
+  }
 
   async findAll(
       options?: {
@@ -19,7 +30,8 @@ export class PricesService {
         sortBy?: string;
         amount?: number;
         priceType?: string;
-      }
+      },
+      lang: Language = 'fr',
   ) {
 
     const page = options?.page || 1;
@@ -67,7 +79,7 @@ export class PricesService {
     const totalPages = Math.ceil(total / limit);
 
     return {
-      data: PriceMapper.toDtoArray(prices),
+      data: prices.map((price) => this.formatPriceResponse(price, lang)),
       pagination: {
         total,
         page,
@@ -77,7 +89,7 @@ export class PricesService {
     };
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, lang: Language = 'fr') {
     const price = await this.prisma.price.findUnique({
       where: { id },
     });
@@ -86,11 +98,11 @@ export class PricesService {
       throw new NotFoundException(`Tarif avec l'ID ${id} non trouvé`);
     }
 
-    return PriceMapper.toDto(price);
+    return this.formatPriceResponse(price, lang);
   }
 
   async create(createPriceDto: CreatePriceDto) {
-    const { label, type, amount, duration_days } = createPriceDto;
+    const { label, label_en, type, amount, duration_days } = createPriceDto as any;
 
     if (!label || !type || !amount || !duration_days) {
       throw new BadRequestException('Tous les champs sont requis');
@@ -107,13 +119,14 @@ export class PricesService {
     const price = await this.prisma.price.create({
       data: {
         label,
+        label_en: label_en || null,
         type,
         amount,
         duration_days,
       },
     });
 
-    return PriceMapper.toDto(price);
+    return PriceMapper.toDto(transformTranslatableFields(price, 'fr'));
   }
 
   async update(id: number, updatePriceDto: UpdatePriceDto) {
@@ -141,7 +154,9 @@ export class PricesService {
       data: updatePriceDto,
     });
 
-    return PriceMapper.toDto(updatedPrice);
+    return PriceMapper.toDto(
+      transformTranslatableFields(updatedPrice, 'fr'),
+    );
   }
 
   async remove(id: number) {

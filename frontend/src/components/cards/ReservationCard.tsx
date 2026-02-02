@@ -6,6 +6,7 @@ import { colors } from '../../theme/theme';
 import type { Reservation, ReservationStatus } from '../../@types/reservation';
 import {useContext} from "react";
 import {LoginContext} from "../../context/UserLoginContext.tsx";
+import { useTranslation } from 'react-i18next';
 
 const StyledReservationCard = styled(Card)({
   backgroundColor: colors.secondaryDark,
@@ -45,22 +46,22 @@ const getStatusColor = (status: ReservationStatus): string => {
   }
 };
 
-const getStatusLabel = (status: ReservationStatus): string => {
+const getStatusLabel = (status: ReservationStatus, t: (key: string) => string): string => {
   switch (status) {
     case 'CONFIRMED':
-      return 'Confirmée';
+      return t('admin.reservations.confirmed');
     case 'PENDING':
-      return 'En attente';
+      return t('admin.reservations.pending');
     case 'CANCELLED':
-      return 'Annulée';
+      return t('admin.reservations.cancelled');
     default:
       return status;
   }
 };
 
-const formatDate = (dateString: string): string => {
+const formatDate = (dateString: string, locale: string = 'fr-FR'): string => {
   const date = new Date(dateString);
-  return date.toLocaleDateString('fr-FR', {
+  return date.toLocaleDateString(locale, {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
@@ -68,19 +69,23 @@ const formatDate = (dateString: string): string => {
   });
 };
 
-const formatPrice = (amount: number | string): string => {
+const formatPrice = (amount: number | string, locale: string = 'fr-FR'): string => {
   const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
+  if (locale === 'en-US') {
+    return `€${numAmount.toFixed(2)}`;
+  }
   return `${numAmount.toFixed(2).replace('.', ',')} €`;
 };
 
 export const ReservationCard = ({ reservation, onEdit, onDelete, onClick }: ReservationCardProps) => {
-
+  const { t, i18n } = useTranslation();
+  const locale = i18n.language === 'fr' ? 'fr-FR' : 'en-US';
   const { role } = useContext(LoginContext);
 
-  const customerName = reservation.user?.pseudo || `Utilisateur #${reservation.user_id}`;
+  const customerName = reservation.user?.pseudo || `${t('admin.reservations.card.userFallback')}${reservation.user_id}`;
   const reservationDate = reservation.date?.jour 
-    ? formatDate(reservation.date.jour) 
-    : 'Date non disponible';
+    ? formatDate(reservation.date.jour, locale) 
+    : t('admin.reservations.card.dateNotAvailable');
 
   // Vérifier si la date est passée
   const isDatePassed = () => {
@@ -156,12 +161,12 @@ export const ReservationCard = ({ reservation, onEdit, onDelete, onClick }: Rese
                   letterSpacing: '0.05em',
                 }}
               >
-                Réservation #{reservation.reservation_number}
+                {t('admin.reservations.card.reservationNumber')}{reservation.reservation_number}
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Chip
-                label={getStatusLabel(reservation.status)}
+                label={getStatusLabel(reservation.status, t)}
                 size="small"
                 sx={{
                   backgroundColor: getStatusColor(reservation.status),
@@ -187,8 +192,8 @@ export const ReservationCard = ({ reservation, onEdit, onDelete, onClick }: Rese
                           color: colors.secondaryGrey,
                         },
                       }}
-                      aria-label="Modifier la réservation"
-                      title={datePassed ? 'Impossible de modifier une réservation dont la date est passée' : 'Modifier la réservation'}
+                      aria-label={t('admin.reservations.card.editLabel')}
+                      title={datePassed ? t('admin.reservations.card.editDisabled') : t('admin.reservations.card.editLabel')}
                     >
                       <EditIcon fontSize="small" />
                     </IconButton>
@@ -207,13 +212,13 @@ export const ReservationCard = ({ reservation, onEdit, onDelete, onClick }: Rese
                           color: colors.secondaryGrey,
                         },
                       }}
-                      aria-label="Supprimer la réservation"
+                      aria-label={t('admin.reservations.card.deleteLabel')}
                       title={
                         datePassed 
-                          ? 'Impossible d\'annuler une réservation dont la date est passée'
+                          ? t('admin.reservations.card.deleteDisabledDate')
                           : !canCancelReservation && role === 'ADMIN'
-                          ? 'Annulation impossible : la visite est dans moins de 10 jours'
-                          : 'Supprimer la réservation'
+                          ? t('admin.reservations.card.deleteDisabledDays')
+                          : t('admin.reservations.card.deleteLabel')
                       }
                     >
                       <DeleteIcon fontSize="small" />
@@ -242,7 +247,7 @@ export const ReservationCard = ({ reservation, onEdit, onDelete, onClick }: Rese
                         mb: 0.5,
                       }}
                   >
-                    Client
+                    {t('admin.reservations.card.client')}
                   </Typography>
                   <Typography variant="body1" sx={{ color: colors.white, fontWeight: 600 }}>
                     {customerName}
@@ -263,7 +268,7 @@ export const ReservationCard = ({ reservation, onEdit, onDelete, onClick }: Rese
                   mb: 0.5,
                 }}
               >
-                Date de visite
+                {t('admin.reservations.card.visitDate')}
               </Typography>
               <Typography variant="body1" sx={{ color: colors.white }}>
                 {reservationDate}
@@ -281,7 +286,7 @@ export const ReservationCard = ({ reservation, onEdit, onDelete, onClick }: Rese
                   mb: 0.5,
                 }}
               >
-                Montant total
+                {t('admin.reservations.card.totalAmount')}
               </Typography>
               <Typography
                 variant="h6"
@@ -291,7 +296,7 @@ export const ReservationCard = ({ reservation, onEdit, onDelete, onClick }: Rese
                   fontSize: '1.5rem',
                 }}
               >
-                {formatPrice(reservation.total_amount)}
+                {formatPrice(reservation.total_amount, locale)}
               </Typography>
             </Box>
 
@@ -307,7 +312,7 @@ export const ReservationCard = ({ reservation, onEdit, onDelete, onClick }: Rese
                     mb: 0.5,
                   }}
                 >
-                  Nombre de billets
+                  {t('admin.reservations.card.ticketsCount')}
                 </Typography>
                 <Typography variant="body1" sx={{ color: colors.white }}>
                   {reservation.tickets_count}

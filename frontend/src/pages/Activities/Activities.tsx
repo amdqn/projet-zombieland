@@ -21,14 +21,18 @@ import { ActivityCardPublic } from '../../components/cards/Activity/ActivityCard
 import type { Activity } from '../../@types/activity';
 import type { Attraction } from '../../@types/attraction';
 import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE, DEFAULT_RESTAURANT_IMAGE } from '../../utils/imageUtils';
+import { useTranslation } from 'react-i18next';
+
+const ALL_CATEGORIES_KEY = '__ALL__';
 
 export const Activities = () => {
+  const { t, i18n } = useTranslation();
   const [tabValue, setTabValue] = useState<number>(0);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [attractions, setAttractions] = useState<Attraction[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string>('Toutes');
+  const [selectedCategory, setSelectedCategory] = useState<string>(ALL_CATEGORIES_KEY);
   const [minThrill, setMinThrill] = useState<number>(0);
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -52,7 +56,7 @@ export const Activities = () => {
         
       } catch (err) {
         const message =
-          err instanceof Error ? err.message : 'Impossible de charger les données.';
+          err instanceof Error ? err.message : t('activities.page.errorLoading');
         setError(message);
         setActivities([]);
         setAttractions([]);
@@ -61,7 +65,7 @@ export const Activities = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [i18n.language]);
 
   const enrichedActivities = useMemo(() => {
     const withMeta = activities
@@ -73,15 +77,15 @@ export const Activities = () => {
         const thrill = activity.thrill_level ?? 3;
         const durationMinutes = activity.duration ?? 45;
         const duration = `${durationMinutes} min`;
-        const categoryLabel = activity.category?.name ?? 'Activité';
-        const waitTime = activity.wait_time;
+        const categoryLabel = activity.category?.name ?? t('activities.page.tabs.activities');
+        const waitTime = (activity as any).wait_time;
         return { ...activity, image, thrill, duration, categoryLabel, waitTime };
       });
 
     const queryLower = searchQuery.toLowerCase().trim();
     const filtered = withMeta.filter(
       (a) =>
-        (selectedCategory === 'Toutes' || a.categoryLabel === selectedCategory) &&
+        (selectedCategory === ALL_CATEGORIES_KEY || a.categoryLabel === selectedCategory) &&
         (!minThrill || a.thrill >= minThrill) &&
         (!queryLower ||
           a.name.toLowerCase().includes(queryLower) ||
@@ -99,15 +103,15 @@ export const Activities = () => {
         const thrill = attraction.thrill_level ?? 3;
         const durationMinutes = attraction.duration ?? 45;
         const duration = `${durationMinutes} min`;
-        const categoryLabel = attraction.category?.name ?? 'Attraction';
-        const waitTime = attraction.wait_time;
+        const categoryLabel = attraction.category?.name ?? t('activities.page.tabs.attractions');
+        const waitTime = (attraction as any).wait_time;
         return { ...attraction, image, thrill, duration, categoryLabel, waitTime };
       });
 
     const queryLower = searchQuery.toLowerCase().trim();
     const filtered = withMeta.filter(
       (a) =>
-        (selectedCategory === 'Toutes' || a.categoryLabel === selectedCategory) &&
+        (selectedCategory === ALL_CATEGORIES_KEY || a.categoryLabel === selectedCategory) &&
         (!minThrill || a.thrill >= minThrill) &&
         (!queryLower ||
           a.name.toLowerCase().includes(queryLower) ||
@@ -124,7 +128,7 @@ export const Activities = () => {
         const image = resolveImageUrl(restaurant.image_url, DEFAULT_RESTAURANT_IMAGE);
         const thrill = undefined; // Pas de niveau de frisson pour la restauration
         const duration = undefined; // Pas de durée pour la restauration
-        const categoryLabel = restaurant.category?.name ?? 'Restauration';
+        const categoryLabel = restaurant.category?.name ?? t('activities.page.tabs.restaurants');
         return { ...restaurant, image, thrill, duration, categoryLabel };
       });
 
@@ -144,8 +148,12 @@ export const Activities = () => {
       ...activities.map((a) => a.category?.name),
       ...attractions.map((a) => a.category?.name),
     ].filter((c): c is string => Boolean(c) && c !== 'Restauration');
-    return ['Toutes', ...Array.from(new Set(allLabels))];
+    return [ALL_CATEGORIES_KEY, ...Array.from(new Set(allLabels))];
   }, [activities, attractions]);
+
+  const getCategoryLabel = (category: string) => {
+    return category === ALL_CATEGORIES_KEY ? t('activities.all') : category;
+  };
 
   const currentItems = useMemo(() => {
     if (tabValue === 0) return enrichedActivities;
@@ -171,8 +179,8 @@ export const Activities = () => {
           <Box sx={{ pt: { xs: 2, md: 2 }, mb: { xs: 1, md: 1 } }}>
             <CustomBreadcrumbs
               items={[
-                { label: 'Accueil', path: '/', showOnMobile: true },
-                { label: 'Activités', showOnMobile: true },
+                { label: t('activities.page.breadcrumbs.home'), path: '/', showOnMobile: true },
+                { label: t('activities.page.breadcrumbs.activities'), showOnMobile: true },
               ]}
             />
           </Box>
@@ -206,9 +214,9 @@ export const Activities = () => {
               },
             }}
           >
-            <Tab label="Activités" />
-            <Tab label="Attractions" />
-            <Tab label="Restauration" />
+            <Tab label={t('activities.page.tabs.activities')} />
+            <Tab label={t('activities.page.tabs.attractions')} />
+            <Tab label={t('activities.page.tabs.restaurants')} />
           </Tabs>
 
           <Typography
@@ -226,9 +234,9 @@ export const Activities = () => {
               letterSpacing: '2px',
             }}
           >
-            {tabValue === 0 && 'Activités du parc'}
-            {tabValue === 1 && 'Attractions du parc'}
-            {tabValue === 2 && 'Restauration'}
+            {tabValue === 0 && t('activities.page.titles.activities')}
+            {tabValue === 1 && t('activities.page.titles.attractions')}
+            {tabValue === 2 && t('activities.page.titles.restaurants')}
           </Typography>
 
           <Typography
@@ -240,9 +248,9 @@ export const Activities = () => {
               mb: { xs: 1.5, md: 3 },
             }}
           >
-            {tabValue === 0 && 'Frissons, immersions ou ateliers : découvre toutes les activités disponibles avant de réserver.'}
-            {tabValue === 1 && 'Parcours immersifs, expériences à sensations fortes : explore toutes nos attractions thématiques.'}
-            {tabValue === 2 && 'Restaurants, snacks et points de vente : découvre toutes nos options de restauration thématique.'}
+            {tabValue === 0 && t('activities.page.descriptions.activities')}
+            {tabValue === 1 && t('activities.page.descriptions.attractions')}
+            {tabValue === 2 && t('activities.page.descriptions.restaurants')}
           </Typography>
 
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 1, sm: 2 }} sx={{ mb: { xs: 1.5, md: 3 } }}>
@@ -255,12 +263,12 @@ export const Activities = () => {
               }}
             >
               <Typography variant="h6" sx={{ color: colors.primaryGreen }}>
-                {currentItems.length} {tabValue === 0 ? 'activités' : tabValue === 1 ? 'attractions' : 'points de vente'}
+                {currentItems.length} {tabValue === 0 ? t('activities.page.counters.activities') : tabValue === 1 ? t('activities.page.counters.attractions') : t('activities.page.counters.restaurants')}
               </Typography>
               <Typography variant="body2" sx={{ color: colors.white }}>
-                {tabValue === 0 && 'Zones immersives, ateliers, spectacles'}
-                {tabValue === 1 && 'Parcours, expériences, sensations fortes'}
-                {tabValue === 2 && 'Restaurants, snacks, bars et cafés'}
+                {tabValue === 0 && t('activities.page.counterDescriptions.activities')}
+                {tabValue === 1 && t('activities.page.counterDescriptions.attractions')}
+                {tabValue === 2 && t('activities.page.counterDescriptions.restaurants')}
               </Typography>
             </Box>
             {tabValue !== 2 && (
@@ -273,10 +281,10 @@ export const Activities = () => {
                 }}
               >
                 <Typography variant="h6" sx={{ color: colors.primaryRed }}>
-                  Frisson jusqu'à 5/5
+                  {t('activities.page.features.thrillUpTo')}
                 </Typography>
                 <Typography variant="body2" sx={{ color: colors.white }}>
-                  Choisis ton niveau d'intensité
+                  {t('activities.page.features.chooseIntensity')}
                 </Typography>
               </Box>
             )}
@@ -290,10 +298,10 @@ export const Activities = () => {
                 }}
               >
                 <Typography variant="h6" sx={{ color: colors.primaryGreen }}>
-                  Cuisine thématique
+                  {t('activities.page.features.thematicCuisine')}
                 </Typography>
                 <Typography variant="body2" sx={{ color: colors.white }}>
-                  Des plats pour tous les goûts
+                  {t('activities.page.features.foodForAll')}
                 </Typography>
               </Box>
             )}
@@ -306,10 +314,10 @@ export const Activities = () => {
               }}
             >
               <Typography variant="h6" sx={{ color: colors.primaryGreen }}>
-                {tabValue === 2 ? 'Accès libre' : 'Réservation en ligne'}
+                {tabValue === 2 ? t('activities.page.features.freeAccess') : t('activities.page.features.onlineBooking')}
               </Typography>
               <Typography variant="body2" sx={{ color: colors.white }}>
-                {tabValue === 2 ? 'Paiement sur place' : 'Places limitées par session'}
+                {tabValue === 2 ? t('activities.page.features.payOnSite') : t('activities.page.features.limitedPlaces')}
               </Typography>
             </Box>
           </Stack>
@@ -330,14 +338,14 @@ export const Activities = () => {
         <Stack spacing={3}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
             <Typography variant="h2" sx={{ fontSize: { xs: '1rem', md: '2rem' } }}>
-              {tabValue === 0 && 'Toutes les activités'}
-              {tabValue === 1 && 'Toutes les attractions'}
-              {tabValue === 2 && 'Tous les points de restauration'}
+              {tabValue === 0 && t('activities.page.sections.allActivities')}
+              {tabValue === 1 && t('activities.page.sections.allAttractions')}
+              {tabValue === 2 && t('activities.page.sections.allRestaurants')}
             </Typography>
             <Typography variant="body2" sx={{ color: colors.secondaryGrey, maxWidth: { md: '720px' } }}>
-              {tabValue === 0 && 'Parcours, VR, spectacles ou ateliers : découvre l\'ensemble du parc et filtre par catégorie ou niveau de frisson.'}
-              {tabValue === 1 && 'Attractions extrêmes, expériences immersives ou parcours familiaux : filtre par catégorie ou niveau d\'intensité.'}
-              {tabValue === 2 && 'Restaurants gastronomiques, snacks rapides ou bars thématiques : découvre toutes nos options de restauration.'}
+              {tabValue === 0 && t('activities.page.sectionDescriptions.activities')}
+              {tabValue === 1 && t('activities.page.sectionDescriptions.attractions')}
+              {tabValue === 2 && t('activities.page.sectionDescriptions.restaurants')}
             </Typography>
           </Box>
 
@@ -380,10 +388,10 @@ export const Activities = () => {
                 alignItems={{ xs: 'flex-start', md: 'center' }}
               >
                 <Typography variant="h6" sx={{ textTransform: 'uppercase' }}>
-                  Filtrer {tabValue === 0 ? 'les activités' : tabValue === 1 ? 'les attractions' : 'la restauration'}
+                  {t('activities.page.filter.title')} {tabValue === 0 ? t('activities.page.filter.activities') : tabValue === 1 ? t('activities.page.filter.attractions') : t('activities.page.filter.restaurants')}
                 </Typography>
                 <Typography variant="body2" sx={{ color: colors.secondaryGrey }}>
-                  {currentItems.length} {tabValue === 0 ? 'activité(s)' : tabValue === 1 ? 'attraction(s)' : 'point(s) de vente'} affichée(s)
+                  {currentItems.length} {tabValue === 0 ? t('activities.page.filter.displayed.activities') : tabValue === 1 ? t('activities.page.filter.displayed.attractions') : t('activities.page.filter.displayed.restaurants')}
                 </Typography>
               </Stack>
 
@@ -391,10 +399,10 @@ export const Activities = () => {
 
               <Stack spacing={2}>
                 <Typography variant="body2" sx={{ color: colors.secondaryGrey }}>
-                  Recherche
+                  {t('activities.page.filter.search.label')}
                 </Typography>
                 <TextField
-                  placeholder="Rechercher par nom ou description..."
+                  placeholder={t('activities.page.filter.search.placeholder')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   variant="outlined"
@@ -427,7 +435,7 @@ export const Activities = () => {
               {tabValue !== 2 && (
                 <Stack spacing={2}>
                   <Typography variant="body2" sx={{ color: colors.secondaryGrey }}>
-                    Catégories
+                    {t('activities.page.filter.categories')}
                   </Typography>
                   <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
                     {categories.map((category) => {
@@ -435,7 +443,7 @@ export const Activities = () => {
                       return (
                         <Chip
                           key={category}
-                          label={category}
+                          label={getCategoryLabel(category)}
                           onClick={() => setSelectedCategory(category)}
                           sx={{
                             backgroundColor: isActive ? colors.primaryGreen : colors.secondaryGrey,
@@ -456,7 +464,7 @@ export const Activities = () => {
                 <Stack spacing={1} sx={{ mt: 1 }}>
                   <Stack direction={{ xs: 'column', sm: 'row' }} alignItems="center" spacing={2}>
                     <Typography variant="body2" sx={{ color: colors.secondaryGrey, minWidth: 150 }}>
-                      Intensité minimale
+                      {t('activities.page.filter.intensity.label')}
                     </Typography>
                     <Slider
                       value={minThrill}
@@ -465,7 +473,7 @@ export const Activities = () => {
                       min={0}
                       max={5}
                       marks={[
-                        { value: 0, label: 'Tous' },
+                        { value: 0, label: t('activities.page.filter.intensity.all') },
                         { value: 1, label: '1' },
                         { value: 2, label: '2' },
                         { value: 3, label: '3' },
@@ -529,10 +537,10 @@ export const Activities = () => {
               }}
             >
               <Typography variant="h6" sx={{ mb: 1 }}>
-                Aucun{tabValue === 0 ? 'e activité' : tabValue === 1 ? 'e attraction' : ' point de restauration'} trouvé{tabValue === 0 ? 'e' : tabValue === 1 ? 'e' : ''}
+                {tabValue === 0 ? t('activities.page.empty.title.activities') : tabValue === 1 ? t('activities.page.empty.title.attractions') : t('activities.page.empty.title.restaurants')}
               </Typography>
               <Typography variant="body2">
-                Réessaie plus tard ou contacte le support si le problème persiste.
+                {t('activities.page.empty.message')}
               </Typography>
             </Box>
           )}

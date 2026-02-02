@@ -11,6 +11,8 @@ export interface ActivityFilters {
 export interface CreateActivityDto {
   name: string;
   description: string;
+  name_en?: string | null;
+  description_en?: string | null;
   category_id: number;
   attraction_id?: number | null;
   image_url?: string | null;
@@ -25,6 +27,8 @@ export interface CreateActivityDto {
 export interface UpdateActivityDto {
   name?: string;
   description?: string;
+  name_en?: string | null;
+  description_en?: string | null;
   category_id?: number;
   attraction_id?: number | null;
   image_url?: string | null;

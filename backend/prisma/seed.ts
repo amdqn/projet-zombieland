@@ -31,30 +31,42 @@ const userData: Array<{ email: string; pseudo: string; role: Role }> = [
 const categoryData = [
   {
     name: 'Attractions extrêmes',
+    name_en: 'Extreme Attractions',
     description: 'Sensations fortes garanties pour les amateurs d\'adrénaline',
+    description_en: 'Guaranteed thrills for adrenaline lovers',
   },
   {
     name: 'Expériences immersives',
+    name_en: 'Immersive Experiences',
     description: 'Plongez au cœur de l\'apocalypse zombie',
+    description_en: 'Dive into the heart of the zombie apocalypse',
   },
   {
     name: 'Activités familiales',
+    name_en: 'Family Activities',
     description: 'Des attractions pour toute la famille',
+    description_en: 'Attractions for the whole family',
   },
   {
     name: 'Spectacles',
+    name_en: 'Shows',
     description: 'Shows et animations en live',
+    description_en: 'Live shows and animations',
   },
   {
     name: 'Restauration',
+    name_en: 'Restaurants',
     description: 'Restaurants et points de vente thématiques',
+    description_en: 'Themed restaurants and food outlets',
   },
 ];
 
 const attractionData = [
   {
     name: 'The Walking Dead Experience',
+    name_en: 'The Walking Dead Experience',
     description: 'Parcours immersif au cœur de l\'apocalypse zombie avec effets spéciaux et acteurs',
+    description_en: 'Immersive journey into the heart of the zombie apocalypse with special effects and actors',
     image_url: '/attractions-images/walking-dead-experience.jpg',
     thrill_level: 4,
     duration: 30,
@@ -64,7 +76,9 @@ const attractionData = [
   },
   {
     name: 'Zombie Ride',
+    name_en: 'Zombie Ride',
     description: 'Montagnes russes extrêmes dans un décor post-apocalyptique',
+    description_en: 'Extreme roller coaster in a post-apocalyptic setting',
     image_url: '/attractions-images/zombie-ride.jpg',
     thrill_level: 5,
     duration: 5,
@@ -74,7 +88,9 @@ const attractionData = [
   },
   {
     name: 'Labyrinthe des Infectés',
+    name_en: 'Infected Maze',
     description: 'Trouvez la sortie avant que les zombies ne vous rattrapent',
+    description_en: 'Find the exit before the zombies catch you',
     image_url: '/attractions-images/labyrinthe-infectes.jpg',
     thrill_level: 2,
     duration: 20,
@@ -84,7 +100,9 @@ const attractionData = [
   },
   {
     name: 'Arena des Morts-Vivants',
+    name_en: 'Undead Arena',
     description: 'Grand spectacle avec effets pyrotechniques et cascades',
+    description_en: 'Great show with pyrotechnic effects and stunts',
     image_url: '/attractions-images/arena-morts-vivants.jpg',
     thrill_level: 3,
     duration: 45,
@@ -94,7 +112,9 @@ const attractionData = [
   },
   {
     name: 'Tour de la Chute Libre',
+    name_en: 'Freefall Tower',
     description: 'Chute libre de 80 mètres dans une tour abandonnée infestée de zombies',
+    description_en: '80-meter freefall in an abandoned tower infested with zombies',
     image_url: '/attractions-images/tour-chute-libre.jpg',
     thrill_level: 5,
     duration: 3,
@@ -104,7 +124,9 @@ const attractionData = [
   },
   {
     name: 'Bunker VR Experience',
+    name_en: 'Bunker VR Experience',
     description: 'Expérience en réalité virtuelle : survivez dans un bunker assiégé',
+    description_en: 'Virtual reality experience: survive in a besieged bunker',
     image_url: '/attractions-images/bunker-vr.jpg',
     thrill_level: 4,
     duration: 15,
@@ -114,7 +136,9 @@ const attractionData = [
   },
   {
     name: 'Train Fantôme',
+    name_en: 'Ghost Train',
     description: 'Parcours en petit train à travers une ville ravagée par les zombies',
+    description_en: 'Small train ride through a city ravaged by zombies',
     image_url: '/attractions-images/train-fantome.jpg',
     thrill_level: 2,
     duration: 10,
@@ -124,7 +148,9 @@ const attractionData = [
   },
   {
     name: 'Le Manège des Infectés',
+    name_en: 'Infected Carousel',
     description: 'Carrousel thématique avec créatures zombies animées',
+    description_en: 'Thematic carousel with animated zombie creatures',
     image_url: '/attractions-images/manege-infectes.jpg',
     thrill_level: 1,
     duration: 5,
@@ -134,7 +160,9 @@ const attractionData = [
   },
   {
     name: 'Survivor Arena Show',
+    name_en: 'Survivor Arena Show',
     description: 'Spectacle interactif où le public vote pour les survivants',
+    description_en: 'Interactive show where the audience votes for survivors',
     image_url: '/attractions-images/survivor-arena-show.jpg',
     thrill_level: 2,
     duration: 50,
@@ -144,7 +172,9 @@ const attractionData = [
   },
   {
     name: 'Pendule de la peur',
+    name_en: 'Pendulum of Fear',
     description: 'Balancier géant à sensations fortes dans un décor industriel abandonné',
+    description_en: 'Giant swing with thrills in an abandoned industrial setting',
     image_url: '/attractions-images/pendule-peur.jpg',
     thrill_level: 5,
     duration: 4,
@@ -154,7 +184,9 @@ const attractionData = [
   },
   {
     name: 'Hôpital Hanté',
+    name_en: 'Haunted Hospital',
     description: 'Parcours terrifiant dans un hôpital contaminé avec acteurs zombies',
+    description_en: 'Terrifying journey through a contaminated hospital with zombie actors',
     image_url: '/attractions-images/hopital-hante.jpg',
     thrill_level: 4,
     duration: 25,
@@ -165,7 +197,9 @@ const attractionData = [
   // ===== RESTAURATION =====
   {
     name: 'Le Cerveau Fumant',
+    name_en: 'The Smoking Brain',
     description: 'Restaurant gastronomique thématique proposant des plats raffinés dans une ambiance post-apocalyptique chic',
+    description_en: 'Thematic gourmet restaurant offering refined dishes in a chic post-apocalyptic atmosphere',
     image_url: '/restaurants-images/cerveaufumant.jpg',
     thrill_level: null,
     duration: null,
@@ -175,7 +209,9 @@ const attractionData = [
   },
   {
     name: 'Burger des Morts',
+    name_en: 'Burger of the Dead',
     description: 'Fast-food proposant burgers, frites et grillades pour reprendre des forces entre deux attractions',
+    description_en: 'Fast-food offering burgers, fries and grilled items to recharge between attractions',
     image_url: '/restaurants-images/burgerdesmorts.jpg',
     thrill_level: null,
     duration: null,
@@ -185,7 +221,9 @@ const attractionData = [
   },
   {
     name: 'La Sucrerie Infectée',
+    name_en: 'Infected Sweet Shop',
     description: 'Stand de confiseries, glaces et desserts thématiques pour les gourmands',
+    description_en: 'Candy, ice cream and thematic dessert stand for sweet lovers',
     image_url: '/restaurants-images/sucrerieinfectee.jpg',
     thrill_level: null,
     duration: null,
@@ -195,7 +233,9 @@ const attractionData = [
   },
   {
     name: 'Café des Survivants',
+    name_en: 'Survivors Café',
     description: 'Café et boulangerie proposant boissons chaudes, viennoiseries et sandwichs pour une pause réconfortante',
+    description_en: 'Café and bakery offering hot drinks, pastries and sandwiches for a comforting break',
     image_url: '/restaurants-images/cafesurvivants.jpg',
     thrill_level: null,
     duration: null,
@@ -205,7 +245,9 @@ const attractionData = [
   },
   {
     name: 'Glaces du Bunker',
+    name_en: 'Bunker Ice Cream',
     description: 'Bar à glaces artisanales avec des parfums originaux et des toppings apocalyptiques',
+    description_en: 'Artisanal ice cream bar with original flavors and apocalyptic toppings',
     image_url: '/restaurants-images/glacebunker.jpg',
     thrill_level: null,
     duration: null,
@@ -215,7 +257,9 @@ const attractionData = [
   },
   {
     name: 'Le Truck Contaminé',
+    name_en: 'Contaminated Truck',
     description: 'Food truck ambulant proposant hot-dogs, tacos et snacks à emporter partout dans le parc',
+    description_en: 'Mobile food truck offering hot dogs, tacos and snacks to go anywhere in the park',
     image_url: '/restaurants-images/truck-contamine.jpg',
     thrill_level: null,
     duration: null,
@@ -230,6 +274,7 @@ async function main() {
 
   // Nettoyage de la base (dans l'ordre des dépendances)
   await prisma.reservation.deleteMany();
+  await prisma.userAuditLog.deleteMany(); // Doit être supprimé avant User (contraintes FK)
   await prisma.attractionImage.deleteMany();
   await prisma.activity.deleteMany();
   await prisma.attraction.deleteMany();
@@ -276,7 +321,9 @@ async function main() {
       prisma.attraction.create({
         data: {
           name: attraction.name,
+          name_en: attraction.name_en || null,
           description: attraction.description,
+          description_en: attraction.description_en || null,
           image_url: attraction.image_url,
           thrill_level: attraction.thrill_level,
           duration: attraction.duration,
@@ -295,7 +342,9 @@ async function main() {
     data: [
       {
         name: 'Escape Game Zombie',
+        name_en: 'Zombie Escape Game',
         description: '60 minutes pour trouver le remède et sauver l\'humanité',
+        description_en: '60 minutes to find the cure and save humanity',
         image_url: '/activities-images/escape-game.jpg',
         thrill_level: 3,
         duration: 60,
@@ -306,7 +355,9 @@ async function main() {
       },
       {
         name: 'Laser Game Zombie',
+        name_en: 'Zombie Laser Game',
         description: 'Affrontez les zombies en équipe avec des lasers',
+        description_en: 'Face zombies in teams with lasers',
         image_url: '/activities-images/laser-game.jpg',
         thrill_level: 3,
         duration: 30,
@@ -317,7 +368,9 @@ async function main() {
       },
       {
         name: 'Atelier Maquillage Zombie',
+        name_en: 'Zombie Makeup Workshop',
         description: 'Transformez-vous en zombie avec nos maquilleurs professionnels',
+        description_en: 'Transform into a zombie with our professional makeup artists',
         image_url: '/activities-images/maquillage.jpg',
         thrill_level: 1,
         duration: 20,
@@ -328,7 +381,9 @@ async function main() {
       },
       {
         name: 'Spectacle Survie',
+        name_en: 'Survival Show',
         description: 'Show avec cascades et combats contre les zombies',
+        description_en: 'Show with stunts and fights against zombies',
         image_url: '/activities-images/spectacle.jpg',
         thrill_level: 3,
         duration: 40,
@@ -339,7 +394,9 @@ async function main() {
       },
       {
         name: 'Tir à l\'Arc Post-Apocalyptique',
+        name_en: 'Post-Apocalyptic Archery',
         description: 'Entraînez-vous au tir à l\'arc sur des cibles zombies dans un décor post-apocalyptique',
+        description_en: 'Practice archery on zombie targets in a post-apocalyptic setting',
         image_url: '/activities-images/tir-arc.jpg',
         thrill_level: 2,
         duration: 15,
@@ -359,16 +416,20 @@ async function main() {
       // Toilettes
       {
         name: 'Toilettes Nord',
+        name_en: 'North Toilets',
         type: 'toilets',
         description: 'Sanitaires situés près de la zone des attractions extrêmes',
+        description_en: 'Restrooms located near the extreme attractions area',
         icon: 'restroom',
         latitude: 48.8690,
         longitude: 2.3280,
       },
       {
         name: 'Toilettes Sud',
+        name_en: 'South Toilets',
         type: 'toilets',
         description: 'Sanitaires situés près de la zone familiale',
+        description_en: 'Restrooms located near the family area',
         icon: 'restroom',
         latitude: 48.8440,
         longitude: 2.3320,
@@ -376,24 +437,30 @@ async function main() {
       // Boutiques
       {
         name: 'Boutique Survivor',
+        name_en: 'Survivor Shop',
         type: 'shop',
         description: 'Boutique principale de souvenirs et produits dérivés',
+        description_en: 'Main souvenir and merchandise shop',
         icon: 'shopping_bag',
         latitude: 48.8580,
         longitude: 2.3380,
       },
       {
         name: 'Armurerie du Parc',
+        name_en: 'Park Armory',
         type: 'shop',
         description: 'Vente d\'accessoires et équipements de survie',
+        description_en: 'Sale of accessories and survival equipment',
         icon: 'shopping_bag',
         latitude: 48.8610,
         longitude: 2.3720,
       },
       {
         name: 'Galerie des Infectés',
+        name_en: 'Infected Gallery',
         type: 'shop',
         description: 'Boutique de figurines, vêtements et objets de collection',
+        description_en: 'Shop for figurines, clothing and collectibles',
         icon: 'shopping_bag',
         latitude: 48.8440,
         longitude: 2.3850,
@@ -477,6 +544,7 @@ async function main() {
     prisma.price.create({
       data: {
         label: 'Tarif Étudiant',
+        label_en: 'Student Rate',
         type: 'ETUDIANT',
         amount: 29.99,
         duration_days: 1,
@@ -485,6 +553,7 @@ async function main() {
     prisma.price.create({
       data: {
         label: 'Tarif Adulte',
+        label_en: 'Adult Rate',
         type: 'ADULTE',
         amount: 45.00,
         duration_days: 1,
@@ -493,6 +562,7 @@ async function main() {
     prisma.price.create({
       data: {
         label: 'Tarif Groupe (10+ personnes)',
+        label_en: 'Group Rate (10+ people)',
         type: 'GROUPE',
         amount: 35.00,
         duration_days: 1,
@@ -501,6 +571,7 @@ async function main() {
     prisma.price.create({
       data: {
         label: 'Pass 2 jours',
+        label_en: '2-Day Pass',
         type: 'PASS_2J',
         amount: 79.99,
         duration_days: 2,
@@ -509,6 +580,7 @@ async function main() {
     prisma.price.create({
       data: {
         label: 'Tarif Groupe Premium (20+ personnes)',
+        label_en: 'Premium Group Rate (20+ people)',
         type: 'GROUPE',
         amount: 30.00,
         duration_days: 1,

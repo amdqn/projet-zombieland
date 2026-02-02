@@ -1,5 +1,6 @@
 import { Alert, Box, MenuItem, Modal, Select, Typography, FormControl, InputLabel, Switch, FormControlLabel, TextField, Chip, Button, CircularProgress } from '@mui/material';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { toast } from 'react-toastify';
 import { createAttraction, type CreateAttractionDto, getAttractions } from '../../../services/attractions.ts';
@@ -36,10 +37,13 @@ export const CreateAttractionModal = ({
   onClose,
   onSuccess,
 }: CreateAttractionModalProps) => {
+  const { t } = useTranslation();
   const [categories, setCategories] = useState<Category[]>([]);
   const [allAttractions, setAllAttractions] = useState<Attraction[]>([]);
   const [name, setName] = useState('');
+  const [nameEn, setNameEn] = useState('');
   const [description, setDescription] = useState('');
+  const [descriptionEn, setDescriptionEn] = useState('');
   const [categoryId, setCategoryId] = useState<number | ''>('');
   const [imageUrl, setImageUrl] = useState('');
   const [thrillLevel, setThrillLevel] = useState<number | ''>('');
@@ -71,7 +75,9 @@ export const CreateAttractionModal = ({
 
   const handleClose = () => {
     setName('');
+    setNameEn('');
     setDescription('');
+    setDescriptionEn('');
     setCategoryId('');
     setImageUrl('');
     setThrillLevel('');
@@ -85,7 +91,7 @@ export const CreateAttractionModal = ({
 
   const handleSubmit = async () => {
     if (!name || !description || !categoryId) {
-      setError('Le nom, la description et la catégorie sont requis');
+      setError(t('admin.attractions.nameDescriptionCategoryRequired'));
       return;
     }
 
@@ -97,6 +103,8 @@ export const CreateAttractionModal = ({
       const dto: CreateAttractionDto = {
         name,
         description,
+        name_en: nameEn || null,
+        description_en: descriptionEn || null,
         category_id: Number(categoryId),
         image_url: imageUrl || null,
         thrill_level: thrillLevel ? Number(thrillLevel) : null,
@@ -106,11 +114,11 @@ export const CreateAttractionModal = ({
       };
 
       await createAttraction(dto);
-      toast.success('Attraction créée avec succès !');
+      toast.success(t('admin.attractions.successCreate'));
       onSuccess();
       handleClose();
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erreur lors de la création de l\'attraction';
+      const message = err instanceof Error ? err.message : t('admin.attractions.errorCreate');
       setError(message);
     } finally {
       setIsLoading(false);
@@ -123,7 +131,7 @@ export const CreateAttractionModal = ({
 
     // Validation taille (5MB max)
     if (file.size > 5 * 1024 * 1024) {
-      setError('L\'image ne doit pas dépasser 5MB');
+      setError(t('admin.attractions.imageMaxSize'));
       return;
     }
 
@@ -132,10 +140,10 @@ export const CreateAttractionModal = ({
     try {
       const response = await uploadAttractionImage(file);
       setImageUrl(response.url);
-      setSuccess('Image uploadée avec succès');
+      setSuccess(t('admin.attractions.imageUploaded'));
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
-      setError('Erreur lors de l\'upload de l\'image');
+      setError(t('admin.attractions.imageUploadError'));
       console.error(err);
     } finally {
       setUploading(false);
@@ -164,7 +172,7 @@ export const CreateAttractionModal = ({
             textAlign: 'center',
           }}
         >
-          Créer une nouvelle attraction
+          {t('admin.attractions.createNew')}
         </Typography>
 
         {error && (
@@ -181,7 +189,7 @@ export const CreateAttractionModal = ({
 
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <TextField
-            label="Titre"
+            label={t('admin.attractions.nameFr')}
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
@@ -198,14 +206,50 @@ export const CreateAttractionModal = ({
               '& .MuiInputLabel-root.Mui-focused': { color: colors.primaryGreen },
             }}
           />
+          <TextField
+            label={t('admin.attractions.nameEn')}
+            value={nameEn}
+            onChange={(e) => setNameEn(e.target.value)}
+            fullWidth
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                backgroundColor: colors.secondaryDarkAlt,
+                color: colors.white,
+                '& fieldset': { borderColor: colors.secondaryGrey },
+                '&:hover fieldset': { borderColor: colors.primaryGreen },
+                '&.Mui-focused fieldset': { borderColor: colors.primaryGreen },
+              },
+              '& .MuiInputLabel-root': { color: colors.secondaryGrey },
+              '& .MuiInputLabel-root.Mui-focused': { color: colors.primaryGreen },
+            }}
+          />
 
           <TextField
-            label="Description"
+            label={t('admin.attractions.descriptionFr')}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             required
             multiline
-            rows={4}
+            rows={3}
+            fullWidth
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                backgroundColor: colors.secondaryDarkAlt,
+                color: colors.white,
+                '& fieldset': { borderColor: colors.secondaryGrey },
+                '&:hover fieldset': { borderColor: colors.primaryGreen },
+                '&.Mui-focused fieldset': { borderColor: colors.primaryGreen },
+              },
+              '& .MuiInputLabel-root': { color: colors.secondaryGrey },
+              '& .MuiInputLabel-root.Mui-focused': { color: colors.primaryGreen },
+            }}
+          />
+          <TextField
+            label={t('admin.attractions.descriptionEn')}
+            value={descriptionEn}
+            onChange={(e) => setDescriptionEn(e.target.value)}
+            multiline
+            rows={3}
             fullWidth
             sx={{
               '& .MuiOutlinedInput-root': {
@@ -223,7 +267,7 @@ export const CreateAttractionModal = ({
           {/* Upload d'image */}
           <Box sx={{ mb: 2 }}>
             <Typography variant="subtitle2" sx={{ mb: 1, color: colors.primaryGold }}>
-              Image de l'attraction
+              {t('admin.attractions.imageLabel')}
             </Typography>
 
             <Button
@@ -241,7 +285,7 @@ export const CreateAttractionModal = ({
                 },
               }}
             >
-              {uploading ? 'Upload en cours...' : 'Choisir une image'}
+              {uploading ? t('admin.attractions.uploading') : t('admin.attractions.chooseImage')}
               <input
                 type="file"
                 hidden
@@ -255,7 +299,7 @@ export const CreateAttractionModal = ({
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
                 <CircularProgress size={20} sx={{ color: colors.primaryGreen }} />
                 <Typography variant="body2" sx={{ color: colors.white }}>
-                  Upload en cours...
+                  {t('admin.attractions.uploading')}
                 </Typography>
               </Box>
             )}
@@ -265,7 +309,7 @@ export const CreateAttractionModal = ({
               <Box sx={{ mt: 2, textAlign: 'center' }}>
                 <img
                   src={resolveImageUrl(imageUrl, DEFAULT_ACTIVITY_IMAGE)}
-                  alt="Aperçu"
+                  alt={t('admin.attractions.preview')}
                   style={{
                     maxWidth: '100%',
                     maxHeight: '200px',
@@ -285,16 +329,16 @@ export const CreateAttractionModal = ({
 
           <Box sx={{ display: 'flex', gap: 2 }}>
             <FormControl fullWidth>
-              <InputLabel sx={{ color: colors.secondaryGrey }}>Catégorie *</InputLabel>
+              <InputLabel sx={{ color: colors.secondaryGrey }}>{t('admin.attractions.filterCategory')} *</InputLabel>
               <Select
                 value={categoryId}
                 onChange={(e) => setCategoryId(e.target.value as number | '')}
-                label="Catégorie *"
+                label={`${t('admin.attractions.filterCategory')} *`}
                 required
                 displayEmpty
                 renderValue={(selected) => {
                   if (!selected) {
-                    return <span style={{ color: colors.secondaryGrey }}>Sélectionner une catégorie</span>;
+                    return <span style={{ color: colors.secondaryGrey }}>{t('admin.attractions.selectCategory')}</span>;
                   }
                   return categories.find(c => c.id === selected)?.name || '';
                 }}
@@ -317,7 +361,7 @@ export const CreateAttractionModal = ({
             </FormControl>
 
             <TextField
-              label="Niveau de frisson (1-5)"
+              label={t('admin.attractions.thrillLevelLabel')}
               type="number"
               value={thrillLevel}
               onChange={(e) => setThrillLevel(e.target.value ? Number(e.target.value) : '')}
@@ -338,7 +382,7 @@ export const CreateAttractionModal = ({
           </Box>
 
           <TextField
-            label="Durée (minutes)"
+            label={t('admin.attractions.durationMinutes')}
             type="number"
             value={duration}
             onChange={(e) => setDuration(e.target.value ? Number(e.target.value) : '')}
@@ -359,7 +403,7 @@ export const CreateAttractionModal = ({
 
           <Box>
             <Typography sx={{ mb: 1, color: colors.secondaryGrey, fontSize: '0.9rem' }}>
-              Attractions liées
+              {t('admin.attractions.relatedAttractions')}
             </Typography>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, maxHeight: '150px', overflow: 'auto', p: 1, border: `1px solid ${colors.secondaryGrey}`, borderRadius: 1 }}>
               {allAttractions.map((attraction) => (
@@ -397,7 +441,7 @@ export const CreateAttractionModal = ({
             }
             label={
               <Typography sx={{ color: colors.white }}>
-                {isPublished ? 'Publiée' : 'Brouillon'}
+                {isPublished ? t('admin.attractions.published') : t('admin.attractions.draft')}
               </Typography>
             }
           />
@@ -405,14 +449,14 @@ export const CreateAttractionModal = ({
 
         <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 3 }}>
           <PrimaryButton
-            text="Annuler"
+            text={t('common.cancel')}
             onClick={handleClose}
             fullWidth={false}
             disabled={isLoading}
             type="button"
           />
           <PrimaryButton
-            text="Créer"
+            text={t('admin.attractions.createLabel')}
             onClick={handleSubmit}
             fullWidth={false}
             disabled={isLoading}

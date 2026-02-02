@@ -4,8 +4,10 @@ import { Input, Select } from "../../../components/common";
 import { useState, useEffect } from "react";
 import { countries } from "../../../utils/countries";
 import { useReservationStore } from "../../../stores/reservationStore";
+import { useTranslation } from 'react-i18next';
 
 export const Step5CustomerAddress = () => {
+  const { t } = useTranslation();
   const { customerAddress, setCustomerAddress } = useReservationStore();
   const [address, setAddress] = useState(customerAddress?.address || '');
   const [city, setCity] = useState(customerAddress?.city || '');
@@ -29,32 +31,32 @@ export const Step5CustomerAddress = () => {
   // Fonctions de validation
   const validateAddress = (value: string) => {
     if (!value.trim()) {
-      return 'L\'adresse est obligatoire';
+      return t('reservation.step5.validation.addressRequired');
     }
     return '';
   };
 
   const validateCity = (value: string) => {
     if (!value.trim()) {
-      return 'La ville est obligatoire';
+      return t('reservation.step5.validation.cityRequired');
     }
     return '';
   };
 
   const validateZipCode = (value: string) => {
     if (!value.trim()) {
-      return 'Le code postal est obligatoire';
+      return t('reservation.step5.validation.postalCodeRequired');
     }
     const zipCodeRegex = /^\d{5}$/;
     if (!zipCodeRegex.test(value)) {
-      return 'Code postal invalide (5 chiffres)';
+      return t('reservation.step5.validation.postalCodeInvalid');
     }
     return '';
   };
 
   const validateCountry = (value: string) => {
     if (!value.trim()) {
-      return 'Le pays est obligatoire';
+      return t('reservation.step5.validation.countryRequired');
     }
     return '';
   };
@@ -78,7 +80,7 @@ export const Step5CustomerAddress = () => {
             color: colors.primaryRed,
           }}
         >
-          ADRESSE
+          {t('reservation.step5.title')}
         </Typography>
         <Typography
           variant="body1"
@@ -87,7 +89,7 @@ export const Step5CustomerAddress = () => {
             fontSize: { xs: "0.9rem", md: "1rem" },
           }}
         >
-          Adresse de facturation
+          {t('reservation.step5.subtitle')}
         </Typography>
       </Box>
 
@@ -96,9 +98,9 @@ export const Step5CustomerAddress = () => {
         <Box sx={{ display: 'flex', gap: 2, mb: 2, flexDirection: { xs: 'column', sm: 'row' } }}>
           <Box sx={{ flex: 1 }}>
             <Input
-              label="Adresse"
+              label={t('reservation.step5.address')}
               type="text"
-              placeholder="Votre adresse"
+              placeholder={t('reservation.step5.addressPlaceholder')}
               value={address}
               onChange={(e) => {
                 setAddress(e.target.value);
@@ -117,9 +119,9 @@ export const Step5CustomerAddress = () => {
           </Box>
           <Box sx={{ flex: 1 }}>
             <Input
-              label="Ville"
+              label={t('reservation.step5.city')}
               type="text"
-              placeholder="Votre ville"
+              placeholder={t('reservation.step5.cityPlaceholder')}
               value={city}
               onChange={(e) => {
                 setCity(e.target.value);
@@ -139,9 +141,9 @@ export const Step5CustomerAddress = () => {
         </Box>
 
         <Input
-          label="Code postal"
+          label={t('reservation.step5.postalCode')}
           type="text"
-          placeholder="Votre code postal"
+          placeholder={t('reservation.step5.postalCodePlaceholder')}
           value={zipCode}
           onChange={(e) => {
             setZipCode(e.target.value);
@@ -159,8 +161,8 @@ export const Step5CustomerAddress = () => {
         />
 
         <Select
-          label="Pays"
-          placeholder="Sélectionnez un pays"
+          label={t('reservation.step5.country')}
+          placeholder={t('reservation.step5.countryPlaceholder')}
           value={country}
           options={countries}
           onChange={(e) => {

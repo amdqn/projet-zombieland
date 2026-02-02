@@ -5,6 +5,7 @@ import {getValidatePassword} from "../../../functions/validatePassword.ts";
 import {updateProfile} from "../../../services/auth.ts";
 import {colors} from "../../../theme";
 import {Input, PrimaryButton} from "../../common";
+import {useTranslation} from "react-i18next";
 
 interface ModalProps {
     open: boolean;
@@ -27,6 +28,7 @@ const style = {
 };
 
 export default function UpdateProfilModal({open, onClose, modalType, currentEmail, onUpdateSuccess}: ModalProps) {
+    const { t } = useTranslation();
 
     // États pour l'email
     const [newEmail, setNewEmail] = useState('');
@@ -79,7 +81,7 @@ export default function UpdateProfilModal({open, onClose, modalType, currentEmai
     // Validation pour vérifier que les emails correspondent
     const validateEmailsMatch = () => {
         if (newEmail !== confirmEmail) {
-            return "Les emails ne correspondent pas";
+            return t('modals.profile.updateEmail.emailsDontMatch');
         }
         return null;
     };
@@ -87,7 +89,7 @@ export default function UpdateProfilModal({open, onClose, modalType, currentEmai
     // Validation pour vérifier que les mots de passe correspondent
     const validatePasswordsMatch = () => {
         if (newPassword !== confirmPassword) {
-            return "Les mots de passe ne correspondent pas";
+            return t('modals.profile.updatePassword.passwordsDontMatch');
         }
         return null;
     };
@@ -108,17 +110,17 @@ export default function UpdateProfilModal({open, onClose, modalType, currentEmai
         setSuccess(null);
 
         // Validation finale
-        const newEmailErr = getValidateEmail(newEmail);
-        const confirmEmailErr = getValidateEmail(confirmEmail);
+        const newEmailErr = getValidateEmail(newEmail, t);
+        const confirmEmailErr = getValidateEmail(confirmEmail, t);
         const matchError = validateEmailsMatch();
 
         if (newEmailErr || confirmEmailErr || matchError) {
-            setError(matchError || "Veuillez corriger les erreurs");
+            setError(matchError || t('modals.profile.updateEmail.fixErrors'));
             return;
         }
 
         if (newEmail === currentEmail) {
-            setError("Le nouvel email est identique à l'ancien");
+            setError(t('modals.profile.updateEmail.sameEmail'));
             return;
         }
 
@@ -126,13 +128,13 @@ export default function UpdateProfilModal({open, onClose, modalType, currentEmai
 
         try {
             await updateProfile({ email: newEmail });
-            setSuccess("Email modifié avec succès !");
+            setSuccess(t('modals.profile.updateEmail.success'));
             setTimeout(() => {
                 onUpdateSuccess();
                 handleClose();
             }, 2000);
         } catch (err: any) {
-            const errorMessage = err.response?.data?.message || 'Erreur lors de la mise à jour de l\'email';
+            const errorMessage = err.response?.data?.message || t('modals.profile.updateEmail.error');
             setError(errorMessage);
             console.error(err);
         } finally {
@@ -147,12 +149,12 @@ export default function UpdateProfilModal({open, onClose, modalType, currentEmai
         setSuccess(null);
 
         // Validation finale
-        const newPasswordErr = getValidatePassword(newPassword);
-        const confirmPasswordErr = getValidatePassword(confirmPassword);
+        const newPasswordErr = getValidatePassword(newPassword, t);
+        const confirmPasswordErr = getValidatePassword(confirmPassword, t);
         const matchError = validatePasswordsMatch();
 
         if (newPasswordErr || confirmPasswordErr || matchError) {
-            setError(matchError || "Veuillez corriger les erreurs");
+            setError(matchError || t('modals.profile.updatePassword.fixErrors'));
             return;
         }
 
@@ -160,13 +162,13 @@ export default function UpdateProfilModal({open, onClose, modalType, currentEmai
 
         try {
             await updateProfile({ password: newPassword });
-            setSuccess("Mot de passe modifié avec succès !");
+            setSuccess(t('modals.profile.updatePassword.success'));
             setTimeout(() => {
                 onUpdateSuccess();
                 handleClose();
             }, 2000);
         } catch (err: any) {
-            const errorMessage = err.response?.data?.message || 'Erreur lors de la mise à jour du mot de passe';
+            const errorMessage = err.response?.data?.message || t('modals.profile.updatePassword.error');
             setError(errorMessage);
             console.error(err);
         } finally {
@@ -192,7 +194,7 @@ export default function UpdateProfilModal({open, onClose, modalType, currentEmai
                         textAlign: 'center'
                     }}
                 >
-                    {modalType === 'email' ? 'Modifier l\'email' : 'Modifier le mot de passe'}
+                    {modalType === 'email' ? t('modals.profile.updateEmail.title') : t('modals.profile.updatePassword.title')}
                 </Typography>
 
                 {/* Message d'erreur global */}
@@ -223,19 +225,19 @@ export default function UpdateProfilModal({open, onClose, modalType, currentEmai
                     >
                         {/* Nouvel Email */}
                         <Input
-                            label="Nouvel email"
+                            label={t('modals.profile.updateEmail.newEmail')}
                             type="email"
-                            placeholder="nouveau@email.com"
+                            placeholder={t('modals.profile.updateEmail.emailPlaceholder')}
                             value={newEmail}
                             onChange={(e) => {
                                 setNewEmail(e.target.value);
                                 if (touched.newEmail) {
-                                    setNewEmailError(getValidateEmail(e.target.value));
+                                    setNewEmailError(getValidateEmail(e.target.value, t));
                                 }
                             }}
                             onBlur={() => {
                                 setTouched({ ...touched, newEmail: true });
-                                setNewEmailError(getValidateEmail(newEmail));
+                                setNewEmailError(getValidateEmail(newEmail, t));
                             }}
                             error={touched.newEmail && !!newEmailError}
                             required
@@ -243,19 +245,19 @@ export default function UpdateProfilModal({open, onClose, modalType, currentEmai
 
                         {/* Confirmer Email */}
                         <Input
-                            label="Confirmer le nouvel email"
+                            label={t('modals.profile.updateEmail.confirmEmail')}
                             type="email"
-                            placeholder="nouveau@email.com"
+                            placeholder={t('modals.profile.updateEmail.emailPlaceholder')}
                             value={confirmEmail}
                             onChange={(e) => {
                                 setConfirmEmail(e.target.value);
                                 if (touched.confirmEmail) {
-                                    setConfirmEmailError(getValidateEmail(e.target.value));
+                                    setConfirmEmailError(getValidateEmail(e.target.value, t));
                                 }
                             }}
                             onBlur={() => {
                                 setTouched({ ...touched, confirmEmail: true });
-                                setConfirmEmailError(getValidateEmail(confirmEmail));
+                                setConfirmEmailError(getValidateEmail(confirmEmail, t));
                             }}
                             error={touched.confirmEmail && !!confirmEmailError}
                             required
@@ -291,19 +293,19 @@ export default function UpdateProfilModal({open, onClose, modalType, currentEmai
                     >
                         {/* Nouveau Mot de passe */}
                         <Input
-                            label="Nouveau mot de passe"
+                            label={t('modals.profile.updatePassword.newPassword')}
                             type="password"
-                            placeholder="••••••••"
+                            placeholder={t('modals.profile.updatePassword.passwordPlaceholder')}
                             value={newPassword}
                             onChange={(e) => {
                                 setNewPassword(e.target.value);
                                 if (touched.newPassword) {
-                                    setNewPasswordError(getValidatePassword(e.target.value));
+                                    setNewPasswordError(getValidatePassword(e.target.value, t));
                                 }
                             }}
                             onBlur={() => {
                                 setTouched({ ...touched, newPassword: true });
-                                setNewPasswordError(getValidatePassword(newPassword));
+                                setNewPasswordError(getValidatePassword(newPassword, t));
                             }}
                             error={touched.newPassword && !!newPasswordError}
                             required
@@ -311,19 +313,19 @@ export default function UpdateProfilModal({open, onClose, modalType, currentEmai
 
                         {/* Confirmer Mot de passe */}
                         <Input
-                            label="Confirmer le nouveau mot de passe"
+                            label={t('modals.profile.updatePassword.confirmPassword')}
                             type="password"
-                            placeholder="••••••••"
+                            placeholder={t('modals.profile.updatePassword.passwordPlaceholder')}
                             value={confirmPassword}
                             onChange={(e) => {
                                 setConfirmPassword(e.target.value);
                                 if (touched.confirmPassword) {
-                                    setConfirmPasswordError(getValidatePassword(e.target.value));
+                                    setConfirmPasswordError(getValidatePassword(e.target.value, t));
                                 }
                             }}
                             onBlur={() => {
                                 setTouched({ ...touched, confirmPassword: true });
-                                setConfirmPasswordError(getValidatePassword(confirmPassword));
+                                setConfirmPasswordError(getValidatePassword(confirmPassword, t));
                             }}
                             error={touched.confirmPassword && !!confirmPasswordError}
                             required
@@ -332,13 +334,13 @@ export default function UpdateProfilModal({open, onClose, modalType, currentEmai
                         {/* Boutons */}
                         <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
                             <PrimaryButton
-                                text="Annuler"
+                                text={t('modals.profile.updatePassword.cancel')}
                                 onClick={handleClose}
                                 disabled={isLoading}
                                 fullWidth
                             />
                             <PrimaryButton
-                                text={isLoading ? "Modification..." : "Modifier"}
+                                text={isLoading ? t('modals.profile.updatePassword.saving') : t('modals.profile.updatePassword.save')}
                                 type="submit"
                                 disabled={!isFormValid() || isLoading}
                                 fullWidth

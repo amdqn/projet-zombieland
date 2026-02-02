@@ -5,8 +5,12 @@ import EmailIcon from '@mui/icons-material/Email';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import XIcon from '@mui/icons-material/X';
 import InstagramIcon from '@mui/icons-material/Instagram';
+import { useTranslation } from "react-i18next";
+import { colors } from "../../theme";
 
 export default function LateralBar() {
+    const { i18n } = useTranslation();
+    const currentLang = i18n.language?.split('-')[0] || 'fr';
     return (
         <AppBar
             position="fixed"
@@ -39,9 +43,49 @@ export default function LateralBar() {
                         zIndex: 2,
                     }}
                 />
-                <Box>
-                    <Typography component="h5" textAlign={"center"}>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        gap: 0.5,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        mt: 1,
+                    }}
+                >
+                    <Typography
+                        component="button"
+                        onClick={() => i18n.changeLanguage('fr')}
+                        sx={{
+                            border: 'none',
+                            background: 'none',
+                            cursor: 'pointer',
+                            fontWeight: currentLang === 'fr' ? 'bold' : 'normal',
+                            color: currentLang === 'fr' ? colors.primaryGreen : 'grey',
+                            transition: 'all 0.2s',
+                            font: 'inherit',
+                            padding: 0,
+                            '&:hover': { color: colors.primaryGreen },
+                        }}
+                    >
                         FR
+                    </Typography>
+                    <Typography component="span" sx={{ color: 'grey' }}>|</Typography>
+                    <Typography
+                        component="button"
+                        onClick={() => i18n.changeLanguage('en')}
+                        sx={{
+                            border: 'none',
+                            background: 'none',
+                            cursor: 'pointer',
+                            fontWeight: currentLang === 'en' ? 'bold' : 'normal',
+                            color: currentLang === 'en' ? colors.primaryGreen : 'grey',
+                            transition: 'all 0.2s',
+                            font: 'inherit',
+                            padding: 0,
+                            '&:hover': { color: colors.primaryGreen },
+                        }}
+                    >
+                        EN
                     </Typography>
                 </Box>
             </Box>

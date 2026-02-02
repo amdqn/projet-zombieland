@@ -8,8 +8,10 @@ import WeatherBackground from "./weather/functions/WeatherBackground.tsx";
 import type {WeatherCondition} from "./weather/types/weatherTypes.ts";
 import {getWeatherIcon} from "./weather/functions/GetWeatherIcon.tsx";
 import {formatWeather} from "../../functions/formatWeather.ts";
+import { useTranslation } from "react-i18next";
 
 export default function ImageBanner() {
+    const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [weather, setWeather] = useState<any>(null);
     const [errorWeather, setErrorWeather] = useState<any>(null);
@@ -81,13 +83,14 @@ export default function ImageBanner() {
                 }}
             >
                 <Typography variant="h5" sx={{pb: 3, pt: { xs: 13, md: 0 }}}>
-                    Survivrez-vous au parc post-apocalyptique ? Réservez votre séjour
-                    et venez affronter vos peurs au cœur de ZombieLand !
+                    {t("home.hero.title")}
                 </Typography>
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1, mb: 2 }}>
                     <CircleIcon sx={{ color: isOpen ? colors.primaryGreen : colors.primaryRed, fontSize: '1rem' }}/>
                     <Typography variant="h6">
-                        Aujourd'hui, le parc est {isOpen ? "ouvert" : "fermé"}.
+                        {t("home.hero.parkStatus", { 
+                            status: isOpen ? t("home.hero.parkOpen") : t("home.hero.parkClosed") 
+                        })}
                     </Typography>
                 </Box>
                 <Box sx={{

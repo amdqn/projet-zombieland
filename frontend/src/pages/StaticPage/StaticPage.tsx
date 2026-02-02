@@ -1,9 +1,12 @@
 import {Navigate, useParams} from "react-router-dom";
 import {Box, Container, Typography} from "@mui/material";
-import {staticPagesContent} from "./StaticPageContent.tsx";
+import {getStaticPagesContent} from "./StaticPageContent.tsx";
+import {useTranslation} from "react-i18next";
 
 export default function StaticPage() {
+    const { t } = useTranslation();
     const { pageType } = useParams<{ pageType: string }>();
+    const staticPagesContent = getStaticPagesContent(t);
 
     // Vérifier si la page existe
     if (!pageType || !staticPagesContent[pageType]) {
@@ -25,7 +28,7 @@ export default function StaticPage() {
             </Box>
 
             <Typography variant="body2" sx={{ mt: 6, color: 'text.secondary' }}>
-                Dernière mise à jour : {page.lastUpdate}
+                {t("static.lastUpdate")} : {page.lastUpdate}
             </Typography>
         </Container>
     );

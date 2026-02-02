@@ -6,6 +6,8 @@ import {useNavigate} from "react-router";
 import {useContext} from "react";
 import {LoginContext} from "../../context/UserLoginContext.tsx";
 import {PrimaryButton} from "../common";
+import { useTranslation } from "react-i18next";
+import { colors } from "../../theme";
 
 interface ModalBurgerMenuProps {
     open: boolean;
@@ -13,6 +15,8 @@ interface ModalBurgerMenuProps {
 }
 
 export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps) {
+    const { t, i18n } = useTranslation();
+    const currentLang = i18n.language?.split('-')[0] || 'fr';
 
     const fullScreenStyle = {
         position: 'absolute' as 'absolute',
@@ -81,8 +85,8 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                     py: 2,
                 }}>
                     <PrimaryButton
-                    text={isLogged ? "Se deconnecter" : "Connexion"}
-                    textMobile={isLogged ? "Se deconnecter" : "Connexion"}
+                    text={isLogged ? t("common.logout") : t("common.login")}
+                    textMobile={isLogged ? t("common.logout") : t("common.login")}
                     onClick={isLogged ? navigateAfterLogout : navigateLoginPage}
                     href={"/login"}
                     fullWidth={false}/>
@@ -173,13 +177,13 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                         zIndex: 2
                     }}>
                         <Typography variant="h3" color="white" sx={{ mb: 2, fontWeight: 'bold' }}>
-                            EXPERIENCES
+                            {t("home.experiences.title")}
                         </Typography>
                         <Button sx={{ color: "white" }} onClick={navigateActivitiesPage}>
-                            Activités
+                            {t("home.experiences.activities")}
                         </Button>
                         <Button sx={{ color: "white" }} onClick={navigateActivitiesPage}>
-                            Attractions
+                            {t("home.experiences.attractions")}
                         </Button>
                     </Box>
 
@@ -189,13 +193,13 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                         alignItems: 'center'
                     }}>
                         <Typography variant="h3" color="white" sx={{ mb: 2, fontWeight: 'bold' }}>
-                            BILLETTERIE
+                            {t("home.ticketing.title")}
                         </Typography>
                         <Button sx={{ color: "white" }} onClick={navigateReservationPage}>
-                            Tarifs
+                            {t("home.ticketing.prices")}
                         </Button>
                         <Button sx={{ color: "white" }} onClick={navigateReservationPage}>
-                            Réservation
+                            {t("home.ticketing.reservation")}
                         </Button>
                     </Box>
 
@@ -205,16 +209,16 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                         alignItems: 'center'
                     }}>
                         <Typography variant="h3" color="white" sx={{ mb: 2, fontWeight: 'bold' }}>
-                            INFORMATIONS
+                            {t("home.information.title")}
                         </Typography>
                         <Button sx={{ color: "white" }} onClick={navigateInfoPage}>
-                            Accessibilité du parc
+                            {t("home.information.accessibility")}
                         </Button>
                         <Button sx={{ color: "white" }} onClick={navigateInfoPage}>
-                            Horaires
+                            {t("home.information.schedule")}
                         </Button>
                         <Button sx={{ color: "white" }} onClick={navigateInfoPage}>
-                            Contact
+                            {t("home.information.contact")}
                         </Button>
                     </Box>
                 </Box>
@@ -251,7 +255,7 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                     }}
                         onClick={navigateActivitiesPage}
                     >
-                        ACTIVITÉS
+                        {t("navigation.activities").toUpperCase()}
                     </Button>
 
                     <Button sx={{
@@ -262,7 +266,7 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                     }}
                             onClick={navigateReservationPage}
                     >
-                        RESERVATION
+                        {t("navigation.reservations").toUpperCase()}
                     </Button>
 
                     <Button sx={{
@@ -273,12 +277,49 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                     }}
                             onClick={navigateInfoPage}
                     >
-                        INFORMATIONS
+                        {t("navigation.info").toUpperCase()}
                     </Button>
+                    <Box sx={{ display: 'flex', gap: 0.5, alignItems: 'center', zIndex: 2, mb: 2 }}>
+                        <Typography
+                            component="button"
+                            onClick={() => i18n.changeLanguage('fr')}
+                            sx={{
+                                border: 'none',
+                                background: 'none',
+                                cursor: 'pointer',
+                                fontWeight: currentLang === 'fr' ? 'bold' : 'normal',
+                                color: currentLang === 'fr' ? colors.primaryGreen : 'grey',
+                                font: 'inherit',
+                                padding: 0,
+                                fontSize: '1rem',
+                                '&:hover': { color: colors.primaryGreen },
+                            }}
+                        >
+                            FR
+                        </Typography>
+                        <Typography component="span" sx={{ color: 'grey' }}>|</Typography>
+                        <Typography
+                            component="button"
+                            onClick={() => i18n.changeLanguage('en')}
+                            sx={{
+                                border: 'none',
+                                background: 'none',
+                                cursor: 'pointer',
+                                fontWeight: currentLang === 'en' ? 'bold' : 'normal',
+                                color: currentLang === 'en' ? colors.primaryGreen : 'grey',
+                                font: 'inherit',
+                                padding: 0,
+                                fontSize: '1rem',
+                                '&:hover': { color: colors.primaryGreen },
+                            }}
+                        >
+                            EN
+                        </Typography>
+                    </Box>
                     <Box sx={{ mt: 4, display: {xs: 'flex', md: 'none', zIndex: 2}}}>
                         <PrimaryButton
-                            text={isLogged ? "Se deconnecter" : "Connexion"}
-                            textMobile={isLogged ? "Se deconnecter" : "Connexion"}
+                            text={isLogged ? t("common.logout") : t("common.login")}
+                            textMobile={isLogged ? t("common.logout") : t("common.login")}
                             onClick={isLogged ? navigateAfterLogout : navigateLoginPage}
                             href={"/login"}
                             fullWidth={false}/>

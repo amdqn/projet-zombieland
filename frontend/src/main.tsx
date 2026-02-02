@@ -9,6 +9,7 @@ import { router } from './router'
 import {LoginProvider} from "./context/UserLoginContext.tsx"
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import './i18n/config'
 
 
 createRoot(document.getElementById('root')!).render(

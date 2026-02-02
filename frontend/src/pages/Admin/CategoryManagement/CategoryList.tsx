@@ -26,8 +26,10 @@ import { CreateCategoryModal } from '../../../components/modals/Categories/Creat
 import { UpdateCategoryModal } from '../../../components/modals/Categories/UpdateCategoryModal';
 import { CategoryDetailsModal } from '../../../components/modals/Categories/CategoryDetailsModal';
 import { DeleteCategoryModal } from '../../../components/modals/Categories/DeleteCategoryModal';
+import { useTranslation } from 'react-i18next';
 
 export const CategoryList = () => {
+  const { t } = useTranslation();
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -59,7 +61,7 @@ export const CategoryList = () => {
         const categoriesData = await getCategories();
         setCategories(categoriesData);
       } catch (err) {
-        const message = err instanceof Error ? err.message : 'Erreur lors de la récupération des catégories';
+        const message = err instanceof Error ? err.message : t('admin.categories.errorLoading');
         setError(message);
       } finally {
         setIsLoading(false);
@@ -157,8 +159,8 @@ export const CategoryList = () => {
     setDeleteSuccess(null);
     try {
       await deleteCategory(categoryToDelete.id);
-      toast.success('Catégorie supprimée avec succès !');
-      setDeleteSuccess('Catégorie supprimée avec succès');
+      toast.success(t('admin.categories.successDelete'));
+      setDeleteSuccess(t('admin.categories.successDelete'));
       setCategories(categories.filter((c) => c.id !== categoryToDelete.id));
       setTimeout(() => {
         setDeleteDialogOpen(false);
@@ -166,7 +168,7 @@ export const CategoryList = () => {
         setDeleteSuccess(null);
       }, 1500);
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Erreur lors de la suppression de la catégorie";
+      const message = err instanceof Error ? err.message : t('admin.categories.errorDelete');
       setDeleteError(message);
     } finally {
       setIsDeleting(false);
@@ -185,7 +187,7 @@ export const CategoryList = () => {
       const categoriesData = await getCategories();
       setCategories(categoriesData);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erreur lors de la récupération des catégories';
+      const message = err instanceof Error ? err.message : t('admin.categories.errorLoading');
       setError(message);
     }
   };
@@ -231,7 +233,7 @@ export const CategoryList = () => {
               color: colors.white,
             }}
           >
-            Gestion des catégories
+            {t('admin.categories.title')}
           </Typography>
           <Typography
             variant="body2"
@@ -240,7 +242,7 @@ export const CategoryList = () => {
               mb: 2,
             }}
           >
-            Créez, modifiez et gérez toutes les catégories du parc Zombieland. Total : {filteredAndSortedCategories.length} catégorie{filteredAndSortedCategories.length > 1 ? 's' : ''}
+            {t('admin.categories.description', { count: filteredAndSortedCategories.length })}
           </Typography>
         </Box>
         <Button
@@ -258,7 +260,7 @@ export const CategoryList = () => {
             textTransform: 'uppercase',
           }}
         >
-          Nouvelle catégorie
+          {t('admin.categories.createButton')}
         </Button>
       </Box>
 
@@ -267,7 +269,7 @@ export const CategoryList = () => {
         <TextField
           fullWidth
           variant="outlined"
-          placeholder="Rechercher une catégorie..."
+          placeholder={t('admin.categories.searchPlaceholder')}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           onKeyPress={(e) => {
@@ -306,10 +308,10 @@ export const CategoryList = () => {
         <Grid container spacing={2} sx={{ mb: 2 }}>
           <Grid size={{ xs: 12, sm: 6, md: 6 }}>
             <FormControl fullWidth sx={{ minWidth: '200px' }}>
-              <InputLabel sx={{ color: colors.secondaryGrey }}>Utilisation</InputLabel>
+              <InputLabel sx={{ color: colors.secondaryGrey }}>{t('admin.categories.filterUsage')}</InputLabel>
               <Select
                 value={usageFilter}
-                label="Utilisation"
+                label={t('admin.categories.filterUsage')}
                 onChange={(e) => setUsageFilter(e.target.value)}
                 sx={{
                   backgroundColor: colors.secondaryDark,
@@ -348,9 +350,9 @@ export const CategoryList = () => {
                   },
                 }}
               >
-                <MenuItem value="">Toutes</MenuItem>
-                <MenuItem value="used">Utilisées</MenuItem>
-                <MenuItem value="unused">Non utilisées</MenuItem>
+                <MenuItem value="">{t('admin.categories.all')}</MenuItem>
+                <MenuItem value="used">{t('admin.categories.used')}</MenuItem>
+                <MenuItem value="unused">{t('admin.categories.unused')}</MenuItem>
               </Select>
             </FormControl>
           </Grid>
@@ -375,7 +377,7 @@ export const CategoryList = () => {
                 },
               }}
             >
-              Réinitialiser
+              {t('admin.categories.resetFilters')}
             </Button>
           </Grid>
         </Grid>
@@ -384,10 +386,10 @@ export const CategoryList = () => {
       {/* Filtre de tri */}
       <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
         <FormControl sx={{ minWidth: '250px' }}>
-          <InputLabel sx={{ color: colors.secondaryGrey }}>Trier par</InputLabel>
+          <InputLabel sx={{ color: colors.secondaryGrey }}>{t('admin.categories.sortBy')}</InputLabel>
           <Select
             value={sortBy}
-            label="Trier par"
+            label={t('admin.categories.sortBy')}
             onChange={(e) => setSortBy(e.target.value)}
             sx={{
               backgroundColor: colors.secondaryDark,
@@ -426,12 +428,12 @@ export const CategoryList = () => {
               },
             }}
           >
-            <MenuItem value="name_asc">Alphabétique (A-Z)</MenuItem>
-            <MenuItem value="name_desc">Alphabétique (Z-A)</MenuItem>
-            <MenuItem value="created_desc">Date création (récent)</MenuItem>
-            <MenuItem value="created_asc">Date création (ancien)</MenuItem>
-            <MenuItem value="usage_desc">Utilisation (décroissant)</MenuItem>
-            <MenuItem value="usage_asc">Utilisation (croissant)</MenuItem>
+            <MenuItem value="name_asc">{t('admin.categories.sortOptions.nameAsc')}</MenuItem>
+            <MenuItem value="name_desc">{t('admin.categories.sortOptions.nameDesc')}</MenuItem>
+            <MenuItem value="created_desc">{t('admin.categories.sortOptions.createdDesc')}</MenuItem>
+            <MenuItem value="created_asc">{t('admin.categories.sortOptions.createdAsc')}</MenuItem>
+            <MenuItem value="usage_desc">{t('admin.categories.sortOptions.usageDesc')}</MenuItem>
+            <MenuItem value="usage_asc">{t('admin.categories.sortOptions.usageAsc')}</MenuItem>
           </Select>
         </FormControl>
       </Box>
@@ -460,7 +462,7 @@ export const CategoryList = () => {
           >
             <CircularProgress sx={{ color: colors.primaryGreen }} size={60} />
             <Typography variant="body1" sx={{ color: colors.white }}>
-              Chargement des catégories...
+              {t('admin.categories.loading')}
             </Typography>
           </Box>
         ) : error ? (
@@ -473,7 +475,7 @@ export const CategoryList = () => {
             }}
           >
             <Typography variant="body1" sx={{ color: colors.primaryRed }}>
-              Erreur : {error}
+              {t('admin.categories.errorLoading')}: {error}
             </Typography>
           </Box>
         ) : filteredAndSortedCategories.length === 0 ? (
@@ -486,7 +488,7 @@ export const CategoryList = () => {
             }}
           >
             <Typography variant="body1" sx={{ color: colors.white }}>
-              Aucune catégorie trouvée.
+              {t('admin.categories.noCategories')}
             </Typography>
           </Box>
         ) : (

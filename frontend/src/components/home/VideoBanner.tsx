@@ -2,9 +2,11 @@ import {PrimaryButton} from "../common/Button";
 import {useNavigate} from "react-router";
 import {Box, Typography} from "@mui/material";
 import {colors} from "../../theme";
+import { useTranslation } from "react-i18next";
 
 export default function VideoBanner() {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     return (
         <Box
             sx={{
@@ -46,11 +48,11 @@ export default function VideoBanner() {
                     color: colors.secondaryGreen,
                     fontSize: { xs: '1.5rem', md: '2.5rem' }
                 }}>
-                    Oserez-vous franchir les portes ?
+                    {t("home.hero.videoTitle")}
                 </Typography>
                 <PrimaryButton
-                    text={"Réserve ton billet"}
-                    textMobile={"Réserve ton billet"}
+                    text={t("home.hero.reserveButton")}
+                    textMobile={t("home.hero.reserveButton")}
                     onClick={() => navigate("/reservations")}
                     href={"/reservations"}
                     fullWidth={false}

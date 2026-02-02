@@ -7,8 +7,10 @@ import { colors } from "../../../theme/theme";
 import { useReservationStore } from "../../../stores/reservationStore";
 import {getParkDates} from "../../../services/parkDates.ts";
 import type {ParkDate} from "../../../@types/parkDate.ts";
+import { useTranslation } from 'react-i18next';
 
 export const Step2SelectDate = () => {
+  const { t } = useTranslation();
   const { date, dateId, setDate } = useReservationStore();
   const [selectedDate, setSelectedDate] = useState<Date | null>(
     date ? new Date(date) : null
@@ -108,7 +110,7 @@ export const Step2SelectDate = () => {
             color: colors.primaryRed,
           }}
         >
-          QUELLE DATE ?
+          {t('reservation.step2.title')}
         </Typography>
         <Typography
           variant="body1"
@@ -117,7 +119,7 @@ export const Step2SelectDate = () => {
             fontSize: { xs: '0.9rem', md: '1rem' },
           }}
         >
-          Choisissez votre jour de visite
+          {t('reservation.step2.subtitle')}
         </Typography>
       </Box>
       <Calendar 
@@ -131,7 +133,7 @@ export const Step2SelectDate = () => {
         <Box sx={{ mt: 4 }}>
           <InformationCard
             icon={<CalendarTodayIcon sx={{ color: colors.primaryGreen }} />}
-            title="DATE SÉLECTIONNÉE"
+            title={t('reservation.step2.selectedDate')}
             date={selectedDate}
             borderColor="green"
           />

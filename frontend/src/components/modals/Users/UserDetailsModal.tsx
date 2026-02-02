@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import HistoryIcon from '@mui/icons-material/History';
+import { useTranslation } from 'react-i18next';
 import { colors } from '../../../theme';
 import type { User } from '../../../@types/users';
 import { getUserById, getUserReservations, getUserAuditLogs, type UserAuditLog } from '../../../services/users';
@@ -36,6 +37,7 @@ export const UserDetailsModal = ({
   onEdit,
   onDelete,
 }: UserDetailsModalProps) => {
+  const { t, i18n } = useTranslation();
   const [detailedUser, setDetailedUser] = useState<User | null>(null);
   const [reservations, setReservations] = useState<any[]>([]);
   const [auditLogs, setAuditLogs] = useState<UserAuditLog[]>([]);
@@ -55,7 +57,7 @@ export const UserDetailsModal = ({
           const logs = await getUserAuditLogs(user.id);
           setAuditLogs(logs);
         } catch (err) {
-          const message = err instanceof Error ? err.message : 'Erreur lors du chargement des détails';
+          const message = err instanceof Error ? err.message : t('admin.users.errorDetails');
           setError(message);
         } finally {
           setIsLoading(false);
@@ -95,7 +97,7 @@ export const UserDetailsModal = ({
             textAlign: 'center',
           }}
         >
-          Détails de l'utilisateur
+          {t('admin.users.details')}
         </Typography>
 
         {isLoading ? (
@@ -121,7 +123,7 @@ export const UserDetailsModal = ({
                   }}
                 />
                 <Chip
-                  label={`${reservations.length} réservation${reservations.length > 1 ? 's' : ''}`}
+                  label={t('admin.users.reservationsCount', { count: reservations.length })}
                   sx={{
                     backgroundColor: colors.primaryGold,
                     color: colors.secondaryDark,
@@ -169,14 +171,14 @@ export const UserDetailsModal = ({
                   fontWeight: 600,
                 }}
               >
-                Informations
+                {t('admin.users.informations')}
               </Typography>
 
               <Stack spacing={1}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Typography sx={{ color: colors.secondaryGrey }}>Date d'inscription:</Typography>
+                  <Typography sx={{ color: colors.secondaryGrey }}>{t('admin.users.registrationDate')}:</Typography>
                   <Typography sx={{ color: colors.white, fontWeight: 600 }}>
-                    {new Date(userData.created_at).toLocaleDateString('fr-FR', {
+                    {new Date(userData.created_at).toLocaleDateString(i18n.language === 'fr' ? 'fr-FR' : 'en-US', {
                       day: 'numeric',
                       month: 'long',
                       year: 'numeric',
@@ -185,9 +187,9 @@ export const UserDetailsModal = ({
                 </Box>
 
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Typography sx={{ color: colors.secondaryGrey }}>Dernière modification:</Typography>
+                  <Typography sx={{ color: colors.secondaryGrey }}>{t('admin.users.lastModified')}:</Typography>
                   <Typography sx={{ color: colors.white, fontWeight: 600 }}>
-                    {new Date(userData.updated_at).toLocaleDateString('fr-FR', {
+                    {new Date(userData.updated_at).toLocaleDateString(i18n.language === 'fr' ? 'fr-FR' : 'en-US', {
                       day: 'numeric',
                       month: 'long',
                       year: 'numeric',
@@ -208,7 +210,7 @@ export const UserDetailsModal = ({
                     fontWeight: 600,
                   }}
                 >
-                  Réservations ({reservations.length})
+                  {t('admin.users.table.reservations')} ({reservations.length})
                 </Typography>
                 <Stack spacing={2}>
                   {reservations.map((reservation) => (
@@ -228,7 +230,7 @@ export const UserDetailsModal = ({
                             mb: 1,
                           }}
                         >
-                          Réservation #{reservation.id}
+                          {t('admin.users.reservationLabel')}{reservation.id}
                         </Typography>
                         <Typography
                           variant="body2"
@@ -236,7 +238,7 @@ export const UserDetailsModal = ({
                             color: colors.secondaryGrey,
                           }}
                         >
-                          Date: {reservation.date?.jour ? new Date(reservation.date.jour).toLocaleDateString('fr-FR') : 'N/A'}
+                          {t('admin.users.table.registrationDate')}: {reservation.date?.jour ? new Date(reservation.date.jour).toLocaleDateString(i18n.language === 'fr' ? 'fr-FR' : 'en-US') : 'N/A'}
                         </Typography>
                         <Typography
                           variant="body2"
@@ -244,7 +246,7 @@ export const UserDetailsModal = ({
                             color: colors.secondaryGrey,
                           }}
                         >
-                          Statut: {reservation.status}
+                          {t('admin.users.table.status')}: {reservation.status}
                         </Typography>
                       </CardContent>
                     </Card>
@@ -268,20 +270,20 @@ export const UserDetailsModal = ({
                   }}
                 >
                   <HistoryIcon />
-                  Historique des modifications ({auditLogs.length})
+                  {t('admin.users.modificationHistory')} ({auditLogs.length})
                 </Typography>
                 <Stack spacing={1.5}>
                   {auditLogs.map((log) => {
                     const getActionLabel = (action: string) => {
                       switch (action) {
                         case 'UPDATE':
-                          return 'Modification';
+                          return t('admin.users.actionUpdate');
                         case 'ACTIVATE':
-                          return 'Activation';
+                          return t('admin.users.actionActivate');
                         case 'DEACTIVATE':
-                          return 'Désactivation';
+                          return t('admin.users.actionDeactivate');
                         case 'DELETE':
-                          return 'Suppression';
+                          return t('admin.users.actionDelete');
                         default:
                           return action;
                       }
@@ -290,13 +292,13 @@ export const UserDetailsModal = ({
                     const getFieldLabel = (field: string | null) => {
                       switch (field) {
                         case 'pseudo':
-                          return 'Pseudo';
+                          return t('admin.users.fieldPseudo');
                         case 'email':
-                          return 'Email';
+                          return t('admin.users.fieldEmail');
                         case 'role':
-                          return 'Rôle';
+                          return t('admin.users.fieldRole');
                         case 'is_active':
-                          return 'Statut';
+                          return t('admin.users.fieldStatus');
                         default:
                           return field || 'N/A';
                       }
@@ -306,9 +308,8 @@ export const UserDetailsModal = ({
                       if (!value) return 'N/A';
                       try {
                         const parsed = JSON.parse(value);
-                        // Pour is_active, afficher un label lisible
                         if (fieldName === 'is_active') {
-                          return parsed === true || parsed === 'true' ? 'Actif' : 'Inactif';
+                          return parsed === true || parsed === 'true' ? t('admin.users.active') : t('admin.users.inactive');
                         }
                         return parsed;
                       } catch {
@@ -342,7 +343,7 @@ export const UserDetailsModal = ({
                                 color: colors.secondaryGrey,
                               }}
                             >
-                              {new Date(log.created_at).toLocaleString('fr-FR', {
+                              {new Date(log.created_at).toLocaleString(i18n.language === 'fr' ? 'fr-FR' : 'en-US', {
                                 day: 'numeric',
                                 month: 'short',
                                 year: 'numeric',
@@ -353,22 +354,22 @@ export const UserDetailsModal = ({
                           </Box>
                           {log.field_name && (
                             <Box sx={{ mt: 1 }}>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                color: colors.secondaryGrey,
+                                mb: 0.5,
+                              }}
+                            >
+                              <strong style={{ color: colors.white }}>{t('admin.users.oldValue')}:</strong> {parseValue(log.old_value, log.field_name)}
+                            </Typography>
                               <Typography
                                 variant="body2"
                                 sx={{
                                   color: colors.secondaryGrey,
-                                  mb: 0.5,
                                 }}
                               >
-                                <strong style={{ color: colors.white }}>Ancienne valeur:</strong> {parseValue(log.old_value, log.field_name)}
-                              </Typography>
-                              <Typography
-                                variant="body2"
-                                sx={{
-                                  color: colors.secondaryGrey,
-                                }}
-                              >
-                                <strong style={{ color: colors.white }}>Nouvelle valeur:</strong> {parseValue(log.new_value, log.field_name)}
+                                <strong style={{ color: colors.white }}>{t('admin.users.newValue')}:</strong> {parseValue(log.new_value, log.field_name)}
                               </Typography>
                             </Box>
                           )}
@@ -380,7 +381,7 @@ export const UserDetailsModal = ({
                                 fontStyle: 'italic',
                               }}
                             >
-                              Modifié par: {log.modified_by?.pseudo || 'N/A'} ({log.modified_by?.email || 'N/A'})
+                              {t('admin.users.modifiedBy')}: {log.modified_by?.pseudo || 'N/A'} ({log.modified_by?.email || 'N/A'})
                             </Typography>
                           </Box>
                         </CardContent>
@@ -405,7 +406,7 @@ export const UserDetailsModal = ({
                   },
                 }}
               >
-                Fermer
+                {t('common.close')}
               </Button>
               {onEdit && (
                 <Button
@@ -422,7 +423,7 @@ export const UserDetailsModal = ({
                     },
                   }}
                 >
-                  Modifier
+                  {t('admin.users.modify')}
                 </Button>
               )}
               {onDelete && (
@@ -440,7 +441,7 @@ export const UserDetailsModal = ({
                     },
                   }}
                 >
-                  Supprimer
+                  {t('common.delete')}
                 </Button>
               )}
             </Box>

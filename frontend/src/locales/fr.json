@@ -1,0 +1,1581 @@
+{
+  "common": {
+    "welcome": "Bienvenue",
+    "logout": "Se déconnecter",
+    "login": "Connexion",
+    "register": "Inscription",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "view": "Voir",
+    "search": "Rechercher",
+    "close": "Fermer",
+    "open": "Ouvrir",
+    "closed": "Fermé",
+    "submit": "Valider",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "yes": "Oui",
+    "no": "Non"
+  },
+  "navigation": {
+    "reservations": "Réservations",
+    "activities": "Activités",
+    "attractions": "Attractions",
+    "info": "Infos",
+    "home": "Accueil",
+    "account": "Mon compte"
+  },
+  "home": {
+    "hero": {
+      "title": "Survivrez-vous au parc post-apocalyptique ? Réservez votre séjour et venez affronter vos peurs au cœur de ZombieLand !",
+      "parkStatus": "Aujourd'hui, le parc est {{status}}.",
+      "parkOpen": "ouvert",
+      "parkClosed": "fermé",
+      "videoTitle": "Oserez-vous franchir les portes ?",
+      "reserveButton": "Réserve ton billet"
+    },
+    "carousel": {
+      "title": "Activités & Attractions",
+      "activityFallback": "Activité",
+      "attractionFallback": "Attraction",
+      "errorLoading": "Erreur lors de la récupération des activités et attractions:"
+    },
+    "experiences": {
+      "title": "EXPERIENCES",
+      "activities": "Activités",
+      "attractions": "Attractions"
+    },
+    "ticketing": {
+      "title": "BILLETTERIE",
+      "prices": "Tarifs",
+      "reservation": "Réservation",
+      "errorLoading": "Impossible de récupérer les tarifs:"
+    },
+    "social": {
+      "title": "Suivez-nous"
+    },
+    "information": {
+      "title": "Informations générales",
+      "accessibility": "Accessibilité du parc",
+      "schedule": "Horaires",
+      "contact": "Contact",
+      "loadingSchedules": "Chargement des horaires...",
+      "noSchedules": "Aucun horaire disponible pour aujourd'hui",
+      "errorLoading": "Erreur lors de la récupération des horaires:"
+    },
+    "schedule": {
+      "todayStatus": "Aujourd'hui, {{day}}, le parc est",
+      "open": "ouvert",
+      "closed": "fermé",
+      "openingTime": "Heure d'ouverture",
+      "closingTime": "Heure de fermeture",
+      "noSchedule": "Pas d'horaires disponibles.",
+      "closedToday": "Le parc est fermé ce jour-là.",
+      "moreSchedules": "Plus d'horaires"
+    },
+    "access": {
+      "title": "Accès au parc",
+      "parkName": "ZombieLand Park",
+      "address": {
+        "line1": "13 Allée des Ombres Errantes",
+        "line2": "Zone Industrielle Désaffectée",
+        "line3": "75000 Paris, France"
+      },
+      "byCar": "En voiture : Sortie A7 \"Zone Contaminée\"",
+      "byBus": "Bus ligne 13 - Arrêt \"Cimetière\""
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "CONNEXION",
+      "email": "Email",
+      "password": "Mot de passe",
+      "emailPlaceholder": "votre@email.com",
+      "passwordPlaceholder": "Votre mot de passe",
+      "forgotPassword": "Mot de passe oublié ?",
+      "noAccount": "Pas encore de compte ?",
+      "registerLink": "S'inscrire",
+      "loginButton": "Se connecter",
+      "loginButtonLoading": "Connexion en cours...",
+      "alreadyConnected": "Vous êtes déjà connecté",
+      "logout": "Se déconnecter",
+      "goToHome": "Aller à l'accueil",
+      "accessAccount": "Accéder à votre compte",
+      "emailRequired": "L'email est requis",
+      "emailInvalid": "Email invalide",
+      "passwordRequired": "Le mot de passe est requis",
+      "passwordMinLength": "Le mot de passe doit contenir au moins 6 caractères",
+      "incorrectCredentials": "Email ou mot de passe incorrect",
+      "pleaseLogin": "Veuillez vous connecter pour accéder à la réservation."
+    },
+    "register": {
+      "title": "INSCRIPTION",
+      "pseudo": "Pseudo",
+      "pseudoPlaceholder": "Votre pseudo",
+      "email": "Email",
+      "emailPlaceholder": "votre@email.com",
+      "password": "Mot de passe",
+      "passwordPlaceholder": "Votre mot de passe",
+      "confirmPassword": "Confirmation du mot de passe",
+      "confirmPasswordPlaceholder": "Confirmer votre mot de passe",
+      "alreadyAccount": "Déjà un compte ?",
+      "loginLink": "Se connecter",
+      "registerButton": "S'inscrire",
+      "registerButtonLoading": "Inscription en cours...",
+      "emailRequired": "L'email est requis",
+      "emailInvalid": "Email invalide",
+      "passwordRequired": "Le mot de passe est requis",
+      "passwordMinLength": "Le mot de passe doit contenir au moins 6 caractères",
+      "confirmPasswordRequired": "La confirmation du mot de passe est requise",
+      "passwordsDontMatch": "Les mots de passe ne correspondent pas",
+      "pseudoRequired": "Le pseudo est requis",
+      "pseudoMinLength": "Le pseudo doit contenir au moins 3 caractères",
+      "pseudoMaxLength": "Le pseudo est trop long (max 10 caractères)",
+      "pseudoInvalid": "Le pseudo ne peut contenir que des lettres et des chiffres",
+      "registrationError": "Erreur lors de l'inscription. Email déjà utilisé ?"
+    },
+    "success": {
+      "title": "Création de compte réussis !",
+      "loginLink": "Se connecter"
+    },
+    "account": {
+      "title": "Mon compte",
+      "profile": "Profil",
+      "logout": "Se déconnecter",
+      "page": {
+        "breadcrumbs": {
+          "home": "Accueil",
+          "account": "Mon compte"
+        },
+        "title": "MON PROFIL",
+        "loading": "Chargement du profil...",
+        "errorLoading": "Impossible de charger les données du profil",
+        "error": "Une erreur est survenue :",
+        "myReservations": "Mes réservations",
+        "dashboard": "Dashboard",
+        "notConnected": "Vous n'avez pas accès à cette page si vous n'êtes pas connecté",
+        "loginLink": "Se connecter"
+      },
+      "userCard": {
+        "email": "Email :",
+        "createdAt": "Crée le :",
+        "lastModified": "Dernière modification :",
+        "editEmail": "Modifier l'email",
+        "editPassword": "Modifier le mot de passe",
+        "deleteAccount": "Supprimer le compte"
+      },
+      "reservations": {
+        "breadcrumbs": {
+          "home": "Accueil",
+          "reservations": "Mes réservations"
+        },
+        "title": "Mes réservations",
+        "description": "Consultez et gérez toutes vos réservations au parc Zombieland.",
+        "loading": "Chargement des réservations...",
+        "error": "Erreur :",
+        "errorLoading": "Erreur de chargement",
+        "errorDelete": "Erreur lors de la suppression de la réservation",
+        "noReservations": "Aucune réservation trouvée.",
+        "details": {
+          "title": "Détails de la réservation",
+          "reservationNumber": "Réservation #",
+          "status": {
+            "confirmed": "Confirmée",
+            "pending": "En attente",
+            "cancelled": "Annulée"
+          },
+          "customerInfo": "Informations client",
+          "username": "Nom d'utilisateur",
+          "email": "Email",
+          "visitInfo": "Informations de visite",
+          "visitDate": "Date de visite",
+          "parkStatus": "Statut du parc",
+          "parkOpen": "Ouvert",
+          "parkClosed": "Fermé",
+          "notes": "Notes",
+          "ticketsDetails": "Détails des billets",
+          "quantity": "Quantité",
+          "unitPrice": "Prix unitaire",
+          "subtotal": "Sous-total",
+          "priceId": "ID tarif: #",
+          "reservationInfo": "Informations de réservation",
+          "totalTickets": "Nombre total de billets",
+          "totalAmount": "Montant total",
+          "userFallback": "Utilisateur #",
+          "notAvailable": "Non disponible",
+          "dateNotAvailable": "Date non disponible"
+        }
+      }
+    },
+    "breadcrumbs": {
+      "home": "Accueil",
+      "login": "Se connecter",
+      "register": "S'inscrire"
+    }
+  },
+  "activities": {
+    "title": "Activités",
+    "filter": "Filtrer",
+    "all": "Toutes",
+    "description": "Description",
+    "duration": "Durée",
+    "thrillLevel": "Niveau de frisson",
+    "minAge": "Âge minimum",
+    "reserve": "Réserver",
+    "page": {
+      "breadcrumbs": {
+        "home": "Accueil",
+        "activities": "Activités"
+      },
+      "tabs": {
+        "activities": "Activités",
+        "attractions": "Attractions",
+        "restaurants": "Restauration"
+      },
+      "titles": {
+        "activities": "Activités du parc",
+        "attractions": "Attractions du parc",
+        "restaurants": "Restauration"
+      },
+      "descriptions": {
+        "activities": "Frissons, immersions ou ateliers : découvre toutes les activités disponibles avant de réserver.",
+        "attractions": "Parcours immersifs, expériences à sensations fortes : explore toutes nos attractions thématiques.",
+        "restaurants": "Restaurants, snacks et points de vente : découvre toutes nos options de restauration thématique."
+      },
+      "counters": {
+        "activities": "activités",
+        "attractions": "attractions",
+        "restaurants": "points de vente"
+      },
+      "counterDescriptions": {
+        "activities": "Zones immersives, ateliers, spectacles",
+        "attractions": "Parcours, expériences, sensations fortes",
+        "restaurants": "Restaurants, snacks, bars et cafés"
+      },
+      "features": {
+        "thrillUpTo": "Frisson jusqu'à 5/5",
+        "chooseIntensity": "Choisis ton niveau d'intensité",
+        "thematicCuisine": "Cuisine thématique",
+        "foodForAll": "Des plats pour tous les goûts",
+        "freeAccess": "Accès libre",
+        "onlineBooking": "Réservation en ligne",
+        "payOnSite": "Paiement sur place",
+        "limitedPlaces": "Places limitées par session"
+      },
+      "sections": {
+        "allActivities": "Toutes les activités",
+        "allAttractions": "Toutes les attractions",
+        "allRestaurants": "Tous les points de restauration"
+      },
+      "sectionDescriptions": {
+        "activities": "Parcours, VR, spectacles ou ateliers : découvre l'ensemble du parc et filtre par catégorie ou niveau de frisson.",
+        "attractions": "Attractions extrêmes, expériences immersives ou parcours familiaux : filtre par catégorie ou niveau d'intensité.",
+        "restaurants": "Restaurants gastronomiques, snacks rapides ou bars thématiques : découvre toutes nos options de restauration."
+      },
+      "errorLoading": "Impossible de charger les données.",
+      "filter": {
+        "title": "Filtrer",
+        "activities": "les activités",
+        "attractions": "les attractions",
+        "restaurants": "la restauration",
+        "displayed": {
+          "activities": "activité(s) affichée(s)",
+          "attractions": "attraction(s) affichée(s)",
+          "restaurants": "point(s) de vente affiché(s)"
+        },
+        "search": {
+          "label": "Recherche",
+          "placeholder": "Rechercher par nom ou description..."
+        },
+        "categories": "Catégories",
+        "intensity": {
+          "label": "Intensité minimale",
+          "all": "Tous"
+        }
+      },
+      "empty": {
+        "title": {
+          "activities": "Aucune activité trouvée",
+          "attractions": "Aucune attraction trouvée",
+          "restaurants": "Aucun point de restauration trouvé"
+        },
+        "message": "Réessaie plus tard ou contacte le support si le problème persiste."
+      }
+    }
+  },
+  "reservations": {
+    "title": "Réservations",
+    "myReservations": "Mes réservations",
+    "newReservation": "Nouvelle réservation",
+    "date": "Date",
+    "tickets": "Billets",
+    "total": "Total",
+    "status": "Statut"
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Administration",
+      "description": "Gérez les réservations, utilisateurs et activités du parc Zombieland.",
+      "breadcrumbs": {
+        "home": "Accueil",
+        "admin": "Administration"
+      },
+      "tabs": {
+        "reservations": "Réservations",
+        "activities": "Activités",
+        "attractions": "Attractions",
+        "prices": "Tarifs",
+        "users": "Utilisateurs",
+        "categories": "Catégories"
+      }
+    },
+    "users": {
+      "title": "Gestion des utilisateurs",
+      "description": "Gérez tous les utilisateurs du parc Zombieland. Total : {{total}} utilisateur(s)",
+      "table": {
+        "name": "Nom",
+        "email": "Email",
+        "role": "Rôle",
+        "status": "Statut",
+        "registrationDate": "Date d'inscription",
+        "reservations": "Réservations",
+        "actions": "Actions"
+      },
+      "mobile": {
+        "status": "Statut:",
+        "registrationDate": "Date d'inscription:",
+        "reservations": "Réservations:"
+      },
+      "create": "Créer un utilisateur",
+      "edit": "Modifier l'utilisateur",
+      "delete": "Supprimer l'utilisateur",
+      "details": "Détails de l'utilisateur",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "email": "Email",
+      "role": "Rôle",
+      "createdAt": "Créé le",
+      "search": "Rechercher par nom, email...",
+      "searchPlaceholder": "Rechercher par nom, email...",
+      "filterRole": "Rôle",
+      "sortBy": "Trier par",
+      "resetFilters": "Réinitialiser",
+      "noUsers": "Aucun utilisateur trouvé",
+      "loading": "Chargement des utilisateurs...",
+      "errorLoading": "Erreur lors de la récupération des utilisateurs",
+      "errorDelete": "Erreur lors de la suppression de l'utilisateur",
+      "errorToggleStatus": "Impossible de modifier le statut d'un administrateur",
+      "errorDetails": "Erreur lors du chargement des détails",
+      "errorUpdateStatus": "Erreur lors de la modification du statut",
+      "successDelete": "Utilisateur supprimé avec succès !",
+      "successToggle": "Compte {{status}} avec succès !",
+      "active": "Actif",
+      "inactive": "Inactif",
+      "activated": "activé",
+      "deactivated": "désactivé",
+      "all": "Tous",
+      "admin": "Administrateur",
+      "client": "Client",
+      "viewDetails": "Voir les détails",
+      "editUser": "Modifier l'utilisateur",
+      "deleteUser": "Supprimer l'utilisateur",
+      "modify": "Modifier",
+      "informations": "Informations",
+      "registrationDate": "Date d'inscription",
+      "lastModified": "Dernière modification",
+      "reservationsCount": "{{count}} réservation(s)",
+      "modificationHistory": "Historique des modifications",
+      "oldValue": "Ancienne valeur",
+      "newValue": "Nouvelle valeur",
+      "modifiedBy": "Modifié par",
+      "username": "Nom d'utilisateur",
+      "nameAndEmailRequired": "Le nom et l'email sont requis",
+      "nameMinLength": "Le nom doit contenir au moins 3 caractères",
+      "emailInvalid": "L'email n'est pas valide",
+      "successUpdate": "Utilisateur mis à jour avec succès !",
+      "errorUpdate": "Erreur lors de la modification de l'utilisateur",
+      "roleChangeWarning": "Vous êtes sur le point de modifier le rôle de cet utilisateur. Cette action nécessite une confirmation.",
+      "update": "Mettre à jour",
+      "cannotDeleteUser": "Cet utilisateur ne peut pas être supprimé",
+      "reservationsAssociated": "{{count}} réservation(s) associée(s).",
+      "deleteOrTransferFirst": "Veuillez d'abord supprimer ou transférer les réservations associées.",
+      "confirmDeleteUser": "Êtes-vous sûr de vouloir supprimer définitivement l'utilisateur",
+      "irreversibleAction": "Attention : Cette action est irréversible et conforme au RGPD",
+      "personalDataDeleted": "Toutes les données personnelles de cet utilisateur seront définitivement supprimées.",
+      "deleting": "Suppression...",
+      "deletePermanently": "Supprimer définitivement",
+      "actionUpdate": "Modification",
+      "actionActivate": "Activation",
+      "actionDeactivate": "Désactivation",
+      "actionDelete": "Suppression",
+      "fieldPseudo": "Pseudo",
+      "fieldEmail": "Email",
+      "fieldRole": "Rôle",
+      "fieldStatus": "Statut",
+      "reservationLabel": "Réservation #",
+      "userLabel": "Utilisateur",
+      "sortOptions": {
+        "nameAsc": "Nom (A-Z)",
+        "nameDesc": "Nom (Z-A)",
+        "emailAsc": "Email (A-Z)",
+        "emailDesc": "Email (Z-A)",
+        "createdDesc": "Date création (récent)",
+        "createdAsc": "Date création (ancien)",
+        "roleAsc": "Rôle (A-Z)",
+        "roleDesc": "Rôle (Z-A)"
+      }
+    },
+    "activities": {
+      "title": "Gestion des activités",
+      "description": "Créez, modifiez et gérez toutes les activités du parc Zombieland. Total : {{count}} activité(s)",
+      "create": "Créer une activité",
+      "createButton": "Nouvelle activité",
+      "edit": "Modifier l'activité",
+      "delete": "Supprimer l'activité",
+      "name": "Titre",
+      "nameFr": "Titre (français)",
+      "nameEn": "Titre (anglais)",
+      "description": "Description",
+      "descriptionFr": "Description (français)",
+      "descriptionEn": "Description (anglais)",
+      "image": "Image",
+      "category": "Catégorie",
+      "duration": "Durée",
+      "thrillLevel": "Niveau de frisson",
+      "minAge": "Âge minimum",
+      "search": "Rechercher une activité...",
+      "searchPlaceholder": "Rechercher une activité...",
+      "filterCategory": "Catégorie",
+      "filterPublished": "Statut de publication",
+      "sortBy": "Trier par",
+      "resetFilters": "Réinitialiser",
+      "noActivities": "Aucune activité trouvée",
+      "loading": "Chargement des activités...",
+      "errorLoading": "Erreur lors de la récupération des activités",
+      "errorDelete": "Erreur lors de la suppression de l'activité",
+      "successDelete": "Activité supprimée avec succès !",
+      "allCategories": "Toutes les catégories",
+      "allStatus": "Tous",
+      "published": "Publiées",
+      "draft": "Brouillons",
+      "createNew": "Créer une nouvelle activité",
+      "nameDescriptionCategoryRequired": "Le nom, la description et la catégorie sont requis",
+      "successCreate": "Activité créée avec succès !",
+      "errorCreate": "Erreur lors de la création de l'activité",
+      "imageLabel": "Image de l'activité",
+      "chooseImage": "Choisir une image",
+      "uploading": "Upload en cours...",
+      "imageUploaded": "Image uploadée avec succès",
+      "imageUploadError": "Erreur lors de l'upload de l'image",
+      "imageMaxSize": "L'image ne doit pas dépasser 5MB",
+      "selectCategory": "Sélectionner une catégorie",
+      "thrillLevelLabel": "Niveau de frisson (1-5)",
+      "durationMinutes": "Durée (minutes)",
+      "accessibility": "Accessibilité",
+      "accessibilityPlaceholder": "Ex: Accessible, Partiellement accessible...",
+      "relatedActivities": "Activités liées",
+      "preview": "Aperçu",
+      "createLabel": "Créer",
+      "sortOptions": {
+        "nameAsc": "Nom (A-Z)",
+        "nameDesc": "Nom (Z-A)",
+        "createdDesc": "Date création (récent)",
+        "createdAsc": "Date création (ancien)",
+        "updatedDesc": "Date modification (récent)",
+        "updatedAsc": "Date modification (ancien)"
+      }
+    },
+    "reservations": {
+      "title": "Liste des réservations",
+      "description": "Gérez toutes les réservations du parc Zombieland. Total : {{total}} réservation(s)",
+      "sortOptions": {
+        "createdDesc": "Date création (récent)",
+        "createdAsc": "Date création (ancien)",
+        "dateDesc": "Date visite (récent)",
+        "dateAsc": "Date visite (ancien)",
+        "amountDesc": "Montant (décroissant)",
+        "amountAsc": "Montant (croissant)",
+        "status": "Statut",
+        "number": "Numéro"
+      },
+      "card": {
+        "reservationNumber": "Réservation #",
+        "client": "Client",
+        "visitDate": "Date de visite",
+        "totalAmount": "Montant total",
+        "ticketsCount": "Nombre de billets",
+        "dateNotAvailable": "Date non disponible",
+        "userFallback": "Utilisateur #",
+        "editLabel": "Modifier la réservation",
+        "editDisabled": "Impossible de modifier une réservation dont la date est passée",
+        "deleteLabel": "Supprimer la réservation",
+        "deleteDisabledDate": "Impossible d'annuler une réservation dont la date est passée",
+        "deleteDisabledDays": "Annulation impossible : la visite est dans moins de 10 jours"
+      },
+      "search": "Rechercher par numéro de réservation, utilisateur, statut...",
+      "searchPlaceholder": "Rechercher par numéro de réservation, utilisateur, statut...",
+      "filterStatus": "Statut",
+      "filterDateFrom": "Date de visite (de)",
+      "filterDateTo": "Date de visite (à)",
+      "sortBy": "Trier par",
+      "resetFilters": "Réinitialiser",
+      "noReservations": "Aucune réservation trouvée",
+      "loading": "Chargement des réservations...",
+      "errorLoading": "Erreur lors de la récupération des réservations",
+      "errorDelete": "Erreur lors de la suppression de la réservation",
+      "successDelete": "Réservation annulée avec succès !",
+      "all": "Tous",
+      "pending": "En attente",
+      "confirmed": "Confirmée",
+      "cancelled": "Annulée"
+    },
+    "attractions": {
+      "title": "Gestion des attractions",
+      "description": "Créez, modifiez et gérez toutes les attractions du parc Zombieland. Total : {{count}} attraction(s)",
+      "create": "Créer une attraction",
+      "createButton": "Nouvelle attraction",
+      "edit": "Modifier l'attraction",
+      "delete": "Supprimer l'attraction",
+      "name": "Titre",
+      "nameFr": "Titre (français)",
+      "nameEn": "Titre (anglais)",
+      "description": "Description",
+      "descriptionFr": "Description (français)",
+      "descriptionEn": "Description (anglais)",
+      "search": "Rechercher une attraction...",
+      "searchPlaceholder": "Rechercher une attraction...",
+      "filterCategory": "Catégorie",
+      "filterPublished": "Statut de publication",
+      "sortBy": "Trier par",
+      "resetFilters": "Réinitialiser",
+      "noAttractions": "Aucune attraction trouvée",
+      "loading": "Chargement des attractions...",
+      "errorLoading": "Erreur lors de la récupération des attractions",
+      "errorDelete": "Erreur lors de la suppression de l'attraction",
+      "successDelete": "Attraction supprimée avec succès !",
+      "allCategories": "Toutes les catégories",
+      "allStatus": "Tous",
+      "published": "Publiées",
+      "draft": "Brouillons",
+      "createNew": "Créer une nouvelle attraction",
+      "nameDescriptionCategoryRequired": "Le nom, la description et la catégorie sont requis",
+      "successCreate": "Attraction créée avec succès !",
+      "errorCreate": "Erreur lors de la création de l'attraction",
+      "imageLabel": "Image de l'attraction",
+      "chooseImage": "Choisir une image",
+      "uploading": "Upload en cours...",
+      "imageUploaded": "Image uploadée avec succès",
+      "imageUploadError": "Erreur lors de l'upload de l'image",
+      "imageMaxSize": "L'image ne doit pas dépasser 5MB",
+      "selectCategory": "Sélectionner une catégorie",
+      "thrillLevelLabel": "Niveau de frisson (1-5)",
+      "durationMinutes": "Durée (minutes)",
+      "relatedAttractions": "Attractions liées",
+      "preview": "Aperçu",
+      "createLabel": "Créer",
+      "sortOptions": {
+        "nameAsc": "Nom (A-Z)",
+        "nameDesc": "Nom (Z-A)",
+        "createdDesc": "Date création (récent)",
+        "createdAsc": "Date création (ancien)",
+        "updatedDesc": "Date modification (récent)",
+        "updatedAsc": "Date modification (ancien)"
+      }
+    },
+    "prices": {
+      "title": "Liste des tarifs",
+      "description": "Créez, modifiez et gérez tous les tarifs du parc Zombieland. Total : {{total}} tarifs",
+      "card": {
+        "priceType": "Type de tarif",
+        "daysCount": "Nombre de jour",
+        "amount": "Montant",
+        "editLabel": "Modifier le tarif",
+        "deleteLabel": "Supprimer le tarif",
+        "pass2d": "PASS 2 JOURS"
+      },
+      "create": "Créer un tarif",
+      "createButton": "Nouveau tarif",
+      "edit": "Modifier le tarif",
+      "delete": "Supprimer le tarif",
+      "filterType": "Type de prix",
+      "sortBy": "Trier par",
+      "resetFilters": "Réinitialiser",
+      "noPrices": "Aucun tarif trouvé",
+      "loading": "Chargement des tarifs...",
+      "errorLoading": "Erreur lors de la récupération des prix",
+      "errorDelete": "Erreur lors de la suppression du prix",
+      "all": "Tous",
+      "student": "Tarif étudiant",
+      "group": "Tarif groupe",
+      "pass2d": "Tarif pass 2 jours",
+      "label": "Titre",
+      "labelFr": "Titre (français)",
+      "labelEn": "Titre (anglais)",
+      "createNew": "Créer un nouveau tarif",
+      "namePriceTypeDaysRequired": "Le nom, le tarif, le type de tarif et le nombre de jours sont requis",
+      "successCreate": "Tarif créé avec succès !",
+      "errorCreate": "Erreur lors de la création du tarif",
+      "priceType": "Type de prix *",
+      "ticketDurationDays": "Durée du billet (jours)",
+      "amount": "Prix",
+      "saving": "Enregistrement...",
+      "save": "Enregistrer",
+      "typeEtudiant": "Étudiant",
+      "typeAdulte": "Adulte",
+      "typeGroupe": "Groupe",
+      "typePass2J": "Pass 2 jours",
+      "sortOptions": {
+        "createdDesc": "Date création (récent)",
+        "createdAsc": "Date création (ancien)",
+        "updatedDesc": "Date modification (récent)",
+        "updatedAsc": "Date modification (ancien)",
+        "amountDesc": "Montant (décroissant)",
+        "amountAsc": "Montant (croissant)"
+      }
+    },
+    "categories": {
+      "title": "Gestion des catégories",
+      "description": "Créez, modifiez et gérez toutes les catégories du parc Zombieland. Total : {{count}} catégorie(s)",
+      "card": {
+        "activities": "{{count}} activité",
+        "activitiesPlural": "{{count}} activités",
+        "attractions": "{{count}} attraction",
+        "attractionsPlural": "{{count}} attractions",
+        "notUsed": "Non utilisée",
+        "createdOn": "Créée le"
+      },
+      "create": "Créer une catégorie",
+      "createNew": "Créer une nouvelle catégorie",
+      "nameDescriptionRequired": "Le nom et la description sont requis",
+      "nameMaxLength": "Le nom ne doit pas dépasser 100 caractères",
+      "descriptionMaxLength": "La description ne doit pas dépasser 500 caractères",
+      "successCreate": "Catégorie créée avec succès !",
+      "errorCreate": "Erreur lors de la création de la catégorie",
+      "description": "Description",
+      "nameFr": "Nom (français)",
+      "nameEn": "Nom (anglais)",
+      "descriptionFr": "Description (français)",
+      "descriptionEn": "Description (anglais)",
+      "categoryName": "Nom de la catégorie",
+      "charactersCount": "{{current}}/{{max}} caractères",
+      "createLabel": "Créer",
+      "createButton": "Nouvelle catégorie",
+      "edit": "Modifier la catégorie",
+      "delete": "Supprimer la catégorie",
+      "search": "Rechercher une catégorie...",
+      "searchPlaceholder": "Rechercher une catégorie...",
+      "filterUsage": "Filtre d'utilisation",
+      "sortBy": "Trier par",
+      "resetFilters": "Réinitialiser",
+      "noCategories": "Aucune catégorie trouvée",
+      "loading": "Chargement des catégories...",
+      "errorLoading": "Erreur lors de la récupération des catégories",
+      "errorDelete": "Erreur lors de la suppression de la catégorie",
+      "successDelete": "Catégorie supprimée avec succès !",
+      "all": "Toutes",
+      "used": "Utilisées",
+      "unused": "Non utilisées",
+      "sortOptions": {
+        "nameAsc": "Nom (A-Z)",
+        "nameDesc": "Nom (Z-A)",
+        "createdDesc": "Date création (récent)",
+        "createdAsc": "Date création (ancien)",
+        "updatedDesc": "Date modification (récent)",
+        "updatedAsc": "Date modification (ancien)",
+        "usageDesc": "Utilisation (décroissant)",
+        "usageAsc": "Utilisation (croissant)"
+      }
+    }
+  },
+  "info": {
+    "title": "Informations",
+    "accessibility": "Accessibilité",
+    "schedule": "Horaires",
+    "contact": "Contact",
+    "map": "Plan du parc",
+    "page": {
+      "breadcrumbs": {
+        "home": "Accueil",
+        "info": "Informations"
+      },
+      "hero": {
+        "title": "Informations du Parc",
+        "description": "Découvrez toutes les informations pratiques et explorez la carte interactive de Zombieland."
+      },
+      "schedule": {
+        "openToday": "Ouvert aujourd'hui",
+        "closedToday": "Fermé aujourd'hui"
+      },
+      "about": {
+        "title": "À propos de Zombieland",
+        "description": "Bienvenue à <strong>Zombieland</strong>, le parc d'attractions le plus terrifiant et immersif d'Europe ! Plongez dans un monde post-apocalyptique où vous devrez survivre aux hordes de zombies tout en profitant d'attractions à sensations fortes, de spectacles époustouflants et d'expériences immersives inoubliables."
+      },
+      "map": {
+        "title": "Carte Interactive du Parc",
+        "description": "Explorez la carte pour découvrir toutes les attractions, activités et services disponibles dans le parc. Utilisez les filtres pour affiner votre recherche !",
+        "error": "Impossible de charger les données de la carte.",
+        "filters": {
+          "searchPlaceholder": "Rechercher un lieu...",
+          "placeType": "Type de lieu",
+          "attractions": "Attractions",
+          "activities": "Activités",
+          "restaurants": "Restauration",
+          "services": "Services",
+          "categories": "Catégories"
+        },
+        "legend": {
+          "title": "Légende de la Carte",
+          "attractions": "Attractions",
+          "activities": "Activités",
+          "toilets": "Toilettes",
+          "shops": "Boutiques"
+        }
+      },
+      "hours": {
+        "title": "Horaires d'Ouverture",
+        "closed": "Fermé",
+        "days": {
+          "monday": "Lundi",
+          "tuesday": "Mardi",
+          "wednesday": "Mercredi",
+          "thursday": "Jeudi",
+          "friday": "Vendredi",
+          "saturday": "Samedi",
+          "sunday": "Dimanche"
+        }
+      },
+      "prices": {
+        "title": "Nos Tarifs",
+        "oneDay": "Billet 1 jour",
+        "passDays": "Pass {{days}} jours",
+        "note": "* Tarifs susceptibles d'évoluer selon les périodes. Réservation en ligne recommandée."
+      },
+      "contact": {
+        "title": "Nous Contacter",
+        "coordinates": {
+          "title": "Coordonnées",
+          "phone": "Téléphone",
+          "email": "Email",
+          "customerService": "Service client",
+          "customerServiceHours": "Du mercredi au dimanche<br />De 9h30 à 21h00",
+          "socialMedia": "Réseaux sociaux",
+          "socialMediaHandle": "Facebook • Instagram • Twitter<br />@zombielandparis"
+        },
+        "help": {
+          "title": "Besoin d'aide ?",
+          "description": "Notre équipe est à votre disposition pour répondre à toutes vos questions concernant :",
+          "items": {
+            "reservations": "Réservations et modifications",
+            "groups": "Groupes et événements privés",
+            "accessibility": "Accessibilité PMR",
+            "lockers": "Consignes et objets perdus",
+            "birthdays": "Anniversaires et animations"
+          }
+        }
+      },
+      "access": {
+        "title": "Plan d'Accès",
+        "address": {
+          "title": "Adresse",
+          "street": "123 Avenue de l'Apocalypse<br />75000 Paris, France"
+        },
+        "publicTransport": {
+          "title": "En Transports en Commun",
+          "metro": {
+            "label": "Métro",
+            "info": "Ligne 7 - Station \"Zombieland\"<br />Sortie 2 - Direction Parc"
+          },
+          "rer": {
+            "label": "RER",
+            "info": "RER B - Arrêt \"Parc Zombieland\"<br />À 5 min à pied"
+          },
+          "bus": {
+            "label": "Bus",
+            "info": "Lignes 38, 47, 91<br />Arrêt \"Zombieland Entrée Principale\""
+          }
+        },
+        "car": {
+          "title": "En Voiture",
+          "fromCenter": {
+            "label": "Depuis Paris Centre",
+            "info": "Prendre le Périphérique direction Porte de la Chapelle<br />Sortie 23 \"Zombieland\"<br />Suivre les panneaux verts"
+          },
+          "fromA1": {
+            "label": "Depuis l'Autoroute A1",
+            "info": "Sortie 7 \"Paris Nord - Zombieland\"<br />Direction centre-ville pendant 3km<br />Le parc sera sur votre gauche"
+          },
+          "parking": {
+            "label": "Parking",
+            "info": "3 parkings gratuits disponibles<br />2000 places<br />Accessible PMR"
+          }
+        },
+        "mapTitle": "Localisation Zombieland"
+      },
+      "faq": {
+        "title": "Questions Fréquentes",
+        "items": {
+          "accessibility": {
+            "question": "Le parc est-il accessible aux personnes à mobilité réduite ?",
+            "answer": "Oui, toutes nos attractions et services sont accessibles PMR. Des fauteuils roulants sont disponibles gratuitement à l'entrée sur demande."
+          },
+          "age": {
+            "question": "Y a-t-il un âge minimum pour visiter le parc ?",
+            "answer": "Le parc est ouvert à tous les âges, mais certaines attractions sont déconseillées aux moins de 12 ans en raison de leur intensité. Consultez les panneaux à l'entrée de chaque attraction."
+          },
+          "food": {
+            "question": "Puis-je apporter ma propre nourriture ?",
+            "answer": "Les pique-niques sont autorisés dans les zones dédiées. Cependant, nous vous invitons à découvrir nos restaurants thématiques pour une expérience complète."
+          },
+          "animals": {
+            "question": "Les animaux sont-ils acceptés ?",
+            "answer": "Seuls les chiens guides et d'assistance sont autorisés dans l'enceinte du parc pour des raisons de sécurité et d'hygiène."
+          },
+          "weather": {
+            "question": "Que se passe-t-il en cas de mauvais temps ?",
+            "answer": "Le parc reste ouvert par tous les temps. En cas de conditions météorologiques extrêmes, certaines attractions extérieures peuvent être temporairement fermées pour votre sécurité."
+          },
+          "cancellation": {
+            "question": "Puis-je annuler ou modifier ma réservation ?",
+            "answer": "Les réservations sont modifiables jusqu'à 48h avant la date prévue. Les annulations sont remboursées à 100% jusqu'à 7 jours avant, et à 50% jusqu'à 48h avant."
+          },
+          "lockers": {
+            "question": "Y a-t-il des casiers pour ranger mes affaires ?",
+            "answer": "Oui, des consignes sécurisées sont disponibles à l'entrée du parc pour 3€ la journée. Les objets de valeur peuvent être déposés gratuitement au vestiaire principal."
+          },
+          "events": {
+            "question": "Le parc propose-t-il des événements spéciaux ?",
+            "answer": "Oui ! Consultez notre calendrier en ligne pour découvrir nos soirées Halloween, événements de Noël, et animations spéciales tout au long de l'année."
+          }
+        }
+      }
+    }
+  },
+  "footer": {
+    "legal": {
+      "mentionsLegales": "Mentions légales",
+      "gestionCookies": "Gestion des cookies",
+      "conditionsVente": "Conditions de vente",
+      "cgu": "CGU",
+      "rgpd": "RGPD"
+    },
+    "links": {
+      "infos": "INFOS",
+      "activities": "ACTIVITES",
+      "reservations": "RESERVATIONS",
+      "contact": "NOUS CONTACTER"
+    },
+    "copyright": "Projet équipe O'Clock - {{year}}"
+  },
+  "validation": {
+    "required": "Ce champ est obligatoire",
+    "email": "Email invalide",
+    "password": "Le mot de passe doit contenir au moins 8 caractères",
+    "passwordMatch": "Les mots de passe ne correspondent pas",
+    "minLength": "Ce champ doit contenir au moins {{min}} caractères",
+    "maxLength": "Ce champ ne doit pas dépasser {{max}} caractères"
+  },
+  "errors": {
+    "generic": "Une erreur est survenue",
+    "network": "Erreur de connexion",
+    "notFound": "Ressource non trouvée",
+    "unauthorized": "Non autorisé",
+    "forbidden": "Accès interdit"
+  },
+  "messages": {
+    "success": {
+      "saved": "Enregistré avec succès",
+      "deleted": "Supprimé avec succès",
+      "created": "Créé avec succès"
+    },
+    "error": {
+      "save": "Erreur lors de l'enregistrement",
+      "delete": "Erreur lors de la suppression",
+      "load": "Erreur lors du chargement"
+    }
+  },
+  "language": {
+    "select": "Choisir la langue",
+    "french": "Français",
+    "english": "English"
+  },
+  "buttons": {
+    "reserve": "RÉSERVER",
+    "reserveNow": "RÉSERVER MAINTENANT"
+  },
+  "cards": {
+    "thrill": "Frisson"
+  },
+  "priceTypes": {
+    "ETUDIANT": "Billet Étudiant",
+    "ADULTE": "Billet Adulte",
+    "GROUPE": "Billet Groupe",
+    "PASS_2J": "Pass 2 jours"
+  },
+  "reservation": {
+    "process": {
+      "title": "Réservation",
+      "stepIndicator": "ÉTAPE {{current}} SUR {{total}}",
+      "steps": {
+        "selectTicket": "Choix des billets",
+        "selectDate": "Quelle date ?",
+        "summary": "Récapitulatif",
+        "customerInfo": "Vos informations",
+        "address": "Adresse",
+        "payment": "Paiement",
+        "confirmation": "Réservation confirmée"
+      },
+      "buttons": {
+        "back": "← RETOUR",
+        "continue": "CONTINUER →",
+        "confirm": "Confirmer",
+        "pay": "PAYER",
+        "processing": "TRAITEMENT EN COURS...",
+        "downloadTickets": "TÉLÉCHARGER BILLETS (PDF)",
+        "backToHome": "RETOUR À L'ACCUEIL →"
+      },
+      "errors": {
+        "noTicketSelected": "Aucun billet sélectionné",
+        "noDateSelected": "Veuillez sélectionner une date de visite",
+        "mustBeLoggedIn": "Vous devez être connecté pour finaliser votre réservation.",
+        "sessionExpired": "Votre session a expiré. Veuillez vous reconnecter.",
+        "paymentError": "Une erreur est survenue lors du paiement. Veuillez réessayer.",
+        "loadingError": "Erreur lors de la récupération des dates:"
+      }
+    },
+    "step1": {
+      "title": "QUEL TYPE DE BILLET ?",
+      "subtitle": "Choisissez votre type d'entrée",
+      "quantityTitle": "COMBIEN DE BILLETS ?",
+      "quantitySubtitle": "Sélectionnez le nombre de personnes",
+      "quantitySelected": "Quantité sélectionnée : {{quantity}}",
+      "quantityLabel": "Quantité × {{quantity}}",
+      "day": "jour",
+      "days": "jours",
+      "total": "TOTAL"
+    },
+    "step2": {
+      "title": "QUELLE DATE ?",
+      "subtitle": "Choisissez votre jour de visite",
+      "selectedDate": "DATE SÉLECTIONNÉE"
+    },
+    "step3": {
+      "title": "RÉCAPITULATIF",
+      "subtitle": "Vérifiez votre commande avant de continuer",
+      "loading": "Chargement des billets...",
+      "ticketType": "Type de billet",
+      "quantity": "Nombre de billets",
+      "unitPrice": "Prix unitaire",
+      "visitDate": "Date de visite",
+      "noTickets": "Aucun billet sélectionné",
+      "day": "jour",
+      "days": "jours",
+      "total": "TOTAL",
+      "acceptTerms": "J'accepte les Conditions Générales de Vente",
+      "readTerms": "Lire les CGV complètes",
+      "freeCancellation": "ANNULATION GRATUITE",
+      "cancellationText": "Vous pouvez annuler jusqu'à 10 jours avant la date de visite"
+    },
+    "step4": {
+      "title": "VOS INFORMATIONS",
+      "subtitle": "Pour la confirmation de réservation.",
+      "firstName": "Prénom",
+      "firstNamePlaceholder": "Votre prénom",
+      "lastName": "Nom",
+      "lastNamePlaceholder": "Votre nom",
+      "email": "Email",
+      "emailPlaceholder": "votre@email.com",
+      "phone": "Téléphone",
+      "phonePlaceholder": "+33 6 12 34 56 78",
+      "emailConfirmation": "CONFIRMATION PAR EMAIL",
+      "emailConfirmationText": "Vos billets seront envoyés à l'adresse email fournie",
+      "validation": {
+        "firstNameRequired": "Le prénom est obligatoire",
+        "lastNameRequired": "Le nom est obligatoire",
+        "emailRequired": "L'email est obligatoire",
+        "emailInvalid": "Email invalide",
+        "phoneRequired": "Le téléphone est obligatoire",
+        "phoneInvalid": "Numéro de téléphone invalide"
+      }
+    },
+    "step5": {
+      "title": "ADRESSE",
+      "subtitle": "Adresse de facturation",
+      "address": "Adresse",
+      "addressPlaceholder": "Votre adresse",
+      "city": "Ville",
+      "cityPlaceholder": "Votre ville",
+      "postalCode": "Code postal",
+      "postalCodePlaceholder": "Votre code postal",
+      "country": "Pays",
+      "countryPlaceholder": "Sélectionnez un pays",
+      "validation": {
+        "addressRequired": "L'adresse est obligatoire",
+        "cityRequired": "La ville est obligatoire",
+        "postalCodeRequired": "Le code postal est obligatoire",
+        "postalCodeInvalid": "Code postal invalide (5 chiffres)",
+        "countryRequired": "Le pays est obligatoire"
+      }
+    },
+    "step6": {
+      "title": "PAIEMENT",
+      "subtitle": "Comment souhaitez-vous payer ?",
+      "cardNumber": "Numéro de carte",
+      "cardNumberPlaceholder": "1234 5678 9123 4567",
+      "month": "Mois",
+      "monthPlaceholder": "MM",
+      "year": "Année",
+      "yearPlaceholder": "AAAA",
+      "cvv": "CVV",
+      "cvvPlaceholder": "123",
+      "securePayment": "PAIEMENT 100% SÉCURISÉ",
+      "securePaymentText": "Vos données sont entièrement protégées et chiffrées",
+      "validation": {
+        "cardNumberRequired": "Le numéro de carte est obligatoire",
+        "cardNumberInvalid": "Numéro de carte invalide (16 chiffres)",
+        "monthRequired": "Le mois est obligatoire",
+        "monthInvalid": "Mois invalide (01-12)",
+        "yearRequired": "L'année est obligatoire",
+        "yearInvalid": "Année invalide",
+        "cvvRequired": "Le CVV est obligatoire",
+        "cvvInvalid": "CVV invalide (3 chiffres)"
+      }
+    },
+    "step7": {
+      "title": "RÉSERVATION CONFIRMÉE",
+      "subtitle": "Votre paiement a été effectué avec succès",
+      "orderNumber": "Numéro de commande",
+      "orderNumberNotAvailable": "Numéro non disponible",
+      "day": "jour",
+      "days": "jours",
+      "quantityLabel": "Quantité × {{quantity}}",
+      "months": {
+        "jan": "Jan",
+        "feb": "Fév",
+        "mar": "Mar",
+        "apr": "Avr",
+        "may": "Mai",
+        "jun": "Juin",
+        "jul": "Juil",
+        "aug": "Aoû",
+        "sep": "Sep",
+        "oct": "Oct",
+        "nov": "Nov",
+        "dec": "Déc"
+      }
+    }
+  },
+  "activityDetail": {
+    "breadcrumbs": {
+      "home": "Accueil",
+      "restaurants": "Restauration",
+      "attractions": "Attractions",
+      "activities": "Activités",
+      "detail": "Détail"
+    },
+    "errors": {
+      "missingId": "ID d'activité manquant",
+      "attractionNotFound": "Attraction non trouvée",
+      "activityNotFound": "Activité non trouvée",
+      "cannotLoad": "Impossible de charger la fiche",
+      "notFound": "Fiche non trouvée"
+    },
+    "sections": {
+      "ourEstablishment": "NOTRE ÉTABLISSEMENT",
+      "theExperience": "L'EXPÉRIENCE",
+      "duration": "DURÉE",
+      "thrillLevel": "NIVEAU DE FRISSON",
+      "thrill": "FRISSON",
+      "accessibility": "ACCESSIBILITÉ PMR",
+      "waitTime": "TEMPS D'ATTENTE",
+      "accessiblePMR": "Accessible PMR",
+      "minutes": "minutes",
+      "min": "min"
+    },
+    "descriptions": {
+      "defaultActivity": "Plongez dans une expérience immersive totale où l'horreur prend vie. Effets spéciaux saisissants, acteurs professionnels et atmosphère oppressante vous attendent. Cris, odeurs de putréfaction, bruits de chaînes... tout est conçu pour créer un cauchemar éveillé.",
+      "defaultRestaurant": "Découvrez une cuisine thématique unique dans une ambiance post-apocalyptique. Notre établissement vous propose des plats savoureux et originaux pour reprendre des forces entre deux attractions. Service rapide et convivial dans un décor immersif.",
+      "sensitiveWarning": "Déconseillé aux âmes sensibles et aux moins de {{minAge}} ans.",
+      "freeAccess": "Accès libre sans réservation. Paiement sur place."
+    },
+    "similar": {
+      "otherRestaurants": "AUTRES RESTAURANTS",
+      "similarAttractions": "ATTRACTIONS SIMILAIRES",
+      "similarActivities": "ACTIVITÉS SIMILAIRES",
+      "others": "AUTRES",
+      "similar": "SIMILAIRES"
+    },
+    "defaultCategory": {
+      "attraction": "Attraction",
+      "activity": "Activité",
+      "restaurant": "Restauration"
+    }
+  },
+  "static": {
+    "lastUpdate": "Dernière mise à jour",
+    "cookies": {
+      "title": "Gestion des Cookies",
+      "lastUpdate": "15 janvier 2026",
+      "whatIsCookie": "1. Qu'est-ce qu'un cookie ?",
+      "whatIsCookieDesc": "Un cookie est un petit fichier texte déposé sur votre terminal (ordinateur, tablette, smartphone) lors de la visite d'un site internet. Il permet de mémoriser des informations relatives à votre navigation.",
+      "cookiesUsed": "2. Les cookies utilisés sur ZombieLand",
+      "essentialCookies": "2.1. Cookies essentiels",
+      "essentialCookiesDesc": "Ces cookies sont nécessaires au fonctionnement du site et ne peuvent pas être désactivés :",
+      "sessionCookies": "Cookies de session pour maintenir votre connexion",
+      "securityCookies": "Cookies de sécurité pour protéger vos données",
+      "preferenceCookies": "Cookies de préférences (langue, devise)",
+      "analyticalCookies": "2.2. Cookies analytiques",
+      "analyticalCookiesDesc": "Ces cookies nous permettent d'analyser l'utilisation du site (Google Analytics, etc.) :",
+      "visitorCount": "Nombre de visiteurs",
+      "popularPages": "Pages les plus consultées",
+      "visitDuration": "Durée de visite",
+      "advertisingCookies": "2.3. Cookies publicitaires",
+      "advertisingCookiesDesc": "Ces cookies permettent d'afficher des publicités personnalisées selon vos centres d'intérêt.",
+      "managePreferences": "3. Gérer vos préférences",
+      "managePreferencesDesc": "Vous pouvez à tout moment modifier vos préférences en matière de cookies via les paramètres de votre navigateur ou en cliquant sur le lien \"Gérer les cookies\" en bas de page.",
+      "retentionPeriod": "4. Durée de conservation",
+      "retentionPeriodDesc": "Les cookies sont conservés pour une durée maximale de 13 mois à compter de leur dépôt sur votre terminal.",
+      "deleteCookies": "Supprimer les cookies"
+    },
+    "mentionsLegales": {
+      "title": "Mentions Légales",
+      "lastUpdate": "15 janvier 2026",
+      "publisher": "1. Éditeur du site",
+      "publisherContent": "ZombieLand SAS\nParc d'attractions post-apocalyptique\nSiège social : [Adresse complète]\nCapital social : [Montant]€\nRCS : Paris 75000\nSIRET : 123 456 789 00012\nTVA intracommunautaire : FR 12 123456789\nTéléphone : 06.66.66.66.66\nEmail : contact@zombieland.com",
+      "publicationDirector": "2. Directeur de la publication",
+      "publicationDirectorContent": "Victor Deadwood\nEmail : direction@zombieland.com",
+      "host": "3. Hébergeur",
+      "hostContent": "[Nom de l'hébergeur]\n[Adresse de l'hébergeur]\nTéléphone : [Numéro]",
+      "intellectualProperty": "4. Propriété intellectuelle",
+      "intellectualPropertyDesc": "L'ensemble du contenu de ce site (textes, images, vidéos, logos, concept du parc) est protégé par le droit d'auteur et le droit des marques. La marque ZombieLand ainsi que tous les éléments visuels et scénarios du parc sont la propriété exclusive de ZombieLand SAS. Toute reproduction, même partielle, est interdite sans autorisation préalable.",
+      "credits": "5. Crédits",
+      "creditsContent": "Conception et développement : Equipe Zombieland O'Clock\nPhotographies : Equipe Zombieland O'Clock\nDesign du parc : Equipe Zombieland O'Clock"
+    },
+    "rgpd": {
+      "title": "Politique de Confidentialité (RGPD)",
+      "lastUpdate": "15 janvier 2026",
+      "dataController": "1. Responsable du traitement",
+      "dataControllerContent": "Le responsable du traitement des données personnelles est :\nZombieLand SAS\nParc d'attractions post-apocalyptique\nEmail : service-client@zombieland.fr",
+      "dataCollected": "2. Données collectées",
+      "dataCollectedDesc": "Nous collectons uniquement les données nécessaires à votre réservation de billets :",
+      "identityData": "Données d'identité : nom, prénom",
+      "contactData": "Données de contact : email, téléphone",
+      "bookingData": "Données de réservation : date de visite, nombre de billets, type de billet",
+      "paymentData": "Données de paiement : informations bancaires",
+      "connectionData": "Données de connexion : adresse IP, cookies de navigation",
+      "processingPurposes": "3. Finalités du traitement",
+      "processingPurposesDesc": "Vos données sont traitées uniquement pour :",
+      "purpose1": "La gestion de vos réservations de billets",
+      "purpose2": "Le traitement sécurisé de vos paiements",
+      "purpose3": "L'envoi de votre confirmation de réservation et billets électroniques",
+      "purpose4": "La communication d'informations importantes concernant votre visite (horaires, consignes de sécurité)",
+      "purpose5": "L'amélioration de nos services et de votre expérience au parc",
+      "purpose6": "Le respect de nos obligations légales",
+      "legalBasis": "4. Base légale",
+      "legalBasisDesc": "Le traitement de vos données repose sur :",
+      "basis1": "L'exécution du contrat de réservation de billets",
+      "basis2": "Votre consentement pour les cookies non essentiels",
+      "basis3": "Notre intérêt légitime (sécurité du parc, amélioration des services)",
+      "basis4": "Nos obligations légales (comptabilité, facturation)",
+      "retentionPeriod": "5. Durée de conservation",
+      "retentionPeriodDesc": "Vos données sont conservées :",
+      "retention1": "Données de réservation : 10 ans (obligations comptables et fiscales)",
+      "retention2": "Données de paiement : immédiatement supprimées après transaction",
+      "retention3": "Données de navigation : 13 mois maximum",
+      "rights": "6. Vos droits",
+      "rightsDesc": "Conformément au RGPD, vous disposez des droits suivants :",
+      "right1": "Droit d'accès : obtenir une copie de vos données de réservation",
+      "right2": "Droit de rectification : corriger vos données inexactes",
+      "right3": "Droit à l'effacement : supprimer vos données (sauf obligations légales)",
+      "right4": "Droit à la limitation : limiter le traitement de vos données",
+      "right5": "Droit à la portabilité : récupérer vos données dans un format structuré",
+      "right6": "Droit d'opposition : vous opposer au traitement de vos données",
+      "right7": "Droit de retirer votre consentement : à tout moment pour les cookies",
+      "rightsContact": "Pour exercer vos droits, contactez-nous à :",
+      "dataSecurity": "7. Sécurité des données",
+      "dataSecurityDesc": "Nous mettons en œuvre des mesures techniques et organisationnelles appropriées pour protéger vos données contre tout accès non autorisé, perte ou destruction. Vos données bancaires sont traitées par notre prestataire de paiement sécurisé certifié PCI-DSS et ne sont jamais stockées sur nos serveurs.",
+      "dataSharing": "8. Partage des données",
+      "dataSharingDesc": "Vos données personnelles ne sont jamais vendues à des tiers. Elles sont uniquement partagées avec :",
+      "share1": "Notre prestataire de paiement sécurisé (pour le traitement des transactions)",
+      "share2": "Notre service d'envoi d'emails (pour l'envoi de vos billets électroniques)",
+      "share3": "Les autorités compétentes en cas d'obligation légale",
+      "complaint": "9. Réclamation",
+      "complaintContent": "Vous avez le droit d'introduire une réclamation auprès de la CNIL :\nCommission Nationale de l'Informatique et des Libertés\n3 Place de Fontenoy - TSA 80715\n75334 PARIS CEDEX 07\nTél : 01 53 73 22 22"
+    },
+    "cgu": {
+      "title": "Conditions Générales d'Utilisation (CGU)",
+      "lastUpdate": "15 janvier 2026",
+      "object": "1. Objet",
+      "objectDesc": "Les présentes Conditions Générales d'Utilisation (CGU) régissent l'utilisation du site www.zombieland.fr, plateforme de réservation de billets pour le parc d'attractions post-apocalyptique ZombieLand.",
+      "acceptance": "2. Acceptation des CGU",
+      "acceptanceDesc": "L'utilisation du site implique l'acceptation pleine et entière des présentes CGU. La réservation de billets implique également l'acceptation du règlement intérieur du parc. Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser le site.",
+      "siteAccess": "3. Accès au site",
+      "siteAccessDesc": "Le site est accessible gratuitement à tout utilisateur disposant d'un accès internet. ZombieLand se réserve le droit de suspendre, modifier ou interrompre l'accès au site pour maintenance ou toute autre raison, sans préavis. L'accès peut également être limité en cas d'affluence exceptionnelle ou de circonstances particulières.",
+      "services": "4. Services proposés",
+      "servicesDesc": "Le site permet uniquement :",
+      "service1": "La consultation des informations sur le parc (attractions, horaires, tarifs)",
+      "service2": "La réservation et l'achat de billets d'entrée en ligne",
+      "service3": "La consultation de votre historique de réservations",
+      "service4": "L'accès aux informations pratiques (plan du parc, règlement, consignes de sécurité)",
+      "usage": "5. Utilisation du site",
+      "usageDesc": "Vous vous engagez à :",
+      "usage1": "Utiliser le site de manière conforme à la loi et aux présentes CGU",
+      "usage2": "Fournir des informations exactes lors de vos réservations",
+      "usage3": "Ne pas perturber le fonctionnement du site",
+      "usage4": "Ne pas utiliser de robots ou systèmes automatisés pour réserver des billets",
+      "usage5": "Ne pas revendre vos billets à un prix supérieur au tarif officiel",
+      "usage6": "Respecter le règlement intérieur du parc lors de votre visite",
+      "intellectualProperty": "6. Propriété intellectuelle",
+      "intellectualPropertyDesc": "Tous les contenus du site (textes, images, logos, vidéos, concept du parc, scénarios des attractions) sont protégés par le droit de la propriété intellectuelle. La marque \"ZombieLand\" et l'ensemble de l'univers post-apocalyptique sont la propriété exclusive de ZombieLand SAS. Toute reproduction, représentation ou utilisation est interdite sans autorisation préalable écrite.",
+      "liability": "7. Responsabilité",
+      "liabilityDesc": "ZombieLand ne peut être tenu responsable :",
+      "liability1": "Des interruptions ou dysfonctionnements temporaires du site de réservation",
+      "liability2": "De l'impossibilité d'accéder au site en raison de problèmes techniques",
+      "liability3": "Des erreurs de réservation résultant d'informations incorrectes fournies par l'utilisateur",
+      "liability4": "De la perte ou du vol de billets électroniques (il est conseillé de les conserver en lieu sûr)",
+      "liability5": "Des contenus des sites tiers vers lesquels nous renvoyons",
+      "liabilityNote": "La responsabilité de ZombieLand concernant les incidents au sein du parc est régie par le règlement intérieur et les CGV.",
+      "ticketAvailability": "8. Disponibilité des billets",
+      "ticketAvailabilityDesc": "Les billets sont disponibles dans la limite des places disponibles. ZombieLand se réserve le droit de limiter le nombre de visiteurs par jour pour des raisons de sécurité et de confort. Les tarifs et disponibilités affichés sur le site sont susceptibles de changer sans préavis.",
+      "modification": "9. Modification des CGU",
+      "modificationDesc": "ZombieLand se réserve le droit de modifier les présentes CGU à tout moment. Les nouvelles CGU seront applicables dès leur mise en ligne sur le site. Il est conseillé de consulter régulièrement cette page.",
+      "applicableLaw": "10. Droit applicable",
+      "applicableLawDesc": "Les présentes CGU sont soumises au droit français. Tout litige sera porté devant les tribunaux compétents."
+    },
+    "cgv": {
+      "title": "Conditions Générales de Vente (CGV)",
+      "lastUpdate": "15 janvier 2026",
+      "object": "1. Objet",
+      "objectDesc": "Les présentes Conditions Générales de Vente (CGV) s'appliquent à toutes les réservations et achats de billets d'entrée pour le parc d'attractions ZombieLand effectués sur le site www.zombieland.fr.",
+      "tickets": "2. Billets proposés",
+      "ticketsDesc": "ZombieLand propose différents types de billets :",
+      "ticket1": "Billet 1 jour : accès au parc pour une journée",
+      "ticket2": "Billet 2 jours consécutifs : accès au parc pendant deux jours consécutifs",
+      "ticket3": "Pass annuel : accès illimité au parc pendant un an",
+      "ticket4": "Billets groupes : tarifs préférentiels pour les groupes (à partir de 10 personnes)",
+      "ticket5": "Billets événements spéciaux : accès aux événements nocturnes ou saisonniers",
+      "prices": "3. Prix",
+      "pricesDesc": "Les prix sont indiqués en euros TTC. ZombieLand se réserve le droit de modifier ses tarifs à tout moment, notamment en fonction de la période (haute/basse saison, jours fériés, événements spéciaux). Les billets seront facturés au prix en vigueur au moment de la validation de la commande.",
+      "booking": "4. Réservation de billets",
+      "bookingDesc": "La validation de votre réservation implique l'acceptation des présentes CGV et du règlement intérieur du parc. Elle constitue une preuve du contrat de vente.",
+      "bookingProcess": "4.1. Processus de réservation",
+      "process1": "Sélection de la date de visite et du type de billets",
+      "process2": "Indication du nombre de visiteurs",
+      "process3": "Vérification du panier",
+      "process4": "Saisie des informations personnelles (nom, prénom, email, téléphone)",
+      "process5": "Choix du mode de paiement",
+      "process6": "Paiement sécurisé",
+      "process7": "Confirmation et réception des billets électroniques par email",
+      "payment": "5. Paiement",
+      "paymentDesc": "Le paiement s'effectue en ligne par :",
+      "paymentMethod1": "Carte bancaire (Visa, Mastercard, American Express)",
+      "paymentMethod2": "PayPal",
+      "paymentMethod3": "Apple Pay / Google Pay",
+      "paymentSecurity": "Le paiement est entièrement sécurisé via notre prestataire certifié PCI-DSS. ZombieLand ne conserve aucune donnée bancaire. Le paiement est exigible immédiatement lors de la réservation.",
+      "eTickets": "6. Billets électroniques",
+      "eTicketsDesc": "Après confirmation de paiement, vous recevrez par email :",
+      "eTicket1": "Une confirmation de réservation avec le récapitulatif",
+      "eTicket2": "Vos billets électroniques (e-tickets) au format PDF avec QR code",
+      "eTicket3": "Le règlement intérieur du parc",
+      "eTicket4": "Les informations pratiques pour votre visite",
+      "eTicketNote": "Les billets peuvent être présentés sur smartphone ou imprimés. Chaque billet comporte un QR code unique qui sera scanné à l'entrée du parc.",
+      "validity": "7. Validité des billets",
+      "validityDesc": "Les billets sont valables :",
+      "validity1": "Billet daté : uniquement pour la date sélectionnée lors de la réservation",
+      "validity2": "Billet flexible : pendant la période de validité indiquée (si disponible)",
+      "validity3": "Pass annuel : pendant un an à compter de la première utilisation",
+      "validityNote": "Les billets ne sont ni repris, ni échangés, ni remboursés sauf cas exceptionnels prévus par la loi ou les présentes CGV.",
+      "withdrawal": "8. Droit de rétractation",
+      "withdrawalDesc": "Conformément à l'article L221-28 du Code de la consommation, le droit de rétractation de 14 jours ne s'applique pas aux prestations de services de loisirs à date déterminée. Les billets d'entrée au parc ne peuvent donc pas faire l'objet d'une rétractation.",
+      "modificationCancellation": "9. Modification et annulation",
+      "modificationByClient": "9.1. Modification par le client",
+      "modificationByClientDesc": "Vous pouvez modifier votre réservation (changement de date) selon les conditions suivantes :",
+      "modify1": "Plus de 10 jours avant : modification gratuite (une seule fois, sous réserve de disponibilité)",
+      "modify2": "Moins de 10 jours avant : aucune modification possible",
+      "cancellationByClient": "9.2. Annulation par le client",
+      "cancellationByClientDesc": "En cas d'annulation de votre part :",
+      "cancel1": "Plus de 10 jours avant : remboursement intégral (frais de traitement de 2€ par billet déduits)",
+      "cancel2": "Moins de 10 jours avant : aucun remboursement",
+      "cancel3": "Non présentation le jour J : aucun remboursement",
+      "parkClosure": "9.3. Fermeture du parc par ZombieLand",
+      "parkClosureDesc": "En cas de fermeture exceptionnelle du parc pour raisons indépendantes de notre volonté (intempéries graves, cas de force majeure, décision administrative), ZombieLand s'engage à :",
+      "closure1": "Vous informer dans les plus brefs délais par email et SMS",
+      "closure2": "Vous proposer un report de votre visite à une date ultérieure de votre choix",
+      "closure3": "Ou procéder au remboursement intégral de vos billets",
+      "partialClosure": "9.4. Fermeture partielle d'attractions",
+      "partialClosureDesc": "ZombieLand se réserve le droit de fermer temporairement certaines attractions pour maintenance, raisons de sécurité ou conditions météorologiques. Ces fermetures partielles ne donnent pas droit à un remboursement ou une compensation, sauf si plus de 50% des attractions sont fermées le jour de votre visite.",
+      "accessConditions": "10. Conditions d'accès au parc",
+      "accessConditionsDesc": "L'accès au parc est soumis aux conditions suivantes :",
+      "access1": "Présentation obligatoire du billet électronique (QR code)",
+      "access2": "Respect du règlement intérieur du parc",
+      "access3": "Restrictions d'âge et de taille pour certaines attractions",
+      "access4": "Interdiction d'introduire de la nourriture, des boissons alcoolisées et des objets dangereux",
+      "access5": "Port du masque obligatoire dans certaines zones (pour l'ambiance post-apocalyptique)",
+      "access6": "Les visiteurs peuvent être photographiés ou filmés à des fins promotionnelles",
+      "security": "11. Sécurité et responsabilité",
+      "securityDesc": "ZombieLand met tout en œuvre pour assurer la sécurité des visiteurs. Toutefois, ZombieLand ne peut être tenu responsable :",
+      "security1": "Des accidents survenus en cas de non-respect du règlement intérieur ou des consignes de sécurité",
+      "security2": "Des vols, pertes ou détériorations d'objets personnels (vestiaires non surveillés)",
+      "security3": "Des réactions individuelles aux effets spéciaux (sons forts, lumières stroboscopiques, fumée)",
+      "security4": "Des problèmes de santé liés aux attractions à sensations fortes (déconseillées aux femmes enceintes, personnes cardiaques, etc.)",
+      "securityNote": "Les visiteurs sont invités à consulter les consignes de sécurité affichées à l'entrée de chaque attraction.",
+      "ageRestrictions": "12. Restrictions d'âge",
+      "ageRestrictionsDesc": "Le parc ZombieLand propose des expériences post-apocalyptiques avec zombies et scènes effrayantes. Il est déconseillé aux enfants de moins de 12 ans. Les enfants de 12 à 16 ans doivent être accompagnés d'un adulte. Certaines attractions sont interdites aux moins de 16 ans. L'accès peut être refusé si l'âge minimum requis n'est pas respecté, sans remboursement.",
+      "claims": "13. Réclamations",
+      "claimsDesc": "Pour toute réclamation concernant votre réservation ou votre visite, contactez notre service client :",
+      "claimsContact": "Email : service-client@zombieland.fr\nTéléphone : 06.66.66.66.66\nHoraires : Du mercredi au dimanche de 9h à 18h\nCourrier : ZombieLand SAS - Service Client - 75000 Paris",
+      "claimsResponse": "Nous nous engageons à répondre à toute réclamation dans un délai de 15 jours ouvrés.",
+      "mediation": "14. Médiation de la consommation",
+      "mediationContent": "En cas de litige non résolu à l'amiable, vous pouvez recourir gratuitement à un médiateur de la consommation :\nMédiateur du Tourisme et du Voyage\nBP 80 303 - 75 823 Paris Cedex 17\nEmail : mtv@mtv.travel\nSite web : www.mtv.travel",
+      "personalData": "15. Données personnelles",
+      "personalDataDesc": "Les données personnelles collectées lors de votre réservation sont traitées conformément à notre Politique de Confidentialité (RGPD) disponible sur le site. Vous disposez d'un droit d'accès, de rectification et de suppression de vos données en contactant service-client@zombieland.fr.",
+      "applicableLaw": "16. Droit applicable et juridiction",
+      "applicableLawDesc": "Les présentes CGV sont soumises au droit français. En cas de litige, et après tentative de résolution amiable, les tribunaux français seront seuls compétents."
+    }
+  },
+  "modals": {
+    "profile": {
+      "updateEmail": {
+        "title": "Modifier l'email",
+        "newEmail": "Nouvel email",
+        "confirmEmail": "Confirmer le nouvel email",
+        "emailPlaceholder": "nouveau@email.com",
+        "cancel": "Annuler",
+        "save": "Modifier",
+        "saving": "Modification...",
+        "success": "Email modifié avec succès !",
+        "error": "Erreur lors de la mise à jour de l'email",
+        "emailsDontMatch": "Les emails ne correspondent pas",
+        "sameEmail": "Le nouvel email est identique à l'ancien",
+        "fixErrors": "Veuillez corriger les erreurs"
+      },
+      "updatePassword": {
+        "title": "Modifier le mot de passe",
+        "newPassword": "Nouveau mot de passe",
+        "confirmPassword": "Confirmer le nouveau mot de passe",
+        "passwordPlaceholder": "••••••••",
+        "cancel": "Annuler",
+        "save": "Modifier",
+        "saving": "Modification...",
+        "success": "Mot de passe modifié avec succès !",
+        "error": "Erreur lors de la mise à jour du mot de passe",
+        "passwordsDontMatch": "Les mots de passe ne correspondent pas",
+        "fixErrors": "Veuillez corriger les erreurs"
+      },
+      "deleteAccount": {
+        "title": "Supprimer mon compte",
+        "warningTitle": "Attention : Cette action est irréversible",
+        "warning1": "Toutes vos données personnelles seront définitivement supprimées conformément au RGPD.",
+        "warning2": "Si vous avez des réservations en cours, elles seront également supprimées.",
+        "confirmationText": "Pour confirmer la suppression de votre compte, veuillez taper",
+        "confirmationWord": "SUPPRIMER",
+        "confirmationPlaceholder": "SUPPRIMER",
+        "confirmationError": "Veuillez taper \"SUPPRIMER\" pour confirmer",
+        "cancel": "Annuler",
+        "delete": "Supprimer définitivement",
+        "deleting": "Suppression...",
+        "error": "Erreur lors de la suppression du compte",
+        "success": "Votre compte a été supprimé avec succès"
+      }
+    },
+    "activity": {
+      "create": {
+        "title": "Créer une nouvelle activité",
+        "name": "Titre",
+        "description": "Description",
+        "category": "Catégorie *",
+        "selectCategory": "Sélectionner une catégorie",
+        "image": "Image de l'activité",
+        "chooseImage": "Choisir une image",
+        "uploading": "Upload en cours...",
+        "thrillLevel": "Niveau de frisson (1-5)",
+        "duration": "Durée (minutes)",
+        "minAge": "Âge minimum",
+        "accessibility": "Accessibilité",
+        "accessibilityPlaceholder": "Ex: Accessible, Partiellement accessible...",
+        "relatedActivities": "Activités liées",
+        "published": "Publiée",
+        "draft": "Brouillon",
+        "cancel": "Annuler",
+        "create": "Créer",
+        "requiredFields": "Le nom, la description et la catégorie sont requis",
+        "imageSizeError": "L'image ne doit pas dépasser 5MB",
+        "uploadError": "Erreur lors de l'upload de l'image",
+        "uploadSuccess": "Image uploadée avec succès",
+        "createError": "Erreur lors de la création de l'activité",
+        "preview": "Aperçu"
+      },
+      "update": {
+        "title": "Modifier l'activité",
+        "name": "Titre",
+        "description": "Description",
+        "category": "Catégorie *",
+        "selectCategory": "Sélectionner une catégorie",
+        "image": "Image de l'activité",
+        "chooseImage": "Choisir une image",
+        "uploading": "Upload en cours...",
+        "thrillLevel": "Niveau de frisson (1-5)",
+        "duration": "Durée (minutes)",
+        "minAge": "Âge minimum",
+        "accessibility": "Accessibilité",
+        "accessibilityPlaceholder": "Ex: Accessible, Partiellement accessible...",
+        "relatedActivities": "Activités liées",
+        "published": "Publiée",
+        "draft": "Brouillon",
+        "cancel": "Annuler",
+        "save": "Enregistrer",
+        "requiredFields": "Le nom, la description et la catégorie sont requis",
+        "imageSizeError": "L'image ne doit pas dépasser 5MB",
+        "uploadError": "Erreur lors de l'upload de l'image",
+        "uploadSuccess": "Image uploadée avec succès",
+        "updateError": "Erreur lors de la mise à jour de l'activité",
+        "preview": "Aperçu"
+      }
+    },
+    "attraction": {
+      "create": {
+        "title": "Créer une nouvelle attraction",
+        "name": "Titre",
+        "description": "Description",
+        "category": "Catégorie *",
+        "selectCategory": "Sélectionner une catégorie",
+        "image": "Image de l'attraction",
+        "chooseImage": "Choisir une image",
+        "uploading": "Upload en cours...",
+        "thrillLevel": "Niveau de frisson (1-5)",
+        "duration": "Durée (minutes)",
+        "relatedAttractions": "Attractions liées",
+        "published": "Publiée",
+        "draft": "Brouillon",
+        "cancel": "Annuler",
+        "create": "Créer",
+        "requiredFields": "Le nom, la description et la catégorie sont requis",
+        "imageSizeError": "L'image ne doit pas dépasser 5MB",
+        "uploadError": "Erreur lors de l'upload de l'image",
+        "uploadSuccess": "Image uploadée avec succès",
+        "createError": "Erreur lors de la création de l'attraction",
+        "preview": "Aperçu"
+      },
+      "update": {
+        "title": "Modifier l'attraction",
+        "name": "Titre",
+        "description": "Description",
+        "category": "Catégorie *",
+        "selectCategory": "Sélectionner une catégorie",
+        "image": "Image de l'attraction",
+        "chooseImage": "Choisir une image",
+        "uploading": "Upload en cours...",
+        "thrillLevel": "Niveau de frisson (1-5)",
+        "duration": "Durée (minutes)",
+        "relatedAttractions": "Attractions liées",
+        "published": "Publiée",
+        "draft": "Brouillon",
+        "cancel": "Annuler",
+        "save": "Enregistrer",
+        "requiredFields": "Le nom, la description et la catégorie sont requis",
+        "imageSizeError": "L'image ne doit pas dépasser 5MB",
+        "uploadError": "Erreur lors de l'upload de l'image",
+        "uploadSuccess": "Image uploadée avec succès",
+        "updateError": "Erreur lors de la mise à jour de l'attraction",
+        "preview": "Aperçu"
+      }
+    },
+    "category": {
+      "create": {
+        "title": "Créer une nouvelle catégorie",
+        "name": "Nom de la catégorie",
+        "description": "Description",
+        "nameMaxLength": "Le nom ne doit pas dépasser 100 caractères",
+        "descriptionMaxLength": "La description ne doit pas dépasser 500 caractères",
+        "charactersCount": "{{count}}/{{max}} caractères",
+        "cancel": "Annuler",
+        "create": "Créer",
+        "requiredFields": "Le nom et la description sont requis",
+        "createError": "Erreur lors de la création de la catégorie",
+        "success": "Catégorie créée avec succès"
+      },
+      "update": {
+        "title": "Modifier la catégorie",
+        "lastModified": "Dernière modification : {{date}}",
+        "name": "Nom de la catégorie",
+        "description": "Description",
+        "nameMaxLength": "Le nom ne doit pas dépasser 100 caractères",
+        "descriptionMaxLength": "La description ne doit pas dépasser 500 caractères",
+        "charactersCount": "{{count}}/{{max}} caractères",
+        "cancel": "Annuler",
+        "save": "Mettre à jour",
+        "requiredFields": "Le nom et la description sont requis",
+        "updateError": "Erreur lors de la modification de la catégorie",
+        "success": "Catégorie modifiée avec succès"
+      }
+    },
+    "price": {
+      "create": {
+        "title": "Créer un nouveau tarif",
+        "label": "Titre",
+        "amount": "Prix",
+        "type": "Type de prix *",
+        "selectType": "Sélectionner un type de tarif",
+        "duration": "Durée du billet (jours)",
+        "cancel": "Annuler",
+        "save": "Enregistrer",
+        "saving": "Enregistrement...",
+        "requiredFields": "Le nom, le tarif, le type de tarif et le nombre de jours sont requis",
+        "createError": "Erreur lors de la création du tarif",
+        "success": "Tarif crée avec succès !"
+      },
+      "update": {
+        "title": "Modifier le tarif: {{label}}",
+        "label": "Titre",
+        "amount": "Prix",
+        "type": "Type de prix *",
+        "selectType": "Sélectionner un type de tarif",
+        "duration": "Durée du billet (jours)",
+        "cancel": "Annuler",
+        "save": "Enregistrer",
+        "saving": "Enregistrement...",
+        "requiredFields": "Le nom, le tarif, le type de tarif et le nombre de jours sont requis",
+        "updateError": "Erreur lors de la mise à jour du tarif",
+        "success": "Tarif mis à jour avec succès !"
+      }
+    },
+    "reservation": {
+      "update": {
+        "title": "Modifier la réservation",
+        "reservationNumber": "Réservation #{{number}}",
+        "status": "Statut",
+        "statusPending": "En attente",
+        "statusConfirmed": "Confirmée",
+        "statusCancelled": "Annulée",
+        "datePassedWarning": "Impossible de modifier le statut d'une réservation dont la date de visite est passée.",
+        "cancel": "Annuler",
+        "save": "Enregistrer",
+        "updateError": "Erreur lors de la mise à jour de la réservation",
+        "success": "Réservation mise à jour avec succès !"
+      }
+    },
+    "user": {
+      "update": {
+        "title": "Modifier l'utilisateur",
+        "pseudo": "Nom d'utilisateur",
+        "email": "Email",
+        "role": "Rôle",
+        "roleClient": "Client",
+        "roleAdmin": "Administrateur",
+        "roleChangeWarning": "Vous êtes sur le point de modifier le rôle de cet utilisateur. Cette action nécessite une confirmation.",
+        "cancel": "Annuler",
+        "save": "Mettre à jour",
+        "requiredFields": "Le nom et l'email sont requis",
+        "pseudoMinLength": "Le nom doit contenir au moins 3 caractères",
+        "emailInvalid": "L'email n'est pas valide",
+        "updateError": "Erreur lors de la modification de l'utilisateur",
+        "success": "Utilisateur mis à jour avec succès !"
+      }
+    }
+  }
+}

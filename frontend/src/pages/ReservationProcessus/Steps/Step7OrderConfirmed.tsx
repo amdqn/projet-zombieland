@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { formatPriceName } from '../../../utils/translatePrice';
 
 export const Step7OrderConfirmed = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { tickets, total, date, createdReservations, customerInfo } = useReservationStore();
   const [prices, setPrices] = useState<Price[]>([]);
 
@@ -29,7 +29,7 @@ export const Step7OrderConfirmed = () => {
       }
     };
     fetchPrices();
-  }, []);
+  }, [i18n.language]);
 
   useEffect(() => {
     if (createdReservations && createdReservations.length > 0) {

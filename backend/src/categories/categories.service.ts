@@ -95,7 +95,7 @@ export class CategoriesService {
   }
 
   async create(createCategoryDto: CreateCategoryDto) {
-    const { name, description } = createCategoryDto;
+    const { name, description, name_en, description_en } = createCategoryDto as any;
 
     if (!name || !description) {
       throw new BadRequestException(
@@ -114,7 +114,7 @@ export class CategoriesService {
     }
 
     const category = await this.prisma.category.create({
-      data: { name, description },
+      data: { name, description, name_en: name_en || null, description_en: description_en || null },
       include: {
         _count: {
           select: {

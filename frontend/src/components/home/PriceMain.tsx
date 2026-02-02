@@ -6,7 +6,7 @@ import type { Price } from "../../@types/price";
 import { useTranslation } from "react-i18next";
 
 export default function PriceMain(){
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [prices, setPrices] = useState<Price[]>([]);
 
     useEffect(() => {
@@ -19,7 +19,7 @@ export default function PriceMain(){
             }
         };
         fetchPrices();
-    }, []);
+    }, [i18n.language]);
 
     return(
         <Box>

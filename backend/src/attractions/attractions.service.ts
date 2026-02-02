@@ -133,7 +133,7 @@ export class AttractionsService {
   }
 
   async create(createAttractionDto: CreateAttractionDto & { is_published?: boolean; related_attraction_ids?: number[] }) {
-    const { name, description, category_id, image_url, thrill_level, duration, is_published, related_attraction_ids } = createAttractionDto;
+    const { name, description, name_en, description_en, category_id, image_url, thrill_level, duration, is_published, related_attraction_ids } = createAttractionDto as any;
 
     // Validation des champs requis
     if (!name || !description || !category_id) {
@@ -155,6 +155,8 @@ export class AttractionsService {
     const attractionData: any = {
       name,
       description,
+      name_en: name_en || null,
+      description_en: description_en || null,
       category_id,
       image_url: image_url || null,
       thrill_level: thrill_level || null,

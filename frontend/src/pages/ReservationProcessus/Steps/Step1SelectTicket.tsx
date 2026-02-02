@@ -17,7 +17,7 @@ interface Step1SelectTicketProps {
 }
 
 export const Step1SelectTicket = ({ onViewChange }: Step1SelectTicketProps) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { tickets, setTickets } = useReservationStore();
   const [prices, setPrices] = useState<Price[]>([]);
   const priceMap = new Map(prices.map((p) => [p.id, p]));
@@ -36,7 +36,7 @@ export const Step1SelectTicket = ({ onViewChange }: Step1SelectTicketProps) => {
       setPrices(prices);
     };
     fetchPrices();
-  }, []);
+  }, [i18n.language]);
 
   // Synchroniser selectedTickets avec le store quand tickets change
   useEffect(() => {

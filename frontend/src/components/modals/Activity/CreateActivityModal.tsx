@@ -1,5 +1,6 @@
 import { Alert, Box, MenuItem, Modal, Select, Typography, FormControl, InputLabel, Switch, FormControlLabel, TextField, Chip, Button, CircularProgress } from '@mui/material';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { createActivity, type CreateActivityDto } from '../../../services/activities.ts';
 import { getCategories } from '../../../services/categories.ts';
@@ -37,10 +38,13 @@ export const CreateActivityModal = ({
   onClose,
   onSuccess,
 }: CreateActivityModalProps) => {
+  const { t } = useTranslation();
   const [categories, setCategories] = useState<Category[]>([]);
   const [allActivities, setAllActivities] = useState<Activity[]>([]);
   const [name, setName] = useState('');
+  const [nameEn, setNameEn] = useState('');
   const [description, setDescription] = useState('');
+  const [descriptionEn, setDescriptionEn] = useState('');
   const [categoryId, setCategoryId] = useState<number | ''>('');
   const [attractionId, setAttractionId] = useState<number | ''>('');
   const [imageUrl, setImageUrl] = useState('');
@@ -75,7 +79,9 @@ export const CreateActivityModal = ({
 
   const handleClose = () => {
     setName('');
+    setNameEn('');
     setDescription('');
+    setDescriptionEn('');
     setCategoryId('');
     setAttractionId('');
     setImageUrl('');
@@ -92,7 +98,7 @@ export const CreateActivityModal = ({
 
   const handleSubmit = async () => {
     if (!name || !description || !categoryId) {
-      setError('Le nom, la description et la catégorie sont requis');
+      setError(t('admin.activities.nameDescriptionCategoryRequired'));
       return;
     }
 
@@ -104,6 +110,8 @@ export const CreateActivityModal = ({
       const dto: CreateActivityDto = {
         name,
         description,
+        name_en: nameEn || null,
+        description_en: descriptionEn || null,
         category_id: Number(categoryId),
         attraction_id: attractionId ? Number(attractionId) : null,
         image_url: imageUrl || null,
@@ -116,11 +124,11 @@ export const CreateActivityModal = ({
       };
 
       await createActivity(dto);
-      toast.success('Activité créée avec succès !');
+      toast.success(t('admin.activities.successCreate'));
       onSuccess();
       handleClose();
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erreur lors de la création de l\'activité';
+      const message = err instanceof Error ? err.message : t('admin.activities.errorCreate');
       setError(message);
     } finally {
       setIsLoading(false);
@@ -133,7 +141,7 @@ export const CreateActivityModal = ({
 
     // Validation taille (5MB max)
     if (file.size > 5 * 1024 * 1024) {
-      setError('L\'image ne doit pas dépasser 5MB');
+      setError(t('admin.activities.imageMaxSize'));
       return;
     }
 
@@ -142,10 +150,10 @@ export const CreateActivityModal = ({
     try {
       const response = await uploadActivityImage(file);
       setImageUrl(response.url);
-      setSuccess('Image uploadée avec succès');
+      setSuccess(t('admin.activities.imageUploaded'));
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
-      setError('Erreur lors de l\'upload de l\'image');
+      setError(t('admin.activities.imageUploadError'));
       console.error(err);
     } finally {
       setUploading(false);
@@ -174,7 +182,7 @@ export const CreateActivityModal = ({
             textAlign: 'center',
           }}
         >
-          Créer une nouvelle activité
+          {t('admin.activities.createNew')}
         </Typography>
 
         {error && (
@@ -191,7 +199,7 @@ export const CreateActivityModal = ({
 
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <TextField
-            label="Titre"
+            label={t('admin.activities.nameFr')}
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
@@ -208,14 +216,50 @@ export const CreateActivityModal = ({
               '& .MuiInputLabel-root.Mui-focused': { color: colors.primaryGreen },
             }}
           />
+          <TextField
+            label={t('admin.activities.nameEn')}
+            value={nameEn}
+            onChange={(e) => setNameEn(e.target.value)}
+            fullWidth
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                backgroundColor: colors.secondaryDarkAlt,
+                color: colors.white,
+                '& fieldset': { borderColor: colors.secondaryGrey },
+                '&:hover fieldset': { borderColor: colors.primaryGreen },
+                '&.Mui-focused fieldset': { borderColor: colors.primaryGreen },
+              },
+              '& .MuiInputLabel-root': { color: colors.secondaryGrey },
+              '& .MuiInputLabel-root.Mui-focused': { color: colors.primaryGreen },
+            }}
+          />
 
           <TextField
-            label="Description"
+            label={t('admin.activities.descriptionFr')}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             required
             multiline
-            rows={4}
+            rows={3}
+            fullWidth
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                backgroundColor: colors.secondaryDarkAlt,
+                color: colors.white,
+                '& fieldset': { borderColor: colors.secondaryGrey },
+                '&:hover fieldset': { borderColor: colors.primaryGreen },
+                '&.Mui-focused fieldset': { borderColor: colors.primaryGreen },
+              },
+              '& .MuiInputLabel-root': { color: colors.secondaryGrey },
+              '& .MuiInputLabel-root.Mui-focused': { color: colors.primaryGreen },
+            }}
+          />
+          <TextField
+            label={t('admin.activities.descriptionEn')}
+            value={descriptionEn}
+            onChange={(e) => setDescriptionEn(e.target.value)}
+            multiline
+            rows={3}
             fullWidth
             sx={{
               '& .MuiOutlinedInput-root': {
@@ -233,7 +277,7 @@ export const CreateActivityModal = ({
           {/* Upload d'image */}
           <Box sx={{ mb: 2 }}>
             <Typography variant="subtitle2" sx={{ mb: 1, color: colors.primaryGold }}>
-              Image de l'activité
+              {t('admin.activities.imageLabel')}
             </Typography>
 
             <Button
@@ -251,7 +295,7 @@ export const CreateActivityModal = ({
                 },
               }}
             >
-              {uploading ? 'Upload en cours...' : 'Choisir une image'}
+              {uploading ? t('admin.activities.uploading') : t('admin.activities.chooseImage')}
               <input
                 type="file"
                 hidden
@@ -265,7 +309,7 @@ export const CreateActivityModal = ({
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
                 <CircularProgress size={20} sx={{ color: colors.primaryGreen }} />
                 <Typography variant="body2" sx={{ color: colors.white }}>
-                  Upload en cours...
+                  {t('admin.activities.uploading')}
                 </Typography>
               </Box>
             )}
@@ -275,7 +319,7 @@ export const CreateActivityModal = ({
               <Box sx={{ mt: 2, textAlign: 'center' }}>
                 <img
                   src={resolveImageUrl(imageUrl, DEFAULT_ACTIVITY_IMAGE)}
-                  alt="Aperçu"
+                  alt={t('admin.activities.preview')}
                   style={{
                     maxWidth: '100%',
                     maxHeight: '200px',
@@ -295,16 +339,16 @@ export const CreateActivityModal = ({
 
           <Box sx={{ display: 'flex', gap: 2 }}>
             <FormControl fullWidth>
-              <InputLabel sx={{ color: colors.secondaryGrey }}>Catégorie *</InputLabel>
+              <InputLabel sx={{ color: colors.secondaryGrey }}>{t('admin.activities.category')} *</InputLabel>
               <Select
                 value={categoryId}
                 onChange={(e) => setCategoryId(e.target.value as number | '')}
-                label="Catégorie *"
+                label={`${t('admin.activities.category')} *`}
                 required
                 displayEmpty
                 renderValue={(selected) => {
                   if (!selected) {
-                    return <span style={{ color: colors.secondaryGrey }}>Sélectionner une catégorie</span>;
+                    return <span style={{ color: colors.secondaryGrey }}>{t('admin.activities.selectCategory')}</span>;
                   }
                   return categories.find(c => c.id === selected)?.name || '';
                 }}
@@ -327,7 +371,7 @@ export const CreateActivityModal = ({
             </FormControl>
 
             <TextField
-              label="Niveau de frisson (1-5)"
+              label={t('admin.activities.thrillLevelLabel')}
               type="number"
               value={thrillLevel}
               onChange={(e) => setThrillLevel(e.target.value ? Number(e.target.value) : '')}
@@ -349,7 +393,7 @@ export const CreateActivityModal = ({
 
           <Box sx={{ display: 'flex', gap: 2 }}>
             <TextField
-              label="Durée (minutes)"
+              label={t('admin.activities.durationMinutes')}
               type="number"
               value={duration}
               onChange={(e) => setDuration(e.target.value ? Number(e.target.value) : '')}
@@ -369,7 +413,7 @@ export const CreateActivityModal = ({
             />
 
             <TextField
-              label="Âge minimum"
+              label={t('admin.activities.minAge')}
               type="number"
               value={minAge}
               onChange={(e) => setMinAge(e.target.value ? Number(e.target.value) : '')}
@@ -390,10 +434,10 @@ export const CreateActivityModal = ({
           </Box>
 
           <TextField
-            label="Accessibilité"
+            label={t('admin.activities.accessibility')}
             value={accessibility}
             onChange={(e) => setAccessibility(e.target.value)}
-            placeholder="Ex: Accessible, Partiellement accessible..."
+            placeholder={t('admin.activities.accessibilityPlaceholder')}
             fullWidth
             sx={{
               '& .MuiOutlinedInput-root': {
@@ -410,7 +454,7 @@ export const CreateActivityModal = ({
 
           <Box>
             <Typography sx={{ mb: 1, color: colors.secondaryGrey, fontSize: '0.9rem' }}>
-              Activités liées
+              {t('admin.activities.relatedActivities')}
             </Typography>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, maxHeight: '150px', overflow: 'auto', p: 1, border: `1px solid ${colors.secondaryGrey}`, borderRadius: 1 }}>
               {allActivities.map((activity) => (
@@ -448,7 +492,7 @@ export const CreateActivityModal = ({
             }
             label={
               <Typography sx={{ color: colors.white }}>
-                {isPublished ? 'Publiée' : 'Brouillon'}
+                {isPublished ? t('admin.activities.published') : t('admin.activities.draft')}
               </Typography>
             }
           />
@@ -456,14 +500,14 @@ export const CreateActivityModal = ({
 
         <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 3 }}>
           <PrimaryButton
-            text="Annuler"
+            text={t('common.cancel')}
             onClick={handleClose}
             fullWidth={false}
             disabled={isLoading}
             type="button"
           />
           <PrimaryButton
-            text="Créer"
+            text={t('admin.activities.createLabel')}
             onClick={handleSubmit}
             fullWidth={false}
             disabled={isLoading}

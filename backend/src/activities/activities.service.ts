@@ -130,7 +130,7 @@ export class ActivitiesService {
   }
 
   async create(createActivityDto: CreateActivityDto & { related_activity_ids?: number[] }) {
-    const { name, description, category_id, attraction_id, image_url, thrill_level, duration, min_age, accessibility, is_published, related_activity_ids } = createActivityDto;
+    const { name, description, name_en, description_en, category_id, attraction_id, image_url, thrill_level, duration, min_age, accessibility, is_published, related_activity_ids } = createActivityDto as any;
 
 
     // Validation des champs requis
@@ -166,6 +166,8 @@ export class ActivitiesService {
     const activityData: any = {
       name,
       description,
+      name_en: name_en || null,
+      description_en: description_en || null,
       category_id,
       attraction_id: attraction_id ?? null,
       image_url: image_url ?? null,

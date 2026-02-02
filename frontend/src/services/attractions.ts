@@ -10,6 +10,8 @@ export interface AttractionFilters {
 export interface CreateAttractionDto {
   name: string;
   description: string;
+  name_en?: string | null;
+  description_en?: string | null;
   category_id: number;
   image_url?: string | null;
   thrill_level?: number | null;
@@ -21,6 +23,8 @@ export interface CreateAttractionDto {
 export interface UpdateAttractionDto {
   name?: string;
   description?: string;
+  name_en?: string | null;
+  description_en?: string | null;
   category_id?: number;
   image_url?: string | null;
   thrill_level?: number | null;

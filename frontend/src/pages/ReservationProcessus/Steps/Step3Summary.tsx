@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { formatPriceName } from '../../../utils/translatePrice';
 
 export const Step3Summary = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { tickets, total, date, acceptedTerms, setAcceptedTerms } = useReservationStore();
   const [localAcceptedTerms, setLocalAcceptedTerms] = useState(acceptedTerms);
   const [prices, setPrices] = useState<Price[]>([]);
@@ -39,7 +39,7 @@ export const Step3Summary = () => {
     };
 
     fetchPrices();
-  }, []);
+  }, [i18n.language]);
 
   const priceMap = useMemo(() => new Map(prices.map((p) => [p.id, p])), [prices]);
 

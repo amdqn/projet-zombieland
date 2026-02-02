@@ -10,7 +10,7 @@ import { resolveImageUrl, DEFAULT_ACTIVITY_IMAGE } from "../../utils/imageUtils"
 import { useTranslation } from "react-i18next";
 
 export default function CarouselActivityMain(){
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [activities, setActivities] = useState<Activity[]>([]);
     const [attractions, setAttractions] = useState<Attraction[]>([]);
 
@@ -28,7 +28,7 @@ export default function CarouselActivityMain(){
             }
         };
         fetchData();
-    }, []);
+    }, [i18n.language]);
 
     // Combiner en mettant les activités en premier, puis les attractions
     const cards = useMemo(() => {

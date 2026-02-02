@@ -33,6 +33,7 @@ export interface PricesFilters {
 
 export interface UpdatePriceDto {
     label: string;
+    label_en?: string | null;
     type: PriceType;
     amount: number;
     duration_days: number;
@@ -40,6 +41,7 @@ export interface UpdatePriceDto {
 
 export interface CreatePriceDto {
     label: string;
+    label_en?: string | null;
     type: PriceType;
     amount: number;
     duration_days: number;

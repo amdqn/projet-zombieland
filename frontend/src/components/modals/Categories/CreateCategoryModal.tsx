@@ -1,5 +1,6 @@
 import { Alert, Box, Modal, Typography, TextField, Button, CircularProgress } from '@mui/material';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { createCategory, type CreateCategoryDto } from '../../../services/categories';
 import { colors } from '../../../theme';
@@ -29,15 +30,20 @@ export const CreateCategoryModal = ({
   onClose,
   onSuccess,
 }: CreateCategoryModalProps) => {
+  const { t } = useTranslation();
   const [name, setName] = useState('');
+  const [nameEn, setNameEn] = useState('');
   const [description, setDescription] = useState('');
+  const [descriptionEn, setDescriptionEn] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
   const handleClose = () => {
     setName('');
+    setNameEn('');
     setDescription('');
+    setDescriptionEn('');
     setError(null);
     setSuccess(null);
     onClose();
@@ -45,17 +51,17 @@ export const CreateCategoryModal = ({
 
   const handleSubmit = async () => {
     if (!name || !description) {
-      setError('Le nom et la description sont requis');
+      setError(t('admin.categories.nameDescriptionRequired'));
       return;
     }
 
     if (name.length > 100) {
-      setError('Le nom ne doit pas dépasser 100 caractères');
+      setError(t('admin.categories.nameMaxLength'));
       return;
     }
 
     if (description.length > 500) {
-      setError('La description ne doit pas dépasser 500 caractères');
+      setError(t('admin.categories.descriptionMaxLength'));
       return;
     }
 
@@ -67,17 +73,19 @@ export const CreateCategoryModal = ({
       const dto: CreateCategoryDto = {
         name,
         description,
+        name_en: nameEn || null,
+        description_en: descriptionEn || null,
       };
 
       await createCategory(dto);
-      toast.success('Catégorie créée avec succès !');
-      setSuccess('Catégorie créée avec succès');
+      toast.success(t('admin.categories.successCreate'));
+      setSuccess(t('admin.categories.successCreate'));
       setTimeout(() => {
         onSuccess();
         handleClose();
       }, 1500);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erreur lors de la création de la catégorie';
+      const message = err instanceof Error ? err.message : t('admin.categories.errorCreate');
       setError(message);
     } finally {
       setIsLoading(false);
@@ -96,7 +104,7 @@ export const CreateCategoryModal = ({
             textAlign: 'center',
           }}
         >
-          Créer une nouvelle catégorie
+          {t('admin.categories.createNew')}
         </Typography>
 
         {error && (
@@ -113,14 +121,34 @@ export const CreateCategoryModal = ({
 
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
           <TextField
-            label="Nom de la catégorie"
+            label={t('admin.categories.nameFr')}
             variant="outlined"
             fullWidth
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
             inputProps={{ maxLength: 100 }}
-            helperText={`${name.length}/100 caractères`}
+            helperText={t('admin.categories.charactersCount', { current: name.length, max: 100 })}
+            sx={{
+              '& .MuiInputLabel-root': { color: colors.secondaryGrey },
+              '& .MuiInputLabel-root.Mui-focused': { color: colors.primaryGreen },
+              '& .MuiOutlinedInput-root': {
+                color: colors.white,
+                '& fieldset': { borderColor: colors.secondaryGrey },
+                '&:hover fieldset': { borderColor: colors.primaryGreen },
+                '&.Mui-focused fieldset': { borderColor: colors.primaryGreen },
+              },
+              '& .MuiFormHelperText-root': { color: colors.secondaryGrey },
+            }}
+          />
+          <TextField
+            label={t('admin.categories.nameEn')}
+            variant="outlined"
+            fullWidth
+            value={nameEn}
+            onChange={(e) => setNameEn(e.target.value)}
+            inputProps={{ maxLength: 100 }}
+            helperText={t('admin.categories.charactersCount', { current: nameEn.length, max: 100 })}
             sx={{
               '& .MuiInputLabel-root': { color: colors.secondaryGrey },
               '& .MuiInputLabel-root.Mui-focused': { color: colors.primaryGreen },
@@ -135,16 +163,38 @@ export const CreateCategoryModal = ({
           />
 
           <TextField
-            label="Description"
+            label={t('admin.categories.descriptionFr')}
             variant="outlined"
             fullWidth
             required
             multiline
-            rows={4}
+            rows={3}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             inputProps={{ maxLength: 500 }}
-            helperText={`${description.length}/500 caractères`}
+            helperText={t('admin.categories.charactersCount', { current: description.length, max: 500 })}
+            sx={{
+              '& .MuiInputLabel-root': { color: colors.secondaryGrey },
+              '& .MuiInputLabel-root.Mui-focused': { color: colors.primaryGreen },
+              '& .MuiOutlinedInput-root': {
+                color: colors.white,
+                '& fieldset': { borderColor: colors.secondaryGrey },
+                '&:hover fieldset': { borderColor: colors.primaryGreen },
+                '&.Mui-focused fieldset': { borderColor: colors.primaryGreen },
+              },
+              '& .MuiFormHelperText-root': { color: colors.secondaryGrey },
+            }}
+          />
+          <TextField
+            label={t('admin.categories.descriptionEn')}
+            variant="outlined"
+            fullWidth
+            multiline
+            rows={3}
+            value={descriptionEn}
+            onChange={(e) => setDescriptionEn(e.target.value)}
+            inputProps={{ maxLength: 500 }}
+            helperText={t('admin.categories.charactersCount', { current: descriptionEn.length, max: 500 })}
             sx={{
               '& .MuiInputLabel-root': { color: colors.secondaryGrey },
               '& .MuiInputLabel-root.Mui-focused': { color: colors.primaryGreen },
@@ -172,7 +222,7 @@ export const CreateCategoryModal = ({
               }}
               variant="outlined"
             >
-              Annuler
+              {t('common.cancel')}
             </Button>
             <Button
               onClick={handleSubmit}
@@ -192,7 +242,7 @@ export const CreateCategoryModal = ({
                 },
               }}
             >
-              {isLoading ? <CircularProgress size={24} sx={{ color: colors.secondaryDark }} /> : 'Créer'}
+              {isLoading ? <CircularProgress size={24} sx={{ color: colors.secondaryDark }} /> : t('admin.categories.createLabel')}
             </Button>
           </Box>
         </Box>

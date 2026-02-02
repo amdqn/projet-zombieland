@@ -1,4 +1,5 @@
 import { Box, Chip, Stack, TextField, Typography, Checkbox, FormControlLabel, Divider } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { colors } from '../../theme';
 import type { Category } from '../../@types/categorie';
 
@@ -21,10 +22,11 @@ export function MapFilters({
   searchQuery,
   onSearchChange,
 }: MapFiltersProps) {
+  const { t } = useTranslation();
   const types = [
     {
       value: 'attraction',
-      label: 'Attractions',
+      labelKey: 'info.page.map.filters.attractions',
       icon: (
         <svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg" style={{ fill: 'none', stroke: 'currentColor' }}>
           <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="1.5"/>
@@ -41,7 +43,7 @@ export function MapFilters({
     },
     {
       value: 'activity',
-      label: 'Activités',
+      labelKey: 'info.page.map.filters.activities',
       icon: (
         <svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg" style={{ fill: 'none', stroke: 'currentColor' }}>
           <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="2"/>
@@ -53,7 +55,7 @@ export function MapFilters({
     },
     {
       value: 'poi',
-      label: 'Services',
+      labelKey: 'info.page.map.filters.services',
       icon: (
         <svg viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg" style={{ fill: 'currentColor' }}>
           <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="currentColor"/>
@@ -91,7 +93,7 @@ export function MapFilters({
       {/* Recherche */}
       <TextField
         fullWidth
-        placeholder="Rechercher un lieu..."
+        placeholder={t('info.page.map.filters.searchPlaceholder')}
         value={searchQuery}
         onChange={(e) => onSearchChange(e.target.value)}
         sx={{
@@ -126,14 +128,14 @@ export function MapFilters({
           fontWeight: 'bold',
         }}
       >
-        Type de lieu
+        {t('info.page.map.filters.placeType')}
       </Typography>
       <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mb: 3, gap: 1 }}>
         {types.map((type) => (
           <Chip
             key={type.value}
             icon={<Box sx={{ display: 'flex', alignItems: 'center', color: 'inherit' }}>{type.icon}</Box>}
-            label={type.label}
+            label={t(type.labelKey)}
             onClick={() => handleTypeToggle(type.value)}
             sx={{
               bgcolor: selectedTypes.includes(type.value) ? type.color : colors.secondaryDark,
@@ -167,7 +169,7 @@ export function MapFilters({
               fontWeight: 'bold',
             }}
           >
-            Catégories
+            {t('info.page.map.filters.categories')}
           </Typography>
           <Stack spacing={1}>
             {categories

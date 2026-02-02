@@ -72,7 +72,7 @@ export function InformationPage() {
     };
 
     fetchData();
-  }, []);
+  }, [i18n.language]);
 
   return (
     <Box sx={{ backgroundColor: colors.secondaryDark, minHeight: '100vh', color: colors.white }}>

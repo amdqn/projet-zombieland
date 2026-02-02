@@ -26,7 +26,7 @@ import { useTranslation } from 'react-i18next';
 const ALL_CATEGORIES_KEY = '__ALL__';
 
 export const Activities = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [tabValue, setTabValue] = useState<number>(0);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [attractions, setAttractions] = useState<Attraction[]>([]);
@@ -65,7 +65,7 @@ export const Activities = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [i18n.language]);
 
   const enrichedActivities = useMemo(() => {
     const withMeta = activities

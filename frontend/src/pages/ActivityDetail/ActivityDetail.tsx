@@ -24,7 +24,7 @@ import type { Attraction } from '../../@types/attraction';
 import { resolveImageUrl } from '../../utils/imageUtils';
 
 export const ActivityDetail = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -101,7 +101,7 @@ export const ActivityDetail = () => {
     };
 
     fetchActivity();
-  }, [id, location.pathname]);
+  }, [id, location.pathname, i18n.language]);
 
   if (loading) {
     return (

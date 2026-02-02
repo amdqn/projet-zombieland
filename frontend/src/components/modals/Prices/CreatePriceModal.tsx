@@ -1,5 +1,6 @@
 import { Alert, Box, MenuItem, Modal, Select, Typography, FormControl, InputLabel, TextField } from '@mui/material';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { colors } from '../../../theme';
 import { PrimaryButton } from '../../common';
 import {createPrice} from "../../../services/prices.ts";
@@ -31,12 +32,21 @@ const style = {
 
 
 
+const PRICE_TYPE_KEYS: Record<string, string> = {
+    ETUDIANT: 'admin.prices.typeEtudiant',
+    ADULTE: 'admin.prices.typeAdulte',
+    GROUPE: 'admin.prices.typeGroupe',
+    PASS_2J: 'admin.prices.typePass2J',
+};
+
 export const CreatePriceModal = ({
                                      open,
                                      onClose,
                                      onCreateSuccess,
                                  }: CreatePriceModalProps) => {
+    const { t } = useTranslation();
     const [label, setLabel] = useState<string>('');
+    const [labelEn, setLabelEn] = useState<string>('');
     const [type, setType] = useState<PriceType | string>('');
     const [amount, setAmount] = useState<number | string>('');
     const [durationsDays, setDurationsDays] = useState<number | string>("");
@@ -48,6 +58,7 @@ export const CreatePriceModal = ({
         setError(null);
         setSuccess(null);
         setLabel('');
+        setLabelEn('');
         setType('');
         setAmount(0);
         setDurationsDays('');
@@ -56,7 +67,7 @@ export const CreatePriceModal = ({
 
     const handleSubmit = async () => {
         if (!label || !amount || !type || !durationsDays) {
-            setError('Le nom, le tarif, le type de tarif et le nombre de jours sont requis');
+            setError(t('admin.prices.namePriceTypeDaysRequired'));
             return;
         }
 
@@ -67,17 +78,18 @@ export const CreatePriceModal = ({
         try {
             const dto: CreatePriceDto = {
                 label,
+                label_en: labelEn || null,
                 type: type as PriceType,
                 amount: typeof amount === 'string' ? parseFloat(amount) : amount,
                 duration_days: typeof durationsDays === 'string' ? parseInt(durationsDays) : durationsDays,
             };
 
             await createPrice(dto);
-            toast.success('Tarif crée avec succès !');
+            toast.success(t('admin.prices.successCreate'));
             onCreateSuccess();
             handleClose();
         } catch (err) {
-            const message = err instanceof Error ? err.message : 'Erreur lors de la création du tarif';
+            const message = err instanceof Error ? err.message : t('admin.prices.errorCreate');
             setError(message);
         } finally {
             setIsLoading(false);
@@ -97,7 +109,7 @@ export const CreatePriceModal = ({
                         textAlign: 'center',
                     }}
                 >
-                    Créer un nouveau tarif
+                    {t('admin.prices.createNew')}
                 </Typography>
 
                 {error && (
@@ -114,7 +126,7 @@ export const CreatePriceModal = ({
 
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <TextField
-                        label="Titre"
+                        label={t('admin.prices.labelFr')}
                         value={label}
                         onChange={(e) => setLabel(e.target.value)}
                         required
@@ -131,9 +143,26 @@ export const CreatePriceModal = ({
                             '& .MuiInputLabel-root.Mui-focused': { color: colors.primaryGreen },
                         }}
                     />
+                    <TextField
+                        label={t('admin.prices.labelEn')}
+                        value={labelEn}
+                        onChange={(e) => setLabelEn(e.target.value)}
+                        fullWidth
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                backgroundColor: colors.secondaryDarkAlt,
+                                color: colors.white,
+                                '& fieldset': { borderColor: colors.secondaryGrey },
+                                '&:hover fieldset': { borderColor: colors.primaryGreen },
+                                '&.Mui-focused fieldset': { borderColor: colors.primaryGreen },
+                            },
+                            '& .MuiInputLabel-root': { color: colors.secondaryGrey },
+                            '& .MuiInputLabel-root.Mui-focused': { color: colors.primaryGreen },
+                        }}
+                    />
 
                     <TextField
-                        label="Prix"
+                        label={t('admin.prices.amount')}
                         type="number"
                         value={amount}
                         onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
@@ -162,15 +191,15 @@ export const CreatePriceModal = ({
 
                     <Box sx={{ display: 'flex', gap: 2 }}>
                         <FormControl fullWidth>
-                            <InputLabel sx={{ color: colors.secondaryGrey }}>Type de prix *</InputLabel>
+                            <InputLabel sx={{ color: colors.secondaryGrey }}>{t('admin.prices.priceType')}</InputLabel>
                             <Select
                                 value={type || ''}
                                 onChange={(e) => setType(e.target.value as PriceType)}
-                                label="Type de prix *"
+                                label={t('admin.prices.priceType')}
                                 required
                                 displayEmpty
                                 renderValue={(selected) => {
-                                    return selected;
+                                    return selected ? t(PRICE_TYPE_KEYS[selected] || selected) : '';
                                 }}
                                 sx={{
                                     backgroundColor: colors.secondaryDarkAlt,
@@ -184,14 +213,14 @@ export const CreatePriceModal = ({
                             >
                                 {PRICES_TYPES.map((priceType) => (
                                     <MenuItem key={priceType} value={priceType}>
-                                        {priceType}
+                                        {t(PRICE_TYPE_KEYS[priceType] || priceType)}
                                     </MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
 
                         <TextField
-                            label="Durée du billet (jours)"
+                            label={t('admin.prices.ticketDurationDays')}
                             type="number"
                             value={durationsDays || ''}
                             onChange={(e) => setDurationsDays(e.target.value ? Number(e.target.value) : '')}
@@ -222,14 +251,14 @@ export const CreatePriceModal = ({
 
                 <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 3 }}>
                     <PrimaryButton
-                        text="Annuler"
+                        text={t('common.cancel')}
                         onClick={handleClose}
                         fullWidth={false}
                         disabled={isLoading}
                         type="button"
                     />
                     <PrimaryButton
-                        text={isLoading ? 'Enregistrement...' : 'Enregistrer'}
+                        text={isLoading ? t('admin.prices.saving') : t('admin.prices.save')}
                         onClick={handleSubmit}
                         fullWidth={false}
                         disabled={isLoading}

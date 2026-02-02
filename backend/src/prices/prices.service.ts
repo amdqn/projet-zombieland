@@ -108,7 +108,7 @@ export class PricesService {
   }
 
   async create(createPriceDto: CreatePriceDto) {
-    const { label, type, amount, duration_days } = createPriceDto;
+    const { label, label_en, type, amount, duration_days } = createPriceDto as any;
 
     if (!label || !type || !amount || !duration_days) {
       throw new BadRequestException('Tous les champs sont requis');
@@ -125,6 +125,7 @@ export class PricesService {
     const price = await this.prisma.price.create({
       data: {
         label,
+        label_en: label_en || null,
         type,
         amount,
         duration_days,

@@ -2219,6 +2219,14 @@ components:
         description:
           type: string
           example: Shows et animations en live
+        name_en:
+          type: string
+          nullable: true
+          example: Shows
+        description_en:
+          type: string
+          nullable: true
+          example: Live shows and animations
 
     UpdateCategoryDto:
       type: object
@@ -2227,6 +2235,12 @@ components:
           type: string
         description:
           type: string
+        name_en:
+          type: string
+          nullable: true
+        description_en:
+          type: string
+          nullable: true
 
     CreateAttractionDto:
       type: object
@@ -2241,6 +2255,14 @@ components:
         description:
           type: string
           example: Montagnes russes extrêmes dans un décor post-apocalyptique
+        name_en:
+          type: string
+          nullable: true
+          example: Zombie Apocalypse Ride
+        description_en:
+          type: string
+          nullable: true
+          example: Extreme roller coaster in a post-apocalyptic setting
         image_url:
           type: string
           nullable: true
@@ -2270,6 +2292,12 @@ components:
           type: string
         description:
           type: string
+        name_en:
+          type: string
+          nullable: true
+        description_en:
+          type: string
+          nullable: true
         image_url:
           type: string
           nullable: true
@@ -2301,6 +2329,14 @@ components:
         description:
           type: string
           example: Affrontez les zombies en équipe avec des lasers
+        name_en:
+          type: string
+          nullable: true
+          example: Zombie Laser Game
+        description_en:
+          type: string
+          nullable: true
+          example: Face zombies in teams with lasers
         category_id:
           type: integer
           example: 3
@@ -2344,6 +2380,12 @@ components:
           type: string
         description:
           type: string
+        name_en:
+          type: string
+          nullable: true
+        description_en:
+          type: string
+          nullable: true
         category_id:
           type: integer
         attraction_id:
@@ -2439,6 +2481,10 @@ components:
         label:
           type: string
           example: Pass 2 jours
+        label_en:
+          type: string
+          nullable: true
+          example: 2-day pass
         type:
           $ref: '#/components/schemas/PriceType'
         amount:
@@ -2456,6 +2502,9 @@ components:
       properties:
         label:
           type: string
+        label_en:
+          type: string
+          nullable: true
         type:
           $ref: '#/components/schemas/PriceType'
         amount:

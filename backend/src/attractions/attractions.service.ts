@@ -145,8 +145,8 @@ export class AttractionsService {
       wait_time: this.generateWaitTime((attraction as any).thrill_level),
       category: {
         ...transformTranslatableFields((attraction as any).category, lang),
-        created_at: attraction.category.created_at.toISOString(),
-        updated_at: attraction.category.updated_at.toISOString(),
+        created_at: (attraction.category as any).created_at.toISOString(),
+        updated_at: (attraction.category as any).updated_at.toISOString(),
       },
       images: attraction.images.map((image) => ({
         ...transformTranslatableFields(image, lang),
@@ -230,28 +230,28 @@ export class AttractionsService {
       } as any,
     });
 
-    const attractionData = attraction as any;
+    const createdAttraction = attraction as any;
     const transformedAttraction = transformTranslatableFields(
-      attractionData,
+      createdAttraction,
       'fr',
     );
     return {
       ...AttractionMapper.toDto(transformedAttraction),
       category: {
-        ...transformTranslatableFields(attractionData.category, 'fr'),
-        created_at: attractionData.category.created_at.toISOString(),
-        updated_at: attractionData.category.updated_at.toISOString(),
+        ...transformTranslatableFields(createdAttraction.category, 'fr'),
+        created_at: createdAttraction.category.created_at.toISOString(),
+        updated_at: createdAttraction.category.updated_at.toISOString(),
       },
-      images: attractionData.images.map((image: any) => ({
+      images: createdAttraction.images.map((image: any) => ({
         ...transformTranslatableFields(image, 'fr'),
         created_at: image.created_at.toISOString(),
       })),
-      activities: attractionData.activities.map((activity: any) => ({
+      activities: createdAttraction.activities.map((activity: any) => ({
         ...transformTranslatableFields(activity, 'fr'),
         created_at: activity.created_at.toISOString(),
         updated_at: activity.updated_at.toISOString(),
       })),
-      related_attractions: (attractionData.relatedFrom || []).map((rel: any) => ({
+      related_attractions: (createdAttraction.relatedFrom || []).map((rel: any) => ({
         ...transformTranslatableFields(rel.related_attraction, 'fr'),
         created_at: rel.related_attraction.created_at.toISOString(),
         updated_at: rel.related_attraction.updated_at.toISOString(),

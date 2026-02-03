@@ -92,12 +92,6 @@ jobs:
         # Vérifie :
         # - Syntaxe correcte
         # - Respect des règles ESLint
-      # ===== STEP 7 : Linter (Qualité du code) =====
-      - name: 🔍 Lint code with ESLint
-        run: npm run lint
-        # Vérifie :
-        # - Syntaxe correcte
-        # - Respect des règles ESLint
         # - Pas de variables inutilisées
         # - Etc.
         # Si erreur → Workflow échoue ❌

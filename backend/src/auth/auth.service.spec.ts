@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 import { BadRequestException, ConflictException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
@@ -9,13 +11,21 @@ jest.mock('bcrypt');
 
 describe('AuthService - Register', () => {
   let service: AuthService;
-  let _prismaService: PrismaService;
+  let prismaService: PrismaService;
 
   const mockPrismaService = {
     user: {
       findUnique: jest.fn(),
       create: jest.fn(),
     },
+  };
+
+  const mockJwtService = {
+    sign: jest.fn(),
+  };
+
+  const mockConfigService = {
+    get: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -25,6 +35,14 @@ describe('AuthService - Register', () => {
         {
           provide: PrismaService,
           useValue: mockPrismaService,
+        },
+        {
+          provide: JwtService,
+          useValue: mockJwtService,
+        },
+        {
+          provide: ConfigService,
+          useValue: mockConfigService,
         },
       ],
     }).compile();

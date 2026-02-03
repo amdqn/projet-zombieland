@@ -1,5 +1,5 @@
 import {BadRequestException, ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
-import {ConversationStatus} from 'src/generated';
+import {ConversationStatus} from '../generated';
 import {PrismaService} from "../prisma/prisma.service";
 
 @Injectable()

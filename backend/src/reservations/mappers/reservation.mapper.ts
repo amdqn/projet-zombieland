@@ -3,16 +3,16 @@ import { ReservationDto } from '../../generated/model/reservationDto';
 
 /**
  * Mapper Reservation : Entité Prisma → DTO OpenAPI
- * 
+ *
  * Transforme les entités Reservation de Prisma en DTOs sécurisés
  * pour l'exposition via l'API.
- * 
+ *
  * ⚠️ Gère la conversion Decimal → number pour total_amount
  */
 export class ReservationMapper {
   /**
    * Transforme une Reservation Prisma en DTO
-   * 
+   *
    * @param reservation - Entité Reservation de Prisma
    * @returns ReservationDto pour l'API
    */
@@ -32,7 +32,7 @@ export class ReservationMapper {
 
   /**
    * Transforme une liste de réservations
-   * 
+   *
    * @param reservations - Tableau d'entités Reservation
    * @returns Tableau de ReservationDto
    */

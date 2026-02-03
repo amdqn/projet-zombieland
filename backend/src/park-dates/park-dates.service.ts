@@ -99,8 +99,12 @@ export class ParkDatesService {
       data: {
         ...(jour && { jour: new Date(jour) }),
         ...(is_open !== undefined && { is_open }),
-        ...(open_hour !== undefined && { open_hour: open_hour ? new Date(`1970-01-01T${open_hour}`) : null }),
-        ...(close_hour !== undefined && { close_hour: close_hour ? new Date(`1970-01-01T${close_hour}`) : null }),
+        ...(open_hour !== undefined && {
+          open_hour: open_hour ? new Date(`1970-01-01T${open_hour}`) : null,
+        }),
+        ...(close_hour !== undefined && {
+          close_hour: close_hour ? new Date(`1970-01-01T${close_hour}`) : null,
+        }),
         ...(notes !== undefined && { notes }),
       },
     });

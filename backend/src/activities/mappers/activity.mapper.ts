@@ -3,16 +3,16 @@ import { ActivityDto } from '../../generated/model/activityDto';
 
 /**
  * Mapper Activity : Entité Prisma → DTO OpenAPI
- * 
+ *
  * Transforme les entités Activity de Prisma en DTOs sécurisés
  * pour l'exposition via l'API.
- * 
+ *
  * ⚠️ Gère la conversion Decimal → string pour latitude/longitude
  */
 export class ActivityMapper {
   /**
    * Transforme une Activity Prisma en DTO
-   * 
+   *
    * @param activity - Entité Activity de Prisma
    * @returns ActivityDto pour l'API
    */
@@ -35,7 +35,7 @@ export class ActivityMapper {
 
   /**
    * Transforme une liste d'activités
-   * 
+   *
    * @param activities - Tableau d'entités Activity
    * @returns Tableau de ActivityDto
    */

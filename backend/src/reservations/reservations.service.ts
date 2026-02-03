@@ -36,7 +36,7 @@ export class ReservationsService {
    */
   private formatReservationResponse(reservation: any, userRole: string) {
     const baseDto = ReservationMapper.toDto(reservation);
-    
+
     const formatted: any = {
       ...baseDto,
       date: {
@@ -189,7 +189,7 @@ export class ReservationsService {
       dateTo?: string;
       ticketType?: string;
       sortBy?: string;
-    }
+    },
   ) {
     const page = options?.page || 1;
     const limit = options?.limit || 10;
@@ -226,15 +226,30 @@ export class ReservationsService {
         },
       ];
 
-      // Recherche par statut 
+      // Recherche par statut
       const searchUpper = search.toUpperCase();
-      if (searchUpper === 'PENDING' || searchUpper === 'EN ATTENTE' || searchUpper.includes('PEND') || searchUpper.includes('ATTENT')) {
+      if (
+        searchUpper === 'PENDING' ||
+        searchUpper === 'EN ATTENTE' ||
+        searchUpper.includes('PEND') ||
+        searchUpper.includes('ATTENT')
+      ) {
         searchConditions.push({ status: 'PENDING' });
       }
-      if (searchUpper === 'CONFIRMED' || searchUpper === 'CONFIRMÉE' || searchUpper === 'CONFIRME' || searchUpper.includes('CONF')) {
+      if (
+        searchUpper === 'CONFIRMED' ||
+        searchUpper === 'CONFIRMÉE' ||
+        searchUpper === 'CONFIRME' ||
+        searchUpper.includes('CONF')
+      ) {
         searchConditions.push({ status: 'CONFIRMED' });
       }
-      if (searchUpper === 'CANCELLED' || searchUpper === 'ANNULÉE' || searchUpper === 'ANNULE' || searchUpper.includes('ANN')) {
+      if (
+        searchUpper === 'CANCELLED' ||
+        searchUpper === 'ANNULÉE' ||
+        searchUpper === 'ANNULE' ||
+        searchUpper.includes('ANN')
+      ) {
         searchConditions.push({ status: 'CANCELLED' });
       }
 
@@ -312,7 +327,7 @@ export class ReservationsService {
         page,
         limit,
         total,
-        totalPages: Math.max(1, Math.ceil(total / limit)), 
+        totalPages: Math.max(1, Math.ceil(total / limit)),
       },
     };
   }

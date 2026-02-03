@@ -3,16 +3,16 @@ import { AttractionDto } from '../../generated/model/attractionDto';
 
 /**
  * Mapper Attraction : Entité Prisma → DTO OpenAPI
- * 
+ *
  * Transforme les entités Attraction de Prisma en DTOs sécurisés
  * pour l'exposition via l'API.
- * 
+ *
  * ⚠️ Gère la conversion Decimal → string pour latitude/longitude
  */
 export class AttractionMapper {
   /**
    * Transforme une Attraction Prisma en DTO
-   * 
+   *
    * @param attraction - Entité Attraction de Prisma
    * @returns AttractionDto pour l'API
    */
@@ -31,7 +31,7 @@ export class AttractionMapper {
 
   /**
    * Transforme une liste d'attractions
-   * 
+   *
    * @param attractions - Tableau d'entités Attraction
    * @returns Tableau de AttractionDto
    */

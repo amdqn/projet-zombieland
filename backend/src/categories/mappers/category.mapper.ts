@@ -3,14 +3,14 @@ import { CategoryDto } from '../../generated/model/categoryDto';
 
 /**
  * Mapper Category : Entité Prisma → DTO OpenAPI
- * 
+ *
  * Transforme les entités Category de Prisma en DTOs sécurisés
  * pour l'exposition via l'API.
  */
 export class CategoryMapper {
   /**
    * Transforme une Category Prisma en DTO
-   * 
+   *
    * @param category - Entité Category de Prisma
    * @returns CategoryDto pour l'API
    */
@@ -26,7 +26,7 @@ export class CategoryMapper {
 
   /**
    * Transforme une liste de catégories
-   * 
+   *
    * @param categories - Tableau d'entités Category
    * @returns Tableau de CategoryDto
    */

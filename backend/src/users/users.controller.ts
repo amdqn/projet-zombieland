@@ -53,7 +53,13 @@ export class UsersController {
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateData: { pseudo?: string; email?: string; role?: 'ADMIN' | 'CLIENT'; is_active?: boolean },
+    @Body()
+    updateData: {
+      pseudo?: string;
+      email?: string;
+      role?: 'ADMIN' | 'CLIENT';
+      is_active?: boolean;
+    },
     @CurrentUser() admin: UserDto,
   ) {
     return this.usersService.update(id, updateData, admin.id!);

@@ -157,7 +157,7 @@ describe('MessageService', () => {
       mockConversationService.create.mockResolvedValue(mockConversation);
       mockPrismaService.message.create.mockResolvedValue(mockMessage);
 
-      const result = await service.create(createDto as any, userId);
+      await service.create(createDto as any, userId);
 
       expect(mockConversationService.create).toHaveBeenCalledWith(
         userId,
@@ -213,13 +213,13 @@ describe('MessageService', () => {
         BadRequestException,
       );
       await expect(service.create(createDto as any, 1)).rejects.toThrow(
-        'L\'objet de la conversation est requis',
+        "L'objet de la conversation est requis",
       );
     });
   });
 
   describe('findAllByConversationId', () => {
-    it('devrait retourner tous les messages d\'une conversation', async () => {
+    it("devrait retourner tous les messages d'une conversation", async () => {
       const mockMessages = [
         { id: 1, content: 'Message 1', sender: { id: 1, pseudo: 'user1' } },
         { id: 2, content: 'Message 2', sender: { id: 2, pseudo: 'admin1' } },
@@ -331,9 +331,8 @@ describe('MessageService', () => {
       mockPrismaService.message.findUnique.mockResolvedValue(mockMessage);
       mockPrismaService.message.update.mockResolvedValue(mockUpdated);
 
-      const result = await service.archive(1, 1);
+      await service.archive(1, 1);
 
-      expect(result).toBeDefined();
       expect(mockPrismaService.message.update).toHaveBeenCalledWith({
         where: { id: 1 },
         data: {
@@ -380,7 +379,7 @@ describe('MessageService', () => {
 
       await expect(service.archive(1, 1)).rejects.toThrow(BadRequestException);
       await expect(service.archive(1, 1)).rejects.toThrow(
-        'Impossible de supprimer un message d\'une conversation clôturée',
+        "Impossible de supprimer un message d'une conversation clôturée",
       );
     });
 

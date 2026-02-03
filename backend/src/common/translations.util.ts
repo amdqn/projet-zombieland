@@ -58,7 +58,10 @@ export function getTranslatedLabel(entity: any, lang: Language): string {
 /**
  * Gets the translated alt_text field based on language (for images)
  */
-export function getTranslatedAltText(entity: any, lang: Language): string | null {
+export function getTranslatedAltText(
+  entity: any,
+  lang: Language,
+): string | null {
   if (lang === 'en' && entity.alt_text_en) {
     return entity.alt_text_en;
   }

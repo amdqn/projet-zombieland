@@ -152,7 +152,7 @@ describe('ConversationService', () => {
       );
     });
 
-    it('devrait lancer BadRequestException si destinataire n\'est pas ADMIN', async () => {
+    it("devrait lancer BadRequestException si destinataire n'est pas ADMIN", async () => {
       const mockUser1 = { id: 1, role: 'USER', pseudo: 'user1' };
       const mockUser2 = { id: 2, role: 'USER', pseudo: 'user2' };
 
@@ -245,7 +245,7 @@ describe('ConversationService', () => {
   });
 
   describe('findByUser', () => {
-    it('devrait retourner les conversations d\'un USER', async () => {
+    it("devrait retourner les conversations d'un USER", async () => {
       const mockConversations = [
         { id: 1, user_id: 1, admin_id: 2, status: ConversationStatus.Open },
       ];
@@ -279,10 +279,7 @@ describe('ConversationService', () => {
       expect(result).toEqual(mockConversations);
       expect(mockPrismaService.conversation.findMany).toHaveBeenCalledWith({
         where: {
-          OR: [
-            { admin_id: 2 },
-            { status: ConversationStatus.Open },
-          ],
+          OR: [{ admin_id: 2 }, { status: ConversationStatus.Open }],
         },
         include: expect.any(Object),
         orderBy: { updated_at: 'desc' },
@@ -315,7 +312,7 @@ describe('ConversationService', () => {
       expect(result).toBe(true);
     });
 
-    it('devrait retourner false si utilisateur n\'est pas participant', async () => {
+    it("devrait retourner false si utilisateur n'est pas participant", async () => {
       mockPrismaService.conversation.findFirst.mockResolvedValue(null);
 
       const result = await service.userHasAccess(999, 1);
@@ -336,7 +333,10 @@ describe('ConversationService', () => {
         messages: [],
       };
 
-      const mockUpdated = { ...mockConversation, status: ConversationStatus.Closed };
+      const mockUpdated = {
+        ...mockConversation,
+        status: ConversationStatus.Closed,
+      };
 
       mockPrismaService.conversation.findUnique.mockResolvedValue(
         mockConversation,
@@ -376,7 +376,7 @@ describe('ConversationService', () => {
       ).rejects.toThrow(ForbiddenException);
       await expect(
         service.updateStatus(1, ConversationStatus.Closed, 3),
-      ).rejects.toThrow('Vous n\'avez pas accès à cette conversation');
+      ).rejects.toThrow("Vous n'avez pas accès à cette conversation");
     });
   });
 

@@ -173,15 +173,23 @@ describe('ParkDatesService', () => {
 
       mockPrismaService.parkDate.findUnique.mockResolvedValue(existingDate);
 
-      await expect(service.create(createDto)).rejects.toThrow(BadRequestException);
-      await expect(service.create(createDto)).rejects.toThrow('Une date existe déjà');
+      await expect(service.create(createDto)).rejects.toThrow(
+        BadRequestException,
+      );
+      await expect(service.create(createDto)).rejects.toThrow(
+        'Une date existe déjà',
+      );
     });
 
     it('devrait lancer BadRequestException si jour manquant', async () => {
       const createDto = { is_open: true };
 
-      await expect(service.create(createDto as any)).rejects.toThrow(BadRequestException);
-      await expect(service.create(createDto as any)).rejects.toThrow('Le champ "jour" est obligatoire');
+      await expect(service.create(createDto as any)).rejects.toThrow(
+        BadRequestException,
+      );
+      await expect(service.create(createDto as any)).rejects.toThrow(
+        'Le champ "jour" est obligatoire',
+      );
     });
   });
 
@@ -217,7 +225,9 @@ describe('ParkDatesService', () => {
     it('devrait lancer NotFoundException si date non trouvée', async () => {
       mockPrismaService.parkDate.findUnique.mockResolvedValue(null);
 
-      await expect(service.update(999, { notes: 'Test' })).rejects.toThrow(NotFoundException);
+      await expect(service.update(999, { notes: 'Test' })).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('devrait lancer BadRequestException si nouvelle date existe déjà', async () => {
@@ -243,7 +253,9 @@ describe('ParkDatesService', () => {
         .mockResolvedValueOnce(existingDate)
         .mockResolvedValueOnce(conflictDate);
 
-      await expect(service.update(1, { jour: '2027-12-26' })).rejects.toThrow(BadRequestException);
+      await expect(service.update(1, { jour: '2027-12-26' })).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 

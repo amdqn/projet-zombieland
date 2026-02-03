@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { RolesGuard } from './roles.guard';
 import { Reflector } from '@nestjs/core';
 import { ExecutionContext } from '@nestjs/common';
-import { Role } from '@prisma/client';
 
 describe('RolesGuard', () => {
   let guard: RolesGuard;
@@ -69,7 +68,7 @@ describe('RolesGuard', () => {
       expect(result).toBe(true);
     });
 
-    it('devrait refuser si utilisateur n\'a pas le rôle requis', () => {
+    it("devrait refuser si utilisateur n'a pas le rôle requis", () => {
       jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue(['ADMIN']);
 
       const mockUser = { id: 3, email: 'user@test.com', role: 'USER' };

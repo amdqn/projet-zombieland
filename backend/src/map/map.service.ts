@@ -28,10 +28,7 @@ export class MapService {
       // Attractions avec leurs catégories
       this.prisma.attraction.findMany({
         where: {
-          AND: [
-            { latitude: { not: null } },
-            { longitude: { not: null } },
-          ],
+          AND: [{ latitude: { not: null } }, { longitude: { not: null } }],
         },
         include: {
           category: true,
@@ -43,10 +40,7 @@ export class MapService {
       // Activités avec leurs catégories
       this.prisma.activity.findMany({
         where: {
-          AND: [
-            { latitude: { not: null } },
-            { longitude: { not: null } },
-          ],
+          AND: [{ latitude: { not: null } }, { longitude: { not: null } }],
         },
         include: {
           category: true,
@@ -93,10 +87,7 @@ export class MapService {
   async getMapBounds() {
     const attractions = await this.prisma.attraction.findMany({
       where: {
-        AND: [
-          { latitude: { not: null } },
-          { longitude: { not: null } },
-        ],
+        AND: [{ latitude: { not: null } }, { longitude: { not: null } }],
       },
       select: {
         latitude: true,
@@ -106,10 +97,7 @@ export class MapService {
 
     const activities = await this.prisma.activity.findMany({
       where: {
-        AND: [
-          { latitude: { not: null } },
-          { longitude: { not: null } },
-        ],
+        AND: [{ latitude: { not: null } }, { longitude: { not: null } }],
       },
       select: {
         latitude: true,

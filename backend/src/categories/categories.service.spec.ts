@@ -1,7 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CategoriesService } from './categories.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
+import {
+  NotFoundException,
+  ConflictException,
+  BadRequestException,
+} from '@nestjs/common';
 
 describe('CategoriesService', () => {
   let service: CategoriesService;
@@ -87,7 +91,14 @@ describe('CategoriesService', () => {
         description_en: 'Thrilling attractions',
         created_at: new Date('2025-01-01'),
         updated_at: new Date('2025-01-01'),
-        attractions: [{ id: 1, name: 'Zombie Coaster', description: 'Montagnes russes', image_url: null }],
+        attractions: [
+          {
+            id: 1,
+            name: 'Zombie Coaster',
+            description: 'Montagnes russes',
+            image_url: null,
+          },
+        ],
         activities: [],
         _count: { attractions: 1, activities: 0 },
       };
@@ -148,14 +159,18 @@ describe('CategoriesService', () => {
 
       mockPrismaService.category.findUnique.mockResolvedValue(existingCategory);
 
-      await expect(service.create(createDto)).rejects.toThrow(ConflictException);
+      await expect(service.create(createDto)).rejects.toThrow(
+        ConflictException,
+      );
       expect(mockPrismaService.category.create).not.toHaveBeenCalled();
     });
 
     it('devrait lancer BadRequestException si champs requis manquants', async () => {
       const createDto = { name: 'Test' };
 
-      await expect(service.create(createDto as any)).rejects.toThrow(BadRequestException);
+      await expect(service.create(createDto as any)).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 
@@ -192,7 +207,9 @@ describe('CategoriesService', () => {
     it('devrait lancer NotFoundException si catégorie non trouvée', async () => {
       mockPrismaService.category.findUnique.mockResolvedValue(null);
 
-      await expect(service.update(999, { description: 'Test' })).rejects.toThrow(NotFoundException);
+      await expect(
+        service.update(999, { description: 'Test' }),
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('devrait lancer ConflictException si nouveau nom existe déjà', async () => {
@@ -212,7 +229,9 @@ describe('CategoriesService', () => {
         .mockResolvedValueOnce(existingCategory)
         .mockResolvedValueOnce(conflictCategory);
 
-      await expect(service.update(1, { name: 'Famille' })).rejects.toThrow(ConflictException);
+      await expect(service.update(1, { name: 'Famille' })).rejects.toThrow(
+        ConflictException,
+      );
     });
   });
 

@@ -66,7 +66,7 @@ describe('MapService', () => {
           id: 1,
           name: 'Escape Game',
           name_en: 'Escape Game',
-          description: 'Jeu d\'évasion',
+          description: "Jeu d'évasion",
           description_en: 'Escape game',
           latitude: 48.857,
           longitude: 2.353,
@@ -129,13 +129,9 @@ describe('MapService', () => {
         { latitude: 48.858, longitude: 2.354 },
       ];
 
-      const mockActivities = [
-        { latitude: 48.857, longitude: 2.353 },
-      ];
+      const mockActivities = [{ latitude: 48.857, longitude: 2.353 }];
 
-      const mockPois = [
-        { latitude: 48.855, longitude: 2.351 },
-      ];
+      const mockPois = [{ latitude: 48.855, longitude: 2.351 }];
 
       mockPrismaService.attraction.findMany.mockResolvedValue(mockAttractions);
       mockPrismaService.activity.findMany.mockResolvedValue(mockActivities);

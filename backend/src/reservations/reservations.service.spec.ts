@@ -13,7 +13,7 @@ import type {
 
 describe('ReservationsService', () => {
   let service: ReservationsService;
-  let prismaService: PrismaService;
+  let _prismaService: PrismaService;
 
   const mockPrismaService = {
     parkDate: {
@@ -44,7 +44,7 @@ describe('ReservationsService', () => {
     }).compile();
 
     service = module.get<ReservationsService>(ReservationsService);
-    prismaService = module.get<PrismaService>(PrismaService);
+    _prismaService = module.get<PrismaService>(PrismaService);
 
     jest.clearAllMocks();
   });

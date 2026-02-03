@@ -229,7 +229,7 @@ describe('ActivitiesService', () => {
         NotFoundException,
       );
       await expect(service.create(createDto)).rejects.toThrow(
-        'Catégorie avec l\'ID 999 non trouvée',
+        "Catégorie avec l'ID 999 non trouvée",
       );
     });
 
@@ -250,7 +250,7 @@ describe('ActivitiesService', () => {
         NotFoundException,
       );
       await expect(service.create(createDto)).rejects.toThrow(
-        'Attraction avec l\'ID 999 non trouvée',
+        "Attraction avec l'ID 999 non trouvée",
       );
     });
   });
@@ -318,9 +318,9 @@ describe('ActivitiesService', () => {
       mockPrismaService.activity.findUnique.mockResolvedValue(existingActivity);
       mockPrismaService.category.findUnique.mockResolvedValue(null);
 
-      await expect(
-        service.update(1, { category_id: 999 }),
-      ).rejects.toThrow(NotFoundException);
+      await expect(service.update(1, { category_id: 999 })).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 

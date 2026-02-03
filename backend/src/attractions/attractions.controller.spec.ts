@@ -61,10 +61,7 @@ describe('AttractionsController', () => {
 
       await controller.findAll('coaster');
 
-      expect(service.findAll).toHaveBeenCalledWith(
-        { search: 'coaster' },
-        'fr',
-      );
+      expect(service.findAll).toHaveBeenCalledWith({ search: 'coaster' }, 'fr');
     });
 
     it('devrait filtrer par categoryId', async () => {
@@ -72,10 +69,7 @@ describe('AttractionsController', () => {
 
       await controller.findAll(undefined, '1');
 
-      expect(service.findAll).toHaveBeenCalledWith(
-        { categoryId: 1 },
-        'fr',
-      );
+      expect(service.findAll).toHaveBeenCalledWith({ categoryId: 1 }, 'fr');
     });
 
     it('devrait utiliser la langue fournie', async () => {

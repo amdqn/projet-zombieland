@@ -1,6 +1,11 @@
-import {BadRequestException, ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
-import {ConversationStatus} from '../generated';
-import {PrismaService} from "../prisma/prisma.service";
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { ConversationStatus } from '../generated';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class ConversationService {
@@ -12,8 +17,8 @@ export class ConversationService {
   private async findAvailableAdmin(): Promise<number> {
     // Option 1 : Prendre le premier admin trouvé
     const admin = await this.prisma.user.findFirst({
-      where: {role: 'ADMIN'},
-      select: {id: true},
+      where: { role: 'ADMIN' },
+      select: { id: true },
     });
 
     if (!admin) {
@@ -31,35 +36,37 @@ export class ConversationService {
    */
   async create(userId: number, adminId: number | null, object: string) {
     // Si pas d'adminId fourni, trouver un admin automatiquement
-    const finalAdminId = adminId ?? await this.findAvailableAdmin();
+    const finalAdminId = adminId ?? (await this.findAvailableAdmin());
 
     // Vérifier que l'admin existe et est bien un ADMIN
     if (userId === adminId) {
       throw new BadRequestException(
-          'Vous ne pouvez pas créer une conversation avec vous-même. '
+        'Vous ne pouvez pas créer une conversation avec vous-même. ',
       );
     }
 
     const [user, admin] = await Promise.all([
-        this.prisma.user.findUnique({
-          where: { id: userId },
-          select: { id: true, role: true, pseudo: true },
-        }),
-        this.prisma.user.findUnique({
-          where: { id: finalAdminId },
-          select: { id: true, role: true, pseudo: true },
-        })
-    ])
+      this.prisma.user.findUnique({
+        where: { id: userId },
+        select: { id: true, role: true, pseudo: true },
+      }),
+      this.prisma.user.findUnique({
+        where: { id: finalAdminId },
+        select: { id: true, role: true, pseudo: true },
+      }),
+    ]);
 
     if (!admin) {
       throw new NotFoundException('Admin non trouvé');
     }
 
     if (admin.role !== 'ADMIN') {
-      throw new BadRequestException('Le destinataire doit être un administrateur');
+      throw new BadRequestException(
+        'Le destinataire doit être un administrateur',
+      );
     }
 
-    if (!user){
+    if (!user) {
       throw new NotFoundException('Utilisateur non trouvé');
     }
 
@@ -74,10 +81,10 @@ export class ConversationService {
       },
       include: {
         user: {
-          select: {id: true, pseudo: true, role: true, email: true},
+          select: { id: true, pseudo: true, role: true, email: true },
         },
         admin: {
-          select: {id: true, pseudo: true, role: true, email: true},
+          select: { id: true, pseudo: true, role: true, email: true },
         },
       },
     });
@@ -96,10 +103,10 @@ export class ConversationService {
       },
       include: {
         user: {
-          select: {id: true, pseudo: true, role: true, email: true},
+          select: { id: true, pseudo: true, role: true, email: true },
         },
         admin: {
-          select: {id: true, pseudo: true, role: true, email: true},
+          select: { id: true, pseudo: true, role: true, email: true },
         },
       },
     });
@@ -128,9 +135,9 @@ export class ConversationService {
                 pseudo: true,
                 role: true,
                 email: true,
-              }
-            }
-          }
+              },
+            },
+          },
         },
       },
     });
@@ -148,26 +155,24 @@ export class ConversationService {
    * @param userRole - Rôle de l'utilisateur
    */
   async findByUser(userId: number, userRole: string) {
-    const where = userRole === 'ADMIN'
+    const where =
+      userRole === 'ADMIN'
         ? {
-          OR: [
-            { admin_id: userId },
-            { status: ConversationStatus.Open },
-          ],
-        }
+            OR: [{ admin_id: userId }, { status: ConversationStatus.Open }],
+          }
         : { user_id: userId };
 
     return this.prisma.conversation.findMany({
       where,
       include: {
         user: {
-          select: {id: true, pseudo: true, role: true, email: true},
+          select: { id: true, pseudo: true, role: true, email: true },
         },
         admin: {
-          select: {id: true, pseudo: true, role: true, email: true},
+          select: { id: true, pseudo: true, role: true, email: true },
         },
         messages: {
-          orderBy: {created_at: 'asc'},
+          orderBy: { created_at: 'asc' },
           select: {
             id: true,
             content: true,
@@ -180,7 +185,7 @@ export class ConversationService {
                 role: true,
                 email: true,
               },
-            }
+            },
           },
         },
         _count: {
@@ -188,27 +193,27 @@ export class ConversationService {
             messages: {
               where: {
                 is_read: false,
-                sender_id: {not: userId}, // Messages non lus des autres
+                sender_id: { not: userId }, // Messages non lus des autres
               },
             },
           },
         },
       },
-      orderBy: {updated_at: 'desc'},
+      orderBy: { updated_at: 'desc' },
     });
   }
 
   /**
    * Vérifier si un utilisateur a accès à une conversation
    */
-  async userHasAccess(userId: number, conversationId: number): Promise<boolean> {
+  async userHasAccess(
+    userId: number,
+    conversationId: number,
+  ): Promise<boolean> {
     const conversation = await this.prisma.conversation.findFirst({
       where: {
         id: conversationId,
-        OR: [
-          { user_id: userId },
-          { admin_id: userId },
-        ],
+        OR: [{ user_id: userId }, { admin_id: userId }],
       },
     });
 
@@ -222,26 +227,28 @@ export class ConversationService {
    * @param adminId - ID de l'admin qui effectue l'action
    */
   async updateStatus(
-      conversationId: number,
-      status: ConversationStatus,
-      adminId: number,
+    conversationId: number,
+    status: ConversationStatus,
+    adminId: number,
   ) {
     const conversation = await this.findOne(conversationId);
 
     // Vérifier que l'admin a accès à cette conversation
     if (conversation.admin_id !== adminId) {
-      throw new ForbiddenException('Vous n\'avez pas accès à cette conversation');
+      throw new ForbiddenException(
+        "Vous n'avez pas accès à cette conversation",
+      );
     }
 
     return this.prisma.conversation.update({
-      where: {id: conversationId},
-      data: {status},
+      where: { id: conversationId },
+      data: { status },
       include: {
         user: {
-          select: {id: true, pseudo: true, role: true},
+          select: { id: true, pseudo: true, role: true },
         },
         admin: {
-          select: {id: true, pseudo: true, role: true},
+          select: { id: true, pseudo: true, role: true },
         },
       },
     });
@@ -257,4 +264,3 @@ export class ConversationService {
     });
   }
 }
-

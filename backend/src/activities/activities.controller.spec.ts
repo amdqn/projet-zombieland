@@ -61,10 +61,7 @@ describe('ActivitiesController', () => {
 
       await controller.findAll('zombie');
 
-      expect(service.findAll).toHaveBeenCalledWith(
-        { search: 'zombie' },
-        'fr',
-      );
+      expect(service.findAll).toHaveBeenCalledWith({ search: 'zombie' }, 'fr');
     });
 
     it('devrait filtrer par categoryId', async () => {
@@ -72,10 +69,7 @@ describe('ActivitiesController', () => {
 
       await controller.findAll(undefined, '1');
 
-      expect(service.findAll).toHaveBeenCalledWith(
-        { categoryId: 1 },
-        'fr',
-      );
+      expect(service.findAll).toHaveBeenCalledWith({ categoryId: 1 }, 'fr');
     });
 
     it('devrait filtrer par attractionId', async () => {
@@ -83,10 +77,7 @@ describe('ActivitiesController', () => {
 
       await controller.findAll(undefined, undefined, '2');
 
-      expect(service.findAll).toHaveBeenCalledWith(
-        { attractionId: 2 },
-        'fr',
-      );
+      expect(service.findAll).toHaveBeenCalledWith({ attractionId: 2 }, 'fr');
     });
 
     it('devrait utiliser la langue fournie', async () => {
@@ -100,7 +91,13 @@ describe('ActivitiesController', () => {
     it('devrait utiliser accept-language header', async () => {
       mockActivitiesService.findAll.mockResolvedValue([]);
 
-      await controller.findAll(undefined, undefined, undefined, undefined, 'en-US');
+      await controller.findAll(
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        'en-US',
+      );
 
       expect(service.findAll).toHaveBeenCalledWith({}, 'en');
     });

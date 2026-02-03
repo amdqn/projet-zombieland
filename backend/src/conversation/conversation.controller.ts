@@ -8,7 +8,8 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
-  ParseIntPipe, ForbiddenException,
+  ParseIntPipe,
+  ForbiddenException,
 } from '@nestjs/common';
 import { ConversationService } from './conversation.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -27,8 +28,8 @@ export class ConversationController {
   @HttpCode(HttpStatus.OK)
   async findMyConversations(@CurrentUser() user: any) {
     const conversations = await this.conversationService.findByUser(
-        user.id,
-        user.role,
+      user.id,
+      user.role,
     );
     return {
       success: true,
@@ -41,8 +42,8 @@ export class ConversationController {
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   async findOne(
-      @Param('id', ParseIntPipe) id: number,
-      @CurrentUser() user: any,
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() user: any,
   ) {
     const hasAccess = await this.conversationService.userHasAccess(user.id, id);
 
@@ -60,15 +61,19 @@ export class ConversationController {
   @Roles('ADMIN')
   @HttpCode(HttpStatus.OK)
   async updateStatus(
-      @Param('id', ParseIntPipe) id: number,
-      @Body() updateStatusDto: UpdateConversationStatusDto,
-      @CurrentUser() user: any,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateStatusDto: UpdateConversationStatusDto,
+    @CurrentUser() user: any,
   ) {
     const conversation = await this.conversationService.updateStatus(
-        id,
-        updateStatusDto.status,
-        user.id,
+      id,
+      updateStatusDto.status,
+      user.id,
     );
-    return { success: true, data: conversation, message: 'Mise à jour effectuée avec succès !' };
+    return {
+      success: true,
+      data: conversation,
+      message: 'Mise à jour effectuée avec succès !',
+    };
   }
 }

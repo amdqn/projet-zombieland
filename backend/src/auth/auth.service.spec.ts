@@ -11,7 +11,7 @@ jest.mock('bcrypt');
 
 describe('AuthService - Register', () => {
   let service: AuthService;
-  let prismaService: PrismaService;
+  let _prismaService: PrismaService;
 
   const mockPrismaService = {
     user: {
@@ -48,7 +48,7 @@ describe('AuthService - Register', () => {
     }).compile();
 
     service = module.get<AuthService>(AuthService);
-    prismaService = module.get<PrismaService>(PrismaService);
+    _prismaService = module.get<PrismaService>(PrismaService);
 
     // Reset all mocks before each test
     jest.clearAllMocks();

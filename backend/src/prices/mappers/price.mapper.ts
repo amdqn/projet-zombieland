@@ -3,16 +3,16 @@ import { PriceDto } from '../../generated/model/priceDto';
 
 /**
  * Mapper Price : Entité Prisma → DTO OpenAPI
- * 
+ *
  * Transforme les entités Price de Prisma en DTOs sécurisés
  * pour l'exposition via l'API.
- * 
+ *
  * ⚠️ Gère la conversion Decimal → number pour le montant
  */
 export class PriceMapper {
   /**
    * Transforme un Price Prisma en DTO
-   * 
+   *
    * @param price - Entité Price de Prisma
    * @returns PriceDto pour l'API
    */
@@ -31,7 +31,7 @@ export class PriceMapper {
 
   /**
    * Transforme une liste de tarifs
-   * 
+   *
    * @param prices - Tableau d'entités Price
    * @returns Tableau de PriceDto
    */

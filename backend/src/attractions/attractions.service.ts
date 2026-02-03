@@ -7,7 +7,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import type { CreateAttractionDto, UpdateAttractionDto } from 'src/generated';
 import {
   transformTranslatableFields,
-  transformTranslatableArray,
+  transformTranslatableArray as _transformTranslatableArray,
   type Language,
 } from '../common/translations.util';
 import { AttractionMapper } from './mappers/attraction.mapper';
@@ -163,17 +163,31 @@ export class AttractionsService {
         updated_at: rel.related_attraction.updated_at.toISOString(),
         category: {
           ...transformTranslatableFields(rel.related_attraction.category, lang),
-          created_at:
-            rel.related_attraction.category.created_at.toISOString(),
-          updated_at:
-            rel.related_attraction.category.updated_at.toISOString(),
+          created_at: rel.related_attraction.category.created_at.toISOString(),
+          updated_at: rel.related_attraction.category.updated_at.toISOString(),
         },
       })),
     };
   }
 
-  async create(createAttractionDto: CreateAttractionDto & { is_published?: boolean; related_attraction_ids?: number[] }) {
-    const { name, description, name_en, description_en, category_id, image_url, thrill_level, duration, is_published, related_attraction_ids } = createAttractionDto as any;
+  async create(
+    createAttractionDto: CreateAttractionDto & {
+      is_published?: boolean;
+      related_attraction_ids?: number[];
+    },
+  ) {
+    const {
+      name,
+      description,
+      name_en,
+      description_en,
+      category_id,
+      image_url,
+      thrill_level,
+      duration,
+      is_published,
+      related_attraction_ids,
+    } = createAttractionDto as any;
 
     // Validation des champs requis
     if (!name || !description || !category_id) {
@@ -206,7 +220,7 @@ export class AttractionsService {
 
     if (related_attraction_ids && related_attraction_ids.length > 0) {
       attractionData.relatedFrom = {
-        create: related_attraction_ids.map(relatedId => ({
+        create: related_attraction_ids.map((relatedId) => ({
           related_attraction_id: relatedId,
         })),
       };
@@ -251,27 +265,35 @@ export class AttractionsService {
         created_at: activity.created_at.toISOString(),
         updated_at: activity.updated_at.toISOString(),
       })),
-      related_attractions: (createdAttraction.relatedFrom || []).map((rel: any) => ({
-        ...transformTranslatableFields(rel.related_attraction, 'fr'),
-        created_at: rel.related_attraction.created_at.toISOString(),
-        updated_at: rel.related_attraction.updated_at.toISOString(),
-        category: rel.related_attraction.category
-          ? {
-              ...transformTranslatableFields(
-                rel.related_attraction.category,
-                'fr',
-              ),
-              created_at:
-                rel.related_attraction.category.created_at.toISOString(),
-              updated_at:
-                rel.related_attraction.category.updated_at.toISOString(),
-            }
-          : undefined,
-      })),
+      related_attractions: (createdAttraction.relatedFrom || []).map(
+        (rel: any) => ({
+          ...transformTranslatableFields(rel.related_attraction, 'fr'),
+          created_at: rel.related_attraction.created_at.toISOString(),
+          updated_at: rel.related_attraction.updated_at.toISOString(),
+          category: rel.related_attraction.category
+            ? {
+                ...transformTranslatableFields(
+                  rel.related_attraction.category,
+                  'fr',
+                ),
+                created_at:
+                  rel.related_attraction.category.created_at.toISOString(),
+                updated_at:
+                  rel.related_attraction.category.updated_at.toISOString(),
+              }
+            : undefined,
+        }),
+      ),
     };
   }
 
-  async update(id: number, updateAttractionDto: UpdateAttractionDto & { is_published?: boolean; related_attraction_ids?: number[] }) {
+  async update(
+    id: number,
+    updateAttractionDto: UpdateAttractionDto & {
+      is_published?: boolean;
+      related_attraction_ids?: number[];
+    },
+  ) {
     if (!id || id <= 0) {
       throw new BadRequestException('ID invalide');
     }
@@ -284,7 +306,16 @@ export class AttractionsService {
       throw new NotFoundException(`Attraction avec l'ID ${id} non trouvée`);
     }
 
-    const { name, description, category_id, image_url, thrill_level, duration, is_published, related_attraction_ids } = updateAttractionDto;
+    const {
+      name,
+      description,
+      category_id,
+      image_url,
+      thrill_level,
+      duration,
+      is_published,
+      related_attraction_ids,
+    } = updateAttractionDto;
 
     // Si category_id fourni, vérifier qu'elle existe
     if (category_id) {
@@ -319,7 +350,7 @@ export class AttractionsService {
       // Créer les nouvelles relations
       if (related_attraction_ids.length > 0) {
         dataToUpdate.relatedFrom = {
-          create: related_attraction_ids.map(relatedId => ({
+          create: related_attraction_ids.map((relatedId) => ({
             related_attraction_id: relatedId,
           })),
         };

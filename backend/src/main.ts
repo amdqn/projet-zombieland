@@ -13,19 +13,21 @@ async function bootstrap() {
 
   // 🛡️ HELMET - Sécurise les headers HTTP
   // Protection contre XSS, clickjacking, MIME sniffing, etc.
-  app.use(helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'"], // Nécessaire pour Swagger UI
-        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"], // Nécessaire pour Swagger UI
-        imgSrc: ["'self'", "data:", "https:"],
-        fontSrc: ["'self'", "data:"],
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          styleSrc: ["'self'", "'unsafe-inline'"], // Nécessaire pour Swagger UI
+          scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"], // Nécessaire pour Swagger UI
+          imgSrc: ["'self'", 'data:', 'https:'],
+          fontSrc: ["'self'", 'data:'],
+        },
       },
-    },
-    crossOriginEmbedderPolicy: false, // Désactivé pour Swagger UI
-    crossOriginResourcePolicy: { policy: "cross-origin" }, // Pour les ressources statiques
-  }));
+      crossOriginEmbedderPolicy: false, // Désactivé pour Swagger UI
+      crossOriginResourcePolicy: { policy: 'cross-origin' }, // Pour les ressources statiques
+    }),
+  );
 
   // Enable CORS
   app.enableCors(corsConfig);

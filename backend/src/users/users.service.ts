@@ -76,7 +76,16 @@ export class UsersService {
     return UserMapper.toDto(user);
   }
 
-  async update(id: number, updateData: { pseudo?: string; email?: string; role?: 'ADMIN' | 'CLIENT'; is_active?: boolean }, modifiedById: number) {
+  async update(
+    id: number,
+    updateData: {
+      pseudo?: string;
+      email?: string;
+      role?: 'ADMIN' | 'CLIENT';
+      is_active?: boolean;
+    },
+    modifiedById: number,
+  ) {
     const user = await this.prisma.user.findUnique({
       where: { id },
     });
@@ -92,7 +101,9 @@ export class UsersService {
       });
 
       if (existingUser && existingUser.id !== id) {
-        throw new BadRequestException('Cet email est déjà utilisé par un autre utilisateur');
+        throw new BadRequestException(
+          'Cet email est déjà utilisé par un autre utilisateur',
+        );
       }
     }
 
@@ -103,7 +114,9 @@ export class UsersService {
       });
 
       if (existingUser && existingUser.id !== id) {
-        throw new BadRequestException('Ce pseudo est déjà utilisé par un autre utilisateur');
+        throw new BadRequestException(
+          'Ce pseudo est déjà utilisé par un autre utilisateur',
+        );
       }
     }
 
@@ -115,7 +128,7 @@ export class UsersService {
       old_value: string;
       new_value: string;
     }> = [];
-    
+
     if (updateData.pseudo && updateData.pseudo !== user.pseudo) {
       auditLogs.push({
         modified_by_id: modifiedById,
@@ -146,7 +159,10 @@ export class UsersService {
       });
     }
 
-    if (updateData.is_active !== undefined && updateData.is_active !== user.is_active) {
+    if (
+      updateData.is_active !== undefined &&
+      updateData.is_active !== user.is_active
+    ) {
       auditLogs.push({
         modified_by_id: modifiedById,
         action: updateData.is_active ? 'ACTIVATE' : 'DEACTIVATE',
@@ -169,7 +185,7 @@ export class UsersService {
     // Sauvegarder les logs d'audit si des changements ont été détectés
     if (auditLogs.length > 0) {
       await this.prisma.userAuditLog.createMany({
-        data: auditLogs.map(log => ({
+        data: auditLogs.map((log) => ({
           ...log,
           user_id: id,
         })),

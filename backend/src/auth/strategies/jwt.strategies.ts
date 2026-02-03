@@ -34,7 +34,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     // Vérifier si le compte est actif
     if ((user as any).is_active === false) {
-      throw new UnauthorizedException('Il semble y avoir un problème. Veuillez contacter l\'administrateur.');
+      throw new UnauthorizedException(
+        "Il semble y avoir un problème. Veuillez contacter l'administrateur.",
+      );
     }
 
     // Retourner user sans password (sera dans request.user)

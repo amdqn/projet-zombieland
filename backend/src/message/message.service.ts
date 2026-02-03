@@ -12,8 +12,8 @@ import { CreateMessageDto } from '../generated';
 @Injectable()
 export class MessageService {
   constructor(
-      private prisma: PrismaService,
-      private conversationService: ConversationService, // Injection du service conversation
+    private prisma: PrismaService,
+    private conversationService: ConversationService, // Injection du service conversation
   ) {}
 
   /**
@@ -31,17 +31,22 @@ export class MessageService {
     // CAS 1 : Conversation existante
     if (conversation_id) {
       const hasAccess = await this.conversationService.userHasAccess(
-          userId,
-          conversation_id,
+        userId,
+        conversation_id,
       );
 
       if (!hasAccess) {
-        throw new ForbiddenException('Vous ne faites pas partie de cette conversation');
+        throw new ForbiddenException(
+          'Vous ne faites pas partie de cette conversation',
+        );
       }
 
-      const openConversation = await this.conversationService.findOne(conversation_id);
-      if(openConversation.status !== 'OPEN'){
-        throw new ForbiddenException('Vous ne pouvez pas créer de nouveau message sur une conversation clôturée.');
+      const openConversation =
+        await this.conversationService.findOne(conversation_id);
+      if (openConversation.status !== 'OPEN') {
+        throw new ForbiddenException(
+          'Vous ne pouvez pas créer de nouveau message sur une conversation clôturée.',
+        );
       }
 
       finalConversationId = conversation_id;
@@ -49,15 +54,17 @@ export class MessageService {
     // CAS 2 : Nouvelle conversation (avec ou sans recipientId)
     else {
       if (!object || object.trim().length === 0) {
-        throw new BadRequestException('L\'objet de la conversation est requis pour créer une nouvelle conversation');
+        throw new BadRequestException(
+          "L'objet de la conversation est requis pour créer une nouvelle conversation",
+        );
       }
 
       // Créer ou récupérer la conversation
       // Si recipientId est null/undefined, un admin sera assigné automatiquement
       const conversation = await this.conversationService.create(
-          userId,
-          recipient_id ?? null, // null si non fourni = auto-assignation
-          object
+        userId,
+        recipient_id ?? null, // null si non fourni = auto-assignation
+        object,
       );
       finalConversationId = conversation.id;
     }
@@ -95,8 +102,8 @@ export class MessageService {
               select: {
                 id: true,
                 pseudo: true,
-              }
-            }
+              },
+            },
           },
         },
       },
@@ -114,17 +121,19 @@ export class MessageService {
   async findAllByConversationId(conversationId: number, userId: number) {
     // Vérifie l'accès
     const hasAccess = await this.conversationService.userHasAccess(
-        userId,
-        conversationId,
-    )
+      userId,
+      conversationId,
+    );
 
     if (!hasAccess) {
-      throw new ForbiddenException('Vous ne faites pas partie de cette conversation');
+      throw new ForbiddenException(
+        'Vous ne faites pas partie de cette conversation',
+      );
     }
 
     return this.prisma.message.findMany({
-      where: {conversation_id : conversationId},
-      orderBy: {created_at: 'asc'},
+      where: { conversation_id: conversationId },
+      orderBy: { created_at: 'asc' },
       include: {
         sender: {
           select: {
@@ -154,8 +163,8 @@ export class MessageService {
 
     // Vérifier que l'utilisateur est participant de la conversation
     const isParticipant =
-        message.conversation.user_id === userId ||
-        message.conversation.admin_id === userId;
+      message.conversation.user_id === userId ||
+      message.conversation.admin_id === userId;
 
     if (!isParticipant) {
       throw new ForbiddenException('Accès refusé à cette conversation');
@@ -163,7 +172,9 @@ export class MessageService {
 
     // Vérifier que l'utilisateur n'est PAS l'expéditeur
     if (message.sender_id === userId) {
-      throw new BadRequestException('Vous ne pouvez pas marquer vos propres messages comme lus');
+      throw new BadRequestException(
+        'Vous ne pouvez pas marquer vos propres messages comme lus',
+      );
     }
 
     // Marquer le message comme lu
@@ -178,23 +189,27 @@ export class MessageService {
    */
   async archive(id: number, userId: number) {
     const message = await this.prisma.message.findUnique({
-      where: {id},
+      where: { id },
       include: {
         conversation: true,
         sender: true,
-      }
+      },
     });
 
     if (!message) {
       throw new NotFoundException(`Message ${id} introuvable`);
     }
 
-    if(message.sender_id !== userId){
-      throw new ForbiddenException('Vous ne pouvez supprimer que vos propres messages');
+    if (message.sender_id !== userId) {
+      throw new ForbiddenException(
+        'Vous ne pouvez supprimer que vos propres messages',
+      );
     }
 
     if (message.conversation.status !== 'OPEN') {
-      throw new BadRequestException('Impossible de supprimer un message d\'une conversation clôturée');
+      throw new BadRequestException(
+        "Impossible de supprimer un message d'une conversation clôturée",
+      );
     }
 
     if (message.is_deleted) {

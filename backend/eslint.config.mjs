@@ -41,4 +41,11 @@ export default tseslint.config(
       }],
     },
   },
+  {
+    // Règles spécifiques pour les fichiers de tests
+    files: ['**/*.spec.ts', '**/*.e2e-spec.ts'],
+    rules: {
+      '@typescript-eslint/unbound-method': 'off',
+    },
+  },
 );

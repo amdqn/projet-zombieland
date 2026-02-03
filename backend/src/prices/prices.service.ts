@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import type { CreatePriceDto, UpdatePriceDto } from 'src/generated';
-import {Prisma, PriceType} from "@prisma/client";
+import { Prisma, PriceType } from '@prisma/client';
 import {
   transformTranslatableFields,
   type Language,
@@ -24,16 +24,15 @@ export class PricesService {
   }
 
   async findAll(
-      options?: {
-        page?: number;
-        limit?: number;
-        sortBy?: string;
-        amount?: number;
-        priceType?: string;
-      },
-      lang: Language = 'fr',
+    options?: {
+      page?: number;
+      limit?: number;
+      sortBy?: string;
+      amount?: number;
+      priceType?: string;
+    },
+    lang: Language = 'fr',
   ) {
-
     const page = options?.page || 1;
     const limit = options?.limit || 10;
     const skip = (page - 1) * limit;
@@ -53,14 +52,15 @@ export class PricesService {
     }
 
     // Mapping du tri
-    const orderByMapping: Record<string, Prisma.PriceOrderByWithRelationInput> = {
-      'created_desc': { created_at: 'desc' },
-      'created_asc': { created_at: 'asc' },
-      'amount_desc': { amount: 'desc' },
-      'amount_asc': { amount: 'asc' },
-      'updated_desc': { updated_at: 'desc' },
-      'updated_asc': { updated_at: 'asc' },
-    };
+    const orderByMapping: Record<string, Prisma.PriceOrderByWithRelationInput> =
+      {
+        created_desc: { created_at: 'desc' },
+        created_asc: { created_at: 'asc' },
+        amount_desc: { amount: 'desc' },
+        amount_asc: { amount: 'asc' },
+        updated_desc: { updated_at: 'desc' },
+        updated_asc: { updated_at: 'asc' },
+      };
 
     const sortBy = options?.sortBy || 'created_desc';
     const orderBy = orderByMapping[sortBy] || orderByMapping['created_desc'];
@@ -102,7 +102,8 @@ export class PricesService {
   }
 
   async create(createPriceDto: CreatePriceDto) {
-    const { label, label_en, type, amount, duration_days } = createPriceDto as any;
+    const { label, label_en, type, amount, duration_days } =
+      createPriceDto as any;
 
     if (!label || !type || !amount || !duration_days) {
       throw new BadRequestException('Tous les champs sont requis');
@@ -154,9 +155,7 @@ export class PricesService {
       data: updatePriceDto,
     });
 
-    return PriceMapper.toDto(
-      transformTranslatableFields(updatedPrice, 'fr'),
-    );
+    return PriceMapper.toDto(transformTranslatableFields(updatedPrice, 'fr'));
   }
 
   async remove(id: number) {

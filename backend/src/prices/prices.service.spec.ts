@@ -143,8 +143,12 @@ describe('PricesService', () => {
         duration_days: 1,
       };
 
-      await expect(service.create(createDto)).rejects.toThrow(BadRequestException);
-      await expect(service.create(createDto)).rejects.toThrow('Le montant doit être supérieur à 0');
+      await expect(service.create(createDto)).rejects.toThrow(
+        BadRequestException,
+      );
+      await expect(service.create(createDto)).rejects.toThrow(
+        'Le montant doit être supérieur à 0',
+      );
     });
 
     it('devrait lancer BadRequestException si duration_days < 1', async () => {
@@ -156,8 +160,12 @@ describe('PricesService', () => {
         duration_days: -1,
       };
 
-      await expect(service.create(createDto)).rejects.toThrow(BadRequestException);
-      await expect(service.create(createDto)).rejects.toThrow('La durée doit être au moins 1 jour');
+      await expect(service.create(createDto)).rejects.toThrow(
+        BadRequestException,
+      );
+      await expect(service.create(createDto)).rejects.toThrow(
+        'La durée doit être au moins 1 jour',
+      );
     });
   });
 
@@ -196,7 +204,9 @@ describe('PricesService', () => {
     it('devrait lancer NotFoundException si tarif non trouvé', async () => {
       mockPrismaService.price.findUnique.mockResolvedValue(null);
 
-      await expect(service.update(999, { amount: 60 })).rejects.toThrow(NotFoundException);
+      await expect(service.update(999, { amount: 60 })).rejects.toThrow(
+        NotFoundException,
+      );
       expect(mockPrismaService.price.update).not.toHaveBeenCalled();
     });
 
@@ -211,7 +221,9 @@ describe('PricesService', () => {
 
       mockPrismaService.price.findUnique.mockResolvedValue(existingPrice);
 
-      await expect(service.update(1, { amount: -5 })).rejects.toThrow(BadRequestException);
+      await expect(service.update(1, { amount: -5 })).rejects.toThrow(
+        BadRequestException,
+      );
       expect(mockPrismaService.price.update).not.toHaveBeenCalled();
     });
   });
@@ -236,7 +248,9 @@ describe('PricesService', () => {
 
       expect(result.message).toContain('Adulte');
       expect(result.message).toContain('supprimé avec succès');
-      expect(mockPrismaService.price.delete).toHaveBeenCalledWith({ where: { id: 1 } });
+      expect(mockPrismaService.price.delete).toHaveBeenCalledWith({
+        where: { id: 1 },
+      });
     });
 
     it('devrait lancer NotFoundException si tarif non trouvé', async () => {

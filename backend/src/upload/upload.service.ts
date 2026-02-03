@@ -13,21 +13,30 @@ export class UploadService {
     }
   }
 
-  async uploadActivityImage(file: Express.Multer.File): Promise<{ url: string }> {
+  async uploadActivityImage(
+    file: Express.Multer.File,
+  ): Promise<{ url: string }> {
     if (!file) {
       throw new BadRequestException('Aucun fichier fourni');
     }
 
     // Validation du type de fichier
-    const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    const allowedMimeTypes = [
+      'image/jpeg',
+      'image/jpg',
+      'image/png',
+      'image/webp',
+    ];
     if (!allowedMimeTypes.includes(file.mimetype)) {
-      throw new BadRequestException('Type de fichier non autorisé. Utilisez JPG, PNG ou WebP');
+      throw new BadRequestException(
+        'Type de fichier non autorisé. Utilisez JPG, PNG ou WebP',
+      );
     }
 
     // Validation de la taille (5MB max)
     const maxSize = 5 * 1024 * 1024; // 5MB
     if (file.size > maxSize) {
-      throw new BadRequestException('L\'image ne doit pas dépasser 5MB');
+      throw new BadRequestException("L'image ne doit pas dépasser 5MB");
     }
 
     // Génération du nom de fichier avec timestamp

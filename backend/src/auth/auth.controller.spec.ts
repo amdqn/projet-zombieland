@@ -89,7 +89,9 @@ describe('AuthController', () => {
       const mockToken = 'jwt-token-123';
 
       mockAuthService.validateUser.mockResolvedValue(mockUser);
-      mockAuthService.generateJwt.mockResolvedValue({ access_token: mockToken });
+      mockAuthService.generateJwt.mockResolvedValue({
+        access_token: mockToken,
+      });
 
       const result = await controller.login(loginDto as any);
 
@@ -118,7 +120,9 @@ describe('AuthController', () => {
       const mockToken = 'admin-jwt-token';
 
       mockAuthService.validateUser.mockResolvedValue(mockAdmin);
-      mockAuthService.generateJwt.mockResolvedValue({ access_token: mockToken });
+      mockAuthService.generateJwt.mockResolvedValue({
+        access_token: mockToken,
+      });
 
       const result = await controller.login(loginDto as any);
 
@@ -130,7 +134,7 @@ describe('AuthController', () => {
   });
 
   describe('getProfile', () => {
-    it('devrait retourner le profil de l\'utilisateur connecté', async () => {
+    it("devrait retourner le profil de l'utilisateur connecté", async () => {
       const mockUser = {
         id: 1,
         email: 'test@example.com',
@@ -143,7 +147,7 @@ describe('AuthController', () => {
       expect(result).toEqual(mockUser);
     });
 
-    it('devrait retourner le profil d\'un ADMIN', async () => {
+    it("devrait retourner le profil d'un ADMIN", async () => {
       const mockAdmin = {
         id: 2,
         email: 'admin@example.com',
@@ -158,14 +162,17 @@ describe('AuthController', () => {
   });
 
   describe('updateProfile', () => {
-    it('devrait mettre à jour le profil de l\'utilisateur', async () => {
+    it("devrait mettre à jour le profil de l'utilisateur", async () => {
       const mockUser = { id: 1, email: 'test@example.com', pseudo: 'testuser' };
       const updateDto = { pseudo: 'newtestuser', first_name: 'John' };
       const mockUpdated = { ...mockUser, ...updateDto };
 
       mockAuthService.updateProfile.mockResolvedValue(mockUpdated);
 
-      const result = await controller.updateProfile(mockUser as any, updateDto as any);
+      const result = await controller.updateProfile(
+        mockUser as any,
+        updateDto as any,
+      );
 
       expect(result).toEqual(mockUpdated);
       expect(service.updateProfile).toHaveBeenCalledWith(1, updateDto);
@@ -178,7 +185,10 @@ describe('AuthController', () => {
 
       mockAuthService.updateProfile.mockResolvedValue(mockUpdated);
 
-      const result = await controller.updateProfile(mockUser as any, updateDto as any);
+      const result = await controller.updateProfile(
+        mockUser as any,
+        updateDto as any,
+      );
 
       expect(result).toEqual(mockUpdated);
       expect(service.updateProfile).toHaveBeenCalledWith(1, updateDto);
@@ -195,14 +205,17 @@ describe('AuthController', () => {
 
       mockAuthService.updateProfile.mockResolvedValue(mockUpdated);
 
-      const result = await controller.updateProfile(mockUser as any, updateDto as any);
+      const result = await controller.updateProfile(
+        mockUser as any,
+        updateDto as any,
+      );
 
       expect(result).toEqual(mockUpdated);
     });
   });
 
   describe('deleteAccount', () => {
-    it('devrait supprimer le compte de l\'utilisateur', async () => {
+    it("devrait supprimer le compte de l'utilisateur", async () => {
       const mockUser = { id: 1, email: 'test@example.com', pseudo: 'testuser' };
       const mockResponse = { message: 'Compte supprimé avec succès' };
 

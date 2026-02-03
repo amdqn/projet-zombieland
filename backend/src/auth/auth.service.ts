@@ -140,7 +140,9 @@ export class AuthService {
 
     // Vérifier si le compte est actif
     if ((user as any).is_active === false) {
-      throw new UnauthorizedException('Il semble y avoir un problème. Veuillez contacter l\'administrateur.');
+      throw new UnauthorizedException(
+        "Il semble y avoir un problème. Veuillez contacter l'administrateur.",
+      );
     }
 
     // Retourner user SANS le password via le mapper
@@ -235,7 +237,9 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new NotFoundException(`Utilisateur avec l'ID ${userId} introuvable`);
+      throw new NotFoundException(
+        `Utilisateur avec l'ID ${userId} introuvable`,
+      );
     }
 
     // Vérifier s'il y a des réservations

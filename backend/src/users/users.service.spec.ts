@@ -6,7 +6,7 @@ import { Role } from '@prisma/client';
 
 describe('UsersService', () => {
   let service: UsersService;
-  let prismaService: PrismaService;
+  let _prismaService: PrismaService;
 
   const mockPrismaService = {
     user: {
@@ -37,7 +37,7 @@ describe('UsersService', () => {
     }).compile();
 
     service = module.get<UsersService>(UsersService);
-    prismaService = module.get<PrismaService>(PrismaService);
+    _prismaService = module.get<PrismaService>(PrismaService);
 
     // Reset all mocks before each test
     jest.clearAllMocks();
@@ -450,11 +450,20 @@ describe('UsersService', () => {
         _count: { reservations: 0 },
       };
 
-      mockPrismaService.user.findUnique.mockResolvedValueOnce(existingUser).mockResolvedValueOnce(null).mockResolvedValueOnce(null);
+      mockPrismaService.user.findUnique
+        .mockResolvedValueOnce(existingUser)
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(null);
       mockPrismaService.user.update.mockResolvedValueOnce(updatedUser);
-      mockPrismaService.userAuditLog.createMany.mockResolvedValueOnce({ count: 3 });
+      mockPrismaService.userAuditLog.createMany.mockResolvedValueOnce({
+        count: 3,
+      });
 
-      const result = await service.update(1, { pseudo: 'NewPseudo', email: 'new@test.com', role: 'ADMIN' }, 2);
+      const result = await service.update(
+        1,
+        { pseudo: 'NewPseudo', email: 'new@test.com', role: 'ADMIN' },
+        2,
+      );
 
       expect(result.pseudo).toBe('NewPseudo');
       expect(result.email).toBe('new@test.com');
@@ -471,10 +480,12 @@ describe('UsersService', () => {
     it('devrait lancer NotFoundException si utilisateur non trouvé', async () => {
       mockPrismaService.user.findUnique.mockResolvedValue(null);
 
-      await expect(service.update(999, { pseudo: 'NewPseudo' }, 2)).rejects.toThrow(NotFoundException);
-      await expect(service.update(999, { pseudo: 'NewPseudo' }, 2)).rejects.toThrow(
-        "Utilisateur avec l'ID 999 introuvable",
-      );
+      await expect(
+        service.update(999, { pseudo: 'NewPseudo' }, 2),
+      ).rejects.toThrow(NotFoundException);
+      await expect(
+        service.update(999, { pseudo: 'NewPseudo' }, 2),
+      ).rejects.toThrow("Utilisateur avec l'ID 999 introuvable");
       expect(mockPrismaService.user.update).not.toHaveBeenCalled();
     });
 
@@ -506,9 +517,9 @@ describe('UsersService', () => {
         .mockResolvedValueOnce(existingUser)
         .mockResolvedValueOnce(conflictUser);
 
-      await expect(service.update(1, { email: 'user2@test.com' }, 2)).rejects.toThrow(
-        'Cet email est déjà utilisé par un autre utilisateur',
-      );
+      await expect(
+        service.update(1, { email: 'user2@test.com' }, 2),
+      ).rejects.toThrow('Cet email est déjà utilisé par un autre utilisateur');
       expect(mockPrismaService.user.update).not.toHaveBeenCalled();
     });
 
@@ -546,7 +557,7 @@ describe('UsersService', () => {
       expect(mockPrismaService.user.update).not.toHaveBeenCalled();
     });
 
-    it('ne devrait pas créer d\'audit log si aucun changement', async () => {
+    it("ne devrait pas créer d'audit log si aucun changement", async () => {
       const existingUser = {
         id: 1,
         email: 'user@test.com',
@@ -571,7 +582,7 @@ describe('UsersService', () => {
   });
 
   describe('getUserAuditLogs', () => {
-    it('devrait retourner les logs d\'audit d\'un utilisateur', async () => {
+    it("devrait retourner les logs d'audit d'un utilisateur", async () => {
       const mockUser = {
         id: 1,
         email: 'user@test.com',
@@ -644,7 +655,9 @@ describe('UsersService', () => {
     it('devrait lancer NotFoundException si utilisateur non trouvé', async () => {
       mockPrismaService.user.findUnique.mockResolvedValue(null);
 
-      await expect(service.getUserAuditLogs(999)).rejects.toThrow(NotFoundException);
+      await expect(service.getUserAuditLogs(999)).rejects.toThrow(
+        NotFoundException,
+      );
       await expect(service.getUserAuditLogs(999)).rejects.toThrow(
         "Utilisateur avec l'ID 999 introuvable",
       );

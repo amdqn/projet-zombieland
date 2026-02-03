@@ -106,7 +106,7 @@ describe('UploadService', () => {
         BadRequestException,
       );
       await expect(service.uploadActivityImage(mockFile)).rejects.toThrow(
-        'L\'image ne doit pas dépasser 5MB',
+        "L'image ne doit pas dépasser 5MB",
       );
     });
 
@@ -121,14 +121,16 @@ describe('UploadService', () => {
       const result = await service.uploadActivityImage(mockFile);
 
       // Le nom devrait être normalisé : minuscules, tirets, pas de caractères spéciaux
-      expect(result.url).toMatch(/^\/activities-images\/test-image-with-spaces-special-chars-\d+\.jpg$/);
+      expect(result.url).toMatch(
+        /^\/activities-images\/test-image-with-spaces-special-chars-\d+\.jpg$/,
+      );
     });
 
     it('devrait créer le dossier si inexistant', () => {
       (fs.existsSync as jest.Mock).mockReturnValue(false);
 
       // Recréer le service pour déclencher le constructor
-      const service2 = new UploadService();
+      const _service2 = new UploadService();
 
       expect(fs.mkdirSync).toHaveBeenCalledWith('./public/activities-images', {
         recursive: true,

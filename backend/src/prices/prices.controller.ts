@@ -7,7 +7,8 @@ import {
   Param,
   Delete,
   ParseIntPipe,
-  UseGuards, Query,
+  UseGuards,
+  Query,
   Headers,
 } from '@nestjs/common';
 import { PricesService } from './prices.service';
@@ -23,13 +24,13 @@ export class PricesController {
 
   @Get()
   findAll(
-      @Query('priceType') priceType?: string,
-      @Query('page') page?: string,
-      @Query('limit') limit?: string,
-      @Query('sortBy') sortBy?: string,
-      @Query('amount') amount?: string,
-      @Query('lang') lang?: string,
-      @Headers('accept-language') acceptLanguage?: string,
+    @Query('priceType') priceType?: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('sortBy') sortBy?: string,
+    @Query('amount') amount?: string,
+    @Query('lang') lang?: string,
+    @Headers('accept-language') acceptLanguage?: string,
   ) {
     const filters: any = {};
     const language = getLanguageFromRequest(acceptLanguage, lang);

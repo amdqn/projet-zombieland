@@ -42,6 +42,7 @@ export const SelectorQuantity = ({
         }}
       >
         <IconButton
+          aria-label="Diminuer la quantité"
           onClick={handleDecrement}
           disabled={value <= min}
           sx={{
@@ -79,6 +80,7 @@ export const SelectorQuantity = ({
         </Typography>
 
         <IconButton
+          aria-label="Augmenter la quantité"
           onClick={handleIncrement}
           disabled={value >= max}
           sx={{
@@ -116,6 +118,7 @@ export const SelectorQuantity = ({
       }}
     >
       <IconButton
+        aria-label="Diminuer la quantité"
         onClick={handleDecrement}
         disabled={value <= min}
         sx={{
@@ -149,6 +152,7 @@ export const SelectorQuantity = ({
       </Typography>
 
       <IconButton
+        aria-label="Augmenter la quantité"
         onClick={handleIncrement}
         disabled={value >= max}
         sx={{

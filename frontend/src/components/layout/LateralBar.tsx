@@ -95,22 +95,23 @@ export default function LateralBar() {
 
             {/* Icones des réseaux sociaux */}
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 2}}>
-                <IconButton sx={{ color: 'white' }} onClick={() => window.open('https://youtube.com/', '_blank', 'noopener,noreferrer')}>
+                <IconButton aria-label="YouTube" sx={{ color: 'white' }} onClick={() => window.open('https://youtube.com/', '_blank', 'noopener,noreferrer')}>
                     <YouTubeIcon />
                 </IconButton>
-                <IconButton sx={{ color: 'white' }} onClick={() => window.open('https://facebook.com/', '_blank', 'noopener,noreferrer')}>
+                <IconButton aria-label="Facebook" sx={{ color: 'white' }} onClick={() => window.open('https://facebook.com/', '_blank', 'noopener,noreferrer')}>
                     <FacebookIcon />
                 </IconButton>
-                <IconButton sx={{ color: 'white' }} onClick={() => window.open('https://x.com/', '_blank', 'noopener,noreferrer')}>
+                <IconButton aria-label="X (Twitter)" sx={{ color: 'white' }} onClick={() => window.open('https://x.com/', '_blank', 'noopener,noreferrer')}>
                     <XIcon />
                 </IconButton>
-                <IconButton sx={{ color: 'white' }} onClick={() => window.open('https://instagram.com/', '_blank', 'noopener,noreferrer')}>
+                <IconButton aria-label="Instagram" sx={{ color: 'white' }} onClick={() => window.open('https://instagram.com/', '_blank', 'noopener,noreferrer')}>
                     <InstagramIcon />
                 </IconButton>
             </Box>
 
             {/* Icone contact */}
             <IconButton
+                aria-label="Contact"
                 sx={{ color: 'white' }}
                 onClick={() => navigate("/info#contact")}
             >

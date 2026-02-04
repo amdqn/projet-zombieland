@@ -176,6 +176,7 @@ export const ActivityCard = ({ activity, onEdit, onDelete, onClick }: ActivityCa
         <Stack direction="row" spacing={1} justifyContent="flex-end">
           <IconButton
             size="small"
+            aria-label={t('common.view')}
             onClick={handleCardClick}
             sx={{
               color: colors.primaryGreen,
@@ -188,6 +189,7 @@ export const ActivityCard = ({ activity, onEdit, onDelete, onClick }: ActivityCa
           </IconButton>
           <IconButton
             size="small"
+            aria-label={t('common.edit')}
             onClick={handleEdit}
             sx={{
               color: colors.primaryGreen,
@@ -200,6 +202,7 @@ export const ActivityCard = ({ activity, onEdit, onDelete, onClick }: ActivityCa
           </IconButton>
           <IconButton
             size="small"
+            aria-label={t('common.delete')}
             onClick={handleDelete}
             sx={{
               color: colors.primaryRed,

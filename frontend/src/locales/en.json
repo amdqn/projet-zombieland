@@ -29,7 +29,8 @@
     "attractions": "Attractions",
     "info": "Info",
     "home": "Home",
-    "account": "My account"
+    "account": "My account",
+    "openMenu": "Open menu"
   },
   "home": {
     "hero": {

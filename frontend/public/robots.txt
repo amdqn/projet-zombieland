@@ -1,0 +1,16 @@
+# Robots.txt pour Zombieland
+# https://www.robotstxt.org/robotstxt.html
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://zombieland.vercel.app/sitemap.xml
+
+# Interdire l'accès aux pages d'administration
+Disallow: /admin
+Disallow: /admin/*
+
+# Interdire l'accès aux pages de compte utilisateur
+Disallow: /account
+Disallow: /account/*

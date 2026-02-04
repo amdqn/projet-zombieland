@@ -59,6 +59,7 @@ export default function Footer() {
                 <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1 }}>
                     <Box>
                         <IconButton
+                            aria-label="YouTube"
                             sx={{ color: 'white' }}
                             component="a"
                             href="https://www.youtube.com/"
@@ -70,6 +71,7 @@ export default function Footer() {
                     </Box>
                     <Box>
                         <IconButton
+                            aria-label="Facebook"
                             sx={{ color: 'white' }}
                             component="a"
                             href="https://www.facebook.com/"
@@ -81,6 +83,7 @@ export default function Footer() {
                     </Box>
                     <Box>
                         <IconButton
+                            aria-label="X (Twitter)"
                             sx={{ color: 'white' }}
                             component="a"
                             href="https://www.twitter.com/"
@@ -92,6 +95,7 @@ export default function Footer() {
                     </Box>
                     <Box>
                         <IconButton
+                            aria-label="Instagram"
                             sx={{ color: 'white' }}
                             component="a"
                             href="https://www.instagram.com/"

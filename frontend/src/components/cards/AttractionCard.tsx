@@ -188,6 +188,7 @@ export const AttractionCard = ({ attraction, onEdit, onDelete, onClick }: Attrac
         <Stack direction="row" spacing={1} justifyContent="flex-end">
           <IconButton
             size="small"
+            aria-label={t('common.view')}
             onClick={handleCardClick}
             sx={{
               color: colors.primaryGreen,
@@ -200,6 +201,7 @@ export const AttractionCard = ({ attraction, onEdit, onDelete, onClick }: Attrac
           </IconButton>
           <IconButton
             size="small"
+            aria-label={t('common.edit')}
             onClick={handleEdit}
             sx={{
               color: colors.primaryGreen,
@@ -212,6 +214,7 @@ export const AttractionCard = ({ attraction, onEdit, onDelete, onClick }: Attrac
           </IconButton>
           <IconButton
             size="small"
+            aria-label={t('common.delete')}
             onClick={handleDelete}
             sx={{
               color: colors.primaryRed,

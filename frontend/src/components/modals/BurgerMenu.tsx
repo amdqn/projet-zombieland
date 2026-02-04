@@ -192,6 +192,7 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                                 fullWidth={false}/>
                                 {/* Croix de fermeture en position absolute (Desktop) */}
                                 <IconButton
+                                    aria-label={t("common.close")}
                                     sx={{
                                         color: 'white',
                                         zIndex: 2,
@@ -292,6 +293,7 @@ export default function ModalBurgerMenu({ open, onClose }: ModalBurgerMenuProps)
                                     <Box />
                                 </Box>
                                     <IconButton
+                                        aria-label={t("common.close")}
                                         sx={{
                                             color: 'white',
                                             zIndex: 2,

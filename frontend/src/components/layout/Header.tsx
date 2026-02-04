@@ -113,6 +113,7 @@ export default function Header() {
 
                     {/* Menu burger à droite */}
                     <IconButton
+                        aria-label={t("navigation.openMenu")}
                         sx={{
                             color: 'white',
                             position: 'absolute',
@@ -164,6 +165,7 @@ export default function Header() {
                         alignItems: 'center'
                     }}>
                         <IconButton
+                            aria-label={t("navigation.openMenu")}
                             sx={{ color: 'white' }}
                             onClick={handleOpen}
                         >

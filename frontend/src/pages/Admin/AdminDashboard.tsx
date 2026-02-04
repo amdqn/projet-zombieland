@@ -16,10 +16,10 @@ export const AdminDashboard = () => {
   const [tabValue, setTabValue] = useState<number>(0);
 
   const heroImages = [
-    '/activities-images/post-apocalyptic-street.jpg',
-    '/activities-images/zombie.jpg',
-    '/activities-images/abandoned-lab.jpg',
-    '/activities-images/haunted-hospital.jpg',
+    '/activities-images/post-apocalyptic-street.webp',
+    '/activities-images/zombie.webp',
+    '/activities-images/abandoned-lab.webp',
+    '/activities-images/haunted-hospital.webp',
   ].slice(0, 5);
 
   const tabs = [

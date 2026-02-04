@@ -267,7 +267,7 @@ export function ParkMap({ data, loading, error, selectedTypes, selectedCategorie
       >
         {/* Image de fond du parc */}
         <ImageOverlay
-          url="/map-images/carte-parc.png"
+          url="/map-images/carte-parc.webp"
           bounds={imageBounds}
           opacity={0.9}
         />

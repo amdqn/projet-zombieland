@@ -201,11 +201,11 @@ export const Activities = () => {
   const heroImages = useMemo(() => {
     // Images par défaut car les activités n'ont pas d'images en BDD
     return [
-      '/activities-images/abandoned-lab-2.jpg',
-      '/activities-images/post-apocalyptic-street.jpg',
-      '/activities-images/zombie.jpg',
-      '/activities-images/abandoned-lab.jpg',
-      '/activities-images/haunted-hospital.jpg',
+      '/activities-images/abandoned-lab-2.webp',
+      '/activities-images/post-apocalyptic-street.webp',
+      '/activities-images/zombie.webp',
+      '/activities-images/abandoned-lab.webp',
+      '/activities-images/haunted-hospital.webp',
     ].slice(0, 5);
   }, []);
 

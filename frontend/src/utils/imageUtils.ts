@@ -11,9 +11,9 @@ const getBackendBaseUrl = () => {
 const BACKEND_URL = getBackendBaseUrl();
 
 // Images par défaut (chemins relatifs uniquement)
-export const DEFAULT_ACTIVITY_IMAGE = '/activities-images/zombie.jpg';
-export const DEFAULT_ATTRACTION_IMAGE = '/activities-images/zombie.jpg';
-export const DEFAULT_RESTAURANT_IMAGE = '/attractions-images/restaurant-default.jpg';
+export const DEFAULT_ACTIVITY_IMAGE = '/activities-images/zombie.webp';
+export const DEFAULT_ATTRACTION_IMAGE = '/activities-images/zombie.webp';
+export const DEFAULT_RESTAURANT_IMAGE = '/attractions-images/restaurant-default.webp';
 
 /**
  * Résout l'URL d'une image en gérant les deux cas :
@@ -27,7 +27,7 @@ export const DEFAULT_RESTAURANT_IMAGE = '/attractions-images/restaurant-default.
  */
 export function resolveImageUrl(
   imageUrl: string | null | undefined,
-  defaultImage: string = '/activities-images/zombie.jpg'
+  defaultImage: string = '/activities-images/zombie.webp'
 ): string {
   const trimmedUrl = imageUrl?.trim();
 
@@ -59,7 +59,7 @@ export function resolveImageUrl(
  */
 export function getImageWithFallback(
   imageUrl: string | null | undefined,
-  defaultImage: string = '/activities-images/zombie.jpg'
+  defaultImage: string = '/activities-images/zombie.webp'
 ): {
   src: string;
   onError: (e: React.SyntheticEvent<HTMLImageElement>) => void;

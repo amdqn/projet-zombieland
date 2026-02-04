@@ -58,7 +58,7 @@ export default function ImageBanner() {
         >
             <Box
                 component="img"
-                src="homepage-images/banniere-zombie.png"
+                src="homepage-images/banniere-zombie.webp"
                 alt="Bannière zombie"
                 sx={{
                     position: 'absolute',

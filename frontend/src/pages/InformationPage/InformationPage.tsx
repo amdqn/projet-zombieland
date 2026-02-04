@@ -39,9 +39,9 @@ export function InformationPage() {
 
   // Images du hero (carousel)
   const heroImages = [
-    '/homepage-images/zombie-apocalypse.jpg',
-    '/activities-images/post-apocalyptic-street.jpg',
-    '/activities-images/abandoned-lab.jpg',
+    '/homepage-images/zombie-apocalypse.webp',
+    '/activities-images/post-apocalyptic-street.webp',
+    '/activities-images/abandoned-lab.webp',
   ];
 
   // Charger les données

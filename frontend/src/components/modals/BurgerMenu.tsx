@@ -1,7 +1,7 @@
 import {Box, Button, IconButton, Typography} from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
-import logo from "../../assets/logo.png"
-import sang from "../../assets/tache-sang.png";
+import logo from "../../assets/logo.webp"
+import sang from "../../assets/tache-sang.webp";
 import {useNavigate} from "react-router";
 import {useContext} from "react";
 import {LoginContext} from "../../context/UserLoginContext.tsx";

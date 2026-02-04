@@ -10,8 +10,8 @@ export const activitiesData = {
       "accessibility": "Partiellement accessible (pas adapté fauteuil)",
       "min_age": 14,
       "images": [
-        "/activities-images/abandonned-city.jpg",
-        "/activities-images/post-apocalyptic-street.jpg"
+        "/activities-images/abandonned-city.webp",
+        "/activities-images/post-apocalyptic-street.webp"
       ],
       "related_activities": [2, 3, 5, 12]
     },
@@ -25,9 +25,9 @@ export const activitiesData = {
       "accessibility": "Non accessible (escaliers étroits)",
       "min_age": 12,
       "images": [
-        "/activities-images/abandoned-lab.jpg",
-        "/activities-images/abandoned-lab-2.jpg",
-        "/activities-images/abandoned-lab-3.jpg"
+        "/activities-images/abandoned-lab.webp",
+        "/activities-images/abandoned-lab-2.webp",
+        "/activities-images/abandoned-lab-3.webp"
       ],
       "related_activities": [1, 3, 7]
     },
@@ -41,8 +41,8 @@ export const activitiesData = {
       "accessibility": "Accessible",
       "min_age": 10,
       "images": [
-        "/activities-images/experimental-lab.jpg",
-        "/activities-images/experimental-lab-2.jpg"
+        "/activities-images/experimental-lab.webp",
+        "/activities-images/experimental-lab-2.webp"
       ],
       "related_activities": [2, 6]
     },
@@ -56,7 +56,7 @@ export const activitiesData = {
       "accessibility": "Non accessible",
       "min_age": 16,
       "images": [
-        "/activities-images/roller-coaster-night.jpg"
+        "/activities-images/roller-coaster-night.webp"
       ],
       "related_activities": [1, 9, 10]
     },
@@ -70,8 +70,8 @@ export const activitiesData = {
       "accessibility": "Accessible",
       "min_age": 12,
       "images": [
-        "/activities-images/abandonned-city.jpg",
-        "/activities-images/post-apocalyptic-street.jpg"
+        "/activities-images/abandonned-city.webp",
+        "/activities-images/post-apocalyptic-street.webp"
       ],
       "related_activities": [1, 6, 8]
     },
@@ -85,8 +85,8 @@ export const activitiesData = {
       "accessibility": "Non accessible",
       "min_age": 16,
       "images": [
-        "/activities-images/haunted-hospital.jpg",
-        "/activities-images/haunted-hospital-2.jpg"
+        "/activities-images/haunted-hospital.webp",
+        "/activities-images/haunted-hospital-2.webp"
       ],
       "related_activities": [1, 5, 7]
     },
@@ -100,8 +100,8 @@ export const activitiesData = {
       "accessibility": "Accessible",
       "min_age": 13,
       "images": [
-        "/activities-images/VR-headset-cyberpunk.jpg",
-        "/activities-images/cyberpunk.jpg"
+        "/activities-images/VR-headset-cyberpunk.webp",
+        "/activities-images/cyberpunk.webp"
       ],
       "related_activities": [2, 3, 6]
     },
@@ -115,8 +115,8 @@ export const activitiesData = {
       "accessibility": "Accessible",
       "min_age": 0,
       "images": [
-        "/activities-images/zombie.jpg",
-        "/activities-images/zombie-2.jpg"
+        "/activities-images/zombie.webp",
+        "/activities-images/zombie-2.webp"
       ],
       "related_activities": [5, 12]
     },
@@ -130,8 +130,8 @@ export const activitiesData = {
       "accessibility": "Accessible",
       "min_age": 8,
       "images": [
-        "/activities-images/abandonned-city.jpg",
-        "/activities-images/post-apocalyptic-street.jpg"
+        "/activities-images/abandonned-city.webp",
+        "/activities-images/post-apocalyptic-street.webp"
       ],
       "related_activities": [4, 11]
     },
@@ -145,8 +145,8 @@ export const activitiesData = {
       "accessibility": "Non accessible",
       "min_age": 15,
       "images": [
-        "/activities-images/abandonned-city.jpg",
-        "/activities-images/post-apocalyptic-street.jpg"
+        "/activities-images/abandonned-city.webp",
+        "/activities-images/post-apocalyptic-street.webp"
       ],
       "related_activities": [4, 9]
     },
@@ -160,7 +160,7 @@ export const activitiesData = {
       "accessibility": "Accessible",
       "min_age": 0,
       "images": [
-        "/activities-images/military-vehicle.jpg"
+        "/activities-images/military-vehicle.webp"
       ],
       "related_activities": [1, 8]
     },
@@ -174,7 +174,7 @@ export const activitiesData = {
       "accessibility": "Accessible",
       "min_age": 8,
       "images": [
-        "/activities-images/laser-tag-arena.jpg"
+        "/activities-images/laser-tag-arena.webp"
       ],
       "related_activities": [1, 5, 8]
     },
@@ -188,7 +188,7 @@ export const activitiesData = {
       "accessibility": "Non accessible",
       "min_age": 14,
       "images": [
-        "/activities-images/4D-cinema.jpg"
+        "/activities-images/4D-cinema.webp"
       ],
       "related_activities": [1, 6, 7]
     },
@@ -202,8 +202,8 @@ export const activitiesData = {
       "accessibility": "Accessible",
       "min_age": 0,
       "images": [
-        "/activities-images/abandonned-city.jpg",
-        "/activities-images/post-apocalyptic-street.jpg"
+        "/activities-images/abandonned-city.webp",
+        "/activities-images/post-apocalyptic-street.webp"
       ],
       "related_activities": [11]
     },
@@ -217,9 +217,9 @@ export const activitiesData = {
       "accessibility": "Non accessible",
       "min_age": 16,
       "images": [
-        "/activities-images/abandoned-lab.jpg",
-        "/activities-images/abandoned-lab-2.jpg",
-        "/activities-images/abandoned-lab-3.jpg"
+        "/activities-images/abandoned-lab.webp",
+        "/activities-images/abandoned-lab-2.webp",
+        "/activities-images/abandoned-lab-3.webp"
       ],
       "related_activities": [2, 6]
     },
@@ -233,8 +233,8 @@ export const activitiesData = {
       "accessibility": "Accessible",
       "min_age": 8,
       "images": [
-        "/activities-images/abandonned-city.jpg",
-        "/activities-images/post-apocalyptic-street.jpg"
+        "/activities-images/abandonned-city.webp",
+        "/activities-images/post-apocalyptic-street.webp"
       ],
       "related_activities": [3, 7, 13]
     },
@@ -248,8 +248,8 @@ export const activitiesData = {
       "accessibility": "Non accessible",
       "min_age": 12,
       "images": [
-        "/activities-images/abandonned-city.jpg",
-        "/activities-images/post-apocalyptic-street.jpg"
+        "/activities-images/abandonned-city.webp",
+        "/activities-images/post-apocalyptic-street.webp"
       ],
       "related_activities": [5, 7]
     },
@@ -263,8 +263,8 @@ export const activitiesData = {
       "accessibility": "Accessible",
       "min_age": 10,
       "images": [
-        "/activities-images/abandonned-city.jpg",
-        "/activities-images/post-apocalyptic-street.jpg"
+        "/activities-images/abandonned-city.webp",
+        "/activities-images/post-apocalyptic-street.webp"
       ],
       "related_activities": [3, 16]
     },
@@ -278,7 +278,7 @@ export const activitiesData = {
       "accessibility": "Accessible",
       "min_age": 0,
       "images": [
-        "/activities-images/post-apocalyptic-camp.jpg"
+        "/activities-images/post-apocalyptic-camp.webp"
       ],
       "related_activities": [11, 14]
     },
@@ -292,8 +292,8 @@ export const activitiesData = {
       "accessibility": "Partiellement accessible",
       "min_age": 12,
       "images": [
-        "/activities-images/abandonned-city.jpg",
-        "/activities-images/post-apocalyptic-street.jpg"
+        "/activities-images/abandonned-city.webp",
+        "/activities-images/post-apocalyptic-street.webp"
       ],
       "related_activities": [7, 13, 17]
     }

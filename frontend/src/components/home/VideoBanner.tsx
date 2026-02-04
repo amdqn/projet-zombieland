@@ -22,6 +22,8 @@ export default function VideoBanner() {
                 loop
                 muted
                 playsInline
+                preload="metadata"
+                poster="homepage-images/banniere-zombie.webp"
                 src="homepage-images/zombie.mp4"
                 sx={{
                     width: '100%',
@@ -75,7 +77,7 @@ export default function VideoBanner() {
             >
                 <defs>
                     <pattern id="img1" patternUnits="userSpaceOnUse" width="1200" height="120">
-                        <image href="homepage-images/banniere-zombie.png" x="0" y="0" width="1200" height="120" preserveAspectRatio="xMidYMid slice"/>
+                        <image href="homepage-images/banniere-zombie.webp" x="0" y="0" width="1200" height="120" preserveAspectRatio="xMidYMid slice"/>
                     </pattern>
                 </defs>
                 <path

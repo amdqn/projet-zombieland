@@ -139,25 +139,25 @@ export const ActivityDetail = () => {
   const minAge = 12;
   const accessibility = t('activityDetail.sections.accessiblePMR');
   const defaultHeroImages = [
-    '/activities-images/abandoned-lab.jpg',
-    '/activities-images/zombie.jpg',
-    '/activities-images/post-apocalyptic-street.jpg',
+    '/activities-images/abandoned-lab.webp',
+    '/activities-images/zombie.webp',
+    '/activities-images/post-apocalyptic-street.webp',
   ];
 
   const entityName = 'name' in entity ? entity.name : '';
   const entityCategory = 'category' in entity ? entity.category?.name : undefined;
 
   // Image par défaut pour les attractions
-  const defaultAttractionImage = '/activities-images/zombie.jpg';
+  const defaultAttractionImage = '/activities-images/zombie.webp';
   const defaultAttractionImages = [
-    '/activities-images/zombie.jpg',
-    '/activities-images/abandoned-lab.jpg',
-    '/activities-images/post-apocalyptic-street.jpg',
+    '/activities-images/zombie.webp',
+    '/activities-images/abandoned-lab.webp',
+    '/activities-images/post-apocalyptic-street.webp',
   ];
   const defaultActivityImages = [
-    '/activities-images/abandoned-lab.jpg',
-    '/activities-images/post-apocalyptic-street.jpg',
-    '/activities-images/zombie.jpg',
+    '/activities-images/abandoned-lab.webp',
+    '/activities-images/post-apocalyptic-street.webp',
+    '/activities-images/zombie.webp',
   ];
 
   // Utilise l'utilitaire pour résoudre les URLs d'images

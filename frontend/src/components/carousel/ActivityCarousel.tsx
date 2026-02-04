@@ -19,7 +19,7 @@ export const ActivityCarousel = ({ activities }: ActivityCarouselProps) => {
       id={activity.id}
       name={activity.name}
       category={activity.category}
-      image={activity.images?.[0] || '/activities-images/zombie.jpg'}
+      image={activity.images?.[0] || '/activities-images/zombie.webp'}
     />
   ));
 

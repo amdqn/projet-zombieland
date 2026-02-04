@@ -1,6 +1,6 @@
 import {AppBar, Box, IconButton, Typography} from "@mui/material";
 import YouTubeIcon from '@mui/icons-material/YouTube';
-import logo from "../../assets/logo.png";
+import logo from "../../assets/logo.webp";
 import EmailIcon from '@mui/icons-material/Email';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import XIcon from '@mui/icons-material/X';

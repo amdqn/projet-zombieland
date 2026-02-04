@@ -42,12 +42,12 @@ until docker exec zombieland-api test -d node_modules/.bin 2>/dev/null; do
     sleep 5
 done
 
-echo -e "${BLUE}=== Déploiement des migrations ===${NC}"
-docker exec zombieland-api npx prisma migrate deploy
-
 echo -e "${BLUE}=== Génération du client Prisma ===${NC}"
 # ⬆️ DÉPLACÉ APRÈS migrate deploy pour que le schema soit à jour
 docker exec zombieland-api npx prisma generate
+
+echo -e "${BLUE}=== Déploiement des migrations ===${NC}"
+docker exec zombieland-api npx prisma migrate deploy
 
 echo -e "${BLUE}=== Exécution du seed ===${NC}"
 docker exec zombieland-api npx prisma db seed

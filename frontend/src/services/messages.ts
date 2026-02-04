@@ -18,7 +18,7 @@ export const createMessage = async ({
 
     // Si c'est un message dans une conversation existante
     if (conversation_id) {
-        payload.conversationId = conversation_id;
+        payload.conversation_id = conversation_id;
     }
 
     if (object) {
